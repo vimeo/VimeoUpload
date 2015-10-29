@@ -18,8 +18,6 @@
 		50596D721BE297E700D1F8EC /* PHAssetCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50596D6A1BE297E700D1F8EC /* PHAssetCell.xib */; };
 		50596D731BE297E700D1F8EC /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D6B1BE297E700D1F8EC /* UploadManager.swift */; };
 		50596D741BE297E700D1F8EC /* UploadReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D6C1BE297E700D1F8EC /* UploadReporter.swift */; };
-		50596D751BE297E700D1F8EC /* VideoSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D6D1BE297E700D1F8EC /* VideoSettingsViewController.swift */; };
-		50596D761BE297E700D1F8EC /* VideoSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50596D6E1BE297E700D1F8EC /* VideoSettingsViewController.xib */; };
 		50596DE21BE2AC2900D1F8EC /* ArchiverProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DBE1BE2AC2900D1F8EC /* ArchiverProtocol.swift */; };
 		50596DE31BE2AC2900D1F8EC /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DBF1BE2AC2900D1F8EC /* Descriptor.swift */; };
 		50596DE41BE2AC2900D1F8EC /* DescriptorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DC01BE2AC2900D1F8EC /* DescriptorManager.swift */; };
@@ -89,8 +87,6 @@
 		50596D6A1BE297E700D1F8EC /* PHAssetCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PHAssetCell.xib; sourceTree = "<group>"; };
 		50596D6B1BE297E700D1F8EC /* UploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
 		50596D6C1BE297E700D1F8EC /* UploadReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadReporter.swift; sourceTree = "<group>"; };
-		50596D6D1BE297E700D1F8EC /* VideoSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoSettingsViewController.swift; sourceTree = "<group>"; };
-		50596D6E1BE297E700D1F8EC /* VideoSettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoSettingsViewController.xib; sourceTree = "<group>"; };
 		50596DBE1BE2AC2900D1F8EC /* ArchiverProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiverProtocol.swift; sourceTree = "<group>"; };
 		50596DBF1BE2AC2900D1F8EC /* Descriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
 		50596DC01BE2AC2900D1F8EC /* DescriptorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorManager.swift; sourceTree = "<group>"; };
@@ -180,8 +176,6 @@
 				50596D381BE296FA00D1F8EC /* AppDelegate.swift */,
 				50596D671BE297E700D1F8EC /* CameraRollViewController.swift */,
 				50596D681BE297E700D1F8EC /* CameraRollViewController.xib */,
-				50596D6D1BE297E700D1F8EC /* VideoSettingsViewController.swift */,
-				50596D6E1BE297E700D1F8EC /* VideoSettingsViewController.xib */,
 				50596D691BE297E700D1F8EC /* PHAssetCell.swift */,
 				50596D6A1BE297E700D1F8EC /* PHAssetCell.xib */,
 				50596D6B1BE297E700D1F8EC /* UploadManager.swift */,
@@ -433,7 +427,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				50596D431BE296FA00D1F8EC /* LaunchScreen.storyboard in Resources */,
-				50596D761BE297E700D1F8EC /* VideoSettingsViewController.xib in Resources */,
 				50596D401BE296FA00D1F8EC /* Assets.xcassets in Resources */,
 				50596D701BE297E700D1F8EC /* CameraRollViewController.xib in Resources */,
 				50596D721BE297E700D1F8EC /* PHAssetCell.xib in Resources */,
@@ -540,7 +533,6 @@
 				50596DEE1BE2AC2900D1F8EC /* NSError+VideoSettings.swift in Sources */,
 				50596DF61BE2AC2900D1F8EC /* VimeoRequestSerializer.swift in Sources */,
 				50596DFB1BE2AC2900D1F8EC /* PHAssetOperation.swift in Sources */,
-				50596D751BE297E700D1F8EC /* VideoSettingsViewController.swift in Sources */,
 				50596DED1BE2AC2900D1F8EC /* NSError+Upload.swift in Sources */,
 				50596D731BE297E700D1F8EC /* UploadManager.swift in Sources */,
 				50596DE81BE2AC2900D1F8EC /* NSError+Activate.swift in Sources */,

@@ -33,8 +33,21 @@ class CameraRollViewController: UIViewController, UITableViewDataSource, UITable
     
     private var phAssets: [PHAsset] = []
     
+    private static let ProgressKeyPath = "uploadProgress"
+    private var uploadProgressKVOContext = UInt8()
+    
+    private var phAssetOperation: PHAssetOperation?
+    private var exportVideoOperation: ExportVideoOperation?
+    private var uploadDescriptor: UploadDescriptor?
+
     // MARK: Lifecycle
     
+    deinit
+    {
+        self.removeObservers()
+        self.exportVideoOperation?.cancel()
+    }
+
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -60,12 +73,7 @@ class CameraRollViewController: UIViewController, UITableViewDataSource, UITable
     {
         let phAsset = self.phAssets[indexPath.row]
         
-        let viewController = VideoSettingsViewController(nibName:"VideoSettingsViewController", bundle:NSBundle.mainBundle())
-        viewController.phAsset = phAsset
-        
-        let navigationController = UINavigationController(rootViewController: viewController)
-        
-        self.presentViewController(navigationController, animated: true, completion: nil)
+        self.fetchAVAsset(phAsset)
     }
     
     // MARK: UITableViewDataSource
@@ -99,5 +107,121 @@ class CameraRollViewController: UIViewController, UITableViewDataSource, UITable
         })
         
         return phAssets
+    }
+    
+    // MARK: Private API
+    
+    private func fetchAVAsset(phAsset: PHAsset)
+    {
+        self.phAssetOperation = PHAssetOperation(phAsset: phAsset)
+        self.phAssetOperation?.progressBlock = { (progress: Double) -> Void in
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                print("PHAsset download progress: \(progress)")
+            })
+        }
+        
+        self.phAssetOperation?.completionBlock = { [weak self] () -> Void in
+            
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                if let error = strongSelf.phAssetOperation?.error
+                {
+                    print("Error retrieving PHAsset's AVAsset: \(error.localizedDescription)")
+                }
+                else if let avAsset = strongSelf.phAssetOperation?.avAsset
+                {
+                    strongSelf.exportAVAsset(avAsset)
+                }
+                
+                strongSelf.phAssetOperation = nil
+            })
+        }
+        
+        self.phAssetOperation?.start()
+    }
+    
+    private func exportAVAsset(avAsset: AVAsset)
+    {
+        self.exportVideoOperation = ExportVideoOperation(asset: avAsset)
+        self.exportVideoOperation?.progressBlock = { (progress: Double) -> Void in
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                print("Export progress: \(progress)")
+            })
+        }
+        
+        self.exportVideoOperation?.completionBlock = { [weak self] () -> Void in
+            
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                if let error = strongSelf.exportVideoOperation?.error
+                {
+                    print("Error exporting AVAsset: \(error.localizedDescription)")
+                }
+                else if let outputURL = strongSelf.exportVideoOperation?.outputURL
+                {
+                    strongSelf.startUpload(outputURL)
+                }
+                
+                strongSelf.exportVideoOperation = nil
+            })
+        }
+        
+        self.exportVideoOperation?.start()
+    }
+    
+    private func startUpload(url: NSURL)
+    {
+        self.removeObservers()
+        
+        let videoSettings = VideoSettings(title: "hey!!", description: nil, privacy: "goo", users: nil)
+        self.uploadDescriptor = UploadDescriptor(url: url, videoSettings: videoSettings)
+        self.uploadDescriptor!.identifier = "\(url.absoluteString.hash)"
+        
+        self.addObservers()
+        
+        try! UploadManager.sharedInstance.descriptorManager.addDescriptor(self.uploadDescriptor!)
+    }
+    
+    // MARK: KVO
+    
+    private func addObservers()
+    {
+        self.uploadDescriptor?.addObserver(self, forKeyPath: CameraRollViewController.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.uploadProgressKVOContext)
+    }
+    
+    private func removeObservers()
+    {
+        self.uploadDescriptor?.removeObserver(self, forKeyPath: CameraRollViewController.ProgressKeyPath, context: &self.uploadProgressKVOContext)
+    }
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+    {
+        if let keyPath = keyPath
+        {
+            switch (keyPath, context)
+            {
+            case(CameraRollViewController.ProgressKeyPath, &self.uploadProgressKVOContext):
+                let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    print("VC upload progress: \(progress)")
+                })
+                
+            default:
+                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            }
+        }
+        else
+        {
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+        }
     }
 }

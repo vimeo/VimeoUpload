@@ -124,6 +124,9 @@
       </Group>
    </Group>
    <FileRef
+      location = "group:Example/VimeoUpload-iOS-2Step/VimeoUpload-iOS-2Step.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj">
    </FileRef>
    <FileRef

@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  VimeoUpload-iOS-Example
+//  VimeoUpload-iOS-2Step
 //
-//  Created by Hanssen, Alfie on 10/14/15.
+//  Created by Hanssen, Alfie on 10/29/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,11 +30,9 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate
 {
     var window: UIWindow?
-    
+
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
     {
-        UploadManager.sharedInstance // Ensure that the sharedInstance is created at launch
-        
         let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
         application.registerUserNotificationSettings(settings)
         
@@ -48,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         
         return true
     }
-
+    
     func application(application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: () -> Void)
     {
         if UploadManager.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier, completionHandler: completionHandler) == false

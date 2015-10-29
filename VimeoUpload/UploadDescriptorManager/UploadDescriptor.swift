@@ -305,14 +305,9 @@ class UploadDescriptor: Descriptor
     {
         self.removeObserverIfNecessary()
         
-        // TODO: Confirm that file deletion is working
-        if NSFileManager.defaultManager().fileExistsAtPath(self.url.absoluteString)
+        if let path = self.url.path where NSFileManager.defaultManager().fileExistsAtPath(path)
         {
-            _ = try? NSFileManager.defaultManager().removeItemAtPath(self.url.absoluteString)
-        }
-        else
-        {
-            print("Unable to delete file on disk after upload") // TODO: remove this
+            _ = try? NSFileManager.defaultManager().removeItemAtPath(path)
         }
     }
     
