@@ -1,0 +1,578 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		50596D021BE296C900D1F8EC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D011BE296C900D1F8EC /* AppDelegate.swift */; };
+		50596D041BE296C900D1F8EC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D031BE296C900D1F8EC /* ViewController.swift */; };
+		50596D061BE296C900D1F8EC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50596D051BE296C900D1F8EC /* Assets.xcassets */; };
+		50596D091BE296CA00D1F8EC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50596D071BE296CA00D1F8EC /* Main.storyboard */; };
+		50596D141BE296CA00D1F8EC /* VimeoUpload_OSX_ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D131BE296CA00D1F8EC /* VimeoUpload_OSX_ExampleTests.swift */; };
+		50596D1F1BE296CA00D1F8EC /* VimeoUpload_OSX_ExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D1E1BE296CA00D1F8EC /* VimeoUpload_OSX_ExampleUITests.swift */; };
+		8B7531B5D9D8858452A7B308 /* libPods-VimeoUpload-OSX-Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C558F373E124E50993CCECB /* libPods-VimeoUpload-OSX-Example.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		50596D101BE296CA00D1F8EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50596CF61BE296C900D1F8EC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 50596CFD1BE296C900D1F8EC;
+			remoteInfo = "VimeoUpload-OSX-Example";
+		};
+		50596D1B1BE296CA00D1F8EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50596CF61BE296C900D1F8EC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 50596CFD1BE296C900D1F8EC;
+			remoteInfo = "VimeoUpload-OSX-Example";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3CADC3E03CB99820DA5355B6 /* Pods-VimeoUpload-OSX-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-OSX-Example.release.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-OSX-Example/Pods-VimeoUpload-OSX-Example.release.xcconfig"; sourceTree = "<group>"; };
+		3DC438CF5EEB670220333D71 /* Pods-VimeoUpload-OSX-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-OSX-Example.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-OSX-Example/Pods-VimeoUpload-OSX-Example.debug.xcconfig"; sourceTree = "<group>"; };
+		50596CFE1BE296C900D1F8EC /* VimeoUpload-OSX-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VimeoUpload-OSX-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		50596D011BE296C900D1F8EC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		50596D031BE296C900D1F8EC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		50596D051BE296C900D1F8EC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		50596D081BE296CA00D1F8EC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		50596D0A1BE296CA00D1F8EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50596D0F1BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "VimeoUpload-OSX-ExampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		50596D131BE296CA00D1F8EC /* VimeoUpload_OSX_ExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VimeoUpload_OSX_ExampleTests.swift; sourceTree = "<group>"; };
+		50596D151BE296CA00D1F8EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50596D1A1BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "VimeoUpload-OSX-ExampleUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		50596D1E1BE296CA00D1F8EC /* VimeoUpload_OSX_ExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VimeoUpload_OSX_ExampleUITests.swift; sourceTree = "<group>"; };
+		50596D201BE296CA00D1F8EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5C558F373E124E50993CCECB /* libPods-VimeoUpload-OSX-Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VimeoUpload-OSX-Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		50596CFB1BE296C900D1F8EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8B7531B5D9D8858452A7B308 /* libPods-VimeoUpload-OSX-Example.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50596D0C1BE296CA00D1F8EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50596D171BE296CA00D1F8EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		48E3EA3F0E6E6745D9DBB21D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5C558F373E124E50993CCECB /* libPods-VimeoUpload-OSX-Example.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		50596CF51BE296C900D1F8EC = {
+			isa = PBXGroup;
+			children = (
+				50596D001BE296C900D1F8EC /* VimeoUpload-OSX-Example */,
+				50596D121BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleTests */,
+				50596D1D1BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleUITests */,
+				50596CFF1BE296C900D1F8EC /* Products */,
+				A02DF640341EB90E73C0D840 /* Pods */,
+				48E3EA3F0E6E6745D9DBB21D /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		50596CFF1BE296C900D1F8EC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				50596CFE1BE296C900D1F8EC /* VimeoUpload-OSX-Example.app */,
+				50596D0F1BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleTests.xctest */,
+				50596D1A1BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		50596D001BE296C900D1F8EC /* VimeoUpload-OSX-Example */ = {
+			isa = PBXGroup;
+			children = (
+				50596D011BE296C900D1F8EC /* AppDelegate.swift */,
+				50596D031BE296C900D1F8EC /* ViewController.swift */,
+				50596D051BE296C900D1F8EC /* Assets.xcassets */,
+				50596D071BE296CA00D1F8EC /* Main.storyboard */,
+				50596D0A1BE296CA00D1F8EC /* Info.plist */,
+			);
+			path = "VimeoUpload-OSX-Example";
+			sourceTree = "<group>";
+		};
+		50596D121BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				50596D131BE296CA00D1F8EC /* VimeoUpload_OSX_ExampleTests.swift */,
+				50596D151BE296CA00D1F8EC /* Info.plist */,
+			);
+			path = "VimeoUpload-OSX-ExampleTests";
+			sourceTree = "<group>";
+		};
+		50596D1D1BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleUITests */ = {
+			isa = PBXGroup;
+			children = (
+				50596D1E1BE296CA00D1F8EC /* VimeoUpload_OSX_ExampleUITests.swift */,
+				50596D201BE296CA00D1F8EC /* Info.plist */,
+			);
+			path = "VimeoUpload-OSX-ExampleUITests";
+			sourceTree = "<group>";
+		};
+		A02DF640341EB90E73C0D840 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3DC438CF5EEB670220333D71 /* Pods-VimeoUpload-OSX-Example.debug.xcconfig */,
+				3CADC3E03CB99820DA5355B6 /* Pods-VimeoUpload-OSX-Example.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		50596CFD1BE296C900D1F8EC /* VimeoUpload-OSX-Example */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50596D231BE296CA00D1F8EC /* Build configuration list for PBXNativeTarget "VimeoUpload-OSX-Example" */;
+			buildPhases = (
+				CA0DB8C95F3D31D5D44A0935 /* Check Pods Manifest.lock */,
+				50596CFA1BE296C900D1F8EC /* Sources */,
+				50596CFB1BE296C900D1F8EC /* Frameworks */,
+				50596CFC1BE296C900D1F8EC /* Resources */,
+				DCCC94C5B27CF853A4D7BCE9 /* Embed Pods Frameworks */,
+				364F861AB98E1D66A63A6AFD /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "VimeoUpload-OSX-Example";
+			productName = "VimeoUpload-OSX-Example";
+			productReference = 50596CFE1BE296C900D1F8EC /* VimeoUpload-OSX-Example.app */;
+			productType = "com.apple.product-type.application";
+		};
+		50596D0E1BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50596D261BE296CA00D1F8EC /* Build configuration list for PBXNativeTarget "VimeoUpload-OSX-ExampleTests" */;
+			buildPhases = (
+				50596D0B1BE296CA00D1F8EC /* Sources */,
+				50596D0C1BE296CA00D1F8EC /* Frameworks */,
+				50596D0D1BE296CA00D1F8EC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				50596D111BE296CA00D1F8EC /* PBXTargetDependency */,
+			);
+			name = "VimeoUpload-OSX-ExampleTests";
+			productName = "VimeoUpload-OSX-ExampleTests";
+			productReference = 50596D0F1BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		50596D191BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50596D291BE296CA00D1F8EC /* Build configuration list for PBXNativeTarget "VimeoUpload-OSX-ExampleUITests" */;
+			buildPhases = (
+				50596D161BE296CA00D1F8EC /* Sources */,
+				50596D171BE296CA00D1F8EC /* Frameworks */,
+				50596D181BE296CA00D1F8EC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				50596D1C1BE296CA00D1F8EC /* PBXTargetDependency */,
+			);
+			name = "VimeoUpload-OSX-ExampleUITests";
+			productName = "VimeoUpload-OSX-ExampleUITests";
+			productReference = 50596D1A1BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		50596CF61BE296C900D1F8EC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0710;
+				LastUpgradeCheck = 0710;
+				ORGANIZATIONNAME = Vimeo;
+				TargetAttributes = {
+					50596CFD1BE296C900D1F8EC = {
+						CreatedOnToolsVersion = 7.1;
+					};
+					50596D0E1BE296CA00D1F8EC = {
+						CreatedOnToolsVersion = 7.1;
+						TestTargetID = 50596CFD1BE296C900D1F8EC;
+					};
+					50596D191BE296CA00D1F8EC = {
+						CreatedOnToolsVersion = 7.1;
+						TestTargetID = 50596CFD1BE296C900D1F8EC;
+					};
+				};
+			};
+			buildConfigurationList = 50596CF91BE296C900D1F8EC /* Build configuration list for PBXProject "VimeoUpload-OSX-Example" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 50596CF51BE296C900D1F8EC;
+			productRefGroup = 50596CFF1BE296C900D1F8EC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				50596CFD1BE296C900D1F8EC /* VimeoUpload-OSX-Example */,
+				50596D0E1BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleTests */,
+				50596D191BE296CA00D1F8EC /* VimeoUpload-OSX-ExampleUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		50596CFC1BE296C900D1F8EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50596D061BE296C900D1F8EC /* Assets.xcassets in Resources */,
+				50596D091BE296CA00D1F8EC /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50596D0D1BE296CA00D1F8EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50596D181BE296CA00D1F8EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		364F861AB98E1D66A63A6AFD /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-OSX-Example/Pods-VimeoUpload-OSX-Example-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CA0DB8C95F3D31D5D44A0935 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		DCCC94C5B27CF853A4D7BCE9 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-OSX-Example/Pods-VimeoUpload-OSX-Example-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		50596CFA1BE296C900D1F8EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50596D041BE296C900D1F8EC /* ViewController.swift in Sources */,
+				50596D021BE296C900D1F8EC /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50596D0B1BE296CA00D1F8EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50596D141BE296CA00D1F8EC /* VimeoUpload_OSX_ExampleTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50596D161BE296CA00D1F8EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50596D1F1BE296CA00D1F8EC /* VimeoUpload_OSX_ExampleUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		50596D111BE296CA00D1F8EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 50596CFD1BE296C900D1F8EC /* VimeoUpload-OSX-Example */;
+			targetProxy = 50596D101BE296CA00D1F8EC /* PBXContainerItemProxy */;
+		};
+		50596D1C1BE296CA00D1F8EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 50596CFD1BE296C900D1F8EC /* VimeoUpload-OSX-Example */;
+			targetProxy = 50596D1B1BE296CA00D1F8EC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		50596D071BE296CA00D1F8EC /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				50596D081BE296CA00D1F8EC /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		50596D211BE296CA00D1F8EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		50596D221BE296CA00D1F8EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		50596D241BE296CA00D1F8EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3DC438CF5EEB670220333D71 /* Pods-VimeoUpload-OSX-Example.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "VimeoUpload-OSX-Example/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vimeo.VimeoUpload-OSX-Example";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		50596D251BE296CA00D1F8EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3CADC3E03CB99820DA5355B6 /* Pods-VimeoUpload-OSX-Example.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "VimeoUpload-OSX-Example/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vimeo.VimeoUpload-OSX-Example";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		50596D271BE296CA00D1F8EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "VimeoUpload-OSX-ExampleTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vimeo.VimeoUpload-OSX-ExampleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VimeoUpload-OSX-Example.app/Contents/MacOS/VimeoUpload-OSX-Example";
+			};
+			name = Debug;
+		};
+		50596D281BE296CA00D1F8EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "VimeoUpload-OSX-ExampleTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vimeo.VimeoUpload-OSX-ExampleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VimeoUpload-OSX-Example.app/Contents/MacOS/VimeoUpload-OSX-Example";
+			};
+			name = Release;
+		};
+		50596D2A1BE296CA00D1F8EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "VimeoUpload-OSX-ExampleUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vimeo.VimeoUpload-OSX-ExampleUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = "VimeoUpload-OSX-Example";
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		50596D2B1BE296CA00D1F8EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "VimeoUpload-OSX-ExampleUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vimeo.VimeoUpload-OSX-ExampleUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = "VimeoUpload-OSX-Example";
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		50596CF91BE296C900D1F8EC /* Build configuration list for PBXProject "VimeoUpload-OSX-Example" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50596D211BE296CA00D1F8EC /* Debug */,
+				50596D221BE296CA00D1F8EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		50596D231BE296CA00D1F8EC /* Build configuration list for PBXNativeTarget "VimeoUpload-OSX-Example" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50596D241BE296CA00D1F8EC /* Debug */,
+				50596D251BE296CA00D1F8EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		50596D261BE296CA00D1F8EC /* Build configuration list for PBXNativeTarget "VimeoUpload-OSX-ExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50596D271BE296CA00D1F8EC /* Debug */,
+				50596D281BE296CA00D1F8EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		50596D291BE296CA00D1F8EC /* Build configuration list for PBXNativeTarget "VimeoUpload-OSX-ExampleUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50596D2A1BE296CA00D1F8EC /* Debug */,
+				50596D2B1BE296CA00D1F8EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 50596CF61BE296C900D1F8EC /* Project object */;
+}

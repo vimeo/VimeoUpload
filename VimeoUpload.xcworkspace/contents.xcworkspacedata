@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <Group
+      location = "group:VimeoUpload"
+      name = "VimeoUpload">
+      <Group
+         location = "group:DescriptorManager"
+         name = "DescriptorManager">
+         <FileRef
+            location = "group:ArchiverProtocol.swift">
+         </FileRef>
+         <FileRef
+            location = "group:Descriptor.swift">
+         </FileRef>
+         <FileRef
+            location = "group:DescriptorManager.swift">
+         </FileRef>
+         <FileRef
+            location = "group:DescriptorManagerDelegate.swift">
+         </FileRef>
+         <FileRef
+            location = "group:KeyedArchiver.swift">
+         </FileRef>
+      </Group>
+      <Group
+         location = "group:Extensions"
+         name = "Extensions">
+         <FileRef
+            location = "group:AVURLAsset+Extensions.swift">
+         </FileRef>
+         <FileRef
+            location = "group:NSError+Activate.swift">
+         </FileRef>
+         <FileRef
+            location = "group:NSError+Create.swift">
+         </FileRef>
+         <FileRef
+            location = "group:NSError+Descriptor.swift">
+         </FileRef>
+         <FileRef
+            location = "group:NSError+Export.swift">
+         </FileRef>
+         <FileRef
+            location = "group:NSError+PHAsset.swift">
+         </FileRef>
+         <FileRef
+            location = "group:NSError+Upload.swift">
+         </FileRef>
+         <FileRef
+            location = "group:NSError+VideoSettings.swift">
+         </FileRef>
+         <FileRef
+            location = "group:NSFileManager+Extensions.swift">
+         </FileRef>
+         <FileRef
+            location = "group:NSURL+Upload.swift">
+         </FileRef>
+      </Group>
+      <Group
+         location = "group:Model"
+         name = "Model">
+         <FileRef
+            location = "group:CombinedCreateVideoResponse.swift">
+         </FileRef>
+         <FileRef
+            location = "group:CreateVideoResponse.swift">
+         </FileRef>
+         <FileRef
+            location = "group:GeneralTypes.swift">
+         </FileRef>
+         <FileRef
+            location = "group:VideoSettings.swift">
+         </FileRef>
+      </Group>
+      <Group
+         location = "group:Networking"
+         name = "Networking">
+         <FileRef
+            location = "group:Constants.swift">
+         </FileRef>
+         <FileRef
+            location = "group:VimeoRequestSerializer.swift">
+         </FileRef>
+         <FileRef
+            location = "group:VimeoResponseSerializer.swift">
+         </FileRef>
+         <FileRef
+            location = "group:VimeoSessionManager.swift">
+         </FileRef>
+      </Group>
+      <Group
+         location = "group:Operations"
+         name = "Operations">
+         <FileRef
+            location = "group:ConcurrentOperation.swift">
+         </FileRef>
+         <FileRef
+            location = "group:ExportVideoOperation.swift">
+         </FileRef>
+         <FileRef
+            location = "group:PHAssetOperation.swift">
+         </FileRef>
+      </Group>
+      <Group
+         location = "group:UploadDescriptorManager"
+         name = "UploadDescriptorManager">
+         <FileRef
+            location = "group:UploadDescriptor.swift">
+         </FileRef>
+      </Group>
+      <Group
+         location = "group:UploadNetworking"
+         name = "UploadNetworking">
+         <FileRef
+            location = "group:VimeoRequestSerializer+Upload.swift">
+         </FileRef>
+         <FileRef
+            location = "group:VimeoResponseSerializer+Upload.swift">
+         </FileRef>
+         <FileRef
+            location = "group:VimeoSessionManager+Upload.swift">
+         </FileRef>
+      </Group>
+   </Group>
+   <FileRef
+      location = "group:Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Example/VimeoUpload-OSX-Example/VimeoUpload-OSX-Example.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Pods/Pods.xcodeproj">
+   </FileRef>
+</Workspace>

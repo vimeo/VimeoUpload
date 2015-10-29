@@ -1,0 +1,793 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		50596D391BE296FA00D1F8EC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D381BE296FA00D1F8EC /* AppDelegate.swift */; };
+		50596D401BE296FA00D1F8EC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50596D3F1BE296FA00D1F8EC /* Assets.xcassets */; };
+		50596D431BE296FA00D1F8EC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50596D411BE296FA00D1F8EC /* LaunchScreen.storyboard */; };
+		50596D4E1BE296FA00D1F8EC /* VimeoUpload_iOS_ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D4D1BE296FA00D1F8EC /* VimeoUpload_iOS_ExampleTests.swift */; };
+		50596D591BE296FA00D1F8EC /* VimeoUpload_iOS_ExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D581BE296FA00D1F8EC /* VimeoUpload_iOS_ExampleUITests.swift */; };
+		50596D6F1BE297E700D1F8EC /* CameraRollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D671BE297E700D1F8EC /* CameraRollViewController.swift */; };
+		50596D701BE297E700D1F8EC /* CameraRollViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50596D681BE297E700D1F8EC /* CameraRollViewController.xib */; };
+		50596D711BE297E700D1F8EC /* PHAssetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D691BE297E700D1F8EC /* PHAssetCell.swift */; };
+		50596D721BE297E700D1F8EC /* PHAssetCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50596D6A1BE297E700D1F8EC /* PHAssetCell.xib */; };
+		50596D731BE297E700D1F8EC /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D6B1BE297E700D1F8EC /* UploadManager.swift */; };
+		50596D741BE297E700D1F8EC /* UploadReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D6C1BE297E700D1F8EC /* UploadReporter.swift */; };
+		50596D751BE297E700D1F8EC /* VideoSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D6D1BE297E700D1F8EC /* VideoSettingsViewController.swift */; };
+		50596D761BE297E700D1F8EC /* VideoSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50596D6E1BE297E700D1F8EC /* VideoSettingsViewController.xib */; };
+		50596DE21BE2AC2900D1F8EC /* ArchiverProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DBE1BE2AC2900D1F8EC /* ArchiverProtocol.swift */; };
+		50596DE31BE2AC2900D1F8EC /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DBF1BE2AC2900D1F8EC /* Descriptor.swift */; };
+		50596DE41BE2AC2900D1F8EC /* DescriptorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DC01BE2AC2900D1F8EC /* DescriptorManager.swift */; };
+		50596DE51BE2AC2900D1F8EC /* DescriptorManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DC11BE2AC2900D1F8EC /* DescriptorManagerDelegate.swift */; };
+		50596DE61BE2AC2900D1F8EC /* KeyedArchiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DC21BE2AC2900D1F8EC /* KeyedArchiver.swift */; };
+		50596DE71BE2AC2900D1F8EC /* AVURLAsset+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DC41BE2AC2900D1F8EC /* AVURLAsset+Extensions.swift */; };
+		50596DE81BE2AC2900D1F8EC /* NSError+Activate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DC51BE2AC2900D1F8EC /* NSError+Activate.swift */; };
+		50596DE91BE2AC2900D1F8EC /* NSError+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DC61BE2AC2900D1F8EC /* NSError+Create.swift */; };
+		50596DEA1BE2AC2900D1F8EC /* NSError+Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DC71BE2AC2900D1F8EC /* NSError+Descriptor.swift */; };
+		50596DEB1BE2AC2900D1F8EC /* NSError+Export.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DC81BE2AC2900D1F8EC /* NSError+Export.swift */; };
+		50596DEC1BE2AC2900D1F8EC /* NSError+PHAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DC91BE2AC2900D1F8EC /* NSError+PHAsset.swift */; };
+		50596DED1BE2AC2900D1F8EC /* NSError+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DCA1BE2AC2900D1F8EC /* NSError+Upload.swift */; };
+		50596DEE1BE2AC2900D1F8EC /* NSError+VideoSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DCB1BE2AC2900D1F8EC /* NSError+VideoSettings.swift */; };
+		50596DEF1BE2AC2900D1F8EC /* NSFileManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DCC1BE2AC2900D1F8EC /* NSFileManager+Extensions.swift */; };
+		50596DF01BE2AC2900D1F8EC /* NSURL+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DCD1BE2AC2900D1F8EC /* NSURL+Upload.swift */; };
+		50596DF11BE2AC2900D1F8EC /* CombinedCreateVideoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DCF1BE2AC2900D1F8EC /* CombinedCreateVideoResponse.swift */; };
+		50596DF21BE2AC2900D1F8EC /* CreateVideoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DD01BE2AC2900D1F8EC /* CreateVideoResponse.swift */; };
+		50596DF31BE2AC2900D1F8EC /* GeneralTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DD11BE2AC2900D1F8EC /* GeneralTypes.swift */; };
+		50596DF41BE2AC2900D1F8EC /* VideoSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DD21BE2AC2900D1F8EC /* VideoSettings.swift */; };
+		50596DF51BE2AC2900D1F8EC /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DD41BE2AC2900D1F8EC /* Constants.swift */; };
+		50596DF61BE2AC2900D1F8EC /* VimeoRequestSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DD51BE2AC2900D1F8EC /* VimeoRequestSerializer.swift */; };
+		50596DF71BE2AC2900D1F8EC /* VimeoResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DD61BE2AC2900D1F8EC /* VimeoResponseSerializer.swift */; };
+		50596DF81BE2AC2900D1F8EC /* VimeoSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DD71BE2AC2900D1F8EC /* VimeoSessionManager.swift */; };
+		50596DF91BE2AC2900D1F8EC /* ConcurrentOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DD91BE2AC2900D1F8EC /* ConcurrentOperation.swift */; };
+		50596DFA1BE2AC2900D1F8EC /* ExportVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DDA1BE2AC2900D1F8EC /* ExportVideoOperation.swift */; };
+		50596DFB1BE2AC2900D1F8EC /* PHAssetOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DDB1BE2AC2900D1F8EC /* PHAssetOperation.swift */; };
+		50596DFC1BE2AC2900D1F8EC /* UploadDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DDD1BE2AC2900D1F8EC /* UploadDescriptor.swift */; };
+		50596DFD1BE2AC2900D1F8EC /* VimeoRequestSerializer+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DDF1BE2AC2900D1F8EC /* VimeoRequestSerializer+Upload.swift */; };
+		50596DFE1BE2AC2900D1F8EC /* VimeoResponseSerializer+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DE01BE2AC2900D1F8EC /* VimeoResponseSerializer+Upload.swift */; };
+		50596DFF1BE2AC2900D1F8EC /* VimeoSessionManager+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DE11BE2AC2900D1F8EC /* VimeoSessionManager+Upload.swift */; };
+		D8BBA70E3E46A7615AFEC7F9 /* Pods_VimeoUpload_iOS_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB12F66A314206375E6D9B8B /* Pods_VimeoUpload_iOS_Example.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		50596D4A1BE296FA00D1F8EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50596D2D1BE296FA00D1F8EC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 50596D341BE296FA00D1F8EC;
+			remoteInfo = "VimeoUpload-iOS-Example";
+		};
+		50596D551BE296FA00D1F8EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50596D2D1BE296FA00D1F8EC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 50596D341BE296FA00D1F8EC;
+			remoteInfo = "VimeoUpload-iOS-Example";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		50596D351BE296FA00D1F8EC /* VimeoUpload-iOS-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VimeoUpload-iOS-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		50596D381BE296FA00D1F8EC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		50596D3F1BE296FA00D1F8EC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		50596D421BE296FA00D1F8EC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		50596D441BE296FA00D1F8EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50596D491BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "VimeoUpload-iOS-ExampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		50596D4D1BE296FA00D1F8EC /* VimeoUpload_iOS_ExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VimeoUpload_iOS_ExampleTests.swift; sourceTree = "<group>"; };
+		50596D4F1BE296FA00D1F8EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50596D541BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "VimeoUpload-iOS-ExampleUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		50596D581BE296FA00D1F8EC /* VimeoUpload_iOS_ExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VimeoUpload_iOS_ExampleUITests.swift; sourceTree = "<group>"; };
+		50596D5A1BE296FA00D1F8EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50596D661BE297E700D1F8EC /* Bridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bridge.h; sourceTree = "<group>"; };
+		50596D671BE297E700D1F8EC /* CameraRollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollViewController.swift; sourceTree = "<group>"; };
+		50596D681BE297E700D1F8EC /* CameraRollViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CameraRollViewController.xib; sourceTree = "<group>"; };
+		50596D691BE297E700D1F8EC /* PHAssetCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetCell.swift; sourceTree = "<group>"; };
+		50596D6A1BE297E700D1F8EC /* PHAssetCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PHAssetCell.xib; sourceTree = "<group>"; };
+		50596D6B1BE297E700D1F8EC /* UploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
+		50596D6C1BE297E700D1F8EC /* UploadReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadReporter.swift; sourceTree = "<group>"; };
+		50596D6D1BE297E700D1F8EC /* VideoSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoSettingsViewController.swift; sourceTree = "<group>"; };
+		50596D6E1BE297E700D1F8EC /* VideoSettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoSettingsViewController.xib; sourceTree = "<group>"; };
+		50596DBE1BE2AC2900D1F8EC /* ArchiverProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiverProtocol.swift; sourceTree = "<group>"; };
+		50596DBF1BE2AC2900D1F8EC /* Descriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
+		50596DC01BE2AC2900D1F8EC /* DescriptorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorManager.swift; sourceTree = "<group>"; };
+		50596DC11BE2AC2900D1F8EC /* DescriptorManagerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorManagerDelegate.swift; sourceTree = "<group>"; };
+		50596DC21BE2AC2900D1F8EC /* KeyedArchiver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyedArchiver.swift; sourceTree = "<group>"; };
+		50596DC41BE2AC2900D1F8EC /* AVURLAsset+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVURLAsset+Extensions.swift"; sourceTree = "<group>"; };
+		50596DC51BE2AC2900D1F8EC /* NSError+Activate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+Activate.swift"; sourceTree = "<group>"; };
+		50596DC61BE2AC2900D1F8EC /* NSError+Create.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+Create.swift"; sourceTree = "<group>"; };
+		50596DC71BE2AC2900D1F8EC /* NSError+Descriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+Descriptor.swift"; sourceTree = "<group>"; };
+		50596DC81BE2AC2900D1F8EC /* NSError+Export.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+Export.swift"; sourceTree = "<group>"; };
+		50596DC91BE2AC2900D1F8EC /* NSError+PHAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+PHAsset.swift"; sourceTree = "<group>"; };
+		50596DCA1BE2AC2900D1F8EC /* NSError+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+Upload.swift"; sourceTree = "<group>"; };
+		50596DCB1BE2AC2900D1F8EC /* NSError+VideoSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+VideoSettings.swift"; sourceTree = "<group>"; };
+		50596DCC1BE2AC2900D1F8EC /* NSFileManager+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+Extensions.swift"; sourceTree = "<group>"; };
+		50596DCD1BE2AC2900D1F8EC /* NSURL+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+Upload.swift"; sourceTree = "<group>"; };
+		50596DCF1BE2AC2900D1F8EC /* CombinedCreateVideoResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombinedCreateVideoResponse.swift; sourceTree = "<group>"; };
+		50596DD01BE2AC2900D1F8EC /* CreateVideoResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateVideoResponse.swift; sourceTree = "<group>"; };
+		50596DD11BE2AC2900D1F8EC /* GeneralTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralTypes.swift; sourceTree = "<group>"; };
+		50596DD21BE2AC2900D1F8EC /* VideoSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoSettings.swift; sourceTree = "<group>"; };
+		50596DD41BE2AC2900D1F8EC /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		50596DD51BE2AC2900D1F8EC /* VimeoRequestSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoRequestSerializer.swift; sourceTree = "<group>"; };
+		50596DD61BE2AC2900D1F8EC /* VimeoResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoResponseSerializer.swift; sourceTree = "<group>"; };
+		50596DD71BE2AC2900D1F8EC /* VimeoSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoSessionManager.swift; sourceTree = "<group>"; };
+		50596DD91BE2AC2900D1F8EC /* ConcurrentOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentOperation.swift; sourceTree = "<group>"; };
+		50596DDA1BE2AC2900D1F8EC /* ExportVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportVideoOperation.swift; sourceTree = "<group>"; };
+		50596DDB1BE2AC2900D1F8EC /* PHAssetOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetOperation.swift; sourceTree = "<group>"; };
+		50596DDD1BE2AC2900D1F8EC /* UploadDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadDescriptor.swift; sourceTree = "<group>"; };
+		50596DDF1BE2AC2900D1F8EC /* VimeoRequestSerializer+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoRequestSerializer+Upload.swift"; sourceTree = "<group>"; };
+		50596DE01BE2AC2900D1F8EC /* VimeoResponseSerializer+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoResponseSerializer+Upload.swift"; sourceTree = "<group>"; };
+		50596DE11BE2AC2900D1F8EC /* VimeoSessionManager+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoSessionManager+Upload.swift"; sourceTree = "<group>"; };
+		67A662EB2165C8DB78441721 /* Pods-VimeoUpload-iOS-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-Example.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-Example/Pods-VimeoUpload-iOS-Example.debug.xcconfig"; sourceTree = "<group>"; };
+		EB12F66A314206375E6D9B8B /* Pods_VimeoUpload_iOS_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VimeoUpload_iOS_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB2373E62701FFE4416B73DF /* Pods-VimeoUpload-iOS-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-Example.release.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-Example/Pods-VimeoUpload-iOS-Example.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		50596D321BE296FA00D1F8EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D8BBA70E3E46A7615AFEC7F9 /* Pods_VimeoUpload_iOS_Example.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50596D461BE296FA00D1F8EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50596D511BE296FA00D1F8EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		50596D2C1BE296FA00D1F8EC = {
+			isa = PBXGroup;
+			children = (
+				50596D371BE296FA00D1F8EC /* VimeoUpload-iOS-Example */,
+				50596D4C1BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleTests */,
+				50596D571BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleUITests */,
+				50596D361BE296FA00D1F8EC /* Products */,
+				E97C4BEB04DD34D05C9944EF /* Pods */,
+				E0CB7DD9456C90F9A0FEE1CB /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		50596D361BE296FA00D1F8EC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				50596D351BE296FA00D1F8EC /* VimeoUpload-iOS-Example.app */,
+				50596D491BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleTests.xctest */,
+				50596D541BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		50596D371BE296FA00D1F8EC /* VimeoUpload-iOS-Example */ = {
+			isa = PBXGroup;
+			children = (
+				50596D381BE296FA00D1F8EC /* AppDelegate.swift */,
+				50596D671BE297E700D1F8EC /* CameraRollViewController.swift */,
+				50596D681BE297E700D1F8EC /* CameraRollViewController.xib */,
+				50596D6D1BE297E700D1F8EC /* VideoSettingsViewController.swift */,
+				50596D6E1BE297E700D1F8EC /* VideoSettingsViewController.xib */,
+				50596D691BE297E700D1F8EC /* PHAssetCell.swift */,
+				50596D6A1BE297E700D1F8EC /* PHAssetCell.xib */,
+				50596D6B1BE297E700D1F8EC /* UploadManager.swift */,
+				50596D6C1BE297E700D1F8EC /* UploadReporter.swift */,
+				50596DBC1BE2AC2900D1F8EC /* VimeoUpload */,
+				50596D3F1BE296FA00D1F8EC /* Assets.xcassets */,
+				50596D661BE297E700D1F8EC /* Bridge.h */,
+				50596D411BE296FA00D1F8EC /* LaunchScreen.storyboard */,
+				50596D441BE296FA00D1F8EC /* Info.plist */,
+			);
+			path = "VimeoUpload-iOS-Example";
+			sourceTree = "<group>";
+		};
+		50596D4C1BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				50596D4D1BE296FA00D1F8EC /* VimeoUpload_iOS_ExampleTests.swift */,
+				50596D4F1BE296FA00D1F8EC /* Info.plist */,
+			);
+			path = "VimeoUpload-iOS-ExampleTests";
+			sourceTree = "<group>";
+		};
+		50596D571BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleUITests */ = {
+			isa = PBXGroup;
+			children = (
+				50596D581BE296FA00D1F8EC /* VimeoUpload_iOS_ExampleUITests.swift */,
+				50596D5A1BE296FA00D1F8EC /* Info.plist */,
+			);
+			path = "VimeoUpload-iOS-ExampleUITests";
+			sourceTree = "<group>";
+		};
+		50596DBC1BE2AC2900D1F8EC /* VimeoUpload */ = {
+			isa = PBXGroup;
+			children = (
+				50596DBD1BE2AC2900D1F8EC /* DescriptorManager */,
+				50596DC31BE2AC2900D1F8EC /* Extensions */,
+				50596DCE1BE2AC2900D1F8EC /* Model */,
+				50596DD31BE2AC2900D1F8EC /* Networking */,
+				50596DD81BE2AC2900D1F8EC /* Operations */,
+				50596DDC1BE2AC2900D1F8EC /* UploadDescriptorManager */,
+				50596DDE1BE2AC2900D1F8EC /* UploadNetworking */,
+			);
+			name = VimeoUpload;
+			path = ../../../VimeoUpload;
+			sourceTree = "<group>";
+		};
+		50596DBD1BE2AC2900D1F8EC /* DescriptorManager */ = {
+			isa = PBXGroup;
+			children = (
+				50596DBE1BE2AC2900D1F8EC /* ArchiverProtocol.swift */,
+				50596DBF1BE2AC2900D1F8EC /* Descriptor.swift */,
+				50596DC01BE2AC2900D1F8EC /* DescriptorManager.swift */,
+				50596DC11BE2AC2900D1F8EC /* DescriptorManagerDelegate.swift */,
+				50596DC21BE2AC2900D1F8EC /* KeyedArchiver.swift */,
+			);
+			path = DescriptorManager;
+			sourceTree = "<group>";
+		};
+		50596DC31BE2AC2900D1F8EC /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				50596DC41BE2AC2900D1F8EC /* AVURLAsset+Extensions.swift */,
+				50596DC51BE2AC2900D1F8EC /* NSError+Activate.swift */,
+				50596DC61BE2AC2900D1F8EC /* NSError+Create.swift */,
+				50596DC71BE2AC2900D1F8EC /* NSError+Descriptor.swift */,
+				50596DC81BE2AC2900D1F8EC /* NSError+Export.swift */,
+				50596DC91BE2AC2900D1F8EC /* NSError+PHAsset.swift */,
+				50596DCA1BE2AC2900D1F8EC /* NSError+Upload.swift */,
+				50596DCB1BE2AC2900D1F8EC /* NSError+VideoSettings.swift */,
+				50596DCC1BE2AC2900D1F8EC /* NSFileManager+Extensions.swift */,
+				50596DCD1BE2AC2900D1F8EC /* NSURL+Upload.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		50596DCE1BE2AC2900D1F8EC /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				50596DCF1BE2AC2900D1F8EC /* CombinedCreateVideoResponse.swift */,
+				50596DD01BE2AC2900D1F8EC /* CreateVideoResponse.swift */,
+				50596DD11BE2AC2900D1F8EC /* GeneralTypes.swift */,
+				50596DD21BE2AC2900D1F8EC /* VideoSettings.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		50596DD31BE2AC2900D1F8EC /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				50596DD41BE2AC2900D1F8EC /* Constants.swift */,
+				50596DD51BE2AC2900D1F8EC /* VimeoRequestSerializer.swift */,
+				50596DD61BE2AC2900D1F8EC /* VimeoResponseSerializer.swift */,
+				50596DD71BE2AC2900D1F8EC /* VimeoSessionManager.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		50596DD81BE2AC2900D1F8EC /* Operations */ = {
+			isa = PBXGroup;
+			children = (
+				50596DD91BE2AC2900D1F8EC /* ConcurrentOperation.swift */,
+				50596DDA1BE2AC2900D1F8EC /* ExportVideoOperation.swift */,
+				50596DDB1BE2AC2900D1F8EC /* PHAssetOperation.swift */,
+			);
+			path = Operations;
+			sourceTree = "<group>";
+		};
+		50596DDC1BE2AC2900D1F8EC /* UploadDescriptorManager */ = {
+			isa = PBXGroup;
+			children = (
+				50596DDD1BE2AC2900D1F8EC /* UploadDescriptor.swift */,
+			);
+			path = UploadDescriptorManager;
+			sourceTree = "<group>";
+		};
+		50596DDE1BE2AC2900D1F8EC /* UploadNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				50596DDF1BE2AC2900D1F8EC /* VimeoRequestSerializer+Upload.swift */,
+				50596DE01BE2AC2900D1F8EC /* VimeoResponseSerializer+Upload.swift */,
+				50596DE11BE2AC2900D1F8EC /* VimeoSessionManager+Upload.swift */,
+			);
+			path = UploadNetworking;
+			sourceTree = "<group>";
+		};
+		E0CB7DD9456C90F9A0FEE1CB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EB12F66A314206375E6D9B8B /* Pods_VimeoUpload_iOS_Example.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E97C4BEB04DD34D05C9944EF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				67A662EB2165C8DB78441721 /* Pods-VimeoUpload-iOS-Example.debug.xcconfig */,
+				EB2373E62701FFE4416B73DF /* Pods-VimeoUpload-iOS-Example.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		50596D341BE296FA00D1F8EC /* VimeoUpload-iOS-Example */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50596D5D1BE296FA00D1F8EC /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-Example" */;
+			buildPhases = (
+				E16BA903FC751023E1BF50FC /* Check Pods Manifest.lock */,
+				50596D311BE296FA00D1F8EC /* Sources */,
+				50596D321BE296FA00D1F8EC /* Frameworks */,
+				50596D331BE296FA00D1F8EC /* Resources */,
+				FBF0E6C3EB1A3C9AB89EC51C /* Embed Pods Frameworks */,
+				3845A1322215E33980346624 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "VimeoUpload-iOS-Example";
+			productName = "VimeoUpload-iOS-Example";
+			productReference = 50596D351BE296FA00D1F8EC /* VimeoUpload-iOS-Example.app */;
+			productType = "com.apple.product-type.application";
+		};
+		50596D481BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50596D601BE296FA00D1F8EC /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-ExampleTests" */;
+			buildPhases = (
+				50596D451BE296FA00D1F8EC /* Sources */,
+				50596D461BE296FA00D1F8EC /* Frameworks */,
+				50596D471BE296FA00D1F8EC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				50596D4B1BE296FA00D1F8EC /* PBXTargetDependency */,
+			);
+			name = "VimeoUpload-iOS-ExampleTests";
+			productName = "VimeoUpload-iOS-ExampleTests";
+			productReference = 50596D491BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		50596D531BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50596D631BE296FA00D1F8EC /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-ExampleUITests" */;
+			buildPhases = (
+				50596D501BE296FA00D1F8EC /* Sources */,
+				50596D511BE296FA00D1F8EC /* Frameworks */,
+				50596D521BE296FA00D1F8EC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				50596D561BE296FA00D1F8EC /* PBXTargetDependency */,
+			);
+			name = "VimeoUpload-iOS-ExampleUITests";
+			productName = "VimeoUpload-iOS-ExampleUITests";
+			productReference = 50596D541BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		50596D2D1BE296FA00D1F8EC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0710;
+				LastUpgradeCheck = 0710;
+				ORGANIZATIONNAME = Vimeo;
+				TargetAttributes = {
+					50596D341BE296FA00D1F8EC = {
+						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = 35R365FS4Q;
+					};
+					50596D481BE296FA00D1F8EC = {
+						CreatedOnToolsVersion = 7.1;
+						TestTargetID = 50596D341BE296FA00D1F8EC;
+					};
+					50596D531BE296FA00D1F8EC = {
+						CreatedOnToolsVersion = 7.1;
+						TestTargetID = 50596D341BE296FA00D1F8EC;
+					};
+				};
+			};
+			buildConfigurationList = 50596D301BE296FA00D1F8EC /* Build configuration list for PBXProject "VimeoUpload-iOS-Example" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 50596D2C1BE296FA00D1F8EC;
+			productRefGroup = 50596D361BE296FA00D1F8EC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				50596D341BE296FA00D1F8EC /* VimeoUpload-iOS-Example */,
+				50596D481BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleTests */,
+				50596D531BE296FA00D1F8EC /* VimeoUpload-iOS-ExampleUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		50596D331BE296FA00D1F8EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50596D431BE296FA00D1F8EC /* LaunchScreen.storyboard in Resources */,
+				50596D761BE297E700D1F8EC /* VideoSettingsViewController.xib in Resources */,
+				50596D401BE296FA00D1F8EC /* Assets.xcassets in Resources */,
+				50596D701BE297E700D1F8EC /* CameraRollViewController.xib in Resources */,
+				50596D721BE297E700D1F8EC /* PHAssetCell.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50596D471BE296FA00D1F8EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50596D521BE296FA00D1F8EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3845A1322215E33980346624 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS-Example/Pods-VimeoUpload-iOS-Example-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E16BA903FC751023E1BF50FC /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FBF0E6C3EB1A3C9AB89EC51C /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS-Example/Pods-VimeoUpload-iOS-Example-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		50596D311BE296FA00D1F8EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50596DF31BE2AC2900D1F8EC /* GeneralTypes.swift in Sources */,
+				50596DF71BE2AC2900D1F8EC /* VimeoResponseSerializer.swift in Sources */,
+				50596DEF1BE2AC2900D1F8EC /* NSFileManager+Extensions.swift in Sources */,
+				50596DFA1BE2AC2900D1F8EC /* ExportVideoOperation.swift in Sources */,
+				50596DFF1BE2AC2900D1F8EC /* VimeoSessionManager+Upload.swift in Sources */,
+				50596DF11BE2AC2900D1F8EC /* CombinedCreateVideoResponse.swift in Sources */,
+				50596DE21BE2AC2900D1F8EC /* ArchiverProtocol.swift in Sources */,
+				50596DE51BE2AC2900D1F8EC /* DescriptorManagerDelegate.swift in Sources */,
+				50596D711BE297E700D1F8EC /* PHAssetCell.swift in Sources */,
+				50596DF41BE2AC2900D1F8EC /* VideoSettings.swift in Sources */,
+				50596DF51BE2AC2900D1F8EC /* Constants.swift in Sources */,
+				50596DE71BE2AC2900D1F8EC /* AVURLAsset+Extensions.swift in Sources */,
+				50596DFC1BE2AC2900D1F8EC /* UploadDescriptor.swift in Sources */,
+				50596DE31BE2AC2900D1F8EC /* Descriptor.swift in Sources */,
+				50596DFD1BE2AC2900D1F8EC /* VimeoRequestSerializer+Upload.swift in Sources */,
+				50596DE61BE2AC2900D1F8EC /* KeyedArchiver.swift in Sources */,
+				50596D741BE297E700D1F8EC /* UploadReporter.swift in Sources */,
+				50596DEB1BE2AC2900D1F8EC /* NSError+Export.swift in Sources */,
+				50596DFE1BE2AC2900D1F8EC /* VimeoResponseSerializer+Upload.swift in Sources */,
+				50596DEC1BE2AC2900D1F8EC /* NSError+PHAsset.swift in Sources */,
+				50596DE91BE2AC2900D1F8EC /* NSError+Create.swift in Sources */,
+				50596DF01BE2AC2900D1F8EC /* NSURL+Upload.swift in Sources */,
+				50596DF81BE2AC2900D1F8EC /* VimeoSessionManager.swift in Sources */,
+				50596DE41BE2AC2900D1F8EC /* DescriptorManager.swift in Sources */,
+				50596DF21BE2AC2900D1F8EC /* CreateVideoResponse.swift in Sources */,
+				50596D6F1BE297E700D1F8EC /* CameraRollViewController.swift in Sources */,
+				50596DEA1BE2AC2900D1F8EC /* NSError+Descriptor.swift in Sources */,
+				50596DF91BE2AC2900D1F8EC /* ConcurrentOperation.swift in Sources */,
+				50596DEE1BE2AC2900D1F8EC /* NSError+VideoSettings.swift in Sources */,
+				50596DF61BE2AC2900D1F8EC /* VimeoRequestSerializer.swift in Sources */,
+				50596DFB1BE2AC2900D1F8EC /* PHAssetOperation.swift in Sources */,
+				50596D751BE297E700D1F8EC /* VideoSettingsViewController.swift in Sources */,
+				50596DED1BE2AC2900D1F8EC /* NSError+Upload.swift in Sources */,
+				50596D731BE297E700D1F8EC /* UploadManager.swift in Sources */,
+				50596DE81BE2AC2900D1F8EC /* NSError+Activate.swift in Sources */,
+				50596D391BE296FA00D1F8EC /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50596D451BE296FA00D1F8EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50596D4E1BE296FA00D1F8EC /* VimeoUpload_iOS_ExampleTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50596D501BE296FA00D1F8EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50596D591BE296FA00D1F8EC /* VimeoUpload_iOS_ExampleUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		50596D4B1BE296FA00D1F8EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 50596D341BE296FA00D1F8EC /* VimeoUpload-iOS-Example */;
+			targetProxy = 50596D4A1BE296FA00D1F8EC /* PBXContainerItemProxy */;
+		};
+		50596D561BE296FA00D1F8EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 50596D341BE296FA00D1F8EC /* VimeoUpload-iOS-Example */;
+			targetProxy = 50596D551BE296FA00D1F8EC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		50596D411BE296FA00D1F8EC /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				50596D421BE296FA00D1F8EC /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		50596D5B1BE296FA00D1F8EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		50596D5C1BE296FA00D1F8EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		50596D5E1BE296FA00D1F8EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 67A662EB2165C8DB78441721 /* Pods-VimeoUpload-iOS-Example.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = "VimeoUpload-iOS-Example/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.vimeo.pegasus;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/VimeoUpload-iOS-Example/Bridge.h";
+			};
+			name = Debug;
+		};
+		50596D5F1BE296FA00D1F8EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = EB2373E62701FFE4416B73DF /* Pods-VimeoUpload-iOS-Example.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = "VimeoUpload-iOS-Example/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.vimeo.pegasus;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/VimeoUpload-iOS-Example/Bridge.h";
+			};
+			name = Release;
+		};
+		50596D611BE296FA00D1F8EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = "VimeoUpload-iOS-ExampleTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vimeo.VimeoUpload-iOS-ExampleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VimeoUpload-iOS-Example.app/VimeoUpload-iOS-Example";
+			};
+			name = Debug;
+		};
+		50596D621BE296FA00D1F8EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = "VimeoUpload-iOS-ExampleTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vimeo.VimeoUpload-iOS-ExampleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VimeoUpload-iOS-Example.app/VimeoUpload-iOS-Example";
+			};
+			name = Release;
+		};
+		50596D641BE296FA00D1F8EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "VimeoUpload-iOS-ExampleUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vimeo.VimeoUpload-iOS-ExampleUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = "VimeoUpload-iOS-Example";
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		50596D651BE296FA00D1F8EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "VimeoUpload-iOS-ExampleUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.vimeo.VimeoUpload-iOS-ExampleUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = "VimeoUpload-iOS-Example";
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		50596D301BE296FA00D1F8EC /* Build configuration list for PBXProject "VimeoUpload-iOS-Example" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50596D5B1BE296FA00D1F8EC /* Debug */,
+				50596D5C1BE296FA00D1F8EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		50596D5D1BE296FA00D1F8EC /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-Example" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50596D5E1BE296FA00D1F8EC /* Debug */,
+				50596D5F1BE296FA00D1F8EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		50596D601BE296FA00D1F8EC /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-ExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50596D611BE296FA00D1F8EC /* Debug */,
+				50596D621BE296FA00D1F8EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		50596D631BE296FA00D1F8EC /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-ExampleUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50596D641BE296FA00D1F8EC /* Debug */,
+				50596D651BE296FA00D1F8EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 50596D2D1BE296FA00D1F8EC /* Project object */;
+}
