@@ -30,30 +30,30 @@ extension VimeoResponseSerializer
 {
     func processCreateVideoResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> CreateVideoResponse
     {
-        if let error = error
-        {
-            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
-        }
-        
-        guard let url = url else
-        {
-            throw NSError.nilCreateDownloadUrlError()
-        }
-        
-        guard let data = NSData(contentsOfURL: url) else
-        {
-            throw NSError.nilCreateDataError()
-        }
-        
-        let dictionary: [String: AnyObject]?
-        do
-        {
-            dictionary = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? [String: AnyObject]
-        }
-        catch let error as NSError
-        {
-            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
-        }
+//        if let error = error
+//        {
+//            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
+//        }
+//        
+//        guard let url = url else
+//        {
+//            throw NSError.nilCreateDownloadUrlError()
+//        }
+//        
+//        guard let data = NSData(contentsOfURL: url) else
+//        {
+//            throw NSError.nilCreateDataError()
+//        }
+//        
+//        let dictionary: [String: AnyObject]?
+//        do
+//        {
+//            dictionary = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? [String: AnyObject]
+//        }
+//        catch let error as NSError
+//        {
+//            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
+//        }
         
         guard let uploadUri = dictionary?["upload_link_secure"] as? String, let activationUri = dictionary?["complete_uri"] as? String else
         {
@@ -93,4 +93,60 @@ extension VimeoResponseSerializer
             throw error.errorByAddingDomain(UploadErrorDomain.VideoSettings.rawValue)
         }
     }
+    
+    // MARK: Private API
+    
+    // TODO: move this from extension into main class? 
+    
+    private func dictionaryForDownloadTaskResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> [String: AnyObject]?
+    {
+        if let error = error
+        {
+            throw error
+        }
+        
+        // TODO: add error domain
+        
+        guard let url = url else
+        {
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Url for completed download task is nil"])
+        }
+        
+        guard let data = NSData(contentsOfURL: url) else
+        {
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Data at url for completed download task is nil"])
+        }
+        
+        let dictionary: [String: AnyObject]?
+        do
+        {
+            dictionary = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? [String: AnyObject]
+        }
+        catch let error as NSError
+        {
+            throw error
+        }
+
+        // TODO: add this check to taskDidComplete? So that we can catch upload errors too?
+        
+        if let dictionary = dictionary, let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode < 200 || httpResponse.statusCode > 299
+        {
+            // TODO: populate error object with dictionary contents
+            // TODO: keep it in sync with localytics keys? Maybe not
+            
+            let userInfo = [NSLocalizedDescriptionKey: "Invalid http status code for download task"]
+            
+            throw NSError(domain: "", code: 0, userInfo: userInfo)
+        }
+        
+        return dictionary
+    }
+    
+//        if (data)
+//        {
+//            userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] = data;
+//        }
+//
+//        self.error = [NSError errorWithDomain:VIMCreateRecordTaskErrorDomain code:0 userInfo:userInfo];
+
 }
