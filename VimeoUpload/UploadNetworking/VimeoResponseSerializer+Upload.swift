@@ -54,7 +54,7 @@ extension VimeoResponseSerializer
         {
             throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
         }
-
+        
         guard let uploadUri = dictionary?["upload_link_secure"] as? String, let activationUri = dictionary?["complete_uri"] as? String else
         {
             throw NSError.invalidCreateResponseError()

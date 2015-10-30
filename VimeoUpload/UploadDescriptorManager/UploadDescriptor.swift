@@ -80,7 +80,6 @@ class UploadDescriptor: Descriptor
             if self.error != nil
             {
                 print(self.error!.localizedDescription)
-                self.currentTaskIdentifier = nil
                 self.state = .Complete
             }
         }
@@ -162,6 +161,8 @@ class UploadDescriptor: Descriptor
             fatalError("sessionManager must be of type VimeoSessionManager")
         }
         
+        // TODO: check for Vimeo error here?
+        
         switch self.currentRequest
         {
         case .Create:
@@ -208,9 +209,9 @@ class UploadDescriptor: Descriptor
         }
 
         // task.error is reserved for client-side errors, so check it first
-        if let error = task.error where self.error == nil
+        if let taskError = task.error where self.error == nil
         {
-            self.error = error // TODO: add proper vimeo domain
+            self.error = taskError // TODO: add proper vimeo domain
         }
 
         if let error = error where self.error == nil
