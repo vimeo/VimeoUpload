@@ -16,16 +16,25 @@
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="W2v-He-Plb">
                         <rect key="frame" x="0.0" y="0.0" width="184" height="184"/>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VDh-D9-cBy" userLabel="Filesize Label">
-                        <rect key="frame" x="134" y="155" width="42" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VDh-D9-cBy" userLabel="Filesize Label">
+                        <rect key="frame" x="140" y="159" width="36" height="17"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0yd-lD-TaN" userLabel="Duration Label">
-                        <rect key="frame" x="8" y="155" width="42" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <rect key="frame" x="8" y="159" width="36" height="17"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5N2-LJ-xHR" userLabel="Error Label">
+                        <rect key="frame" x="8" y="8" width="168" height="17"/>
+                        <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
@@ -34,9 +43,12 @@
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="W2v-He-Plb" secondAttribute="trailing" id="6yv-zo-0rH"/>
                 <constraint firstAttribute="bottom" secondItem="W2v-He-Plb" secondAttribute="bottom" id="743-7a-lAC"/>
+                <constraint firstAttribute="trailing" secondItem="5N2-LJ-xHR" secondAttribute="trailing" constant="8" id="CQy-tp-4m1"/>
+                <constraint firstItem="5N2-LJ-xHR" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="8" id="Dke-VS-sdJ"/>
                 <constraint firstItem="W2v-He-Plb" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="GFh-ID-klN"/>
                 <constraint firstAttribute="bottom" secondItem="VDh-D9-cBy" secondAttribute="bottom" constant="8" id="KPP-Ax-wgs"/>
                 <constraint firstItem="0yd-lD-TaN" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="8" id="a8j-Lx-lr5"/>
+                <constraint firstItem="5N2-LJ-xHR" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="8" id="efQ-LX-gmD"/>
                 <constraint firstAttribute="bottom" secondItem="0yd-lD-TaN" secondAttribute="bottom" constant="8" id="t0R-c8-ILP"/>
                 <constraint firstItem="W2v-He-Plb" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="wY0-dv-v2t"/>
                 <constraint firstItem="VDh-D9-cBy" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="0yd-lD-TaN" secondAttribute="trailing" constant="8" id="yQi-a7-Sx5"/>
@@ -45,6 +57,7 @@
             <size key="customSize" width="184" height="184"/>
             <connections>
                 <outlet property="durationlabel" destination="VDh-D9-cBy" id="bIp-0P-Tcx"/>
+                <outlet property="errorLabel" destination="5N2-LJ-xHR" id="7pH-6k-XZG"/>
                 <outlet property="fileSizeLabel" destination="0yd-lD-TaN" id="foE-xn-NNh"/>
                 <outlet property="imageView" destination="W2v-He-Plb" id="yNd-Jq-20b"/>
             </connections>

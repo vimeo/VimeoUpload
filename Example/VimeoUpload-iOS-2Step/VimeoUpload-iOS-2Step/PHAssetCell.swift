@@ -36,6 +36,7 @@ class PHAssetCell: UICollectionViewCell
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var fileSizeLabel: UILabel!
     @IBOutlet weak var durationlabel: UILabel!
+    @IBOutlet weak var errorLabel: UILabel!
     
     private var imageRequestID: PHImageRequestID?
     private var assetRequestID: PHImageRequestID?
@@ -50,6 +51,15 @@ class PHAssetCell: UICollectionViewCell
                 self.setupTextLabels(phAsset)
             }
         }
+    }
+    
+    override func awakeFromNib()
+    {
+        super.awakeFromNib()
+    
+        self.fileSizeLabel.text = ""
+        self.durationlabel.text = ""
+        self.errorLabel.text = ""
     }
 
     override func prepareForReuse()
@@ -74,6 +84,7 @@ class PHAssetCell: UICollectionViewCell
         self.imageView.image = nil
         self.fileSizeLabel.text = ""
         self.durationlabel.text = ""
+        self.errorLabel.text = ""
     }
     
     // MARK: Setup
@@ -110,6 +121,8 @@ class PHAssetCell: UICollectionViewCell
             {
                 print("Error fetching image for PHAsset: \(error)")
                 
+                strongSelf.errorLabel.text = "Error fetching image"
+                
                 return
             }
             
@@ -117,6 +130,8 @@ class PHAssetCell: UICollectionViewCell
             {
                 print("Fetched nil image for PHAsset")
                 
+                strongSelf.errorLabel.text = "Fetched nil image"
+
                 return
             }
 
@@ -153,15 +168,19 @@ class PHAssetCell: UICollectionViewCell
             
             if let info = info, let inCloud = info[PHImageResultIsInCloudKey] as? Bool where inCloud == true
             {
-                print("PHAsset is in cloud")
+                print("iCloud asset")
                 
+                strongSelf.errorLabel.text = "iCloud asset"
+
                 return
             }
             
             if let info = info, let error = info[PHImageErrorKey] as? NSError
             {
                 print("Error fetching AVAsset for PHAsset: \(error)")
-                
+
+                strongSelf.errorLabel.text = "Error fetching asset"
+
                 return
             }
             
@@ -169,11 +188,13 @@ class PHAssetCell: UICollectionViewCell
             {
                 print("Fetched nil AVAsset for PHAsset")
                 
+                strongSelf.errorLabel.text = "Fetched nil asset"
+
                 return
             }
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-                self?.durationlabel?.text = "\(CMTimeGetSeconds(asset.duration))"
+                self?.durationlabel?.text = String.stringFromDurationInSeconds(CMTimeGetSeconds(asset.duration))
             })
         }
     }
