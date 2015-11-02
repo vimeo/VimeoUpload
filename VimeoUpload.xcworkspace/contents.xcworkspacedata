@@ -59,6 +59,12 @@
          <FileRef
             location = "group:NSURL+Upload.swift">
          </FileRef>
+         <FileRef
+            location = "group:AVAsset+Extensions.swift">
+         </FileRef>
+         <FileRef
+            location = "group:PHImageManager+Extensions.swift">
+         </FileRef>
       </Group>
       <Group
          location = "group:Model"

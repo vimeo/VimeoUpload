@@ -49,6 +49,8 @@
 		50596DFE1BE2AC2900D1F8EC /* VimeoResponseSerializer+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DE01BE2AC2900D1F8EC /* VimeoResponseSerializer+Upload.swift */; };
 		50596DFF1BE2AC2900D1F8EC /* VimeoSessionManager+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596DE11BE2AC2900D1F8EC /* VimeoSessionManager+Upload.swift */; };
 		AF34DB5D1BE709830094D1F8 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF34DB5C1BE709830094D1F8 /* String+Extensions.swift */; };
+		AF34DB7A1BE721600094D1F8 /* AVAsset+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF34DB781BE721600094D1F8 /* AVAsset+Extensions.swift */; };
+		AF34DB7B1BE721600094D1F8 /* PHImageManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF34DB791BE721600094D1F8 /* PHImageManager+Extensions.swift */; };
 		D8BBA70E3E46A7615AFEC7F9 /* Pods_VimeoUpload_iOS_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB12F66A314206375E6D9B8B /* Pods_VimeoUpload_iOS_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -120,6 +122,8 @@
 		50596DE11BE2AC2900D1F8EC /* VimeoSessionManager+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoSessionManager+Upload.swift"; sourceTree = "<group>"; };
 		67A662EB2165C8DB78441721 /* Pods-VimeoUpload-iOS-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-Example.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-Example/Pods-VimeoUpload-iOS-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		AF34DB5C1BE709830094D1F8 /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		AF34DB781BE721600094D1F8 /* AVAsset+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVAsset+Extensions.swift"; sourceTree = "<group>"; };
+		AF34DB791BE721600094D1F8 /* PHImageManager+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PHImageManager+Extensions.swift"; sourceTree = "<group>"; };
 		EB12F66A314206375E6D9B8B /* Pods_VimeoUpload_iOS_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VimeoUpload_iOS_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB2373E62701FFE4416B73DF /* Pods-VimeoUpload-iOS-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-Example.release.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-Example/Pods-VimeoUpload-iOS-Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -250,6 +254,8 @@
 				50596DCB1BE2AC2900D1F8EC /* NSError+VideoSettings.swift */,
 				50596DCC1BE2AC2900D1F8EC /* NSFileManager+Extensions.swift */,
 				50596DCD1BE2AC2900D1F8EC /* NSURL+Upload.swift */,
+				AF34DB781BE721600094D1F8 /* AVAsset+Extensions.swift */,
+				AF34DB791BE721600094D1F8 /* PHImageManager+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -516,6 +522,7 @@
 				50596DE51BE2AC2900D1F8EC /* DescriptorManagerDelegate.swift in Sources */,
 				50596D711BE297E700D1F8EC /* PHAssetCell.swift in Sources */,
 				50596DF41BE2AC2900D1F8EC /* VideoSettings.swift in Sources */,
+				AF34DB7B1BE721600094D1F8 /* PHImageManager+Extensions.swift in Sources */,
 				50596DF51BE2AC2900D1F8EC /* Constants.swift in Sources */,
 				50596DE71BE2AC2900D1F8EC /* AVURLAsset+Extensions.swift in Sources */,
 				50596DFC1BE2AC2900D1F8EC /* UploadDescriptor.swift in Sources */,
@@ -538,6 +545,7 @@
 				50596DF61BE2AC2900D1F8EC /* VimeoRequestSerializer.swift in Sources */,
 				50596DFB1BE2AC2900D1F8EC /* PHAssetOperation.swift in Sources */,
 				50596DED1BE2AC2900D1F8EC /* NSError+Upload.swift in Sources */,
+				AF34DB7A1BE721600094D1F8 /* AVAsset+Extensions.swift in Sources */,
 				50596D731BE297E700D1F8EC /* UploadManager.swift in Sources */,
 				50596DE81BE2AC2900D1F8EC /* NSError+Activate.swift in Sources */,
 				50596D391BE296FA00D1F8EC /* AppDelegate.swift in Sources */,
