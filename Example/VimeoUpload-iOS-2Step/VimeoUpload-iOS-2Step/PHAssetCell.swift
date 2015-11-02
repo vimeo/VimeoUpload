@@ -194,8 +194,48 @@ class PHAssetCell: UICollectionViewCell
             }
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-                self?.durationlabel?.text = String.stringFromDurationInSeconds(CMTimeGetSeconds(asset.duration))
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+
+                guard phAsset == strongSelf.phAsset else
+                {
+                    return
+                }
+
+                let seconds = CMTimeGetSeconds(asset.duration)
+                strongSelf.durationlabel?.text = String.stringFromDurationInSeconds(seconds)
+                
+                let megaBytes = strongSelf.approximageFileSizeInMegabytes(asset)
+                strongSelf.fileSizeLabel.text = String(format: "%.2f MB", megaBytes)
             })
         }
+    }
+    
+    // TODO: move these two methods someplace else 
+    
+    private func approximageFileSizeInMegabytes(asset: AVAsset) -> Float64
+    {
+        let bytes = self.approximateFileSize(asset)
+        
+        return bytes / Float64(1024 * 1024)
+    }
+    
+    private func approximateFileSize(asset: AVAsset) -> Float64
+    {
+        var approximateSize: Float64 = 0
+        
+        let tracks = asset.tracks
+        for track in tracks
+        {
+            let dataRate = track.estimatedDataRate
+            let bytesPerSecond = dataRate / 8
+            let seconds = CMTimeGetSeconds(track.timeRange.duration)
+            approximateSize += seconds * Float64(bytesPerSecond)
+        }
+
+        return approximateSize
     }
 }
