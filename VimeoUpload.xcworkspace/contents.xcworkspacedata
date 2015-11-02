@@ -27,6 +27,9 @@
          location = "group:Extensions"
          name = "Extensions">
          <FileRef
+            location = "group:String+Extensions.swift">
+         </FileRef>
+         <FileRef
             location = "group:AVURLAsset+Extensions.swift">
          </FileRef>
          <FileRef

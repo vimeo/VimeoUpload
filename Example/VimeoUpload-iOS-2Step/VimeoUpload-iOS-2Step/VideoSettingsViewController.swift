@@ -29,6 +29,8 @@ import Photos
 
 class VideoSettingsViewController: UIViewController
 {
+    static let NibName = "VideoSettingsViewController"
+    
     private static let ProgressKeyPath = "uploadProgress"
     private var uploadProgressKVOContext = UInt8()
 

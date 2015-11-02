@@ -1,8 +1,8 @@
 //
 //  PHAssetCell.swift
-//  VimeoUpload-iOS-Example
+//  VimeoUpload-iOS-2Step
 //
-//  Created by Hanssen, Alfie on 10/16/15.
+//  Created by Alfred Hanssen on 11/1/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,11 +28,17 @@ import UIKit
 import Photos
 
 @available(iOS 8, *)
-class PHAssetCell: UITableViewCell
+class PHAssetCell: UICollectionViewCell
 {
     static let CellIdentifier = "PHAssetCellIdentifier"
+    static let NibName = "PHAssetCell"
     
-    private var phAssetOperation: PHAssetOperation?
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var fileSizeLabel: UILabel!
+    @IBOutlet weak var durationlabel: UILabel!
+    
+    private var imageRequestID: PHImageRequestID?
+    private var assetRequestID: PHImageRequestID?
 
     var phAsset: PHAsset?
     {
@@ -40,35 +46,48 @@ class PHAssetCell: UITableViewCell
         {
             if let phAsset = self.phAsset
             {
-                self.fetchAVAsset(phAsset)
-            }
-            else
-            {
-                self.phAssetOperation?.cancel()
+                self.setupImageView(phAsset)
+                self.setupTextLabels(phAsset)
             }
         }
-    }
-    
-    override func awakeFromNib()
-    {
-        super.awakeFromNib()
-        // Initialization code
     }
 
     override func prepareForReuse()
     {
         super.prepareForReuse()
-     
+        
         self.phAsset = nil
+        
+        if let requestID = self.imageRequestID
+        {
+            PHImageManager.defaultManager().cancelImageRequest(requestID)
+        }
+
+        if let requestID = self.assetRequestID
+        {
+            PHImageManager.defaultManager().cancelImageRequest(requestID)
+        }
+
+        self.imageRequestID = nil
+        self.assetRequestID = nil
+        
+        self.imageView.image = nil
+        self.fileSizeLabel.text = ""
+        self.durationlabel.text = ""
     }
     
-    // MARK: Private API
+    // MARK: Setup
     
-    private func fetchAVAsset(phAsset: PHAsset)
+    // TODO: move both of these methods into NSOperation subclasses [AH] 11/1/2015
+    
+    private func setupImageView(phAsset: PHAsset)
     {
-        self.phAssetOperation = PHAssetOperation(phAsset: phAsset)
-        self.phAssetOperation?.networkAccessAllowed = false
-        self.phAssetOperation?.completionBlock = { [weak self] () -> Void in
+        let options = PHImageRequestOptions()
+        options.networkAccessAllowed = true
+        options.deliveryMode = .HighQualityFormat
+        options.resizeMode = .Fast
+
+        self.imageRequestID = PHImageManager.defaultManager().requestImageForAsset(phAsset, targetSize: self.imageView.bounds.size, contentMode: .AspectFill, options: options, resultHandler: { [weak self] (image, info) -> Void in
             
             guard let strongSelf = self else
             {
@@ -80,21 +99,82 @@ class PHAssetCell: UITableViewCell
                 return
             }
             
-            if let error = strongSelf.phAssetOperation?.error
+            strongSelf.imageRequestID = nil
+            
+            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
             {
-                print("Error retrieving PHAsset's AVAsset: \(error.localizedDescription)")
-            }
-            else if let avAsset = strongSelf.phAssetOperation?.avAsset
-            {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    strongSelf.textLabel?.text = "Duration: \(CMTimeGetSeconds(avAsset.duration))"
-                })
+                return
             }
             
-            strongSelf.phAssetOperation = nil
-        }
-        
-        self.phAssetOperation?.start()
-    }
+            if let info = info, let error = info[PHImageErrorKey] as? NSError
+            {
+                print("Error fetching image for PHAsset: \(error)")
+                
+                return
+            }
+            
+            guard let image = image else
+            {
+                print("Fetched nil image for PHAsset")
+                
+                return
+            }
 
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                self?.imageView.image = image
+            })
+        })
+    }
+    
+    private func setupTextLabels(phAsset: PHAsset)
+    {
+        let options = PHVideoRequestOptions()
+        options.networkAccessAllowed = false
+        options.deliveryMode = .FastFormat // We just want info about the filesize and duration
+
+        self.assetRequestID = PHImageManager.defaultManager().requestAVAssetForVideo(phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
+            
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            guard phAsset == strongSelf.phAsset else
+            {
+                return
+            }
+
+            strongSelf.assetRequestID = nil
+            
+            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
+            {
+                return
+            }
+            
+            if let info = info, let inCloud = info[PHImageResultIsInCloudKey] as? Bool where inCloud == true
+            {
+                print("PHAsset is in cloud")
+                
+                return
+            }
+            
+            if let info = info, let error = info[PHImageErrorKey] as? NSError
+            {
+                print("Error fetching AVAsset for PHAsset: \(error)")
+                
+                return
+            }
+            
+            guard let asset = asset else
+            {
+                print("Fetched nil AVAsset for PHAsset")
+                
+                return
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                self?.durationlabel?.text = "\(CMTimeGetSeconds(asset.duration))"
+            })
+        }
+    }
 }

@@ -87,12 +87,10 @@ class PHAssetOperation: ConcurrentOperation
         {            
             return
         }
-        
-        // TODO: do we need to do an upfront check with options.networkAccessAllowed = false? [AH]
-        
+                
         let options = PHVideoRequestOptions()
-        options.networkAccessAllowed = self.networkAccessAllowed;
-        options.deliveryMode = .Automatic;
+        options.networkAccessAllowed = self.networkAccessAllowed
+        options.deliveryMode = .Automatic
         options.progressHandler = { [weak self] (progress: Double, error: NSError?, stop: UnsafeMutablePointer<ObjCBool>, info: [NSObject : AnyObject]?) -> Void in
             
             guard let strongSelf = self else

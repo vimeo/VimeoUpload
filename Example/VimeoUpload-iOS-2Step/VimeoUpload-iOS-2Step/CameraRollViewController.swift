@@ -27,9 +27,12 @@
 import UIKit
 import Photos
 
-class CameraRollViewController: UIViewController, UITableViewDataSource, UITableViewDelegate
+class CameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
-    @IBOutlet weak var tableView: UITableView!
+    static let NibName = "CameraRollViewController"
+    private static let CollectionViewSpacing: CGFloat = 2
+    
+    @IBOutlet weak var collectionView: UICollectionView!
     
     private var phAssets: [PHAsset] = []
     
@@ -43,49 +46,29 @@ class CameraRollViewController: UIViewController, UITableViewDataSource, UITable
         
         self.phAssets = self.loadAssets()
 
-        self.setupTableView()
+        self.setupNavigationBar()
+        
+        self.setupCollectionView()
     }
     
     // MARK: Setup
     
-    private func setupTableView()
+    private func setupCollectionView()
     {
-        let nib = UINib(nibName: "PHAssetCell", bundle: nil)
-        self.tableView.registerNib(nib, forCellReuseIdentifier: PHAssetCell.CellIdentifier)
+        let nib = UINib(nibName: PHAssetCell.NibName, bundle: nil)
+        self.collectionView.registerNib(nib, forCellWithReuseIdentifier: PHAssetCell.CellIdentifier)
+        
+        let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout
+        layout?.minimumInteritemSpacing = CameraRollViewController.CollectionViewSpacing
+        layout?.minimumLineSpacing = CameraRollViewController.CollectionViewSpacing
     }
     
-    // MARK: UITableViewDelegate
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    private func setupNavigationBar()
     {
-        let phAsset = self.phAssets[indexPath.row]
-        
-        let viewController = VideoSettingsViewController(nibName:"VideoSettingsViewController", bundle:NSBundle.mainBundle())
-        viewController.phAsset = phAsset
-        
-        let navigationController = UINavigationController(rootViewController: viewController)
-        
-        self.presentViewController(navigationController, animated: true, completion: nil)
+        let cancelItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
+        self.navigationItem.leftBarButtonItem = cancelItem
     }
     
-    // MARK: UITableViewDataSource
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-    {
-        return self.phAssets.count
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
-    {
-        let cell = tableView.dequeueReusableCellWithIdentifier(PHAssetCell.CellIdentifier) as! PHAssetCell
-        
-        cell.phAsset = self.phAssets[indexPath.row]
-        
-        return cell
-    }
-    
-    // MARK: Utilities
-
     private func loadAssets() -> [PHAsset]
     {
         let options = PHFetchOptions()
@@ -99,5 +82,55 @@ class CameraRollViewController: UIViewController, UITableViewDataSource, UITable
         })
         
         return phAssets
+    }
+    
+    // MARK: Actions
+    
+    func didTapCancel(sender: UIBarButtonItem)
+    {
+        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+    }
+
+    // MARK: UICollectionViewDataSource
+    
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+    {
+        return self.phAssets.count
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
+    {
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(PHAssetCell.CellIdentifier, forIndexPath: indexPath) as! PHAssetCell
+        
+        cell.phAsset = self.phAssets[indexPath.row]
+        
+        return cell
+    }
+    
+    // MARK: UICollectionViewFlowLayoutDelegate
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize
+    {
+        let dimension = (collectionView.bounds.size.width - CameraRollViewController.CollectionViewSpacing) / 2
+
+        return CGSizeMake(dimension, dimension)
+    }
+    
+    // MARK: UICollectionViewDelegate
+    
+    // TODO: 
+    // 1. Check if asset is in iCloud
+    // 2. If so, download it
+    // 3. Check user quota
+    // 4. Check space on disk
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath)
+    {
+        let phAsset = self.phAssets[indexPath.row]
+        
+        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
+        viewController.phAsset = phAsset
+        
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
