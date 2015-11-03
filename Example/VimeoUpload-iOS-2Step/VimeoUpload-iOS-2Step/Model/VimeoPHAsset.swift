@@ -1,8 +1,8 @@
 //
-//  NSFileManager+Extensions.swift
-//  VIMUpload
+//  VimeoPHAsset.swift
+//  VimeoUpload-iOS-2Step
 //
-//  Created by Hanssen, Alfie on 10/13/15.
+//  Created by Alfred Hanssen on 11/2/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,32 +24,20 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
+import UIKit
+import AVFoundation
+import Photos
 
-extension NSFileManager
+class VimeoPHAsset
 {
-    func availableDiskSpace() throws -> NSNumber?
-    {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        let dictionary = try self.attributesOfFileSystemForPath(documentsPath)
-
-        return dictionary[NSFileSystemSize] as? NSNumber
-    }
+    // TODO: are avAsset and inCloud synonymous? [AH] 11/2/2015
     
-    func canUploadFile(url: NSURL) -> Bool
+    let phAsset: PHAsset
+    var avAsset: AVAsset?
+    var inCloud: Bool?
+    
+    init(phAsset: PHAsset)
     {
-        // TODO: check availableDiskSpace too?
-        // TODO: check that this is a video file?
-        
-        guard let path = url.path else
-        {
-            return false
-        }
-        
-        var isDirectory: ObjCBool = false
-        let fileExists = self.fileExistsAtPath(path, isDirectory: &isDirectory)
-        let isReadable = self.isReadableFileAtPath(path)
-        
-        return fileExists && Bool(isDirectory) == false && isReadable
+        self.phAsset = phAsset
     }
 }

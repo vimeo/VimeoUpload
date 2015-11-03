@@ -1,8 +1,8 @@
 //
-//  NSFileManager+Extensions.swift
-//  VIMUpload
+//  AVAsset+Extensions.swift
+//  VimeoUpload-iOS-2Step
 //
-//  Created by Hanssen, Alfie on 10/13/15.
+//  Created by Alfred Hanssen on 11/1/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,31 +25,30 @@
 //
 
 import Foundation
+import AVFoundation
 
-extension NSFileManager
+extension AVAsset
 {
-    func availableDiskSpace() throws -> NSNumber?
+    func approximateFileSizeInMegabytes() -> Float64
     {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        let dictionary = try self.attributesOfFileSystemForPath(documentsPath)
-
-        return dictionary[NSFileSystemSize] as? NSNumber
+        let bytes = self.approximateFileSize()
+        
+        return bytes / Float64(1024 * 1024)
     }
     
-    func canUploadFile(url: NSURL) -> Bool
+    func approximateFileSize() -> Float64
     {
-        // TODO: check availableDiskSpace too?
-        // TODO: check that this is a video file?
+        var approximateSize: Float64 = 0
         
-        guard let path = url.path else
+        let tracks = self.tracks
+        for track in tracks
         {
-            return false
+            let dataRate = track.estimatedDataRate
+            let bytesPerSecond = dataRate / 8
+            let seconds = CMTimeGetSeconds(track.timeRange.duration)
+            approximateSize += seconds * Float64(bytesPerSecond)
         }
         
-        var isDirectory: ObjCBool = false
-        let fileExists = self.fileExistsAtPath(path, isDirectory: &isDirectory)
-        let isReadable = self.isReadableFileAtPath(path)
-        
-        return fileExists && Bool(isDirectory) == false && isReadable
+        return approximateSize
     }
 }

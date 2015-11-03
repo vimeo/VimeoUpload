@@ -135,7 +135,7 @@ class ExportVideoOperation: ConcurrentOperation
         }
         
         let fileLength = NSNumber(longLong: self.exportSession.estimatedOutputFileLength) // TODO: Is this value reliable? [AH]
-        let freeDiskSpace = try? NSFileManager.defaultManager().freeDiskSpace()
+        let freeDiskSpace = try? NSFileManager.defaultManager().availableDiskSpace()
         guard let aFreeDiskSpace = freeDiskSpace else
         {
             self.error = NSError.unableToCalculateAvailableDiskSpaceError()

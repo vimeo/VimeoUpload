@@ -1,8 +1,8 @@
 //
-//  NSFileManager+Extensions.swift
-//  VIMUpload
+//  MyVimeoSessionManager.swift
+//  VimeoUpload-iOS-Example
 //
-//  Created by Hanssen, Alfie on 10/13/15.
+//  Created by Alfred Hanssen on 10/18/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,32 +24,18 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
+import UIKit
 
-extension NSFileManager
+class UploadManager
 {
-    func availableDiskSpace() throws -> NSNumber?
-    {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        let dictionary = try self.attributesOfFileSystemForPath(documentsPath)
-
-        return dictionary[NSFileSystemSize] as? NSNumber
-    }
+    static let sharedInstance = UploadManager()
     
-    func canUploadFile(url: NSURL) -> Bool
+    let descriptorManager: DescriptorManager
+    private let reporter: DescriptorManagerDelegate = UploadReporter()
+    
+    init()
     {
-        // TODO: check availableDiskSpace too?
-        // TODO: check that this is a video file?
-        
-        guard let path = url.path else
-        {
-            return false
-        }
-        
-        var isDirectory: ObjCBool = false
-        let fileExists = self.fileExistsAtPath(path, isDirectory: &isDirectory)
-        let isReadable = self.isReadableFileAtPath(path)
-        
-        return fileExists && Bool(isDirectory) == false && isReadable
+        let sessionManager = VimeoSessionManager(authToken: "caf4648129ec56e580175c4b45cce7fc")
+        self.descriptorManager = DescriptorManager(sessionManager: sessionManager, delegate: self.reporter)
     }
 }
