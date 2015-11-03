@@ -35,6 +35,7 @@ class CameraRollCell: UICollectionViewCell
     @IBOutlet weak var fileSizeLabel: UILabel!
     @IBOutlet weak var durationlabel: UILabel!
     @IBOutlet weak var errorLabel: UILabel!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     override func awakeFromNib()
     {
@@ -56,9 +57,22 @@ class CameraRollCell: UICollectionViewCell
         self.fileSizeLabel.text = ""
         self.durationlabel.text = ""
         self.errorLabel.text = ""
+        self.activityIndicator.stopAnimating()
     }
     
     // MARK: Public API
+    
+    func showActivity(show: Bool)
+    {
+        if show == true
+        {
+            self.activityIndicator.startAnimating()
+        }
+        else
+        {
+            self.activityIndicator.stopAnimating()
+        }
+    }
     
     func setImage(image: UIImage)
     {
