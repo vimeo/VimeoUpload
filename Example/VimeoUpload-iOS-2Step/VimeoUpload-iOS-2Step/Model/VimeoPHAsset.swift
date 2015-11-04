@@ -29,9 +29,7 @@ import AVFoundation
 import Photos
 
 class VimeoPHAsset
-{
-    // TODO: are avAsset and inCloud synonymous? [AH] 11/2/2015
-    
+{    
     let phAsset: PHAsset
     var avAsset: AVAsset?
     var inCloud: Bool?
