@@ -200,7 +200,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             return
         }
 
-        // We have already refreshed the user object, okay to proceed with disk space and quota checks          
+        // We have already refreshed the user object, okay to proceed with disk space and quota checks
         if self.userRefreshTask == nil
         {
             self.didSelectAsset(vimeoPHAsset)
