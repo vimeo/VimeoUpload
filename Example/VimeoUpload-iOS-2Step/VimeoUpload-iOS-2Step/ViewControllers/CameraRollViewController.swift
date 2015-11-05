@@ -272,8 +272,6 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             return
         }
         
-        // TODO: deselect the cell in the event that any of the below fail
-        
         if let inCloud = vimeoPHAsset.inCloud where inCloud == true
         {
             let phAsset = vimeoPHAsset.phAsset
@@ -307,6 +305,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
 
             if let _ = error // TODO: log this error in Localytics
             {
+                strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
                 strongSelf.presentDownloadErrorAlert(phAsset, indexPath: indexPath)
             }
             else if let asset = asset
