@@ -69,40 +69,30 @@ class PHAssetHelper
                 return
             }
             
-            var inCloud: Bool?
-            if let info = info, let cloud = info[PHImageResultIsInCloudKey] as? Bool
-            {
-                inCloud = cloud
-            }
+            let inCloud = info?[PHImageResultIsInCloudKey] as? Bool
+            let error = info?[PHImageErrorKey] as? NSError
 
-            if let info = info, let error = info[PHImageErrorKey] as? NSError
+            if let error = error
             {
                 completion(image: nil, inCloud: inCloud, error: error)
-                
-                return
             }
-            
-            guard let image = image else
+            else if let image = image
             {
-                let error = NSError(domain: PHAssetHelper.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Fetched nil image"])
-                completion(image: nil, inCloud: inCloud, error: error)
-                
-                return
+                completion(image: image, inCloud: inCloud, error: nil)
             }
-            
-            completion(image: image, inCloud: inCloud, error: nil)
         })
         
         self.activeImageRequests[phAsset.localIdentifier] = requestID
     }
     
-    func requestAsset(phAsset: PHAsset, networkAccessAllowed: Bool, completion: PHAssetHelperAssetBlock)
+    func requestAsset(phAsset: PHAsset, networkAccessAllowed: Bool, progress: PHAssetVideoProgressHandler?, completion: PHAssetHelperAssetBlock)
     {
         self.cancelAssetRequestForPHAsset(phAsset)
         
         let options = PHVideoRequestOptions()
         options.networkAccessAllowed = networkAccessAllowed
         options.deliveryMode = .HighQualityFormat
+        options.progressHandler = progress
         
         let requestID = self.imageManager.requestAVAssetForVideo(phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
             
@@ -125,35 +115,25 @@ class PHAssetHelper
                     return
                 }
 
-                var inCloud: Bool?
-                if let info = info, let cloud = info[PHImageResultIsInCloudKey] as? Bool
-                {
-                    inCloud = cloud
-                }
-                
+                let inCloud = info?[PHImageResultIsInCloudKey] as? Bool
+                let error = info?[PHImageErrorKey] as? NSError
+
                 if let inCloud = inCloud where inCloud == true && networkAccessAllowed == false
                 {
                     completion(asset: nil, inCloud: inCloud, error: nil)
-                    
-                    return
                 }
-                
-                if let info = info, let error = info[PHImageErrorKey] as? NSError
+                else if let error = error
                 {
                     completion(asset: nil, inCloud: inCloud, error: error)
-                    
-                    return
                 }
-                
-                guard let asset = asset else
+                else if let asset = asset
                 {
-                    let error = NSError(domain: PHAssetHelper.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Fetched nil asset"])
-                    completion(asset: nil, inCloud: inCloud, error: error)
-                    
-                    return
+                    completion(asset: asset, inCloud: inCloud, error: nil)
                 }
-
-                completion(asset: asset, inCloud: inCloud, error: nil)
+                else
+                {
+                    assertionFailure("Execution should never reach this point")
+                }
             })
         }
         

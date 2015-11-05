@@ -143,6 +143,8 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         
         let vimeoPHAsset = self.assets[indexPath.item]
         
+        cell.setDuration(vimeoPHAsset.phAsset.duration)
+
         self.requestImageForCell(cell, vimeoPHAsset: vimeoPHAsset)
         self.requestAssetForCell(cell, vimeoPHAsset: vimeoPHAsset)
         
@@ -189,19 +191,6 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 return
             }
             
-            if let image = image
-            {
-                cell.setImage(image)
-            }
-            else if let error = error
-            {
-                cell.setError(error.localizedDescription)
-            }
-            else
-            {
-                assertionFailure("Execution should never reach this point")
-            }
-            
             if let inCloud = inCloud
             {
                 vimeoPHAsset.inCloud = inCloud
@@ -211,6 +200,15 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                     cell.setError("iCloud Asset")
                 }
             }
+
+            if let image = image
+            {
+                cell.setImage(image)
+            }
+            else if let error = error
+            {
+                cell.setError(error.localizedDescription)
+            }
         }
     }
     
@@ -218,7 +216,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     {
         let phAsset = vimeoPHAsset.phAsset
         
-        self.phAssetHelper.requestAsset(phAsset, networkAccessAllowed: false, completion: { [weak self] (asset, inCloud, error) -> Void in
+        self.phAssetHelper.requestAsset(phAsset, networkAccessAllowed: false, progress: nil, completion: { [weak self] (asset, inCloud, error) -> Void in
             
             guard let _ = self else
             {
@@ -240,9 +238,6 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             if let asset = asset
             {
                 vimeoPHAsset.avAsset = asset
-                
-                let seconds = CMTimeGetSeconds(asset.duration)
-                cell.setDuration(seconds)
                 
                 let megabytes = asset.approximateFileSizeInMegabytes()
                 cell.setFileSize(megabytes)
@@ -300,7 +295,16 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     {
         // TODO: show progress indicator 
         
-        self.phAssetHelper.requestAsset(phAsset, networkAccessAllowed: true) { [weak self] (asset, inCloud, error) -> Void in
+        self.phAssetHelper.requestAsset(phAsset, networkAccessAllowed: true, progress: { [weak self] (progress, error, stop, info) -> Void in
+
+            guard let _ = self else
+            {
+                return
+            }
+            
+            print(progress)
+
+        }, completion: { [weak self] (asset, inCloud, error) -> Void in
 
             guard let strongSelf = self else
             {
@@ -308,7 +312,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             }
             
             // TODO: hide progress indicator
-
+            
             if let _ = error // TODO: log this error in Localytics
             {
                 strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
@@ -318,9 +322,12 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             {
                 strongSelf.performPreliminaryValidation(asset, indexPath: indexPath)
             }
+            else
+            {
+                assertionFailure("Execution should never reach this point")
+            }
 
-            assertionFailure("Execution should never reach this point")
-        }
+        })
     }
     
     private func performPreliminaryValidation(avAsset: AVAsset, indexPath: NSIndexPath)
