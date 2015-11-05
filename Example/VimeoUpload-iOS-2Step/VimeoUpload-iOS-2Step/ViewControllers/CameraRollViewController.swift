@@ -26,6 +26,9 @@
 
 import UIKit
 import Photos
+import AVFoundation
+
+typealias CameraRollSelection = (avAsset: AVAsset, indexPath: NSIndexPath)
 
 class CameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
@@ -37,7 +40,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     private var assets: [VimeoPHAsset] = []
     private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
     private var userRefreshTask: NSURLSessionDataTask?
-    private var selectedIndexPath: NSIndexPath?
+    private var selection: CameraRollSelection?
     
     // MARK: Lifecycle
     
@@ -109,13 +112,13 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         
             // TODO: check for error, alert if error not nil
             
-            if let selectedIndexPath = strongSelf.selectedIndexPath
+            if let selection = strongSelf.selection
             {
-                strongSelf.selectedIndexPath = nil
+                strongSelf.selection = nil
 
                 // TODO: hide activity indicator
                 
-                strongSelf.didSelectIndexPath(selectedIndexPath)
+                strongSelf.performPreliminaryValidation(selection.avAsset, indexPath: selection.indexPath)
             }
         }
     }
@@ -247,7 +250,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     private func didSelectIndexPath(indexPath: NSIndexPath)
     {
-        self.selectedIndexPath = nil // Reset any currently selected asset
+        self.selection = nil // Reset the current selection, if any
         
         let vimeoPHAsset = self.assets[indexPath.item]
         
@@ -321,7 +324,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         if self.userRefreshTask != nil
         {
             // Hold a reference to the selected indexPath, to be used when the refresh user task completes
-            self.selectedIndexPath = indexPath
+            self.selection = CameraRollSelection(avAsset: avAsset, indexPath: indexPath)
 
             // TODO: show activity indicator
             
