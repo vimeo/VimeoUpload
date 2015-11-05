@@ -39,7 +39,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     private var assets: [VimeoPHAsset] = []
     private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
-    private var userRefreshTask: NSURLSessionDataTask?
+    private var meTask: NSURLSessionDataTask?
     private var selection: CameraRollSelection?
     
     // MARK: Lifecycle
@@ -98,29 +98,30 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     {
         // TODO: refresh the user object here
         
-        self.userRefreshTask = NSURLSessionDataTask()
-
-        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(5 * Double(NSEC_PER_SEC)))
-        dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] () -> Void in
-            
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            strongSelf.userRefreshTask = nil
+        self.meTask = try? UploadManager.sharedInstance.sessionManager.meDataTask()
+        self.meTask?.resume()
         
-            // TODO: check for error, alert if error not nil
-            
-            if let selection = strongSelf.selection
-            {
-                strongSelf.selection = nil
-
-                // TODO: hide activity indicator
-                
-                strongSelf.performPreliminaryValidation(selection.avAsset, indexPath: selection.indexPath)
-            }
-        }
+//        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(5 * Double(NSEC_PER_SEC)))
+//        dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] () -> Void in
+//            
+//            guard let strongSelf = self else
+//            {
+//                return
+//            }
+//            
+//            strongSelf.meTask = nil
+//        
+//            // TODO: check for error, alert if error not nil
+//            
+//            if let selection = strongSelf.selection
+//            {
+//                strongSelf.selection = nil
+//
+//                // TODO: hide activity indicator
+//                
+//                strongSelf.performPreliminaryValidation(selection.avAsset, indexPath: selection.indexPath)
+//            }
+//        }
     }
     
     // MARK: Actions
@@ -333,7 +334,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     private func performPreliminaryValidation(avAsset: AVAsset, indexPath: NSIndexPath)
     {
         // If the user refresh task has not yet completed then we can't perform the quota check, abort and wait for it to complete
-        if self.userRefreshTask != nil
+        if self.meTask != nil
         {
             // Hold a reference to the selected indexPath, to be used when the refresh user task completes
             self.selection = CameraRollSelection(avAsset: avAsset, indexPath: indexPath)

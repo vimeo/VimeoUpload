@@ -37,7 +37,7 @@ enum DescriptorManagerNotification: String
 
 class DescriptorManager
 {
-    private static let DescriptorsArchiveKey = "upload_descriptors"
+    private static let DescriptorsArchiveKey = "descriptors"
     
     // DummyTempDirectoryURL is necessary to address AFNetworking and Swift 2 compatibility issues,
     // See this issue: https://github.com/AFNetworking/AFNetworking/issues/3104 [AH] 10/28/2015

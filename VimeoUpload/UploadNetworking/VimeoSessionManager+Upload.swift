@@ -28,6 +28,7 @@ import Foundation
 
 enum TaskDescription: String
 {
+    case Me = "Me"
     case CreateVideo = "CreateVideo"
     case UploadVideo = "UploadVideo"
     case ActivateVideo = "ActivateVideo"
@@ -39,6 +40,21 @@ typealias CreateVideoCompletionHandler = (response: CreateVideoResponse?, error:
 
 extension VimeoSessionManager
 {
+    func meDataTask() throws -> NSURLSessionDataTask
+    {
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).meRequest()
+        
+        let task = self.dataTaskWithRequest(request, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+            
+            print(response)
+            
+        })
+        
+        task.taskDescription = TaskDescription.Me.rawValue
+        
+        return task
+    }
+    
     func createVideoDownloadTask(url url: NSURL, destination: DestinationHandler?, completionHandler: CreateVideoCompletionHandler?) throws -> NSURLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url)

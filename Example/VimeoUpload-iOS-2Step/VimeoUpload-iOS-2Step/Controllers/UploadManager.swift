@@ -31,11 +31,12 @@ class UploadManager
     static let sharedInstance = UploadManager()
     
     let descriptorManager: DescriptorManager
+    let sessionManager: VimeoSessionManager
     private let reporter: DescriptorManagerDelegate = UploadReporter()
     
     init()
     {
-        let sessionManager = VimeoSessionManager(authToken: "caf4648129ec56e580175c4b45cce7fc")
-        self.descriptorManager = DescriptorManager(sessionManager: sessionManager, delegate: self.reporter)
+        self.sessionManager = VimeoSessionManager(authToken: "caf4648129ec56e580175c4b45cce7fc")
+        self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, delegate: self.reporter)
     }
 }
