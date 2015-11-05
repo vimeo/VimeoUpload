@@ -9,7 +9,7 @@
 import Foundation
 import Photos
 
-typealias PHAssetHelperImageBlock = (image: UIImage?, error: NSError?) -> Void
+typealias PHAssetHelperImageBlock = (image: UIImage?, inCloud: Bool?, error: NSError?) -> Void
 typealias PHAssetHelperAssetBlock = (asset: AVAsset?, inCloud: Bool?, error: NSError?) -> Void
 
 @available(iOS 8, *)
@@ -50,8 +50,9 @@ class PHAssetHelper
         self.cancelImageRequestForPHAsset(phAsset)
         
         let options = PHImageRequestOptions()
-        options.networkAccessAllowed = true
-        options.deliveryMode = .HighQualityFormat
+        options.networkAccessAllowed = true // We do not check for inCloud in resultHandler because we allow network access
+        options.deliveryMode = .Opportunistic
+        options.version = .Current
         options.resizeMode = .Fast
         
         let requestID = self.imageManager.requestImageForAsset(phAsset, targetSize: size, contentMode: .AspectFill, options: options, resultHandler: { [weak self] (image, info) -> Void in
@@ -68,9 +69,15 @@ class PHAssetHelper
                 return
             }
             
+            var inCloud: Bool?
+            if let info = info, let cloud = info[PHImageResultIsInCloudKey] as? Bool
+            {
+                inCloud = cloud
+            }
+
             if let info = info, let error = info[PHImageErrorKey] as? NSError
             {
-                completion(image: nil, error: error)
+                completion(image: nil, inCloud: inCloud, error: error)
                 
                 return
             }
@@ -78,12 +85,12 @@ class PHAssetHelper
             guard let image = image else
             {
                 let error = NSError(domain: PHAssetHelper.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Fetched nil image"])
-                completion(image: nil, error: error)
+                completion(image: nil, inCloud: inCloud, error: error)
                 
                 return
             }
             
-            completion(image: image, error: nil)
+            completion(image: image, inCloud: inCloud, error: nil)
         })
         
         self.activeImageRequests[phAsset.localIdentifier] = requestID
@@ -118,7 +125,13 @@ class PHAssetHelper
                     return
                 }
 
-                if let info = info, let inCloud = info[PHImageResultIsInCloudKey] as? Bool where inCloud == true
+                var inCloud: Bool?
+                if let info = info, let cloud = info[PHImageResultIsInCloudKey] as? Bool
+                {
+                    inCloud = cloud
+                }
+                
+                if let inCloud = inCloud where inCloud == true && networkAccessAllowed == false
                 {
                     completion(asset: nil, inCloud: inCloud, error: nil)
                     
@@ -127,7 +140,7 @@ class PHAssetHelper
                 
                 if let info = info, let error = info[PHImageErrorKey] as? NSError
                 {
-                    completion(asset: nil, inCloud: nil, error: error)
+                    completion(asset: nil, inCloud: inCloud, error: error)
                     
                     return
                 }
@@ -135,12 +148,12 @@ class PHAssetHelper
                 guard let asset = asset else
                 {
                     let error = NSError(domain: PHAssetHelper.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Fetched nil asset"])
-                    completion(asset: nil, inCloud: false, error: error)
+                    completion(asset: nil, inCloud: inCloud, error: error)
                     
                     return
                 }
 
-                completion(asset: asset, inCloud: false, error: nil)
+                completion(asset: asset, inCloud: inCloud, error: nil)
             })
         }
         

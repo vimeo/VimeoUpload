@@ -182,7 +182,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         let scale = UIScreen.mainScreen().scale
         let scaledSize = CGSizeMake(scale * size.width, scale * size.height)
 
-        self.phAssetHelper.requestImage(phAsset, size: scaledSize) { [weak self] (image, error) -> Void in
+        self.phAssetHelper.requestImage(phAsset, size: scaledSize) { [weak self] (image, inCloud, error) -> Void in
             
             guard let _ = self else
             {
@@ -200,6 +200,16 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             else
             {
                 assertionFailure("Execution should never reach this point")
+            }
+            
+            if let inCloud = inCloud
+            {
+                vimeoPHAsset.inCloud = inCloud
+                
+                if inCloud == true
+                {
+                    cell.setError("iCloud Asset")
+                }
             }
         }
     }
@@ -240,10 +250,6 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             else if let error = error
             {
                 cell.setError(error.localizedDescription)
-            }
-            else
-            {
-                assertionFailure("Execution should never reach this point")
             }
         })
     }
