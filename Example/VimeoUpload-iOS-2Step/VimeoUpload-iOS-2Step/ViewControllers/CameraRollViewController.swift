@@ -48,9 +48,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.assets = self.loadAssets()
 
         self.setupNavigationBar()
-        
         self.setupCollectionView()
-        
         self.refreshUser() // Refresh the user object to ensure we have up to date upload quota information
     }
     
@@ -115,11 +113,9 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             {
                 strongSelf.selectedIndexPath = nil
 
-                let cell = strongSelf.collectionView.cellForItemAtIndexPath(selectedIndexPath) as! CameraRollCell
-                cell.showActivity(false)
-
-                let vimeoPHAsset = strongSelf.assets[selectedIndexPath.item]
-                strongSelf.didSelectAsset(vimeoPHAsset)
+                // TODO: hide activity indicator
+                
+                strongSelf.didSelectIndexPath(selectedIndexPath)
             }
         }
     }
@@ -144,25 +140,18 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         
         let vimeoPHAsset = self.assets[indexPath.item]
         
-        self.phAssetHelper.requestImage(vimeoPHAsset, cell: cell, indexPath: indexPath)
-        
-        // If we have a cached asset, use it, otherwise request it
-        
-        if let asset = vimeoPHAsset.avAsset
-        {
-            self.phAssetHelper.configureCellForAsset(cell, asset: asset)
-        }
-        else
-        {
-            self.phAssetHelper.requestAsset(vimeoPHAsset, cell: cell, indexPath: indexPath)
-        }
+        self.requestImageForCell(cell, vimeoPHAsset: vimeoPHAsset)
+        self.requestAssetForCell(cell, vimeoPHAsset: vimeoPHAsset)
         
         return cell
     }
     
     func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath)
     {
-        self.phAssetHelper.cancelRequestsForCellAtIndexPath(indexPath)
+        let vimeoPHAsset = self.assets[indexPath.item]
+        let phAsset = vimeoPHAsset.phAsset
+        
+        self.phAssetHelper.cancelRequestsForPHAsset(phAsset)
     }
     
     // MARK: UICollectionViewFlowLayoutDelegate
@@ -178,138 +167,256 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath)
     {
-        self.selectedIndexPath = nil // Reset any currently selected asset
-        
-        let vimeoPHAsset = self.assets[indexPath.item]
-        
-        if self.validateAsset(vimeoPHAsset) == false
-        {
-            collectionView.deselectItemAtIndexPath(indexPath, animated: true)
-            
-            // Give the user the option to re-request the asset (trigger re-request by simply reloading the appropriate cell)
-            
-            let alert = UIAlertController(title: "Nil Asset", message: "An error occurred earlier when requesting the avAsset.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: nil))
-            alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
-               
-                collectionView.reloadItemsAtIndexPaths([indexPath])
-                
-            }))
-            self.presentViewController(alert, animated: true, completion: nil)
-
-            return
-        }
-
-        // We have already refreshed the user object, okay to proceed with disk space and quota checks
-        if self.userRefreshTask == nil
-        {
-            self.didSelectAsset(vimeoPHAsset)
-            
-            return
-        }
-    
-
-        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CameraRollCell
-        cell.showActivity(true)
-        
-        self.selectedIndexPath = indexPath // Hold a reference to the selected indexPath, to be used when the refresh user task completes
+        self.didSelectIndexPath(indexPath)
     }
     
     // MARK: Private API
     
-    // Ensure that either the asset is in iCloud or we have a non-nil avAsset
-
-    private func validateAsset(vimeoPHAsset: VimeoPHAsset) -> Bool
+    private func requestImageForCell(cell: CameraRollCell, vimeoPHAsset: VimeoPHAsset)
     {
-        guard let inCloud = vimeoPHAsset.inCloud else
+        let phAsset = vimeoPHAsset.phAsset
+        let size = cell.bounds.size
+        let scale = UIScreen.mainScreen().scale
+        let scaledSize = CGSizeMake(scale * size.width, scale * size.height)
+
+        self.phAssetHelper.requestImage(phAsset, size: scaledSize) { [weak self] (image, error) -> Void in
+            
+            guard let _ = self else
+            {
+                return
+            }
+            
+            if let image = image
+            {
+                cell.setImage(image)
+            }
+            else if let error = error
+            {
+                cell.setError(error.localizedDescription)
+            }
+            else
+            {
+                assertionFailure("Execution should never reach this point")
+            }
+        }
+    }
+    
+    private func requestAssetForCell(cell: CameraRollCell, vimeoPHAsset: VimeoPHAsset)
+    {
+        let phAsset = vimeoPHAsset.phAsset
+        
+        self.phAssetHelper.requestAsset(phAsset, networkAccessAllowed: false, completion: { [weak self] (asset, inCloud, error) -> Void in
+            
+            guard let _ = self else
+            {
+                return
+            }
+            
+            // Cache the asset and inCloud values for later use in didSelectItem
+            
+            if let inCloud = inCloud
+            {
+                vimeoPHAsset.inCloud = inCloud
+                
+                if inCloud == true
+                {
+                    cell.setError("iCloud Asset")
+                }
+            }
+            
+            if let asset = asset
+            {
+                vimeoPHAsset.avAsset = asset
+                
+                let seconds = CMTimeGetSeconds(asset.duration)
+                cell.setDuration(seconds)
+                
+                let megabytes = asset.approximateFileSizeInMegabytes()
+                cell.setFileSize(megabytes)
+            }
+            else if let error = error
+            {
+                cell.setError(error.localizedDescription)
+            }
+            else
+            {
+                assertionFailure("Execution should never reach this point")
+            }
+        })
+    }
+    
+    private func didSelectIndexPath(indexPath: NSIndexPath)
+    {
+        self.selectedIndexPath = nil // Reset any currently selected asset
+        
+        let vimeoPHAsset = self.assets[indexPath.item]
+        
+        // Check if an error occurred when attempting to retrieve the asset
+        if (vimeoPHAsset.inCloud == nil && vimeoPHAsset.avAsset == nil)
         {
-            return false
+            self.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+            self.presentAssetErrorAlert(indexPath)
+            
+            return
         }
         
-        if inCloud == true
+        // Check if we were told the asset is on device but were not provided an asset
+        if let inCloud = vimeoPHAsset.inCloud where inCloud == false && vimeoPHAsset.avAsset == nil
+        {
+            self.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+            self.presentAssetErrorAlert(indexPath)
+        
+            return
+        }
+        
+        // TODO: deselect the cell in the event that any of the below fail
+        
+        if let inCloud = vimeoPHAsset.inCloud where inCloud == true
+        {
+            let phAsset = vimeoPHAsset.phAsset
+            self.downloadAsset(phAsset, indexPath: indexPath)
+            
+            return
+        }
+        
+        if let asset = vimeoPHAsset.avAsset
+        {
+            self.performPreliminaryValidation(asset, indexPath: indexPath)
+            
+            return
+        }
+        
+        assertionFailure("Execution should never reach this point")
+    }
+    
+    private func downloadAsset(phAsset: PHAsset, indexPath: NSIndexPath)
+    {
+        // TODO: show progress indicator 
+        
+        self.phAssetHelper.requestAsset(phAsset, networkAccessAllowed: true) { [weak self] (asset, inCloud, error) -> Void in
+
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            // TODO: hide progress indicator
+
+            if let _ = error // TODO: log this error in Localytics
+            {
+                strongSelf.presentDownloadErrorAlert(phAsset, indexPath: indexPath)
+            }
+            else if let asset = asset
+            {
+                strongSelf.performPreliminaryValidation(asset, indexPath: indexPath)
+            }
+
+            assertionFailure("Execution should never reach this point")
+        }
+    }
+    
+    private func performPreliminaryValidation(avAsset: AVAsset, indexPath: NSIndexPath)
+    {
+        // If the user refresh task has not yet completed then we can't perform the quota check, abort and wait for it to complete
+        if self.userRefreshTask != nil
+        {
+            // Hold a reference to the selected indexPath, to be used when the refresh user task completes
+            self.selectedIndexPath = indexPath
+
+            // TODO: show activity indicator
+            
+            return
+        }
+        
+        let uploadQuotaAvailable = self.checkUploadQuotaAvailable(avAsset)
+        guard uploadQuotaAvailable == true else
+        {
+            self.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+            self.presentQuotaAlert()
+            
+            return
+        }
+        
+        let diskSpaceAvailable = self.checkDiskSpaceAvailable(avAsset)
+        guard diskSpaceAvailable == true else
+        {
+            self.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+            self.presentDiskSpaceAlert()
+            
+            return
+        }
+        
+        self.presentVideoSettings(avAsset)
+    }
+    
+    // Because we haven't yet exported the asset we check against approximate filesize
+    private func checkDiskSpaceAvailable(avAsset: AVAsset) -> Bool
+    {
+        let fileSize = avAsset.approximateFileSize()
+        do
+        {
+            if let availableDiskSpace = try NSFileManager.defaultManager().availableDiskSpace()
+            {
+                return availableDiskSpace.doubleValue > fileSize
+            }
+
+            return true // If we can't calculate the available disk space we proceed beacuse we'll catch any real error later during export
+        }
+        catch
         {
             return true
         }
-        
-        guard vimeoPHAsset.avAsset != nil else
-        {
-            return false
-        }
-
-        return true
     }
-    
-    private func didSelectAsset(vimeoPHAsset: VimeoPHAsset)
-    {
-        // 1. Check if the asset is in iCloud, if so let video setting view controller handle download
-        
-        if vimeoPHAsset.inCloud! == true
-        {
-            self.presentVideoSettings(vimeoPHAsset)
-            
-            return
-        }
-        
-        // TODO: deselect cells when alert is presented
-        
-        // 2. Check upload quota
-        
-        let uploadQuotaAvailable = self.checkUploadQuotaAvailable(vimeoPHAsset.avAsset!)
-        guard uploadQuotaAvailable == true else
-        {
-            let alert = UIAlertController(title: "Upload Quota", message: "Upgrade your account and try again.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-            
-            return
-        }
-        
-        // 3. Check disk space
-        
-        let diskSpaceAvailable = try? self.checkDiskSpaceAvailable(vimeoPHAsset.avAsset!) ?? true
-        guard diskSpaceAvailable == true else
-        {
-            let alert = UIAlertController(title: "Disk Space", message: "Clear some space on your device and try again.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-            
-            return
-        }
-
-        // 4. Present video settings view controller
-        
-        self.presentVideoSettings(vimeoPHAsset)
-    }
-    
-    // TODO: move these two methods into reusable component
-    // TODO: fill in this error info
-    
-    // Because we haven't yet exported the asset we check against approximate filesize
-    
-    private func checkDiskSpaceAvailable(avAsset: AVAsset) throws -> Bool
-    {
-        let fileSize = avAsset.approximateFileSize()
-        guard let availableDiskSpace = try NSFileManager.defaultManager().availableDiskSpace() else
-        {
-            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to calculate available disk space"])
-        }
-        
-        return availableDiskSpace.doubleValue > fileSize
-    }
-
-    // TODO: implement this method
 
     // Because we haven't yet exported the asset we check against approximate filesize
-
     private func checkUploadQuotaAvailable(avAsset: AVAsset) -> Bool
     {
+        // TODO: implement this method
         return true
     }
+    
+    // MARK: UI Presentation
 
-    private func presentVideoSettings(vimeoPHAsset: VimeoPHAsset)
+    private func presentAssetErrorAlert(indexPath: NSIndexPath)
+    {
+        let alert = UIAlertController(title: "Asset Error", message: "An error occurred when requesting the avAsset.", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.collectionView.reloadItemsAtIndexPaths([indexPath])
+        }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+
+    private func presentDownloadErrorAlert(phAsset: PHAsset, indexPath: NSIndexPath)
+    {
+        let alert = UIAlertController(title: "Download Error", message: "An error occurred when downloading the avAsset.", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.downloadAsset(phAsset, indexPath: indexPath)
+        }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+
+    private func presentQuotaAlert()
+    {
+        let alert = UIAlertController(title: "Upload Quota", message: "Upgrade your account and try again.", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+
+    private func presentDiskSpaceAlert()
+    {
+        let alert = UIAlertController(title: "Disk Space", message: "Clear some space on your device and try again.", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+
+    private func presentVideoSettings(avAsset: AVAsset)
     {
         let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.vimeoPHAsset = vimeoPHAsset
+        viewController.avAsset = avAsset
         
         self.navigationController?.pushViewController(viewController, animated: true)
     }

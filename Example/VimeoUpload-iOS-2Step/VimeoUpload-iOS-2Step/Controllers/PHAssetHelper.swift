@@ -9,19 +9,22 @@
 import Foundation
 import Photos
 
+typealias PHAssetHelperImageBlock = (image: UIImage?, error: NSError?) -> Void
+typealias PHAssetHelperAssetBlock = (asset: AVAsset?, inCloud: Bool?, error: NSError?) -> Void
+
 @available(iOS 8, *)
 class PHAssetHelper
 {
-    private let imageManager: PHImageManager
+    static let ErrorDomain = "PHAssetHelperErrorDomain"
     
-    private var activeImageRequests: [NSIndexPath: PHImageRequestID] = [:]
-    private var activeAssetRequests: [NSIndexPath: PHImageRequestID] = [:]
+    private let imageManager: PHImageManager
+    private var activeImageRequests: [String: PHImageRequestID] = [:]
+    private var activeAssetRequests: [String: PHImageRequestID] = [:]
 
     init(imageManager: PHImageManager)
     {
         self.imageManager = imageManager
     }
-    
     
     deinit
     {
@@ -42,148 +45,131 @@ class PHAssetHelper
 
     // MARK: Public API
     
-    func requestImage(vimeoPHAsset: VimeoPHAsset, cell: CameraRollCell, indexPath: NSIndexPath)
+    func requestImage(phAsset: PHAsset, size: CGSize, completion: PHAssetHelperImageBlock)
     {
+        self.cancelImageRequestForPHAsset(phAsset)
+        
         let options = PHImageRequestOptions()
         options.networkAccessAllowed = true
         options.deliveryMode = .HighQualityFormat
         options.resizeMode = .Fast
         
-        let scale = UIScreen.mainScreen().scale
-        let size = CGSizeMake(scale * cell.imageView.bounds.size.width, scale * cell.imageView.bounds.size.height)
-        
-        let requestID = self.imageManager.requestImageForAsset(vimeoPHAsset.phAsset, targetSize: size, contentMode: .AspectFill, options: options, resultHandler: { [weak self] (image, info) -> Void in
+        let requestID = self.imageManager.requestImageForAsset(phAsset, targetSize: size, contentMode: .AspectFill, options: options, resultHandler: { [weak self] (image, info) -> Void in
             
             guard let strongSelf = self else
             {
                 return
             }
             
-            strongSelf.cancelImageRequestForCellAtIndexPath(indexPath)
+            strongSelf.cancelImageRequestForPHAsset(phAsset)
             
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
             {
-                print("image cancelled")
-                
                 return
             }
             
-            if let info = info, let _ = info[PHImageErrorKey] as? NSError
+            if let info = info, let error = info[PHImageErrorKey] as? NSError
             {
-                print("image error")
-                
-                cell.setError("Error fetching image")
+                completion(image: nil, error: error)
                 
                 return
             }
             
             guard let image = image else
             {
-                print("image nil")
-                
-                cell.setError("Fetched nil image")
+                let error = NSError(domain: PHAssetHelper.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Fetched nil image"])
+                completion(image: nil, error: error)
                 
                 return
             }
             
-            cell.setImage(image)
-            })
+            completion(image: image, error: nil)
+        })
         
-        self.activeImageRequests[indexPath] = requestID
+        self.activeImageRequests[phAsset.localIdentifier] = requestID
     }
     
-    func requestAsset(vimeoPHAsset: VimeoPHAsset, cell: CameraRollCell, indexPath: NSIndexPath)
+    func requestAsset(phAsset: PHAsset, networkAccessAllowed: Bool, completion: PHAssetHelperAssetBlock)
     {
+        self.cancelAssetRequestForPHAsset(phAsset)
+        
         let options = PHVideoRequestOptions()
-        options.networkAccessAllowed = false // Disallow network access in order to determine asset location (iCloud or device)
+        options.networkAccessAllowed = networkAccessAllowed
         options.deliveryMode = .HighQualityFormat
         
-        let requestID = self.imageManager.requestAVAssetForVideo(vimeoPHAsset.phAsset, options: options) { (asset, audioMix, info) -> Void in
+        let requestID = self.imageManager.requestAVAssetForVideo(phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
             
+            guard let strongSelf = self else
+            {
+                return
+            }
+
+            strongSelf.cancelAssetRequestForPHAsset(phAsset)
+
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
             {
-                print("asset cancelled")
-                
                 return
             }
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                 
-                // Cache the asset and inCloud values for later use in didSelectItem
-                
+                guard let _ = self else
+                {
+                    return
+                }
+
                 if let info = info, let inCloud = info[PHImageResultIsInCloudKey] as? Bool where inCloud == true
                 {
-                    print("icloud")
-                    
-                    vimeoPHAsset.inCloud = inCloud
-                    
-                    cell.setError("iCloud asset")
+                    completion(asset: nil, inCloud: inCloud, error: nil)
                     
                     return
                 }
                 
-                if let info = info, let _ = info[PHImageErrorKey] as? NSError
+                if let info = info, let error = info[PHImageErrorKey] as? NSError
                 {
-                    print("asset error")
-                    
-                    cell.setError("Error fetching asset")
+                    completion(asset: nil, inCloud: nil, error: error)
                     
                     return
                 }
-                
-                vimeoPHAsset.inCloud = false // Update this specifically after checking for an error
                 
                 guard let asset = asset else
                 {
-                    print("asset nil")
-                    
-                    cell.setError("asset nil")
+                    let error = NSError(domain: PHAssetHelper.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Fetched nil asset"])
+                    completion(asset: nil, inCloud: false, error: error)
                     
                     return
                 }
-                
-                vimeoPHAsset.avAsset = asset
-                
-                self?.configureCellForAsset(cell, asset: asset)
-                
+
+                completion(asset: asset, inCloud: false, error: nil)
             })
         }
         
-        self.activeAssetRequests[indexPath] = requestID
+        self.activeAssetRequests[phAsset.localIdentifier] = requestID
     }
     
-    func cancelRequestsForCellAtIndexPath(indexPath: NSIndexPath)
+    func cancelRequestsForPHAsset(phAsset: PHAsset)
     {
-        self.cancelImageRequestForCellAtIndexPath(indexPath)
-        self.cancelAssetRequestForCellAtIndexPath(indexPath)
-    }
-
-    func configureCellForAsset(cell: CameraRollCell, asset: AVAsset)
-    {
-        let seconds = CMTimeGetSeconds(asset.duration)
-        cell.setDuration(seconds)
-        
-        let megabytes = asset.approximateFileSizeInMegabytes()
-        cell.setFileSize(megabytes)
+        self.cancelImageRequestForPHAsset(phAsset)
+        self.cancelAssetRequestForPHAsset(phAsset)
     }
 
     // MARK: Private API
 
-    private func cancelImageRequestForCellAtIndexPath(indexPath: NSIndexPath)
+    private func cancelImageRequestForPHAsset(phAsset: PHAsset)
     {
-        if let requestID = self.activeImageRequests[indexPath]
+        if let requestID = self.activeImageRequests[phAsset.localIdentifier]
         {
             self.imageManager.cancelImageRequest(requestID)
-            self.activeImageRequests.removeValueForKey(indexPath)
+            self.activeImageRequests.removeValueForKey(phAsset.localIdentifier)
         }
     }
     
-    private func cancelAssetRequestForCellAtIndexPath(indexPath: NSIndexPath)
+    private func cancelAssetRequestForPHAsset(phAsset: PHAsset)
     {
-        if let requestID = self.activeImageRequests[indexPath]
+        if let requestID = self.activeAssetRequests[phAsset.localIdentifier]
         {
             self.imageManager.cancelImageRequest(requestID)
-            self.activeAssetRequests.removeValueForKey(indexPath)
+            self.activeAssetRequests.removeValueForKey(phAsset.localIdentifier)
         }
     }
 }

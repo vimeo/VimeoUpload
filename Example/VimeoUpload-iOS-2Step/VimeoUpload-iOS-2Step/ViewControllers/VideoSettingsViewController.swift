@@ -37,11 +37,10 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
     private static let ProgressKeyPath = "uploadProgress"
     private var uploadProgressKVOContext = UInt8()
 
-    private var phAssetOperation: PHAssetOperation?
     private var exportVideoOperation: ExportVideoOperation?
     private var uploadDescriptor: UploadDescriptor?
     
-    var vimeoPHAsset: VimeoPHAsset?
+    var avAsset: AVAsset?
 
     deinit
     {
@@ -57,7 +56,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
     {
         super.viewDidLoad()
         
-        assert(self.vimeoPHAsset != nil, "self.vimeoPHAsset cannot be nil")
+        assert(self.avAsset != nil, "self.avAsset cannot be nil")
         
         self.edgesForExtendedLayout = .None
         
@@ -79,7 +78,6 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
     
     func didTapCancel(sender: UIBarButtonItem)
     {
-        self.phAssetOperation?.cancel()
         self.exportVideoOperation?.cancel()
         
         self.dismissViewControllerAnimated(true, completion: nil)

@@ -37,21 +37,16 @@
                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="FE8-Nn-PEi">
-                        <rect key="frame" x="74" y="73" width="37" height="37"/>
-                    </activityIndicatorView>
                 </subviews>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             </view>
             <constraints>
-                <constraint firstItem="FE8-Nn-PEi" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="1QI-He-Yta"/>
                 <constraint firstAttribute="trailing" secondItem="W2v-He-Plb" secondAttribute="trailing" id="6yv-zo-0rH"/>
                 <constraint firstAttribute="bottom" secondItem="W2v-He-Plb" secondAttribute="bottom" id="743-7a-lAC"/>
                 <constraint firstAttribute="trailing" secondItem="5N2-LJ-xHR" secondAttribute="trailing" constant="8" id="CQy-tp-4m1"/>
                 <constraint firstItem="5N2-LJ-xHR" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="8" id="Dke-VS-sdJ"/>
                 <constraint firstItem="W2v-He-Plb" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="GFh-ID-klN"/>
                 <constraint firstAttribute="bottom" secondItem="VDh-D9-cBy" secondAttribute="bottom" constant="8" id="KPP-Ax-wgs"/>
-                <constraint firstItem="FE8-Nn-PEi" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="WuH-BK-OLf"/>
                 <constraint firstItem="0yd-lD-TaN" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="8" id="a8j-Lx-lr5"/>
                 <constraint firstItem="5N2-LJ-xHR" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="8" id="efQ-LX-gmD"/>
                 <constraint firstAttribute="bottom" secondItem="0yd-lD-TaN" secondAttribute="bottom" constant="8" id="t0R-c8-ILP"/>
@@ -61,7 +56,6 @@
             </constraints>
             <size key="customSize" width="184" height="184"/>
             <connections>
-                <outlet property="activityIndicator" destination="FE8-Nn-PEi" id="tao-f7-kx8"/>
                 <outlet property="durationlabel" destination="VDh-D9-cBy" id="kXh-PY-CeB"/>
                 <outlet property="errorLabel" destination="5N2-LJ-xHR" id="vEn-gj-GRp"/>
                 <outlet property="fileSizeLabel" destination="0yd-lD-TaN" id="Q7i-PF-AQa"/>
