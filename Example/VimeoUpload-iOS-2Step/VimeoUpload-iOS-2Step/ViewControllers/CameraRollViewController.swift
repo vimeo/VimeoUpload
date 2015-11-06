@@ -98,7 +98,10 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     {
         // TODO: refresh the user object here
         
-        self.meTask = try? UploadManager.sharedInstance.sessionManager.meDataTask()
+        self.meTask = try? UploadManager.sharedInstance.sessionManager.meDataTask({ (quota, error) -> Void in
+            
+        })
+        
         self.meTask?.resume()
         
 //        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(5 * Double(NSEC_PER_SEC)))

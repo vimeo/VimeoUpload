@@ -37,17 +37,21 @@ enum TaskDescription: String
 
 typealias DestinationHandler = () -> NSURL
 typealias CreateVideoCompletionHandler = (response: CreateVideoResponse?, error: NSError?) -> Void
+typealias MeCompletionHandler = (quota: NSNumber?, error: NSError?) -> Void
 
 extension VimeoSessionManager
 {
-    func meDataTask() throws -> NSURLSessionDataTask
+    func meDataTask(completionHandler: MeCompletionHandler?) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).meRequest()
         
         let task = self.dataTaskWithRequest(request, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
-            print(response)
-            
+            if let responseObject = responseObject as? [String: AnyObject], let uploadQuota = responseObject["upload_quota"] as? [String: AnyObject]
+            {
+                print(uploadQuota)
+            }
+
         })
         
         task.taskDescription = TaskDescription.Me.rawValue
