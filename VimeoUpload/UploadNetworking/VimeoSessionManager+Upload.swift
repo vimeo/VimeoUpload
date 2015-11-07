@@ -25,6 +25,8 @@
 //
 
 import Foundation
+import VIMObjectMapper
+import VIMNetworking
 
 enum TaskDescription: String
 {
@@ -44,8 +46,20 @@ extension VimeoSessionManager
     func meDataTask(completionHandler: MeCompletionHandler?) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).meRequest()
-        
+
         let task = self.dataTaskWithRequest(request, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+
+            // TODO: do this work on a background thread
+            
+//            VIMObjectMapper *mapper = [[VIMObjectMapper alloc] init];
+//            
+//            [mapper addMappingClass:[VIMUser class] forKeypath:@"user"];
+//            
+//            VIMUser *user = [mapper applyMappingToJSON:JSON];
+
+            let mapper = VIMObjectMapper()
+            mapper.addMappingClass(VIMUser.self, forKeypath: "user")
+            let user = mapper.applyMappingToJSON(responseObject)
             
             if let responseObject = responseObject as? [String: AnyObject], let uploadQuota = responseObject["upload_quota"] as? [String: AnyObject]
             {

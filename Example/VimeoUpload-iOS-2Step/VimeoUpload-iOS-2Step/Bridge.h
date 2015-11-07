@@ -7,3 +7,6 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+
+//#import "VIMObjectMapper.h"
+//#import <VIMObjectMapper/VIMObjectMapper.h">
