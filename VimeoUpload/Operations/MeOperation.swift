@@ -73,8 +73,7 @@ class MeOperation: ConcurrentOperation
                 return
             }
 
-            var rror: NSError? = NSError(domain: "test", code: 0, userInfo: nil)
-            if let error = rror
+            if let error = error
             {
                 strongSelf.error = error
             }

@@ -43,6 +43,11 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     // MARK: Lifecycle
     
+    deinit
+    {
+        self.uploadPrepOperation?.cancel()
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -102,8 +107,17 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.uploadPrepOperation?.start()
     }
     
+    // TODO: teardown this upload prep block when view is cancelled or when asset is selected?
+    // TODO: Should some or all of these blocks be delegate calls instead?
+    
     private func setUploadPrepOperationBlocks(operation: UploadPrepOperation)
     {
+        operation.downloadProgressBlock = { (progress: Double) -> Void in
+            print("Download progress: \(progress)")
+        }
+        operation.exportProgressBlock = { (progress: Double) -> Void in
+            print("Export progress: \(progress)")
+        }
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -120,11 +134,18 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 
                 if let error = operation.error
                 {
+                    print("Upload prep error: \(error)")
+
                     if let indexPath = strongSelf.selectedIndexPath
                     {
                         strongSelf.presentUploadPrepErrorAlert(indexPath, error: error)
                     }
                     // else: do nothing, the error will be communicated at the time of cell selection
+                }
+                else
+                {
+                    print("Upload prep complete! \(operation.result!)")
+                    strongSelf.presentVideoSettings()
                 }
             })
         }
@@ -134,6 +155,8 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     func didTapCancel(sender: UIBarButtonItem)
     {
+        self.uploadPrepOperation?.cancel()
+        
         self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
@@ -332,10 +355,10 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    private func presentVideoSettings(avAsset: AVAsset)
+    private func presentVideoSettings()
     {
         let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.avAsset = avAsset
+        viewController.uploadPrepOperation = self.uploadPrepOperation
         
         self.navigationController?.pushViewController(viewController, animated: true)
     }

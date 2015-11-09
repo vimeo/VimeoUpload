@@ -38,6 +38,9 @@ class UploadPrepOperation: ConcurrentOperation
     private let sessionManager: VimeoSessionManager
     private let operationQueue: NSOperationQueue
 
+    var downloadProgressBlock: ProgressBlock?
+    var exportProgressBlock: ProgressBlock?
+    
     private var me: VIMUser?
     private var avAsset: AVAsset?
     private var didReceiveSelection: Bool = false // For debugging
@@ -79,6 +82,8 @@ class UploadPrepOperation: ConcurrentOperation
     
     // MARK: Overrides
     
+    // TODO: Most of these completion blocks are being called on background threads, is this okay?
+    
     override func main()
     {
         if self.cancelled
@@ -89,8 +94,6 @@ class UploadPrepOperation: ConcurrentOperation
         let operation = MeOperation(sessionManager: self.sessionManager)
         operation.completionBlock = { [weak self] () -> Void in
             
-            // TODO: which thread is this called on?
-
             guard let strongSelf = self else
             {
                 return
@@ -149,6 +152,9 @@ class UploadPrepOperation: ConcurrentOperation
 
         self.didReceiveSelection = true
     
+        // TODO: this will be called on the main thread
+        // But this property is being set elsewhere from a background thread, needs to be addressed
+        
         if let avAsset = phAssetContainer.avAsset
         {
             self.avAsset = avAsset
@@ -165,24 +171,8 @@ class UploadPrepOperation: ConcurrentOperation
     private func downloadPHAsset(phAsset: PHAsset)
     {
         let operation = PHAssetDownloadOperation(phAsset: phAsset)
-        
-        operation.progressBlock = { [weak self] (progress: Double) -> Void in
-            
-            // TODO: which thread is this called on?
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-
-                guard let _ = self else
-                {
-                    return
-                }
-
-                print("Download: \(progress)")
-            })
-        }
-        
+        operation.progressBlock = self.downloadProgressBlock
         operation.completionBlock = { [weak self] () -> Void in
-            
-            // TODO: which thread is this called on?
             
             guard let strongSelf = self else
             {
@@ -332,18 +322,9 @@ class UploadPrepOperation: ConcurrentOperation
         let avAsset = self.avAsset!
         
         let operation = AVAssetExportOperation(asset: avAsset)
-        operation.progressBlock = { [weak self] (progress: Double) -> Void in
-           
-            // TODO: which thread is this called on?
-            
+        operation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-                
-                guard let _ = self else
-                {
-                    return
-                }
-                
-                print("Export: \(progress)")
+                self?.exportProgressBlock?(progress: progress)
             })
         }
 

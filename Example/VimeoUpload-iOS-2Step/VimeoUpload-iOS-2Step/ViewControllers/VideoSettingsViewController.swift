@@ -27,42 +27,49 @@
 import UIKit
 import AVFoundation
 
-class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate
+class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
     static let NibName = "VideoSettingsViewController"
     
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var descriptionTextView: UITextView!
     
+    var uploadPrepOperation: UploadPrepOperation?
+    
+    private var uploadDescriptor: UploadDescriptor?
+
     private static let ProgressKeyPath = "uploadProgress"
     private var uploadProgressKVOContext = UInt8()
-
-    private var avAssetExportOperation: AVAssetExportOperation?
-    private var uploadDescriptor: UploadDescriptor?
     
-    var avAsset: AVAsset?
-
+    // MARK: Lifecycle
+    
     deinit
     {
         self.removeObservers()
-        self.avAssetExportOperation?.cancel()
+        self.uploadPrepOperation?.cancel()
     }
     
-    // 1. Download iCloud asset
-    // 2. Check user quota and disk space
-    // 3. Present video settings view controller
-
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        assert(self.avAsset != nil, "self.avAsset cannot be nil")
+        assert(self.uploadPrepOperation != nil, "self.uploadPrepOperation cannot be nil")
         
         self.edgesForExtendedLayout = .None
         
         self.setupNavigationBar()
+    }
+    
+    override func viewWillDisappear(animated: Bool)
+    {
+        super.viewWillDisappear(animated)
         
-        self.exportAVAsset(self.avAsset!)
+        // TODO: Is this going to be called if we show a childViewController or an alert?
+        
+        if self.isMovingFromParentViewController() == true // User tapped back button or post button
+        {
+            self.uploadPrepOperation?.cancel()
+        }
     }
     
     // MARK: Setup
@@ -75,13 +82,6 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
     }
     
     // MARK: Actions
-    
-    func didTapCancel(sender: UIBarButtonItem)
-    {
-        self.avAssetExportOperation?.cancel()
-        
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
 
     func didTapPost(sender: UIBarButtonItem)
     {
@@ -98,45 +98,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
         return false
     }
     
-    // MARK: UITextViewDelegate
-
     // MARK: Private API
         
-    private func exportAVAsset(avAsset: AVAsset)
-    {
-        self.avAssetExportOperation = AVAssetExportOperation(asset: avAsset)
-        self.avAssetExportOperation?.progressBlock = { (progress: Double) -> Void in
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                print("Export progress: \(progress)")
-            })
-        }
-        
-        self.avAssetExportOperation?.completionBlock = { [weak self] () -> Void in
-            
-            guard let strongSelf = self else
-            {
-                return
-            }
-
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                if let error = strongSelf.avAssetExportOperation?.error
-                {
-                    print("Error exporting AVAsset: \(error.localizedDescription)")
-                }
-                else if let outputURL = strongSelf.avAssetExportOperation?.outputURL
-                {
-                    let avAsset = AVURLAsset(URL: outputURL)
-                    
-//                    strongSelf.uploadFile(outputURL)
-                }
-                
-                strongSelf.avAssetExportOperation = nil
-            })
-        }
-        
-        self.avAssetExportOperation?.start()
-    }
-    
     private func uploadFile(url: NSURL)
     {
         let videoSettings = VideoSettings(title: "hey!!", description: nil, privacy: "goo", users: nil)
