@@ -1,6 +1,6 @@
 //
-//  ExportVideoOperation.swift
-//  VIMUpload
+//  AVAssetExportOperation.swift
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/13/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
@@ -33,7 +33,7 @@ import AVFoundation
     import CoreServices
 #endif
 
-class ExportVideoOperation: ConcurrentOperation
+class AVAssetExportOperation: ConcurrentOperation
 {
     private static let ProgressKeyPath = "progress"
     private static let FileType = AVFileTypeMPEG4
@@ -69,23 +69,16 @@ class ExportVideoOperation: ConcurrentOperation
     }
     
     // MARK: Initialization
-
-    deinit
-    {
-        self.removeObservers()
-        self.progressBlock = nil
-        self.exportSession.cancelExport()
-    }
     
-    convenience init(asset: AVAsset, presetName: String = AVAssetExportPresetPassthrough, baseOutputURL: NSURL = ExportVideoOperation.DocumentsURL)
+    convenience init(asset: AVAsset, presetName: String = AVAssetExportPresetPassthrough, baseOutputURL: NSURL = AVAssetExportOperation.DocumentsURL)
     {
         let exportSession = AVAssetExportSession(asset: asset, presetName: presetName)! // Assert if this produces nil [AH] 10/15/2015
         exportSession.shouldOptimizeForNetworkUse = true
-        exportSession.outputFileType = ExportVideoOperation.FileType
+        exportSession.outputFileType = AVAssetExportOperation.FileType
         
         do
         {
-            exportSession.outputURL = try baseOutputURL.vimeoUploadExportURL(ExportVideoOperation.FileType)
+            exportSession.outputURL = try baseOutputURL.vimeoUploadExportURL(AVAssetExportOperation.FileType)
         }
         catch let error as NSError
         {
@@ -111,6 +104,13 @@ class ExportVideoOperation: ConcurrentOperation
         self.addObservers()
     }
     
+    deinit
+    {
+        self.removeObservers()
+        self.progressBlock = nil
+        self.exportSession.cancelExport()
+    }
+
     // MARK: Overrides
 
     override func main()
@@ -227,12 +227,12 @@ class ExportVideoOperation: ConcurrentOperation
     
     private func addObservers()
     {
-        self.addObserver(self, forKeyPath: ExportVideoOperation.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.exportProgressKVOContext)
+        self.addObserver(self, forKeyPath: AVAssetExportOperation.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.exportProgressKVOContext)
     }
     
     private func removeObservers()
     {
-        self.removeObserver(self, forKeyPath: ExportVideoOperation.ProgressKeyPath, context: &self.exportProgressKVOContext)
+        self.removeObserver(self, forKeyPath: AVAssetExportOperation.ProgressKeyPath, context: &self.exportProgressKVOContext)
     }
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
@@ -241,7 +241,7 @@ class ExportVideoOperation: ConcurrentOperation
         {
             switch (keyPath, context)
             {
-                case(ExportVideoOperation.ProgressKeyPath, &self.exportProgressKVOContext):
+                case(AVAssetExportOperation.ProgressKeyPath, &self.exportProgressKVOContext):
                     let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
                     self.progressBlock?(progress: progress)
                 

@@ -5,9 +5,6 @@
 //  Created by Alfred Hanssen on 11/9/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
-//  Created by Hanssen, Alfie on 10/12/15.
-//  Copyright © 2015 Vimeo. All rights reserved.
-//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
@@ -32,37 +29,40 @@ import AVFoundation
 
 class DiskSpaceOperation: NSOperation
 {
-    private let avAsset: AVAsset
+    private static let ErrorDomain = "DiskSpaceOperationErrorDomain"
+    
+    private let filesize: Float64
     
     private(set) var result: Bool?
-    
-    init(avAsset: AVAsset)
+    private(set) var error: NSError?
+
+    init(filesize: Float64)
     {
-        self.avAsset = avAsset
+        self.filesize = filesize
     
         super.init()
     }
     
-    // Because we haven't yet exported the asset we check against approximate filesize
+    // MARK: Overrides
+
     // If we can't calculate the available disk space we eval to true beacuse we'll catch any real error later during export
     
     override func main()
     {
-        let filesize = self.avAsset.approximateFileSize()
         do
         {
             if let availableDiskSpace = try NSFileManager.defaultManager().availableDiskSpace()
             {
-                self.result = availableDiskSpace.doubleValue > filesize
+                self.result = availableDiskSpace.doubleValue > self.filesize
             }
             else
             {
-                self.result = true
+                self.error = NSError(domain: DiskSpaceOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "File system information did not contain NSFileSystemSize key:value pair"])
             }
         }
         catch
         {
-            self.result = true
+            self.error = NSError(domain: DiskSpaceOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to calculate available disk space"])
         }
     }
 }

@@ -1,6 +1,6 @@
 //
 //  ConcurrentOperation.swift
-//  VIMUpload
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/12/15.
 //  Copyright © 2015 Vimeo. All rights reserved.

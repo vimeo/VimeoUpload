@@ -37,7 +37,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
     private static let ProgressKeyPath = "uploadProgress"
     private var uploadProgressKVOContext = UInt8()
 
-    private var exportVideoOperation: ExportVideoOperation?
+    private var avAssetExportOperation: AVAssetExportOperation?
     private var uploadDescriptor: UploadDescriptor?
     
     var avAsset: AVAsset?
@@ -45,7 +45,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
     deinit
     {
         self.removeObservers()
-        self.exportVideoOperation?.cancel()
+        self.avAssetExportOperation?.cancel()
     }
     
     // 1. Download iCloud asset
@@ -78,7 +78,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
     
     func didTapCancel(sender: UIBarButtonItem)
     {
-        self.exportVideoOperation?.cancel()
+        self.avAssetExportOperation?.cancel()
         
         self.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -104,14 +104,14 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
         
     private func exportAVAsset(avAsset: AVAsset)
     {
-        self.exportVideoOperation = ExportVideoOperation(asset: avAsset)
-        self.exportVideoOperation?.progressBlock = { (progress: Double) -> Void in
+        self.avAssetExportOperation = AVAssetExportOperation(asset: avAsset)
+        self.avAssetExportOperation?.progressBlock = { (progress: Double) -> Void in
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
 //                print("Export progress: \(progress)")
             })
         }
         
-        self.exportVideoOperation?.completionBlock = { [weak self] () -> Void in
+        self.avAssetExportOperation?.completionBlock = { [weak self] () -> Void in
             
             guard let strongSelf = self else
             {
@@ -119,22 +119,22 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
             }
 
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                if let error = strongSelf.exportVideoOperation?.error
+                if let error = strongSelf.avAssetExportOperation?.error
                 {
                     print("Error exporting AVAsset: \(error.localizedDescription)")
                 }
-                else if let outputURL = strongSelf.exportVideoOperation?.outputURL
+                else if let outputURL = strongSelf.avAssetExportOperation?.outputURL
                 {
                     let avAsset = AVURLAsset(URL: outputURL)
                     
 //                    strongSelf.uploadFile(outputURL)
                 }
                 
-                strongSelf.exportVideoOperation = nil
+                strongSelf.avAssetExportOperation = nil
             })
         }
         
-        self.exportVideoOperation?.start()
+        self.avAssetExportOperation?.start()
     }
     
     private func uploadFile(url: NSURL)

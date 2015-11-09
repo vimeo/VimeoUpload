@@ -1,6 +1,6 @@
 //
-//  VimeoPHAsset.swift
-//  VimeoUpload-iOS-2Step
+//  PHAssetContainer.swift
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/2/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
@@ -24,11 +24,11 @@
 //  THE SOFTWARE.
 //
 
-import UIKit
+import Foundation
 import AVFoundation
 import Photos
 
-class VimeoPHAsset
+class PHAssetContainer
 {    
     let phAsset: PHAsset
     var avAsset: AVAsset?

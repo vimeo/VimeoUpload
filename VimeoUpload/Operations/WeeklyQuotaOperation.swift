@@ -32,33 +32,35 @@ import AVFoundation
 
 class WeeklyQuotaOperation: NSOperation
 {
+    private static let ErrorDomain = "WeeklyQuotaOperationErrorDomain"
+    
     private let user: VIMUser
-    private let avAsset: AVAsset
+    private let filesize: Float64
     
     private(set) var result: Bool?
-    
-    init(user: VIMUser, avAsset: AVAsset)
+    private(set) var error: NSError?
+
+    init(user: VIMUser, filesize: Float64)
     {
         self.user = user
-        self.avAsset = avAsset
+        self.filesize = filesize
     
         super.init()
     }
     
-    // Because we haven't yet exported the asset we check against approximate filesize
+    // MARK: Overrides
+
     // If we can't calculate the available disk space we eval to true beacuse we'll catch any real error later during export
 
     override func main()
     {
-        let fileSize = avAsset.approximateFileSize()
-        
         if let free = self.user.uploadQuota?.space?.free?.doubleValue
         {
-            self.result = free > fileSize
+            self.result = free > self.filesize
         }
         else
         {
-            self.result = true
+            self.error = NSError(domain: WeeklyQuotaOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.space information"])
         }
     }
 }

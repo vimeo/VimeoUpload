@@ -85,14 +85,13 @@ class PHAssetHelper
         self.activeImageRequests[phAsset.localIdentifier] = requestID
     }
     
-    func requestAsset(phAsset: PHAsset, networkAccessAllowed: Bool, progress: PHAssetVideoProgressHandler?, completion: PHAssetHelperAssetBlock)
+    func requestAsset(phAsset: PHAsset, completion: PHAssetHelperAssetBlock)
     {
         self.cancelAssetRequestForPHAsset(phAsset)
         
         let options = PHVideoRequestOptions()
-        options.networkAccessAllowed = networkAccessAllowed
+        options.networkAccessAllowed = false
         options.deliveryMode = .HighQualityFormat
-        options.progressHandler = progress
         
         let requestID = self.imageManager.requestAVAssetForVideo(phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
             
@@ -118,7 +117,7 @@ class PHAssetHelper
                 let inCloud = info?[PHImageResultIsInCloudKey] as? Bool
                 let error = info?[PHImageErrorKey] as? NSError
 
-                if let inCloud = inCloud where inCloud == true && networkAccessAllowed == false
+                if let inCloud = inCloud where inCloud == true
                 {
                     completion(asset: nil, inCloud: inCloud, error: nil)
                 }

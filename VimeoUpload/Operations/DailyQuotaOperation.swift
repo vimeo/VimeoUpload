@@ -32,19 +32,22 @@ import AVFoundation
 
 class DailyQuotaOperation: NSOperation
 {
+    private static let ErrorDomain = "DailyQuotaOperationErrorDomain"
+    
     private let user: VIMUser
-    private let avAsset: AVAsset
     
     private(set) var result: Bool?
+    private(set) var error: NSError?
     
-    init(user: VIMUser, avAsset: AVAsset)
+    init(user: VIMUser)
     {
         self.user = user
-        self.avAsset = avAsset
         
         super.init()
     }
     
+    // MARK: Overrides
+
     // Because we haven't yet exported the asset we check against approximate filesize
     // If we can't calculate the available disk space we eval to true beacuse we'll catch any real error later during export
 
@@ -56,7 +59,7 @@ class DailyQuotaOperation: NSOperation
         }
         else
         {
-            self.result = true
+            self.error = NSError(domain: DailyQuotaOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.quota information"])
         }
     }
 }

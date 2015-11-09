@@ -1,6 +1,6 @@
 //
-//  DiskSpaceOperation.swift
-//  VIMUpload
+//  PHAssetDownloadOperation.swift
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/13/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
@@ -35,7 +35,7 @@ class PHAssetDownloadOperation: ConcurrentOperation
     private var requestID: PHImageRequestID?
     var progressBlock: ProgressBlock?
 
-    private(set) var avAsset: AVAsset?
+    private(set) var result: AVAsset?
     private(set) var error: NSError?
 
     // MARK: Initialization
@@ -126,7 +126,7 @@ class PHAssetDownloadOperation: ConcurrentOperation
             }
             else if let asset = asset
             {
-                strongSelf.avAsset = asset
+                strongSelf.result = asset
             }
             else
             {

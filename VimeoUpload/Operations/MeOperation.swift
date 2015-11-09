@@ -5,9 +5,6 @@
 //  Created by Alfred Hanssen on 11/9/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
-//  Created by Hanssen, Alfie on 10/12/15.
-//  Copyright © 2015 Vimeo. All rights reserved.
-//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
@@ -35,9 +32,11 @@ class MeOperation: ConcurrentOperation
     
     private var task: NSURLSessionDataTask?
 
-    private(set) var me: VIMUser?
+    private(set) var result: VIMUser?
     private(set) var error: NSError?
     
+    // MARK: Initialization
+
     init(sessionManager: VimeoSessionManager)
     {
         self.sessionManager = sessionManager
@@ -51,6 +50,8 @@ class MeOperation: ConcurrentOperation
         self.task = nil
     }
     
+    // MARK: Overrides
+
     override func main()
     {
         if self.cancelled
@@ -72,13 +73,14 @@ class MeOperation: ConcurrentOperation
                 return
             }
 
-            if let error = error
+            var rror: NSError? = NSError(domain: "test", code: 0, userInfo: nil)
+            if let error = rror
             {
                 strongSelf.error = error
             }
             else if let user = user
             {
-                strongSelf.me = user
+                strongSelf.result = user
             }
             else
             {
