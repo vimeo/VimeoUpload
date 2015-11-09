@@ -1,8 +1,11 @@
 //
-//  VimeoSessionManager.swift
+//  DailyQuotaOperation.swift
 //  VimeoUpload
 //
-//  Created by Alfred Hanssen on 10/17/15.
+//  Created by Alfred Hanssen on 11/9/15.
+//  Copyright © 2015 Vimeo. All rights reserved.
+//
+//  Created by Hanssen, Alfie on 10/12/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,44 +28,35 @@
 //
 
 import Foundation
-//import AFNetworking
+import AVFoundation
 
-typealias AuthTokenBlock = () -> String
-
-class VimeoSessionManager: AFHTTPSessionManager
-{    
-    // MARK: Initialization
+class DailyQuotaOperation: NSOperation
+{
+    private let user: VIMUser
+    private let avAsset: AVAsset
     
-    static let DocumentsURL = NSURL(string: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])!
-
-    convenience init(authToken: String)
+    private(set) var result: Bool?
+    
+    init(user: VIMUser, avAsset: AVAsset)
     {
-        self.init(authTokenBlock: { () -> String in
-            return "Bearer \(authToken)"
-        })
+        self.user = user
+        self.avAsset = avAsset
+        
+        super.init()
     }
     
-    init(authTokenBlock: AuthTokenBlock)
+    // Because we haven't yet exported the asset we check against approximate filesize
+    // If we can't calculate the available disk space we eval to true beacuse we'll catch any real error later during export
+
+    override func main()
     {
-        let sessionConfiguration: NSURLSessionConfiguration
-        
-        if #available(iOS 8.0, OSX 10.10, *)
+        if let sd = self.user.uploadQuota?.quota?.sd, let hd = self.user.uploadQuota?.quota?.hd
         {
-            sessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier("com.vimeo.upload")
+            self.result = (sd == true && hd == true)
         }
         else
         {
-            sessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfiguration("com.vimeo.upload")
+            self.result = true
         }
-        
-        super.init(baseURL: VimeoBaseURLString, sessionConfiguration: sessionConfiguration)
-        
-        self.requestSerializer = VimeoRequestSerializer(authTokenBlock: authTokenBlock)
-        self.responseSerializer = VimeoResponseSerializer()
     }
-
-    required init?(coder aDecoder: NSCoder)
-    {
-        fatalError("init(coder:) has not been implemented")
-    }    
 }

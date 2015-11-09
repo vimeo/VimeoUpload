@@ -41,6 +41,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
     private var meTask: NSURLSessionDataTask?
     private var selection: CameraRollSelection?
+    private var me: VIMUser?
     
     // MARK: Lifecycle
     
@@ -96,35 +97,40 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     private func refreshUser()
     {
-        // TODO: refresh the user object here
-        
-        self.meTask = try? UploadManager.sharedInstance.sessionManager.meDataTask({ (quota, error) -> Void in
+        self.meTask = try? UploadManager.sharedInstance.sessionManager.meDataTask({ [weak self] (user, error) -> Void in
+
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            strongSelf.meTask = nil
+
+            if let error = error
+            {
+                strongSelf.presentUserRefreshFailureAlert(error)
+            }
+            else if let user = user
+            {
+                strongSelf.me = user
+                
+                if let selection = strongSelf.selection
+                {
+                    strongSelf.selection = nil
+                    
+                    // TODO: hide activity indicator
+                    
+                    strongSelf.performPreliminaryValidation(selection.avAsset, indexPath: selection.indexPath)
+                }
+            }
+            else
+            {
+                assertionFailure("Execution should never reach this point")
+            }
             
         })
         
         self.meTask?.resume()
-        
-//        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(5 * Double(NSEC_PER_SEC)))
-//        dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] () -> Void in
-//            
-//            guard let strongSelf = self else
-//            {
-//                return
-//            }
-//            
-//            strongSelf.meTask = nil
-//        
-//            // TODO: check for error, alert if error not nil
-//            
-//            if let selection = strongSelf.selection
-//            {
-//                strongSelf.selection = nil
-//
-//                // TODO: hide activity indicator
-//                
-//                strongSelf.performPreliminaryValidation(selection.avAsset, indexPath: selection.indexPath)
-//            }
-//        }
     }
     
     // MARK: Actions
@@ -334,6 +340,10 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         })
     }
     
+    // 1. Refresh Me / Download asset
+    // 2. Check approximate upload quota
+    // 3. Check approximate disk space
+    
     private func performPreliminaryValidation(avAsset: AVAsset, indexPath: NSIndexPath)
     {
         // If the user refresh task has not yet completed then we can't perform the quota check, abort and wait for it to complete
@@ -371,12 +381,12 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     // Because we haven't yet exported the asset we check against approximate filesize
     private func checkDiskSpaceAvailable(avAsset: AVAsset) -> Bool
     {
-        let fileSize = avAsset.approximateFileSize()
+        let filesize = avAsset.approximateFileSize()
         do
         {
             if let availableDiskSpace = try NSFileManager.defaultManager().availableDiskSpace()
             {
-                return availableDiskSpace.doubleValue > fileSize
+                return availableDiskSpace.doubleValue > filesize
             }
 
             return true // If we can't calculate the available disk space we proceed beacuse we'll catch any real error later during export
@@ -390,8 +400,14 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     // Because we haven't yet exported the asset we check against approximate filesize
     private func checkUploadQuotaAvailable(avAsset: AVAsset) -> Bool
     {
-        // TODO: implement this method
-        return true
+        let fileSize = avAsset.approximateFileSize()
+        
+        if let free = self.me?.uploadQuota?.space?.free?.doubleValue
+        {
+            return free > fileSize
+        }
+        
+        return true // If we can't calculate free space then return true, we'll check again later with a more specific filesize (good?)
     }
     
     // MARK: UI Presentation
@@ -415,6 +431,13 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             self?.downloadAsset(phAsset, indexPath: indexPath)
         }))
         
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+
+    private func presentUserRefreshFailureAlert(error: NSError)
+    {
+        let alert = UIAlertController(title: "Me", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
     }
 

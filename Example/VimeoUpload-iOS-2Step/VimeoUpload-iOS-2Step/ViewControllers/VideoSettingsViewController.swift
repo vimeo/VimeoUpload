@@ -62,7 +62,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
         
         self.setupNavigationBar()
         
-//        self.exportAVAsset(self.asset!)
+        self.exportAVAsset(self.avAsset!)
     }
     
     // MARK: Setup
@@ -107,7 +107,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
         self.exportVideoOperation = ExportVideoOperation(asset: avAsset)
         self.exportVideoOperation?.progressBlock = { (progress: Double) -> Void in
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                print("Export progress: \(progress)")
+//                print("Export progress: \(progress)")
             })
         }
         
@@ -125,7 +125,9 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate, UIText
                 }
                 else if let outputURL = strongSelf.exportVideoOperation?.outputURL
                 {
-                    strongSelf.uploadFile(outputURL)
+                    let avAsset = AVURLAsset(URL: outputURL)
+                    
+//                    strongSelf.uploadFile(outputURL)
                 }
                 
                 strongSelf.exportVideoOperation = nil

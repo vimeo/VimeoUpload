@@ -1,8 +1,11 @@
 //
-//  AVAsset+Extensions.swift
-//  VimeoUpload-iOS-2Step
+//  DiskSpaceOperation.swift
+//  VimeoUpload
 //
-//  Created by Alfred Hanssen on 11/1/15.
+//  Created by Alfred Hanssen on 11/9/15.
+//  Copyright © 2015 Vimeo. All rights reserved.
+//
+//  Created by Hanssen, Alfie on 10/12/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,28 +30,39 @@
 import Foundation
 import AVFoundation
 
-extension AVAsset
+class DiskSpaceOperation: NSOperation
 {
-    func approximateFileSizeInMegabytes() -> Float64
+    private let avAsset: AVAsset
+    
+    private(set) var result: Bool?
+    
+    init(avAsset: AVAsset)
     {
-        let bytes = self.approximateFileSize()
-        
-        return bytes / Float64(1024 * 1024)
+        self.avAsset = avAsset
+    
+        super.init()
     }
     
-    func approximateFileSize() -> Float64
+    // Because we haven't yet exported the asset we check against approximate filesize
+    // If we can't calculate the available disk space we eval to true beacuse we'll catch any real error later during export
+    
+    override func main()
     {
-        var approximateSize: Float64 = 0
-        
-        let tracks = self.tracks
-        for track in tracks
+        let filesize = self.avAsset.approximateFileSize()
+        do
         {
-            let dataRate: Float = track.estimatedDataRate
-            let bytesPerSecond = dataRate / Float(8)
-            let seconds: Float64 = CMTimeGetSeconds(track.timeRange.duration)
-            approximateSize += seconds * Float64(bytesPerSecond)
+            if let availableDiskSpace = try NSFileManager.defaultManager().availableDiskSpace()
+            {
+                self.result = availableDiskSpace.doubleValue > filesize
+            }
+            else
+            {
+                self.result = true
+            }
         }
-        
-        return approximateSize
+        catch
+        {
+            self.result = true
+        }
     }
 }

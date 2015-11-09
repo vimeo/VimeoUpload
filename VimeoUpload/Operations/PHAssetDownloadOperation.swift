@@ -28,48 +28,21 @@ import Foundation
 import Photos
 
 @available(iOS 8, *)
-class PHAssetOperation: ConcurrentOperation
+class PHAssetDownloadOperation: ConcurrentOperation
 {
     private let phAsset: PHAsset
-    private var requestID: PHImageRequestID?
     
-    var networkAccessAllowed = true
+    private var requestID: PHImageRequestID?
     var progressBlock: ProgressBlock?
 
     private(set) var avAsset: AVAsset?
-    {
-        didSet
-        {
-            if self.avAsset != nil
-            {
-                self.state = .Finished
-            }
-        }
-    }
-    
     private(set) var error: NSError?
-    {
-        didSet
-        {
-            if self.error != nil
-            {
-                self.state = .Finished
-            }
-        }
-    }
 
     // MARK: Initialization
 
     deinit
     {
-        self.progressBlock = nil
-
-        if let requestID = self.requestID
-        {
-            PHImageManager.defaultManager().cancelImageRequest(requestID)
-        
-            self.requestID = nil
-        }
+        self.cleanup()
     }
     
     init(phAsset: PHAsset)
@@ -89,8 +62,8 @@ class PHAssetOperation: ConcurrentOperation
         }
                 
         let options = PHVideoRequestOptions()
-        options.networkAccessAllowed = self.networkAccessAllowed
-        options.deliveryMode = .Automatic
+        options.networkAccessAllowed = true
+        options.deliveryMode = .HighQualityFormat
         options.progressHandler = { [weak self] (progress: Double, error: NSError?, stop: UnsafeMutablePointer<ObjCBool>, info: [NSObject : AnyObject]?) -> Void in
             
             guard let strongSelf = self else
@@ -105,15 +78,27 @@ class PHAssetOperation: ConcurrentOperation
                 return
             }
 
-            if let error = error
+            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
             {
-                // TODO: is this ok? It sets state to finished, is completion block then called as well? [AH]
-                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAsset.rawValue)
-                
                 return
             }
+
+            // TODO: if an error is delivered here, will the completionHandler be called?
             
-            strongSelf.progressBlock?(progress: progress)
+            if let error = error
+            {
+                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAsset.rawValue)
+                strongSelf.state = .Finished
+            }
+            else if let info = info, let error = info[PHImageErrorKey] as? NSError
+            {
+                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAsset.rawValue)
+                strongSelf.state = .Finished
+            }
+            else
+            {
+                strongSelf.progressBlock?(progress: progress)
+            }
         }
         
         self.requestID = PHImageManager.defaultManager().requestAVAssetForVideo(self.phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
@@ -130,46 +115,44 @@ class PHAssetOperation: ConcurrentOperation
                 return
             }
 
-            // TODO: What's the difference between this cancellation and checking the above cancellation? [AH]
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
             {
                 return
             }
 
-            // TODO: Do we need to check this? [AH]
-            if let info = info, let inCloud = info[PHImageResultIsInCloudKey] as? Bool where inCloud == true
-            {
-                print("Video is in cloud")
-            }
-
             if let info = info, let error = info[PHImageErrorKey] as? NSError
             {
                 strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAsset.rawValue)
-                
-                return
             }
-            
-            guard let asset = asset else
+            else if let asset = asset
+            {
+                strongSelf.avAsset = asset
+            }
+            else
             {
                 strongSelf.error = NSError.phAssetNilAssetError()
-                
-                return
             }
             
-            strongSelf.avAsset = asset            
-        }        
+            strongSelf.state = .Finished
+        }
     }
     
     override func cancel()
     {
         super.cancel()
-        
-        self.progressBlock = nil
 
+        self.cleanup()
+    }
+    
+    // MARK: Private API
+    
+    private func cleanup()
+    {
+        self.progressBlock = nil
+        
         if let requestID = self.requestID
         {
             PHImageManager.defaultManager().cancelImageRequest(requestID)
-            
             self.requestID = nil
         }
     }

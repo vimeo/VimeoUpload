@@ -25,8 +25,6 @@
 //
 
 import Foundation
-import VIMObjectMapper
-import VIMNetworking
 
 enum TaskDescription: String
 {
@@ -39,32 +37,41 @@ enum TaskDescription: String
 
 typealias DestinationHandler = () -> NSURL
 typealias CreateVideoCompletionHandler = (response: CreateVideoResponse?, error: NSError?) -> Void
-typealias MeCompletionHandler = (quota: NSNumber?, error: NSError?) -> Void
+typealias UserCompletionHandler = (user: VIMUser?, error: NSError?) -> Void
 
 extension VimeoSessionManager
 {
-    func meDataTask(completionHandler: MeCompletionHandler?) throws -> NSURLSessionDataTask
+    // TODO: set the completion queue to a background queue so parsing occurs off the main thread
+    
+    func meDataTask(completionHandler: UserCompletionHandler) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).meRequest()
 
-        let task = self.dataTaskWithRequest(request, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+        let task = self.dataTaskWithRequest(request, completionHandler: { (response, responseObject, error) -> Void in
 
-            // TODO: do this work on a background thread
-            
-//            VIMObjectMapper *mapper = [[VIMObjectMapper alloc] init];
-//            
-//            [mapper addMappingClass:[VIMUser class] forKeypath:@"user"];
-//            
-//            VIMUser *user = [mapper applyMappingToJSON:JSON];
-
-            let mapper = VIMObjectMapper()
-            mapper.addMappingClass(VIMUser.self, forKeypath: "user")
-            let user = mapper.applyMappingToJSON(responseObject)
-            
-            if let responseObject = responseObject as? [String: AnyObject], let uploadQuota = responseObject["upload_quota"] as? [String: AnyObject]
+            if let error = error
             {
-                print(uploadQuota)
+                completionHandler(user: nil, error: error)
+                
+                return
             }
+            
+            if let responseObject = responseObject as? [String: AnyObject]
+            {
+                let mapper = VIMObjectMapper()
+                mapper.addMappingClass(VIMUser.self, forKeypath: "")
+
+                if let user = mapper.applyMappingToJSON(responseObject) as? VIMUser
+                {
+                    completionHandler(user: user, error: nil)
+                    
+                    return
+                }
+            }
+            
+            // TODO: add error info
+            let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "/me returned no error and no user data"])
+            completionHandler(user: nil, error: error)
 
         })
         

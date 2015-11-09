@@ -25,7 +25,7 @@
 //
 
 import Foundation
-import AFNetworking
+//import AFNetworking
 
 class VimeoRequestSerializer: AFJSONRequestSerializer
 {
