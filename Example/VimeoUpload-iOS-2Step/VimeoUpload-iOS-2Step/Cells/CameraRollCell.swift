@@ -36,6 +36,23 @@ class CameraRollCell: UICollectionViewCell
     @IBOutlet weak var durationlabel: UILabel!
     @IBOutlet weak var errorLabel: UILabel!
     
+    override var selected: Bool
+    {
+        didSet
+        {
+            if selected == true
+            {
+                self.imageView.alpha = 0.5
+            }
+            else
+            {
+                self.imageView.alpha = 1.0
+            }
+        }
+    }
+    
+    // MARK: Overrides
+    
     override func awakeFromNib()
     {
         super.awakeFromNib()
@@ -49,6 +66,8 @@ class CameraRollCell: UICollectionViewCell
 
         self.clear()
     }
+    
+    // MARK: Private API
     
     private func clear()
     {

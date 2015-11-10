@@ -37,7 +37,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     private var assets: [PHAssetContainer] = []
     private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
-    private var uploadPrepOperation: UploadPrepOperation?
+    private var operation: CameraRollOperation?
     
     private var selectedIndexPath: NSIndexPath?
     
@@ -45,7 +45,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     deinit
     {
-        self.uploadPrepOperation?.cancel()
+        self.operation?.cancel()
     }
     
     override func viewDidLoad()
@@ -56,7 +56,19 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
 
         self.setupNavigationBar()
         self.setupCollectionView()
-        self.setupUploadPrepOperation()
+        
+        let sessionManager = UploadManager.sharedInstance.sessionManager
+        self.setupOperation(sessionManager, me: nil)
+    }
+    
+    override func viewDidAppear(animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        
+        if let indexPath = self.selectedIndexPath // Deselect the previously selected item upon return from video settings
+        {
+            self.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+        }
     }
     
     // MARK: Setup
@@ -98,26 +110,16 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         layout?.minimumLineSpacing = CameraRollViewController.CollectionViewSpacing
     }
     
-    private func setupUploadPrepOperation()
+    private func setupOperation(sessionManager: VimeoSessionManager, me: VIMUser?)
     {
-        let sessionManager = UploadManager.sharedInstance.sessionManager
-        let operation = UploadPrepOperation(sessionManager: sessionManager)
-        self.setUploadPrepOperationBlocks(operation)
-        self.uploadPrepOperation = operation
-        self.uploadPrepOperation?.start()
+        let operation = CameraRollOperation(sessionManager: sessionManager, me: me)
+        self.setOperationBlocks(operation)
+        self.operation = operation
+        self.operation?.start()
     }
-    
-    // TODO: teardown this upload prep block when view is cancelled or when asset is selected?
-    // TODO: Should some or all of these blocks be delegate calls instead?
-    
-    private func setUploadPrepOperationBlocks(operation: UploadPrepOperation)
+        
+    private func setOperationBlocks(operation: CameraRollOperation)
     {
-        operation.downloadProgressBlock = { (progress: Double) -> Void in
-            print("Download progress: \(progress)")
-        }
-        operation.exportProgressBlock = { (progress: Double) -> Void in
-            print("Export progress: \(progress)")
-        }
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -132,20 +134,26 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                     return
                 }
                 
+                // TODO: hide activity indicator
+
                 if let error = operation.error
                 {
-                    print("Upload prep error: \(error)")
+                    print("Camera roll operation error: \(error)")
 
                     if let indexPath = strongSelf.selectedIndexPath
                     {
-                        strongSelf.presentUploadPrepErrorAlert(indexPath, error: error)
+                        strongSelf.presentOperationErrorAlert(indexPath, error: error)
                     }
                     // else: do nothing, the error will be communicated at the time of cell selection
                 }
                 else
                 {
-                    print("Upload prep complete! \(operation.result!)")
-                    strongSelf.presentVideoSettings()
+                    print("Camera roll operation complete!")
+
+                    let indexPath = strongSelf.selectedIndexPath!
+                    let phAssetContainer = strongSelf.assets[indexPath.item]
+
+                    strongSelf.presentVideoSettings(phAssetContainer)
                 }
             })
         }
@@ -155,7 +163,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     func didTapCancel(sender: UIBarButtonItem)
     {
-        self.uploadPrepOperation?.cancel()
+        self.operation?.cancel()
         
         self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -301,13 +309,15 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         
         self.selectedIndexPath = indexPath
 
-        if let error = self.uploadPrepOperation?.error
+        if let error = self.operation?.error
         {
-            self.presentUploadPrepErrorAlert(indexPath, error: error)
+            self.presentOperationErrorAlert(indexPath, error: error)
         }
         else
         {
-            self.uploadPrepOperation?.selectPHAssetContainer(phAssetContainer)
+            // TODO: show activity indicator
+            
+            self.operation?.fulfillSelection(phAssetContainer.avAsset) // avAsset may or may not be nil, which is fine
         }
     }
     
@@ -315,24 +325,27 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
 
     private func presentAssetErrorAlert(indexPath: NSIndexPath)
     {
-        self.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
-
         let alert = UIAlertController(title: "Asset Error", message: "An error occurred when requesting the avAsset.", preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: nil))
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
             self?.collectionView.reloadItemsAtIndexPaths([indexPath]) // Let the user manually reselect the cell since reload is async
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    private func presentUploadPrepErrorAlert(indexPath: NSIndexPath, error: NSError)
+    private func presentOperationErrorAlert(indexPath: NSIndexPath, error: NSError)
     {
-        let alert = UIAlertController(title: "Upload Prep Error", message: "An error occurred when preparing this upload.", preferredStyle: UIAlertControllerStyle.Alert)
+        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
             
-            self?.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+            guard let strongSelf = self else
+            {
+                return
+            }
             
+            strongSelf.selectedIndexPath = nil
+            strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+            strongSelf.setupOperation(strongSelf.operation!.sessionManager, me: strongSelf.operation?.me)
         }))
 
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
@@ -341,25 +354,25 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             {
                 return
             }
-            
-            let operation = strongSelf.uploadPrepOperation!.retryableOperation()
-            strongSelf.setUploadPrepOperationBlocks(operation)
-            strongSelf.uploadPrepOperation = operation
-            operation.start()
-            
-            let phAssetContainer = strongSelf.assets[indexPath.item]
-            operation.selectPHAssetContainer(phAssetContainer)
-        
+
+            strongSelf.setupOperation(strongSelf.operation!.sessionManager, me: strongSelf.operation?.me)
+            strongSelf.didSelectIndexPath(indexPath)
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    private func presentVideoSettings()
+    private func presentVideoSettings(phAssetContainer: PHAssetContainer)
     {
+        let sessionManager = self.operation!.sessionManager
+        let me = self.operation!.me!
+        let input = VideoSettingsViewControllerInput(me: me, phAssetContainer: phAssetContainer)
+
+        self.setupOperation(sessionManager, me: me)
+
         let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.uploadPrepOperation = self.uploadPrepOperation
-        
+        viewController.input = input
+
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

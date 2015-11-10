@@ -28,7 +28,16 @@ import Foundation
 
 class KeyedArchiver: ArchiverProtocol
 {
-    static let ArchiveExtension = "archive"
+    private static let ArchiveExtension = "archive"
+    
+    private let basePath: String
+
+    init(basePath: String)
+    {
+        assert(NSFileManager.defaultManager().fileExistsAtPath(basePath, isDirectory: nil), "Invalid basePath")
+        
+        self.basePath = basePath
+    }
     
     func loadObjectForKey(key: String) -> AnyObject?
     {
@@ -48,9 +57,7 @@ class KeyedArchiver: ArchiverProtocol
     
     func archivePath(key: String) -> String
     {
-        let path = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        
-        var URL = NSURL(string: path)!
+        var URL = NSURL(string: self.basePath)!
         
         URL = URL.URLByAppendingPathComponent(key)
         URL = URL.URLByAppendingPathExtension(KeyedArchiver.ArchiveExtension)

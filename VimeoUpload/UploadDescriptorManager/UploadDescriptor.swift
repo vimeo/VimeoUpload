@@ -25,7 +25,6 @@
 //
 
 import Foundation
-//import AFNetworking
 
 enum Request: String
 {
@@ -80,7 +79,7 @@ class UploadDescriptor: Descriptor
             if self.error != nil
             {
                 print(self.error!.localizedDescription)
-                self.state = .Complete
+                self.state = .Finished
             }
         }
     }
@@ -228,7 +227,7 @@ class UploadDescriptor: Descriptor
         if self.error != nil || nextRequest == nil || (nextRequest == .Settings && self.videoSettings == nil)
         {
             self.currentTaskIdentifier = nil
-            self.state = .Complete
+            self.state = .Finished
 
             return
         }

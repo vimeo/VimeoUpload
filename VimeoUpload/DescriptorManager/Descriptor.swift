@@ -25,13 +25,12 @@
 //
 
 import Foundation
-//import AFNetworking
 
 enum State: String
 {
     case Ready = "Ready"
     case Executing = "Executing"
-    case Complete = "Complete"
+    case Finished = "Finished"
 }
 
 class Descriptor: NSObject

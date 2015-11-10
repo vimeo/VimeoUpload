@@ -25,7 +25,8 @@
 //
 
 import UIKit
-import AVFoundation
+
+typealias VideoSettingsViewControllerInput = (me: VIMUser, phAssetContainer: PHAssetContainer)
 
 class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
@@ -34,9 +35,9 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var descriptionTextView: UITextView!
     
-    var uploadPrepOperation: UploadPrepOperation?
-    
-    private var uploadDescriptor: UploadDescriptor?
+    var input: VideoSettingsViewControllerInput?
+    private var operation: VideoSettingsOperation?
+    private var descriptor: UploadDescriptor?
 
     private static let ProgressKeyPath = "uploadProgress"
     private var uploadProgressKVOContext = UInt8()
@@ -45,31 +46,22 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     deinit
     {
-        self.removeObservers()
-        self.uploadPrepOperation?.cancel()
+        self.operation?.cancel()
     }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        assert(self.uploadPrepOperation != nil, "self.uploadPrepOperation cannot be nil")
+        assert(self.input != nil, "self.input cannot be nil")
         
         self.edgesForExtendedLayout = .None
         
         self.setupNavigationBar()
-    }
-    
-    override func viewWillDisappear(animated: Bool)
-    {
-        super.viewWillDisappear(animated)
         
-        // TODO: Is this going to be called if we show a childViewController or an alert?
-        
-        if self.isMovingFromParentViewController() == true // User tapped back button or post button
-        {
-            self.uploadPrepOperation?.cancel()
-        }
+        let me = self.input!.me
+        let phAssetContainer = self.input!.phAssetContainer
+        self.setupOperation(me, phAssetContainer: phAssetContainer)
     }
     
     // MARK: Setup
@@ -81,11 +73,77 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Post", style: UIBarButtonItemStyle.Done, target: self, action: "didTapPost:")
     }
     
+    private func setupOperation(me: VIMUser, phAssetContainer: PHAssetContainer)
+    {
+        let operation = VideoSettingsOperation(me: me, phAssetContainer: phAssetContainer)
+        self.setOperationBlocks(operation)
+        self.operation = operation
+        self.operation?.start()
+    }
+    
+    private func setOperationBlocks(operation: VideoSettingsOperation)
+    {
+        operation.downloadProgressBlock = { (progress: Double) -> Void in
+            print("Download progress (settings): \(progress)")
+        }
+        operation.exportProgressBlock = { (progress: Double) -> Void in
+            print("Export progress (settings): \(progress)")
+        }
+        operation.completionBlock = { [weak self] () -> Void in
+            
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    print("Video settings operation error: \(error)")
+                }
+                else
+                {
+                    print("Video settings operation complete! \(operation.result!)")
+                    strongSelf.startUpload(operation.result!)
+                }
+            })
+        }
+    }
+    
+    // TODO: think through / implement the various user action sequences that can occur here
+
     // MARK: Actions
 
     func didTapPost(sender: UIBarButtonItem)
     {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        // TODO: what if error or state changes on background thread when this condition is being checked on main thread?
+
+        if let error = self.operation?.error
+        {
+            self.presentOperationErrorAlert(error)
+        }
+        else if let error = self.descriptor?.error
+        {
+            self.presentDescriptorErrorAlert(error)
+        }
+        else if self.operation?.state == .Executing
+        {
+            // TODO: show activity UI
+        }
+        else if self.descriptor?.state == .Executing
+        {
+            // TODO: show activity UI
+        }
+        else
+        {
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
     }
     
     // MARK: UITextFieldDelegate
@@ -98,51 +156,58 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         return false
     }
     
-    // MARK: Private API
-        
-    private func uploadFile(url: NSURL)
+    // MARK: UI Presentation
+    
+    private func presentOperationErrorAlert(error: NSError)
     {
-        let videoSettings = VideoSettings(title: "hey!!", description: nil, privacy: "goo", users: nil)
-        self.uploadDescriptor = UploadDescriptor(url: url, videoSettings: videoSettings)
-        self.uploadDescriptor!.identifier = "\(url.absoluteString.hash)"
+        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.navigationController?.popViewControllerAnimated(true)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
             
-        self.addObservers()
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            let me = strongSelf.operation!.me
+            let phAssetContainer = strongSelf.operation!.phAssetContainer
+            strongSelf.setupOperation(me, phAssetContainer: phAssetContainer)
+        }))
         
-        try! UploadManager.sharedInstance.descriptorManager.addDescriptor(self.uploadDescriptor!)
-    }
-    
-    // MARK: KVO
-        
-    private func addObservers()
-    {
-        self.uploadDescriptor?.addObserver(self, forKeyPath: VideoSettingsViewController.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.uploadProgressKVOContext)
-    }
-    
-    private func removeObservers()
-    {
-        self.uploadDescriptor?.removeObserver(self, forKeyPath: VideoSettingsViewController.ProgressKeyPath, context: &self.uploadProgressKVOContext)
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+    private func presentDescriptorErrorAlert(error: NSError)
     {
-        if let keyPath = keyPath
-        {
-            switch (keyPath, context)
+        let alert = UIAlertController(title: "Descriptor Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.navigationController?.popViewControllerAnimated(true)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            
+            guard let _ = self else
             {
-            case(VideoSettingsViewController.ProgressKeyPath, &self.uploadProgressKVOContext):
-                let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
-                
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    print("Outer progress: \(progress)")
-                })
-                
-            default:
-                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+                return
             }
-        }
-        else
-        {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-        }
+            
+            // TODO: do something to try the descriptor again
+        }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
     }
+
+    // MARK: Private API
+        
+    private func startUpload(url: NSURL)
+    {
+        let videoSettings = VideoSettings(title: "hey!!", description: nil, privacy: "goo", users: nil)
+        self.descriptor = UploadDescriptor(url: url, videoSettings: videoSettings)
+        self.descriptor!.identifier = "\(url.absoluteString.hash)"
+        
+        try! UploadManager.sharedInstance.descriptorManager.addDescriptor(self.descriptor!)
+    }    
 }

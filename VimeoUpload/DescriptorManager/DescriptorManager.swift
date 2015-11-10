@@ -25,7 +25,6 @@
 //
 
 import Foundation
-//import AFNetworking
 
 enum DescriptorManagerNotification: String
 {
@@ -46,7 +45,7 @@ class DescriptorManager
 
     private var sessionManager: AFURLSessionManager
     private var descriptors = Set<Descriptor>()
-    private var archiver = KeyedArchiver()
+    private var archiver = KeyedArchiver(basePath: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])
     private weak var delegate: DescriptorManagerDelegate?
     
     private let synchronizationQueue = dispatch_queue_create("descriptor_manager.synchronization_queue", DISPATCH_QUEUE_SERIAL)
@@ -178,7 +177,7 @@ class DescriptorManager
 
                 strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
                 
-                if descriptor.state == State.Complete
+                if descriptor.state == State.Finished
                 {
                     strongSelf.descriptors.remove(descriptor)
                     strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)

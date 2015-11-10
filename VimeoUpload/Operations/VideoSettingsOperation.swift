@@ -31,20 +31,25 @@ import Foundation
 import AVFoundation
 import Photos
 
-class UploadPrepOperation: ConcurrentOperation
+// This flow encapsulates the following steps:
+// 1. If inCloud, download
+// 2. If inCloud, check approximate weekly quota
+// 3. If inCloud, check approximate disk space
+// 4. Export
+// 5. Check weekly quota
+// 6. Check disk space
+
+class VideoSettingsOperation: ConcurrentOperation
 {
-    private static let ErrorDomain = "UploadPrepOperationErrorDomain"
+    private static let ErrorDomain = "VideoSettingsOperationErrorDomain"
     
-    private let sessionManager: VimeoSessionManager
+    let me: VIMUser
+    let phAssetContainer: PHAssetContainer
     private let operationQueue: NSOperationQueue
 
     var downloadProgressBlock: ProgressBlock?
     var exportProgressBlock: ProgressBlock?
     
-    private var me: VIMUser?
-    private var avAsset: AVAsset?
-    private var didReceiveSelection: Bool = false // For debugging
-
     private(set) var error: NSError?
     {
         didSet
@@ -55,21 +60,12 @@ class UploadPrepOperation: ConcurrentOperation
             }
         }
     }
-
     private(set) var result: NSURL?
+
+    init(me: VIMUser, phAssetContainer: PHAssetContainer)
     {
-        didSet
-        {
-            if self.result != nil
-            {
-                self.state = .Finished
-            }
-        }
-    }
-    
-    init(sessionManager: VimeoSessionManager)
-    {
-        self.sessionManager = sessionManager
+        self.me = me
+        self.phAssetContainer = phAssetContainer
         
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
@@ -91,31 +87,14 @@ class UploadPrepOperation: ConcurrentOperation
             return
         }
 
-        let operation = MeOperation(sessionManager: self.sessionManager)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if operation.cancelled == true
-            {
-                return
-            }
-
-            if let error = operation.error
-            {
-                strongSelf.error = error
-            }
-            else
-            {
-                strongSelf.me = operation.result!
-                strongSelf.proceedIfMeAndAVAssetExist()
-            }
+        if let _ = self.phAssetContainer.avAsset
+        {
+            self.exportAsset()
         }
-        
-        self.operationQueue.addOperation(operation)
+        else
+        {
+            self.downloadPHAsset()
+        }
     }
     
     override func cancel()
@@ -124,52 +103,12 @@ class UploadPrepOperation: ConcurrentOperation
         
         self.operationQueue.cancelAllOperations()
     }
-
-    // MARK: Public API
-    
-    func retryableOperation() -> UploadPrepOperation
-    {
-        let operation = UploadPrepOperation(sessionManager: self.sessionManager)
-        operation.me = self.me
-        operation.avAsset = self.avAsset
-        
-        return operation
-    }
-    
-    func selectPHAssetContainer(phAssetContainer: PHAssetContainer)
-    {
-        if self.didReceiveSelection == true
-        {
-            assertionFailure("Attempt to add selection to workflow that already has a selection")
-            
-            return
-        }
-        
-        if self.cancelled
-        {
-            return
-        }
-
-        self.didReceiveSelection = true
-    
-        // TODO: this will be called on the main thread
-        // But this property is being set elsewhere from a background thread, needs to be addressed
-        
-        if let avAsset = phAssetContainer.avAsset
-        {
-            self.avAsset = avAsset
-            self.proceedIfMeAndAVAssetExist()
-        }
-        else
-        {
-            self.downloadPHAsset(phAssetContainer.phAsset)
-        }
-    }
     
     // MARK: Private API
     
-    private func downloadPHAsset(phAsset: PHAsset)
+    private func downloadPHAsset()
     {
+        let phAsset = self.phAssetContainer.phAsset
         let operation = PHAssetDownloadOperation(phAsset: phAsset)
         operation.progressBlock = self.downloadProgressBlock
         operation.completionBlock = { [weak self] () -> Void in
@@ -190,56 +129,7 @@ class UploadPrepOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.avAsset = operation.result!
-                strongSelf.proceedIfMeAndAVAssetExist()
-            }
-        }
-        
-        self.operationQueue.addOperation(operation)
-    }
-    
-    private func proceedIfMeAndAVAssetExist()
-    {
-        if let _ = self.error
-        {
-            return
-        }
-        
-        guard let _ = self.me, let _ = self.avAsset else
-        {
-            return
-        }
-
-        self.checkDailyQuota()
-    }
-    
-    private func checkDailyQuota()
-    {
-        let me = self.me!
-        
-        let operation = DailyQuotaOperation(user: me)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if operation.cancelled == true
-            {
-                return
-            }
-
-            if let error = operation.error
-            {
-                strongSelf.error = error
-            }
-            else if let result = operation.result where result == false
-            {
-                strongSelf.error = NSError(domain: UploadPrepOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate daily quota."])
-            }
-            else
-            {
+                strongSelf.phAssetContainer.avAsset = operation.result!
                 strongSelf.checkApproximateWeeklyQuota()
             }
         }
@@ -249,11 +139,10 @@ class UploadPrepOperation: ConcurrentOperation
     
     private func checkApproximateWeeklyQuota()
     {
-        let me = self.me!
-        let avAsset = self.avAsset!
+        let avAsset = self.phAssetContainer.avAsset!
         let filesize = avAsset.approximateFileSize()
         
-        let operation = WeeklyQuotaOperation(user: me, filesize: filesize)
+        let operation = WeeklyQuotaOperation(user: self.me, filesize: filesize)
         operation.completionBlock = { [weak self] () -> Void in
             
             guard let strongSelf = self else
@@ -265,14 +154,14 @@ class UploadPrepOperation: ConcurrentOperation
             {
                 return
             }
-
+            
             if let error = operation.error
             {
                 strongSelf.error = error
             }
             else if let result = operation.result where result == false
             {
-                strongSelf.error = NSError(domain: UploadPrepOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
+                strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
             }
             else
             {
@@ -285,7 +174,8 @@ class UploadPrepOperation: ConcurrentOperation
     
     private func checkApproximateDiskSpace()
     {
-        let filesize = self.avAsset!.approximateFileSize()
+        let avAsset = self.phAssetContainer.avAsset!
+        let filesize = avAsset.approximateFileSize()
         
         let operation = DiskSpaceOperation(filesize: filesize)
         operation.completionBlock = { [weak self] () -> Void in
@@ -306,7 +196,7 @@ class UploadPrepOperation: ConcurrentOperation
             }
             else if let result = operation.result where result == false
             {
-                strongSelf.error = NSError(domain: UploadPrepOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
+                strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
             }
             else
             {
@@ -316,10 +206,10 @@ class UploadPrepOperation: ConcurrentOperation
         
         self.operationQueue.addOperation(operation)
     }
-    
+
     private func exportAsset()
     {
-        let avAsset = self.avAsset!
+        let avAsset = self.phAssetContainer.avAsset!
         
         let operation = AVAssetExportOperation(asset: avAsset)
         operation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
@@ -346,8 +236,9 @@ class UploadPrepOperation: ConcurrentOperation
             }
             else
             {
-                let outputURL = operation.outputURL!
-                let avUrlAsset = AVURLAsset(URL: outputURL)
+                strongSelf.result = operation.outputURL!
+
+                let avUrlAsset = AVURLAsset(URL: strongSelf.result!)
                 strongSelf.checkExactWeeklyQuota(avUrlAsset)
             }
         }
@@ -357,8 +248,6 @@ class UploadPrepOperation: ConcurrentOperation
     
     private func checkExactWeeklyQuota(avUrlAsset: AVURLAsset)
     {
-        let me = self.me!
-
         let filesize: NSNumber
         do
         {
@@ -371,7 +260,7 @@ class UploadPrepOperation: ConcurrentOperation
             return
         }
         
-        let operation = WeeklyQuotaOperation(user: me, filesize: filesize.doubleValue)
+        let operation = WeeklyQuotaOperation(user: self.me, filesize: filesize.doubleValue)
         operation.completionBlock = { [weak self] () -> Void in
             
             guard let strongSelf = self else
@@ -390,7 +279,7 @@ class UploadPrepOperation: ConcurrentOperation
             }
             else if let result = operation.result where result == false
             {
-                strongSelf.error = NSError(domain: UploadPrepOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
+                strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
             }
             else
             {
@@ -434,11 +323,11 @@ class UploadPrepOperation: ConcurrentOperation
             }
             else if let result = operation.result where result == false
             {
-                strongSelf.error = NSError(domain: UploadPrepOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to export asset."])
+                strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to export asset."])
             }
             else
             {
-                strongSelf.result = avUrlAsset.URL
+                strongSelf.state = .Finished
             }
         }
         
@@ -453,7 +342,7 @@ class UploadPrepOperation: ConcurrentOperation
 
         if filesize == nil
         {
-            throw NSError(domain: UploadPrepOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Exact filesize calculation failed because filesize is nil."])
+            throw NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Exact filesize calculation failed because filesize is nil."])
         }
         
         return filesize!

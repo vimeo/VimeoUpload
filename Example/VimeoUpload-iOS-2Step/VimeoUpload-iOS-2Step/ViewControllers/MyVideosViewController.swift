@@ -30,4 +30,39 @@ class MyVideosViewController: UIViewController
         
         self.presentViewController(navigationController, animated: true, completion: nil)
     }
+    
+//     MARK: KVO
+//
+//    private func addObservers()
+//    {
+//        self.uploadDescriptor?.addObserver(self, forKeyPath: VideoSettingsViewController.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.uploadProgressKVOContext)
+//    }
+//    
+//    private func removeObservers()
+//    {
+//        self.uploadDescriptor?.removeObserver(self, forKeyPath: VideoSettingsViewController.ProgressKeyPath, context: &self.uploadProgressKVOContext)
+//    }
+//    
+//    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+//    {
+//        if let keyPath = keyPath
+//        {
+//            switch (keyPath, context)
+//            {
+//            case(VideoSettingsViewController.ProgressKeyPath, &self.uploadProgressKVOContext):
+//                let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
+//                
+//                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                    print("Outer progress: \(progress)")
+//                })
+//                
+//            default:
+//                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+//            }
+//        }
+//        else
+//        {
+//            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+//        }
+//    }
 }
