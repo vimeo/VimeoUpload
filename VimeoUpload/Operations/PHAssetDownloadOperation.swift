@@ -66,6 +66,8 @@ class PHAssetDownloadOperation: ConcurrentOperation
         options.deliveryMode = .HighQualityFormat
         options.progressHandler = { [weak self] (progress: Double, error: NSError?, stop: UnsafeMutablePointer<ObjCBool>, info: [NSObject : AnyObject]?) -> Void in
             
+            // TODO: dispatch to main?
+            
             guard let strongSelf = self else
             {
                 return
@@ -102,6 +104,8 @@ class PHAssetDownloadOperation: ConcurrentOperation
         }
         
         self.requestID = PHImageManager.defaultManager().requestAVAssetForVideo(self.phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
+            
+            // TODO: dispatch to main?
             
             guard let strongSelf = self else
             {

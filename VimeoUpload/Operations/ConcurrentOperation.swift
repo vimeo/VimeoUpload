@@ -101,6 +101,12 @@ class ConcurrentOperation: NSOperation
     
         self.state = .Executing
 
+        // Specifically not dispatching the main method call on a background thread,
+        // It's the responsibility of the subclass to determine whether this is necessary,
+        // E.g. If the operation is parsing JSON then the subclass would dispatch that to a background thread,
+        // E.g. If the operation is starting an NSURLSessionTask there's no need because the task itself runs on a background thread,
+        // [AH] 11/10/2015
+        
         self.main()
     }
     

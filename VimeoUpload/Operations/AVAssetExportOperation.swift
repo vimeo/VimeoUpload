@@ -136,32 +136,35 @@ class AVAssetExportOperation: ConcurrentOperation
         
         self.exportSession.exportAsynchronouslyWithCompletionHandler({ [weak self] () -> Void in
           
-            guard let strongSelf = self else
-            {
-                return
-            }
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
             
-            if strongSelf.cancelled
-            {
-                return
-            }
-            
-            assert(strongSelf.exportSession.status == AVAssetExportSessionStatus.Completed, "Export did not complete")
-            
-            if let error = strongSelf.exportSession.error
-            {
-                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.Export.rawValue)
-            }
-            else if let outputURL = strongSelf.exportSession.outputURL, let path = outputURL.path where NSFileManager.defaultManager().fileExistsAtPath(path)
-            {
-                strongSelf.outputURL = outputURL
-            }
-            else
-            {
-                strongSelf.error = NSError.invalidExportSessionError()
-            
-                assertionFailure(strongSelf.error!.localizedDescription)
-            }
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if strongSelf.cancelled
+                {
+                    return
+                }
+                
+                assert(strongSelf.exportSession.status == AVAssetExportSessionStatus.Completed, "Export did not complete")
+                
+                if let error = strongSelf.exportSession.error
+                {
+                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.Export.rawValue)
+                }
+                else if let outputURL = strongSelf.exportSession.outputURL, let path = outputURL.path where NSFileManager.defaultManager().fileExistsAtPath(path)
+                {
+                    strongSelf.outputURL = outputURL
+                }
+                else
+                {
+                    strongSelf.error = NSError.invalidExportSessionError()
+                
+                    assertionFailure(strongSelf.error!.localizedDescription)
+                }
+            })
         })
 
         // For some reason, not sure why, KVO on self.exportSession.progress does not trigger calls to observeValueForKeyPath
