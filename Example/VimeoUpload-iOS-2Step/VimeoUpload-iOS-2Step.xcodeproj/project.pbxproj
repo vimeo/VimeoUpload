@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5034F5231BF29CB100326F6E /* PHAssetExportSessionOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5034F5221BF29CB100326F6E /* PHAssetExportSessionOperation.swift */; };
 		50596E111BE2D57700D1F8EC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596E101BE2D57700D1F8EC /* AppDelegate.swift */; };
 		50596E181BE2D57700D1F8EC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50596E171BE2D57700D1F8EC /* Assets.xcassets */; };
 		50596E1B1BE2D57700D1F8EC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50596E191BE2D57700D1F8EC /* LaunchScreen.storyboard */; };
@@ -87,6 +88,7 @@
 /* Begin PBXFileReference section */
 		0E5711A1FD4D8950313BE0BD /* Pods_VimeoUpload_iOS_2StepTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VimeoUpload_iOS_2StepTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BFDBA3DF1051D8BB02C74D9 /* Pods_VimeoUpload_iOS_2StepUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VimeoUpload_iOS_2StepUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5034F5221BF29CB100326F6E /* PHAssetExportSessionOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetExportSessionOperation.swift; sourceTree = "<group>"; };
 		50596E0D1BE2D57700D1F8EC /* VimeoUpload-iOS-2Step.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VimeoUpload-iOS-2Step.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50596E101BE2D57700D1F8EC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		50596E171BE2D57700D1F8EC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -327,6 +329,7 @@
 				50596E5B1BE2D70000D1F8EC /* ConcurrentOperation.swift */,
 				AFA638DF1BF103B4003B5821 /* MeOperation.swift */,
 				50596E5D1BE2D70000D1F8EC /* PHAssetDownloadOperation.swift */,
+				5034F5221BF29CB100326F6E /* PHAssetExportSessionOperation.swift */,
 				AFA638D91BF0FFC7003B5821 /* DailyQuotaOperation.swift */,
 				AFA638DB1BF0FFD8003B5821 /* WeeklyQuotaOperation.swift */,
 				AFA638DD1BF1002C003B5821 /* DiskSpaceOperation.swift */,
@@ -703,6 +706,7 @@
 				50596E761BE2D70000D1F8EC /* VideoSettings.swift in Sources */,
 				AF34DB5B1BE709650094D1F8 /* String+Extensions.swift in Sources */,
 				50596E111BE2D57700D1F8EC /* AppDelegate.swift in Sources */,
+				5034F5231BF29CB100326F6E /* PHAssetExportSessionOperation.swift in Sources */,
 				AF34DB721BE721150094D1F8 /* VideoSettingsViewController.swift in Sources */,
 				AF34DB6E1BE721150094D1F8 /* CameraRollViewController.swift in Sources */,
 				AF34DB6C1BE721150094D1F8 /* CameraRollCell.swift in Sources */,

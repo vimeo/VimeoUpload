@@ -1,8 +1,8 @@
 //
-//  PHAssetDownloadOperation.swift
-//  VimeoUpload
+//  PHAssetExportSessionOperation.swift
+//  VimeoUpload-iOS-2Step
 //
-//  Created by Hanssen, Alfie on 10/13/15.
+//  Created by Hanssen, Alfie on 11/10/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,41 +28,43 @@ import Foundation
 import Photos
 
 @available(iOS 8, *)
-class PHAssetDownloadOperation: ConcurrentOperation
+class PHAssetExportSessionOperation: ConcurrentOperation
 {
-    private static let ErrorDomain = "PHAssetDownloadOperationErrorDomain"
-    
+    private static let ErrorDomain = "PHAssetExportSessionOperationErrorDomain"
+
     private let phAsset: PHAsset
+    private let exportPreset: String
     
     private var requestID: PHImageRequestID?
     var progressBlock: ProgressBlock?
-
-    private(set) var result: AVAsset?
+    
+    private(set) var result: AVAssetExportSession?
     private(set) var error: NSError?
-
+    
     // MARK: Initialization
-
+    
     deinit
     {
         self.cleanup()
     }
     
-    init(phAsset: PHAsset)
+    init(phAsset: PHAsset, exportPreset: String = AVAssetExportPresetHighestQuality)
     {
         self.phAsset = phAsset
+        self.exportPreset = exportPreset
         
         super.init()
     }
     
     // MARK: Overrides
-
+    
     override func main()
     {
         if self.cancelled
-        {            
+        {
             return
         }
-                
+        
         let options = PHVideoRequestOptions()
         options.networkAccessAllowed = true
         options.deliveryMode = .HighQualityFormat
@@ -74,19 +76,19 @@ class PHAssetDownloadOperation: ConcurrentOperation
             {
                 return
             }
-
+            
             strongSelf.requestID = nil
-
+            
             if strongSelf.cancelled
             {
                 return
             }
-
+            
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
             {
                 return
             }
-
+            
             // TODO: if an error is delivered here, will the completionHandler be called?
             
             if let error = error
@@ -105,51 +107,51 @@ class PHAssetDownloadOperation: ConcurrentOperation
             }
         }
         
-        self.requestID = PHImageManager.defaultManager().requestAVAssetForVideo(self.phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
+        self.requestID = PHImageManager.defaultManager().requestExportSessionForVideo(self.phAsset, options: options, exportPreset: self.exportPreset, resultHandler: { (exportSession, info) -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-            
+                
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
                 strongSelf.requestID = nil
-
+                
                 if strongSelf.cancelled
                 {
                     return
                 }
-
+                
                 if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
                 {
                     return
                 }
-
+                
                 if let info = info, let error = info[PHImageErrorKey] as? NSError
                 {
                     strongSelf.error = error
                 }
-                else if let asset = asset
+                else if let exportSession = exportSession
                 {
-                    strongSelf.result = asset
+                    strongSelf.result = exportSession
                 }
                 else
                 {
-                    strongSelf.error = NSError(domain: PHAssetDownloadOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Request for AVAsset returned no error and no asset."])
+                    strongSelf.error = NSError(domain: PHAssetExportSessionOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Request for export session returned no error and no export session"])
                 }
                 
                 strongSelf.state = .Finished
             })
-        }
+        })
     }
     
     override func cancel()
     {
         super.cancel()
-
-        print("PHAssetDownloadOperation cancelled")
-
+        
+        print("PHAssetExportSessionOperation cancelled")
+        
         self.cleanup()
     }
     
