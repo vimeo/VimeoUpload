@@ -105,39 +105,40 @@ class PHAssetDownloadOperation: ConcurrentOperation
         
         self.requestID = PHImageManager.defaultManager().requestAVAssetForVideo(self.phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
             
-            // TODO: dispatch to main?
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            strongSelf.requestID = nil
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                strongSelf.requestID = nil
 
-            if strongSelf.cancelled
-            {
-                return
-            }
+                if strongSelf.cancelled
+                {
+                    return
+                }
 
-            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
-            {
-                return
-            }
+                if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
+                {
+                    return
+                }
 
-            if let info = info, let error = info[PHImageErrorKey] as? NSError
-            {
-                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAsset.rawValue)
-            }
-            else if let asset = asset
-            {
-                strongSelf.result = asset
-            }
-            else
-            {
-                strongSelf.error = NSError.phAssetNilAssetError()
-            }
-            
-            strongSelf.state = .Finished
+                if let info = info, let error = info[PHImageErrorKey] as? NSError
+                {
+                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAsset.rawValue)
+                }
+                else if let asset = asset
+                {
+                    strongSelf.result = asset
+                }
+                else
+                {
+                    strongSelf.error = NSError.phAssetNilAssetError()
+                }
+                
+                strongSelf.state = .Finished
+            })
         }
     }
     

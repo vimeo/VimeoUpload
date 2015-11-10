@@ -122,8 +122,6 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     func didTapPost(sender: UIBarButtonItem)
     {
-        // TODO: what if error or state changes on background thread when this condition is being checked on main thread?
-
         if let error = self.operation?.error
         {
             self.presentOperationErrorAlert(error)

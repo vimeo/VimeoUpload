@@ -78,8 +78,6 @@ class VideoSettingsOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    // TODO: Most of these completion blocks are being called on background threads, is this okay?
-    
     override func main()
     {
         if self.cancelled
@@ -115,25 +113,28 @@ class VideoSettingsOperation: ConcurrentOperation
         operation.progressBlock = self.downloadProgressBlock
         operation.completionBlock = { [weak self] () -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
             
-            if operation.cancelled == true
-            {
-                return
-            }
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
 
-            if let error = operation.error
-            {
-                strongSelf.error = error
-            }
-            else
-            {
-                strongSelf.phAssetContainer.avAsset = operation.result!
-                strongSelf.checkApproximateWeeklyQuota()
-            }
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else
+                {
+                    strongSelf.phAssetContainer.avAsset = operation.result!
+                    strongSelf.checkApproximateWeeklyQuota()
+                }
+            })
         }
         
         self.operationQueue.addOperation(operation)
@@ -147,28 +148,31 @@ class VideoSettingsOperation: ConcurrentOperation
         let operation = WeeklyQuotaOperation(user: self.me, filesize: filesize)
         operation.completionBlock = { [weak self] () -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
             
-            if operation.cancelled == true
-            {
-                return
-            }
-            
-            if let error = operation.error
-            {
-                strongSelf.error = error
-            }
-            else if let result = operation.result where result == false
-            {
-                strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
-            }
-            else
-            {
-                strongSelf.checkApproximateDiskSpace()
-            }
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else if let result = operation.result where result == false
+                {
+                    strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
+                }
+                else
+                {
+                    strongSelf.checkApproximateDiskSpace()
+                }
+            })
         }
         
         self.operationQueue.addOperation(operation)
@@ -182,28 +186,31 @@ class VideoSettingsOperation: ConcurrentOperation
         let operation = DiskSpaceOperation(filesize: filesize)
         operation.completionBlock = { [weak self] () -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if operation.cancelled == true
-            {
-                return
-            }
-            
-            if let error = operation.error
-            {
-                strongSelf.error = error
-            }
-            else if let result = operation.result where result == false
-            {
-                strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
-            }
-            else
-            {
-                strongSelf.exportAsset()
-            }
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else if let result = operation.result where result == false
+                {
+                    strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
+                }
+                else
+                {
+                    strongSelf.exportAsset()
+                }
+            })
         }
         
         self.operationQueue.addOperation(operation)
@@ -215,9 +222,13 @@ class VideoSettingsOperation: ConcurrentOperation
         
         let operation = AVAssetExportOperation(asset: avAsset)
         operation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-                self?.exportProgressBlock?(progress: progress)
-            })
+            
+            if let progressBlock = self?.exportProgressBlock
+            {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    progressBlock(progress: progress)
+                })
+            }
         }
 
         operation.completionBlock = { [weak self] () -> Void in

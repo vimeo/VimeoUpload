@@ -77,8 +77,6 @@ class CameraRollOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    // TODO: Most of these completion blocks are being called on background threads, is this okay?
-    
     override func main()
     {
         if self.cancelled
@@ -129,9 +127,6 @@ class CameraRollOperation: ConcurrentOperation
         {
             return
         }
-
-        // TODO: this will be called on the main thread
-        // But this property is being set elsewhere from a background thread, needs to be addressed
 
         self.avAsset = avAsset
         self.selectionFulfilled = true
