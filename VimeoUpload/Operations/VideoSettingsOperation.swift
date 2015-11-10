@@ -33,11 +33,9 @@ import Photos
 
 // This flow encapsulates the following steps:
 // 1. If inCloud, download
-// 2. If inCloud, check approximate weekly quota
-// 3. If inCloud, check approximate disk space
-// 4. Export
-// 5. Check weekly quota
-// 6. Check disk space
+// 2. Export
+// 3. Check weekly quota
+// 4. Check disk space
 
 class VideoSettingsOperation: ConcurrentOperation
 {
@@ -132,82 +130,6 @@ class VideoSettingsOperation: ConcurrentOperation
                 else
                 {
                     strongSelf.phAssetContainer.avAsset = operation.result!
-                    strongSelf.checkApproximateWeeklyQuota()
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
-    }
-    
-    private func checkApproximateWeeklyQuota()
-    {
-        let avAsset = self.phAssetContainer.avAsset!
-        let filesize = avAsset.approximateFileSize()
-        
-        let operation = WeeklyQuotaOperation(user: self.me, filesize: filesize)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-            
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.cancelled == true
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else if let result = operation.result where result == false
-                {
-                    strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
-                }
-                else
-                {
-                    strongSelf.checkApproximateDiskSpace()
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
-    }
-    
-    private func checkApproximateDiskSpace()
-    {
-        let avAsset = self.phAssetContainer.avAsset!
-        let filesize = avAsset.approximateFileSize()
-        
-        let operation = DiskSpaceOperation(filesize: filesize)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.cancelled == true
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else if let result = operation.result where result == false
-                {
-                    strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
-                }
-                else
-                {
                     strongSelf.exportAsset()
                 }
             })
@@ -215,7 +137,7 @@ class VideoSettingsOperation: ConcurrentOperation
         
         self.operationQueue.addOperation(operation)
     }
-
+    
     private func exportAsset()
     {
         let avAsset = self.phAssetContainer.avAsset!
