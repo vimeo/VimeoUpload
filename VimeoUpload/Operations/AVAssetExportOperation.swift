@@ -70,21 +70,9 @@ class AVAssetExportOperation: ConcurrentOperation
     
     // MARK: Initialization
     
-    convenience init(asset: AVAsset, presetName: String = AVAssetExportPresetPassthrough, baseOutputURL: NSURL = AVAssetExportOperation.DocumentsURL)
+    convenience init(asset: AVAsset)
     {
-        let exportSession = AVAssetExportSession(asset: asset, presetName: presetName)! // Assert if this produces nil [AH] 10/15/2015
-        exportSession.shouldOptimizeForNetworkUse = true
-        exportSession.outputFileType = AVAssetExportOperation.FileType
-        
-        do
-        {
-            exportSession.outputURL = try baseOutputURL.vimeoUploadExportURL(AVAssetExportOperation.FileType)
-        }
-        catch let error as NSError
-        {
-            assertionFailure("Error creating upload export directory: \(error.localizedDescription)")
-        }
-        
+        let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)!
         exportSession.timeRange = CMTimeRangeMake(kCMTimeZero, asset.duration)
         
         self.init(exportSession: exportSession)
@@ -97,6 +85,18 @@ class AVAssetExportOperation: ConcurrentOperation
         
         assert(CMTIMERANGE_IS_VALID(exportSession.timeRange) && CMTIMERANGE_IS_EMPTY(exportSession.timeRange) == false && CMTIMERANGE_IS_INDEFINITE(exportSession.timeRange) == false, "AVAssetExportSession is configured with invalid timeRange")
         
+        exportSession.shouldOptimizeForNetworkUse = true
+        exportSession.outputFileType = AVAssetExportOperation.FileType
+        
+        do
+        {
+            exportSession.outputURL = try AVAssetExportOperation.DocumentsURL.vimeoUploadExportURL(AVAssetExportOperation.FileType)
+        }
+        catch let error as NSError
+        {
+            assertionFailure("Error creating upload export directory: \(error.localizedDescription)")
+        }
+
         self.exportSession = exportSession
         
         super.init()
@@ -150,7 +150,7 @@ class AVAssetExportOperation: ConcurrentOperation
                     return
                 }
                 
-//                assert(strongSelf.exportSession.status == AVAssetExportSessionStatus.Completed, "Export did not complete")
+                assert(strongSelf.exportSession.status == AVAssetExportSessionStatus.Completed, "Export did not complete")
             
                 if let error = strongSelf.exportSession.error
                 {

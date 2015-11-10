@@ -83,13 +83,13 @@ class VideoSettingsOperation: ConcurrentOperation
             return
         }
 
-        if let _ = self.phAssetContainer.avAsset
+        if let asset = self.phAssetContainer.avAsset
         {
-            self.exportAsset()
+            self.export(asset)
         }
         else
         {
-            self.downloadPHAsset()
+            self.downloadPHAssetExportSession()
         }
     }
     
@@ -104,10 +104,10 @@ class VideoSettingsOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    private func downloadPHAsset()
+    private func downloadPHAssetExportSession()
     {
         let phAsset = self.phAssetContainer.phAsset
-        let operation = PHAssetDownloadOperation(phAsset: phAsset)
+        let operation = PHAssetExportSessionOperation(phAsset: phAsset)
         operation.progressBlock = self.downloadProgressBlock
         operation.completionBlock = { [weak self] () -> Void in
             
@@ -129,8 +129,8 @@ class VideoSettingsOperation: ConcurrentOperation
                 }
                 else
                 {
-                    strongSelf.phAssetContainer.avAsset = operation.result!
-                    strongSelf.exportAsset()
+                    let exportSession = operation.result!
+                    strongSelf.export(exportSession)
                 }
             })
         }
@@ -138,11 +138,20 @@ class VideoSettingsOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    private func exportAsset()
+    private func export(exportSession: AVAssetExportSession)
     {
-        let avAsset = self.phAssetContainer.avAsset!
-        
-        let operation = AVAssetExportOperation(asset: avAsset)
+        let operation = AVAssetExportOperation(exportSession: exportSession)
+        self.export(operation)
+    }
+    
+    private func export(asset: AVAsset)
+    {
+        let operation = AVAssetExportOperation(asset: asset)
+        self.export(operation)
+    }
+    
+    private func export(operation: AVAssetExportOperation)
+    {
         operation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
             
             if let progressBlock = self?.exportProgressBlock
