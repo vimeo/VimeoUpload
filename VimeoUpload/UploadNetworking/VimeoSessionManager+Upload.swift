@@ -41,38 +41,39 @@ typealias UserCompletionHandler = (user: VIMUser?, error: NSError?) -> Void
 
 extension VimeoSessionManager
 {
-    // TODO: set the completion queue to a background queue so parsing occurs off the main thread
-    
     func meDataTask(completionHandler: UserCompletionHandler) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).meRequest()
 
         let task = self.dataTaskWithRequest(request, completionHandler: { (response, responseObject, error) -> Void in
 
-            if let error = error
-            {
-                completionHandler(user: nil, error: error)
+            // Do model parsing on a background thread
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
                 
-                return
-            }
-            
-            if let responseObject = responseObject as? [String: AnyObject]
-            {
-                let mapper = VIMObjectMapper()
-                mapper.addMappingClass(VIMUser.self, forKeypath: "")
-
-                if let user = mapper.applyMappingToJSON(responseObject) as? VIMUser
+                if let error = error
                 {
-                    completionHandler(user: user, error: nil)
+                    completionHandler(user: nil, error: error)
                     
                     return
                 }
-            }
-            
-            // TODO: add error info
-            let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "/me returned no error and no user data"])
-            completionHandler(user: nil, error: error)
+                
+                if let responseObject = responseObject as? [String: AnyObject]
+                {
+                    let mapper = VIMObjectMapper()
+                    mapper.addMappingClass(VIMUser.self, forKeypath: "")
 
+                    if let user = mapper.applyMappingToJSON(responseObject) as? VIMUser
+                    {
+                        completionHandler(user: user, error: nil)
+                        
+                        return
+                    }
+                }
+                
+                // TODO: add error info
+                let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "/me returned no error and no user data"])
+                completionHandler(user: nil, error: error)
+            })
         })
         
         task.taskDescription = TaskDescription.Me.rawValue

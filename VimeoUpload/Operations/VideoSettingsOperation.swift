@@ -101,6 +101,8 @@ class VideoSettingsOperation: ConcurrentOperation
     {
         super.cancel()
         
+        print("VideoSettingsOperation cancelled")
+
         self.operationQueue.cancelAllOperations()
     }
     
@@ -220,27 +222,30 @@ class VideoSettingsOperation: ConcurrentOperation
 
         operation.completionBlock = { [weak self] () -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if operation.cancelled == true
-            {
-                return
-            }
-            
-            if let error = operation.error
-            {
-                strongSelf.error = error
-            }
-            else
-            {
-                strongSelf.result = operation.outputURL!
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
 
-                let avUrlAsset = AVURLAsset(URL: strongSelf.result!)
-                strongSelf.checkExactWeeklyQuota(avUrlAsset)
-            }
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else
+                {
+                    strongSelf.result = operation.outputURL!
+
+                    let avUrlAsset = AVURLAsset(URL: strongSelf.result!)
+                    strongSelf.checkExactWeeklyQuota(avUrlAsset)
+                }
+            })
         }
         
         self.operationQueue.addOperation(operation)
@@ -263,28 +268,31 @@ class VideoSettingsOperation: ConcurrentOperation
         let operation = WeeklyQuotaOperation(user: self.me, filesize: filesize.doubleValue)
         operation.completionBlock = { [weak self] () -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if operation.cancelled == true
-            {
-                return
-            }
-            
-            if let error = operation.error
-            {
-                strongSelf.error = error
-            }
-            else if let result = operation.result where result == false
-            {
-                strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
-            }
-            else
-            {
-                strongSelf.checkExactDiskSpace(avUrlAsset)
-            }
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else if let result = operation.result where result == false
+                {
+                    strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
+                }
+                else
+                {
+                    strongSelf.checkExactDiskSpace(avUrlAsset)
+                }
+            })
         }
         
         self.operationQueue.addOperation(operation)
@@ -307,28 +315,31 @@ class VideoSettingsOperation: ConcurrentOperation
         let operation = DiskSpaceOperation(filesize: filesize.doubleValue)
         operation.completionBlock = { [weak self] () -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if operation.cancelled == true
-            {
-                return
-            }
-            
-            if let error = operation.error
-            {
-                strongSelf.error = error
-            }
-            else if let result = operation.result where result == false
-            {
-                strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to export asset."])
-            }
-            else
-            {
-                strongSelf.state = .Finished
-            }
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else if let result = operation.result where result == false
+                {
+                    strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to export asset."])
+                }
+                else
+                {
+                    strongSelf.state = .Finished
+                }
+            })
         }
         
         self.operationQueue.addOperation(operation)

@@ -101,9 +101,7 @@ class ConcurrentOperation: NSOperation
     
         self.state = .Executing
 
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { [weak self] () -> Void in
-            self?.main()
-        }
+        self.main()
     }
     
     override func main()

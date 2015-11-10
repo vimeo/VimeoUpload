@@ -134,27 +134,6 @@ class AVAssetExportOperation: ConcurrentOperation
             return
         }
         
-        
-//        Just a note, the docs say that assetExportSession.estimatedOutputFileLength will always return 0 for AVAssetExportPresetPassThrough. Beware...
-//        
-//        let fileLength = NSNumber(longLong: self.exportSession.estimatedOutputFileLength) // TODO: Is this value reliable? [AH]
-//        let freeDiskSpace = try? NSFileManager.defaultManager().availableDiskSpace()
-//        guard let aFreeDiskSpace = freeDiskSpace else
-//        {
-//            self.error = NSError.unableToCalculateAvailableDiskSpaceError()
-//            
-//            return
-//        }
-//        
-//        // TODO: get rid of all of these error objects and just use an ErrorType enum that's a simple numeric code?
-//        
-//        if let space = aFreeDiskSpace where fileLength.unsignedLongLongValue > 0 && space.unsignedLongLongValue < fileLength.unsignedLongLongValue
-//        {
-//            self.error = NSError.noDiskSpaceAvailableError()
-//            
-//            return
-//        }
-    
         self.exportSession.exportAsynchronouslyWithCompletionHandler({ [weak self] () -> Void in
           
             guard let strongSelf = self else
@@ -202,6 +181,8 @@ class AVAssetExportOperation: ConcurrentOperation
         
         self.progressBlock = nil
         self.exportSession.cancelExport()
+
+        print("AVAssetExportOperation cancelled")
 
         self.deleteFile(self.outputURL)
     }

@@ -100,6 +100,8 @@ class CameraRollOperation: ConcurrentOperation
     {
         super.cancel()
         
+        print("CameraRollOperation cancelled")
+        
         self.operationQueue.cancelAllOperations()
     }
 
@@ -144,26 +146,28 @@ class CameraRollOperation: ConcurrentOperation
         let operation = MeOperation(sessionManager: self.sessionManager)
         operation.completionBlock = { [weak self] () -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if operation.cancelled == true
-            {
-                return
-            }
-            
-            let error = NSError(domain: "", code: 0, userInfo: nil)
-            if let error = operation.error
-            {
-                strongSelf.error = error
-            }
-            else
-            {
-                strongSelf.me = operation.result!
-                strongSelf.proceedIfMeAndSelectionFulfilled()
-            }
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else
+                {
+                    strongSelf.me = operation.result!
+                    strongSelf.proceedIfMeAndSelectionFulfilled()
+                }
+            })
         }
         
         self.operationQueue.addOperation(operation)
@@ -198,28 +202,31 @@ class CameraRollOperation: ConcurrentOperation
         let operation = DailyQuotaOperation(user: me)
         operation.completionBlock = { [weak self] () -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if operation.cancelled == true
-            {
-                return
-            }
-            
-            if let error = operation.error
-            {
-                strongSelf.error = error
-            }
-            else if let result = operation.result where result == false
-            {
-                strongSelf.error = NSError(domain: CameraRollOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate daily quota."])
-            }
-            else
-            {
-                strongSelf.checkApproximateWeeklyQuota()
-            }
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else if let result = operation.result where result == false
+                {
+                    strongSelf.error = NSError(domain: CameraRollOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate daily quota."])
+                }
+                else
+                {
+                    strongSelf.checkApproximateWeeklyQuota()
+                }
+            })
         }
         
         self.operationQueue.addOperation(operation)
@@ -234,28 +241,31 @@ class CameraRollOperation: ConcurrentOperation
         let operation = WeeklyQuotaOperation(user: me, filesize: filesize)
         operation.completionBlock = { [weak self] () -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if operation.cancelled == true
-            {
-                return
-            }
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
 
-            if let error = operation.error
-            {
-                strongSelf.error = error
-            }
-            else if let result = operation.result where result == false
-            {
-                strongSelf.error = NSError(domain: CameraRollOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
-            }
-            else
-            {
-                strongSelf.checkApproximateDiskSpace()
-            }
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else if let result = operation.result where result == false
+                {
+                    strongSelf.error = NSError(domain: CameraRollOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
+                }
+                else
+                {
+                    strongSelf.checkApproximateDiskSpace()
+                }
+            })
         }
         
         self.operationQueue.addOperation(operation)
@@ -268,28 +278,31 @@ class CameraRollOperation: ConcurrentOperation
         let operation = DiskSpaceOperation(filesize: filesize)
         operation.completionBlock = { [weak self] () -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if operation.cancelled == true
-            {
-                return
-            }
-            
-            if let error = operation.error
-            {
-                strongSelf.error = error
-            }
-            else if let result = operation.result where result == false
-            {
-                strongSelf.error = NSError(domain: CameraRollOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
-            }
-            else
-            {
-                strongSelf.state = .Finished
-            }
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else if let result = operation.result where result == false
+                {
+                    strongSelf.error = NSError(domain: CameraRollOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
+                }
+                else
+                {
+                    strongSelf.state = .Finished
+                }
+            })
         }
         
         self.operationQueue.addOperation(operation)

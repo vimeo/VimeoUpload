@@ -65,4 +65,11 @@ class DiskSpaceOperation: NSOperation
             self.error = NSError(domain: DiskSpaceOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to calculate available disk space"])
         }
     }
+    
+    override func cancel()
+    {
+        super.cancel()
+        
+        print("DiskSpaceOperation cancelled")
+    }
 }

@@ -141,6 +141,8 @@ class PHAssetDownloadOperation: ConcurrentOperation
     {
         super.cancel()
 
+        print("PHAssetDownloadOperation cancelled")
+
         self.cleanup()
     }
     
