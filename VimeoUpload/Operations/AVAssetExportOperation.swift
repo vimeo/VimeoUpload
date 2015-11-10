@@ -133,7 +133,9 @@ class AVAssetExportOperation: ConcurrentOperation
             
             return
         }
-        
+
+        // TODO: playable, readable, composable?
+
         self.exportSession.exportAsynchronouslyWithCompletionHandler({ [weak self] () -> Void in
           
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -148,8 +150,8 @@ class AVAssetExportOperation: ConcurrentOperation
                     return
                 }
                 
-                assert(strongSelf.exportSession.status == AVAssetExportSessionStatus.Completed, "Export did not complete")
-                
+//                assert(strongSelf.exportSession.status == AVAssetExportSessionStatus.Completed, "Export did not complete")
+            
                 if let error = strongSelf.exportSession.error
                 {
                     strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.Export.rawValue)
