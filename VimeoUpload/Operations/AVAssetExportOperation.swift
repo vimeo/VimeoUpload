@@ -47,26 +47,7 @@ class AVAssetExportOperation: ConcurrentOperation
     var progressBlock: ProgressBlock?
     
     private(set) var outputURL: NSURL?
-    {
-        didSet
-        {
-            if self.outputURL != nil
-            {
-                self.state = .Finished
-            }
-        }
-    }
-    
     private(set) var error: NSError?
-    {
-        didSet
-        {
-            if self.error != nil
-            {
-                self.state = .Finished
-            }
-        }
-    }
     
     // MARK: Initialization
     
@@ -123,18 +104,12 @@ class AVAssetExportOperation: ConcurrentOperation
         if self.exportSession.asset.exportable == false
         {
             self.error = NSError.assetNotExportableError()
+            self.state = .Finished
             
             return
         }
 
-        if self.exportSession.asset.hasProtectedContent == true
-        {
-            self.error = NSError.assetHasProtectedContentError()
-            
-            return
-        }
-
-        // TODO: playable, readable, composable?
+        // TODO: playable, readable, composable, hasProtectedContent?
 
         self.exportSession.exportAsynchronouslyWithCompletionHandler({ [weak self] () -> Void in
           
@@ -150,8 +125,6 @@ class AVAssetExportOperation: ConcurrentOperation
                     return
                 }
                 
-                assert(strongSelf.exportSession.status == AVAssetExportSessionStatus.Completed, "Export did not complete")
-            
                 if let error = strongSelf.exportSession.error
                 {
                     strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.Export.rawValue)
@@ -163,9 +136,9 @@ class AVAssetExportOperation: ConcurrentOperation
                 else
                 {
                     strongSelf.error = NSError.invalidExportSessionError()
-                
-                    assertionFailure(strongSelf.error!.localizedDescription)
                 }
+
+                strongSelf.state = .Finished
             })
         })
 
@@ -193,7 +166,10 @@ class AVAssetExportOperation: ConcurrentOperation
     }
     
     // MARK: Private API
-        
+    
+    // TODO: put descriptors and exports in different directories
+    // TODO: Delete contents of directory regularly?
+    
     private func deleteFile(url: NSURL?)
     {
         if let url = url where NSFileManager.defaultManager().fileExistsAtPath(url.absoluteString)

@@ -7,6 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VideoSettingsViewController" customModule="VimeoUpload_iOS_2Step" customModuleProvider="target">
             <connections>
+                <outlet property="activityIndicatorView" destination="3BE-GR-vjs" id="PZi-JI-h5J"/>
                 <outlet property="descriptionTextView" destination="Xgk-9t-WE7" id="opt-8p-xhk"/>
                 <outlet property="titleTextField" destination="6Wc-5C-aKK" id="PW1-hi-XyF"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -40,15 +41,23 @@
                         <outlet property="delegate" destination="-1" id="CF9-FM-VRH"/>
                     </connections>
                 </textView>
+                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="3BE-GR-vjs">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="0.5" colorSpace="calibratedRGB"/>
+                </activityIndicatorView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="6Wc-5C-aKK" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="8" id="3Cb-yy-zhw"/>
                 <constraint firstItem="6Wc-5C-aKK" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="KtB-Ls-apR"/>
+                <constraint firstAttribute="bottom" secondItem="3BE-GR-vjs" secondAttribute="bottom" id="Rem-b6-z0P"/>
                 <constraint firstAttribute="trailing" secondItem="6Wc-5C-aKK" secondAttribute="trailing" constant="8" id="SSy-DC-j8l"/>
                 <constraint firstAttribute="trailing" secondItem="Xgk-9t-WE7" secondAttribute="trailing" constant="8" id="YLt-zr-UjF"/>
                 <constraint firstItem="Xgk-9t-WE7" firstAttribute="top" secondItem="6Wc-5C-aKK" secondAttribute="bottom" constant="8" id="flr-J6-GDv"/>
+                <constraint firstAttribute="trailing" secondItem="3BE-GR-vjs" secondAttribute="trailing" id="gxr-lB-963"/>
                 <constraint firstItem="Xgk-9t-WE7" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="h60-di-sW5"/>
+                <constraint firstItem="3BE-GR-vjs" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="muW-77-vf9"/>
+                <constraint firstItem="3BE-GR-vjs" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="t2H-3l-S12"/>
             </constraints>
         </view>
     </objects>

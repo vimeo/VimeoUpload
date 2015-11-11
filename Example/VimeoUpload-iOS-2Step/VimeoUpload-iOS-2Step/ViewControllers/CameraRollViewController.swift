@@ -316,7 +316,11 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         }
         else
         {
-            self.activityIndicatorView.startAnimating()
+            // Only show the activity indicator UI if the network request is in progress
+            if self.operation?.me == nil
+            {
+                self.activityIndicatorView.startAnimating()
+            }
             
             self.operation?.fulfillSelection(phAssetContainer.avAsset) // avAsset may or may not be nil, which is fine
         }

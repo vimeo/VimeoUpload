@@ -38,7 +38,7 @@ class CameraRollViewController: UIViewController, UITableViewDataSource, UITable
     
     private var phAssetOperation: PHAssetOperation?
     private var exportVideoOperation: ExportVideoOperation?
-    private var uploadDescriptor: UploadDescriptor?
+    private var uploadDescriptor: 4StepUploadDescriptor?
 
     // MARK: Lifecycle
     
@@ -182,7 +182,7 @@ class CameraRollViewController: UIViewController, UITableViewDataSource, UITable
         self.removeObservers()
         
         let videoSettings = VideoSettings(title: "hey!!", description: nil, privacy: "goo", users: nil)
-        self.uploadDescriptor = UploadDescriptor(url: url, videoSettings: videoSettings)
+        self.uploadDescriptor = 4StepUploadDescriptor(url: url, videoSettings: videoSettings)
         self.uploadDescriptor!.identifier = "\(url.absoluteString.hash)"
         
         self.addObservers()

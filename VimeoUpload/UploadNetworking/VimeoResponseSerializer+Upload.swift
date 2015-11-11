@@ -88,14 +88,17 @@ extension VimeoResponseSerializer
             throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Data at url for completed download task is nil"])
         }
         
-        let dictionary: [String: AnyObject]?
-        do
+        var dictionary: [String: AnyObject]? = [:]
+        if data.length > 0
         {
-            dictionary = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? [String: AnyObject]
-        }
-        catch let error as NSError
-        {
-            throw error
+            do
+            {
+                dictionary = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? [String: AnyObject]
+            }
+            catch let error as NSError
+            {
+                throw error
+            }
         }
         
         if dictionary == nil

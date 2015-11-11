@@ -38,7 +38,7 @@ class Descriptor: NSObject
     var state = State.Ready
     var identifier: String?
     var error: NSError?
-    var currentTaskIdentifier: Int? // TODO: Convert this into a set?
+    var currentTaskIdentifier: Int?
 
     override init()
     {

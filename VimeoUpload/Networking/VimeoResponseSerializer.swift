@@ -51,16 +51,6 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
 //        return super.responseObjectForResponse(response, data: data, error: error)
 //    }
     
-    override func responseObjectForResponse(response: NSURLResponse?, data: NSData?) throws -> AnyObject
-    {
-        if let httpResponse = response as? NSHTTPURLResponse
-        {
-            print(httpResponse.allHeaderFields)
-        }
-        
-        return try super.responseObjectForResponse(response, data: data)
-    }
-    
     // MARK: Private API
 
     private static func acceptableContentTypes() -> Set<String>

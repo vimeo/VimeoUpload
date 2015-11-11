@@ -34,7 +34,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var descriptionTextView: UITextView!
-    
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
+
     var input: VideoSettingsViewControllerInput?
     private var operation: VideoSettingsOperation?
     private var descriptor: UploadDescriptor?
@@ -116,8 +117,6 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
     }
     
-    // TODO: think through / implement the various user action sequences that can occur here
-
     // MARK: Actions
 
     func didTapPost(sender: UIBarButtonItem)
@@ -132,11 +131,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
         else if self.operation?.state == .Executing
         {
-            // TODO: show activity UI
+            self.activityIndicatorView.startAnimating()
         }
         else if self.descriptor?.state == .Executing
         {
-            // TODO: show activity UI
+            self.activityIndicatorView.startAnimating()
         }
         else
         {
