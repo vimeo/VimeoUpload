@@ -34,6 +34,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     private static let CollectionViewSpacing: CGFloat = 2
     
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     
     private var assets: [PHAssetContainer] = []
     private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
@@ -134,7 +135,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                     return
                 }
                 
-                // TODO: hide activity indicator
+                strongSelf.activityIndicatorView.stopAnimating()
 
                 if let error = operation.error
                 {
@@ -315,7 +316,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         }
         else
         {
-            // TODO: show activity indicator
+            self.activityIndicatorView.startAnimating()
             
             self.operation?.fulfillSelection(phAssetContainer.avAsset) // avAsset may or may not be nil, which is fine
         }

@@ -7,6 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CameraRollViewController" customModule="VimeoUpload_iOS_2Step" customModuleProvider="target">
             <connections>
+                <outlet property="activityIndicatorView" destination="KJx-Rw-dOW" id="bJX-QE-Alz"/>
                 <outlet property="collectionView" destination="hCc-kg-2a0" id="ZhC-oC-ffj"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="YcC-eA-0Vq"/>
             </connections>
@@ -30,12 +31,20 @@
                         <outlet property="delegate" destination="-1" id="FzO-Yk-Bb7"/>
                     </connections>
                 </collectionView>
+                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="KJx-Rw-dOW">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="0.5" colorSpace="calibratedRGB"/>
+                </activityIndicatorView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
+                <constraint firstItem="KJx-Rw-dOW" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="6BX-C4-6vX"/>
                 <constraint firstAttribute="trailing" secondItem="hCc-kg-2a0" secondAttribute="trailing" id="Cyf-wD-VlU"/>
+                <constraint firstItem="KJx-Rw-dOW" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Kwl-Fb-E0q"/>
+                <constraint firstAttribute="bottom" secondItem="KJx-Rw-dOW" secondAttribute="bottom" id="L2I-RO-pSA"/>
                 <constraint firstItem="hCc-kg-2a0" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="TJ9-px-Sft"/>
                 <constraint firstItem="hCc-kg-2a0" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="U3v-8c-uRx"/>
+                <constraint firstAttribute="trailing" secondItem="KJx-Rw-dOW" secondAttribute="trailing" id="exf-Ve-z6v"/>
                 <constraint firstAttribute="bottom" secondItem="hCc-kg-2a0" secondAttribute="bottom" id="xOk-b8-KIP"/>
             </constraints>
         </view>

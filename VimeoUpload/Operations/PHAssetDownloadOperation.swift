@@ -68,41 +68,42 @@ class PHAssetDownloadOperation: ConcurrentOperation
         options.deliveryMode = .HighQualityFormat
         options.progressHandler = { [weak self] (progress: Double, error: NSError?, stop: UnsafeMutablePointer<ObjCBool>, info: [NSObject : AnyObject]?) -> Void in
             
-            // TODO: dispatch to main?
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
+                guard let strongSelf = self else
+                {
+                    return
+                }
 
-            strongSelf.requestID = nil
+                strongSelf.requestID = nil
 
-            if strongSelf.cancelled
-            {
-                return
-            }
+                if strongSelf.cancelled
+                {
+                    return
+                }
 
-            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
-            {
-                return
-            }
+                if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
+                {
+                    return
+                }
 
-            // TODO: if an error is delivered here, will the completionHandler be called?
-            
-            if let error = error
-            {
-                strongSelf.error = error
-                strongSelf.state = .Finished
-            }
-            else if let info = info, let error = info[PHImageErrorKey] as? NSError
-            {
-                strongSelf.error = error
-                strongSelf.state = .Finished
-            }
-            else
-            {
-                strongSelf.progressBlock?(progress: progress)
-            }
+                // TODO: if an error is delivered here, will the completionHandler be called?
+                
+                if let error = error
+                {
+                    strongSelf.error = error
+                    strongSelf.state = .Finished
+                }
+                else if let info = info, let error = info[PHImageErrorKey] as? NSError
+                {
+                    strongSelf.error = error
+                    strongSelf.state = .Finished
+                }
+                else
+                {
+                    strongSelf.progressBlock?(progress: progress)
+                }
+            })
         }
         
         self.requestID = PHImageManager.defaultManager().requestAVAssetForVideo(self.phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
