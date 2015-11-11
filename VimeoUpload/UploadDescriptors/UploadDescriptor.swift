@@ -64,6 +64,7 @@ class UploadDescriptor: Descriptor
             if self.error != nil
             {
                 print(self.error!.localizedDescription)
+                self.currentTaskIdentifier = nil
                 self.state = .Finished
             }
         }
@@ -223,7 +224,7 @@ class UploadDescriptor: Descriptor
         switch request
         {
         case .Create:
-            return try sessionManager.createVideoDownloadTask(url: self.url, destination: nil, completionHandler: nil)
+            return try sessionManager.createVideoDownloadTask(url: self.url)
             
         case .Upload:
             guard let uploadUri = self.createVideoResponse?.uploadUri else
@@ -239,7 +240,7 @@ class UploadDescriptor: Descriptor
                 throw NSError.createResponseWithoutActivateUriError()
             }
             
-            return try sessionManager.activateVideoTask(activationUri, destination: nil, completionHandler: nil)
+            return try sessionManager.activateVideoDownloadTask(uri: activationUri)
 
         case .Settings:
             guard let videoUri = self.videoUri, let videoSettings = self.videoSettings else
@@ -247,7 +248,7 @@ class UploadDescriptor: Descriptor
                 throw NSError.activateResponseWithoutVideoUriError()
             }
             
-            return try sessionManager.videoSettingsTask(videoUri, videoSettings: videoSettings, destination: nil, completionHandler: nil)
+            return try sessionManager.videoSettingsDownloadTask(videoUri: videoUri, videoSettings: videoSettings)
         }
     }
 

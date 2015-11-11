@@ -61,7 +61,8 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
             "text/html",
             "text/javascript",
             "application/vnd.vimeo.*+json",
-            "application/vnd.vimeo.user+json"]
+            "application/vnd.vimeo.user+json",
+            "application/vnd.vimeo.video+json"]
         )
     }
 }

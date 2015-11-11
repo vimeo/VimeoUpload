@@ -122,31 +122,36 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     func didTapPost(sender: UIBarButtonItem)
     {
-        self.videoSettings = VideoSettings(title: "hello indeterminate", description: "how are you?", privacy: "nobody", users: nil)
-        if let descriptor = self.descriptor
-        {
-            descriptor.videoSettings = self.videoSettings
-        }
+        let title = self.titleTextField.text
+        let description = self.descriptionTextView.text
+        self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil)
         
-        if let error = self.operation?.error
+        if self.operation?.state == .Executing
+        {
+            self.activityIndicatorView.startAnimating()
+        }
+        else if let error = self.operation?.error
         {
             self.presentOperationErrorAlert(error)
         }
-        else if let error = self.descriptor?.error
+        else if let descriptor = self.descriptor
         {
-            self.presentDescriptorErrorAlert(error)
-        }
-        else if self.operation?.state == .Executing
-        {
-            self.activityIndicatorView.startAnimating()
-        }
-        else if self.descriptor?.state == .Executing
-        {
-            self.activityIndicatorView.startAnimating()
-        }
-        else
-        {
-            self.dismissViewControllerAnimated(true, completion: nil)
+            if descriptor.state == .Executing
+            {
+                self.activityIndicatorView.startAnimating()
+                descriptor.videoSettings = self.videoSettings
+            }
+            else
+            {
+                if let error = descriptor.error
+                {
+                    self.presentDescriptorErrorAlert(error)
+                }
+                else
+                {
+                    self.applyVideoSettings()
+                }
+            }
         }
     }
     
@@ -204,8 +209,57 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    // MARK: Private API
+    private func presentVideoSettingsErrorAlert(error: NSError)
+    {
+        let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.navigationController?.popViewControllerAnimated(true)
+        }))
         
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.applyVideoSettings()
+        }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+
+    // MARK: Private API
+    
+    private func applyVideoSettings()
+    {
+        self.activityIndicatorView.startAnimating()
+
+        let videoUri = self.descriptor!.videoUri!
+        let videoSettings = self.videoSettings!
+        
+        do
+        {
+            let task = try UploadManager.sharedInstance.sessionManager.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+                
+                dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                    
+                    self?.activityIndicatorView.stopAnimating()
+
+                    if let error = error
+                    {
+                        self?.presentVideoSettingsErrorAlert(error)
+                    }
+                    else
+                    {
+                        self?.dismissViewControllerAnimated(true, completion: nil)
+                    }
+                })
+                
+            })
+            task.resume()
+        }
+        catch let error as NSError
+        {
+            self.activityIndicatorView.stopAnimating()
+            self.presentVideoSettingsErrorAlert(error)
+        }
+    }
+    
     private func startUpload(url: NSURL)
     {
         self.descriptor = UploadDescriptor(url: url)

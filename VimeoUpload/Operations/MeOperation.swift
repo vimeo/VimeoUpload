@@ -61,6 +61,8 @@ class MeOperation: ConcurrentOperation
         
         self.task = try? self.sessionManager.meDataTask({ [weak self] (user, error) -> Void in
             
+            // TODO: does this need to be on the main thread? Same for all internal completion blocks for concurrentOperations
+            
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
 
                 guard let strongSelf = self else

@@ -38,6 +38,7 @@ enum TaskDescription: String
 typealias DestinationHandler = () -> NSURL
 typealias CreateVideoCompletionHandler = (response: CreateVideoResponse?, error: NSError?) -> Void
 typealias UserCompletionHandler = (user: VIMUser?, error: NSError?) -> Void
+typealias VideoCompletionHandler = (video: VIMVideo?, error: NSError?) -> Void
 
 extension VimeoSessionManager
 {
@@ -81,37 +82,11 @@ extension VimeoSessionManager
         return task
     }
     
-    func createVideoDownloadTask(url url: NSURL, destination: DestinationHandler?, completionHandler: CreateVideoCompletionHandler?) throws -> NSURLSessionDownloadTask
+    func createVideoDownloadTask(url url: NSURL) throws -> NSURLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url)
 
-        let task = self.downloadTaskWithRequest(request, progress: nil, destination: { (url, response) -> NSURL in
-            
-            if let destination = destination
-            {
-                return destination()
-            }
-            
-            return try! VimeoSessionManager.DocumentsURL.vimeoDownloadDataURL()
-            
-        }, completionHandler: { [weak self] (response, url, error) -> Void in
-            
-            guard let strongSelf = self, let completionHandler = completionHandler else
-            {
-                return
-            }
-            
-            do
-            {
-                let response = try (strongSelf.responseSerializer as! VimeoResponseSerializer).processCreateVideoResponse(response, url: url, error: error)
-                completionHandler(response: response, error: nil)
-            }
-            catch let error as NSError
-            {
-                completionHandler(response: nil, error: error)
-            }
-        })
-        
+        let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
         task.taskDescription = TaskDescription.CreateVideo.rawValue
         
         return task
@@ -144,71 +119,61 @@ extension VimeoSessionManager
         return task
     }
     
-    func activateVideoTask(activationUri: String, destination: DestinationHandler?, completionHandler: StringErrorBlock?) throws -> NSURLSessionDownloadTask
+    // For use with background sessions, use session delegate methods for destination and completion
+    func activateVideoDownloadTask(uri activationUri: String) throws -> NSURLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).activateVideoRequestWithUri(activationUri)
         
-        let task = self.downloadTaskWithRequest(request, progress: nil, destination: { (url, response) -> NSURL in
-            
-            if let destination = destination
-            {
-                return destination()
-            }
-            
-            return try! VimeoSessionManager.DocumentsURL.vimeoDownloadDataURL()
-            
-        }, completionHandler: { [weak self] (response, url, error) -> Void in
-            
-            guard let strongSelf = self, let completionHandler = completionHandler else
-            {
-                return
-            }
-            
-            do
-            {
-                let response = try (strongSelf.responseSerializer as! VimeoResponseSerializer).processActivateVideoResponse(response, url: url, error: error)
-                completionHandler(value: response, error: nil)
-            }
-            catch let error as NSError
-            {
-                completionHandler(value: nil, error: error)
-            }
-        })
-        
+        let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
         task.taskDescription = TaskDescription.ActivateVideo.rawValue
         
         return task
     }    
 
-    func videoSettingsTask(videoUri: String, videoSettings: VideoSettings, destination: DestinationHandler?, completionHandler: ErrorBlock?) throws -> NSURLSessionDownloadTask
+    // For use with background sessions, use session delegate methods for destination and completion
+    func videoSettingsDownloadTask(videoUri videoUri: String, videoSettings: VideoSettings) throws -> NSURLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequestWithUri(videoUri, videoSettings: videoSettings)
         
-        let task = self.downloadTaskWithRequest(request, progress: nil, destination: { (url, response) -> NSURL in
+        let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
+        task.taskDescription = TaskDescription.VideoSettings.rawValue
+        
+        return task
+    }
+
+    func videoSettingsDataTask(videoUri videoUri: String, videoSettings: VideoSettings, completionHandler: VideoCompletionHandler) throws -> NSURLSessionDataTask
+    {
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequestWithUri(videoUri, videoSettings: videoSettings)
+        
+        let task = self.dataTaskWithRequest(request, completionHandler: { (response, responseObject, error) -> Void in
             
-            if let destination = destination
-            {
-                return destination()
-            }
-            
-            return try! VimeoSessionManager.DocumentsURL.vimeoDownloadDataURL()
-            
-        }, completionHandler: { [weak self] (response, url, error) -> Void in
-            
-            guard let strongSelf = self, let completionHandler = completionHandler else
-            {
-                return
-            }
-            
-            do
-            {
-                try (strongSelf.responseSerializer as! VimeoResponseSerializer).processVideoSettingsResponse(response, url: url, error: error)
-                completionHandler(error: nil)
-            }
-            catch let error as NSError
-            {
-                completionHandler(error: error)
-            }
+            // Do model parsing on a background thread
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+                
+                if let error = error
+                {
+                    completionHandler(video: nil, error: error)
+                    
+                    return
+                }
+                
+                if let responseObject = responseObject as? [String: AnyObject]
+                {
+                    let mapper = VIMObjectMapper()
+                    mapper.addMappingClass(VIMVideo.self, forKeypath: "")
+                    
+                    if let video = mapper.applyMappingToJSON(responseObject) as? VIMVideo
+                    {
+                        completionHandler(video: video, error: nil)
+                        
+                        return
+                    }
+                }
+                
+                // TODO: add error info
+                let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "videoSettings request returned no error and no video"])
+                completionHandler(video: nil, error: error)
+            })
         })
         
         task.taskDescription = TaskDescription.VideoSettings.rawValue
