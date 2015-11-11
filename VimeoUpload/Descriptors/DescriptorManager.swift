@@ -276,14 +276,7 @@ class DescriptorManager
             
             if let descriptor = strongSelf.descriptorForIdentifier(identifier)
             {
-                for task in strongSelf.sessionManager.tasks
-                {
-                    if task.taskIdentifier == descriptor.currentTaskIdentifier
-                    {                        
-                        task.cancel()// TODO: move this into the descriptor's cancel method
-                        break
-                    }
-                }
+                descriptor.cancel(strongSelf.sessionManager)
             }
         })
     }

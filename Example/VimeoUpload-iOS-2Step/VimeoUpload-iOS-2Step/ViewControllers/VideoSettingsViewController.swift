@@ -41,14 +41,16 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private var descriptor: UploadDescriptor?
     private var videoSettings: VideoSettings?
     
-    private static let ProgressKeyPath = "uploadProgress"
-    private var uploadProgrvarKVOContext = UInt8()
-    
     // MARK: Lifecycle
     
     deinit
     {
         self.operation?.cancel()
+        
+        if let identifier = self.descriptor?.identifier
+        {
+            UploadManager.sharedInstance.descriptorManager.cancelDescriptorForIdentifier(identifier)
+        }
     }
     
     override func viewDidLoad()
@@ -107,12 +109,21 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                 
                 if let error = operation.error
                 {
-                    print("Video settings operation error: \(error)")
+                    if let _ = strongSelf.videoSettings
+                    {
+                        strongSelf.activityIndicatorView.stopAnimating()
+                        strongSelf.presentOperationErrorAlert(error)
+                    }
                 }
                 else
                 {
-                    print("Video settings operation complete! \(operation.result!)")
                     strongSelf.startUpload(operation.result!)
+                    
+                    if let _ = strongSelf.videoSettings
+                    {
+                        strongSelf.activityIndicatorView.stopAnimating()
+                        strongSelf.dismissViewControllerAnimated(true, completion: nil)
+                    }
                 }
             })
         }
@@ -120,6 +131,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: Actions
 
+    // 4-step upload
     func didTapPost(sender: UIBarButtonItem)
     {
         let title = self.titleTextField.text
@@ -128,7 +140,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         if self.operation?.state == .Executing
         {
-            self.activityIndicatorView.startAnimating()
+            self.activityIndicatorView.startAnimating() // Listen for operation completion, dismiss
         }
         else if let error = self.operation?.error
         {
@@ -138,8 +150,13 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         {
             if descriptor.state == .Executing
             {
-                self.activityIndicatorView.startAnimating()
+                // TODO: 2-step upload
+                // if create is in progress, show activity indicator and listen for create completion
+                // if create is complete, add video settings and dismiss the view controller
+
+                // 4-step upload
                 descriptor.videoSettings = self.videoSettings
+                self.dismissViewControllerAnimated(true, completion: nil)
             }
             else
             {

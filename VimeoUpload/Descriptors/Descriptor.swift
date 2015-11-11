@@ -35,6 +35,8 @@ enum State: String
 
 class Descriptor: NSObject
 {
+    private static let ErrorDomain = "DescriptorErrorDomain"
+    
     var state = State.Ready
     var identifier: String?
     var error: NSError?
@@ -49,7 +51,15 @@ class Descriptor: NSObject
 
     func start(sessionManager: AFURLSessionManager) throws
     {
-        fatalError("start(sessionManager:) has not been implemented")
+        if self.state != .Ready
+        {
+            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Cannot start a descriptor that is note in the .Ready state"])
+        }
+        
+        if let _ = self.error
+        {
+            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Cannot start a descriptor that has a pre-existing error"])
+        }        
     }
 
     func cancel(sessionManager: AFURLSessionManager)
