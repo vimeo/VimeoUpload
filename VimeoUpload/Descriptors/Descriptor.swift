@@ -64,7 +64,14 @@ class Descriptor: NSObject
 
     func cancel(sessionManager: AFURLSessionManager)
     {
-        fatalError("cancel(sessionManager:) has not been implemented")
+        for task in sessionManager.tasks
+        {
+            if task.taskIdentifier == self.currentTaskIdentifier
+            {
+                task.cancel()
+                break
+            }
+        }
     }
 
     func didLoadFromCache(sessionManager: AFURLSessionManager)

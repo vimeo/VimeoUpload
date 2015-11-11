@@ -62,10 +62,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.edgesForExtendedLayout = .None
         
         self.setupNavigationBar()
-        
-        let me = self.input!.me
-        let phAssetContainer = self.input!.phAssetContainer
-        self.setupOperation(me, phAssetContainer: phAssetContainer)
+        self.startOperation()
     }
     
     // MARK: Setup
@@ -192,15 +189,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }))
         
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            let me = strongSelf.operation!.me
-            let phAssetContainer = strongSelf.operation!.phAssetContainer
-            strongSelf.setupOperation(me, phAssetContainer: phAssetContainer)
+            self?.startOperation()
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
@@ -214,13 +203,10 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }))
         
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            
-            guard let _ = self else
-            {
-                return
-            }
-            
-            // TODO: do something to try the descriptor again
+            // We start from the beginning (with the operation instead of the descriptor), 
+            // Because the exported file was deleted when the upload descriptor failed,
+            // We delete it because leaving it up to the API consumer to delete seems a little risky
+            self?.startOperation()
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
@@ -275,6 +261,13 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
             self.activityIndicatorView.stopAnimating()
             self.presentVideoSettingsErrorAlert(error)
         }
+    }
+    
+    private func startOperation()
+    {
+        let me = self.input!.me
+        let phAssetContainer = self.input!.phAssetContainer
+        self.setupOperation(me, phAssetContainer: phAssetContainer)
     }
     
     private func startUpload(url: NSURL)

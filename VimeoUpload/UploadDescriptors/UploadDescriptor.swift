@@ -113,18 +113,6 @@ class UploadDescriptor: Descriptor
         }
     }
 
-    override func cancel(sessionManager: AFURLSessionManager)
-    {
-        for task in sessionManager.tasks
-        {
-            if task.taskIdentifier == self.currentTaskIdentifier
-            {
-                task.cancel()
-                break
-            }
-        }
-    }
-
     // If necessary, resume the current task and re-connect progress objects
 
     override func didLoadFromCache(sessionManager: AFURLSessionManager)
