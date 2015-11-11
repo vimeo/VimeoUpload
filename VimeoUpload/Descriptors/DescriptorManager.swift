@@ -232,7 +232,7 @@ class DescriptorManager
         return true
     }
     
-    func addDescriptor(descriptor: Descriptor) throws
+    func addDescriptor(descriptor: Descriptor)
     {
         dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
             
@@ -248,8 +248,20 @@ class DescriptorManager
 
             NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorWillStart.rawValue, object: descriptor.identifier)
             
-            descriptor.start(strongSelf.sessionManager)
-            strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+            do
+            {
+                try descriptor.start(strongSelf.sessionManager)
+                strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+            }
+            catch
+            {
+                strongSelf.descriptors.remove(descriptor)
+                strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                
+                strongSelf.delegate?.descriptorDidFail(descriptor.identifier)
+                
+                NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor.identifier)
+            }
         })
     }
     

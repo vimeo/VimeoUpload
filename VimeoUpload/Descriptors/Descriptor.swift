@@ -47,7 +47,7 @@ class Descriptor: NSObject
     
     // MARK: Subclass Overrides
 
-    func start(sessionManager: AFURLSessionManager)
+    func start(sessionManager: AFURLSessionManager) throws
     {
         fatalError("start(sessionManager:) has not been implemented")
     }

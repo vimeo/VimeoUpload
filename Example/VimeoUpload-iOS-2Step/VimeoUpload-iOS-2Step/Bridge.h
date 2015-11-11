@@ -13,3 +13,4 @@
 #import "VIMUploadQuota.h"
 #import "VIMSpace.h"
 #import "VIMQuota.h"
+#import "VIMVideo.h"

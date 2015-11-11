@@ -187,7 +187,7 @@ class CameraRollViewController: UIViewController, UITableViewDataSource, UITable
         
         self.addObservers()
         
-        try! UploadManager.sharedInstance.descriptorManager.addDescriptor(self.uploadDescriptor!)
+        UploadManager.sharedInstance.descriptorManager.addDescriptor(self.uploadDescriptor!)
     }
     
     // MARK: KVO

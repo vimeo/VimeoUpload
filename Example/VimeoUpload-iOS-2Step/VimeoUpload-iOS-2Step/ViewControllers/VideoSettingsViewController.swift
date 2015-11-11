@@ -39,9 +39,10 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     var input: VideoSettingsViewControllerInput?
     private var operation: VideoSettingsOperation?
     private var descriptor: UploadDescriptor?
-
+    private var videoSettings: VideoSettings?
+    
     private static let ProgressKeyPath = "uploadProgress"
-    private var uploadProgressKVOContext = UInt8()
+    private var uploadProgrvarKVOContext = UInt8()
     
     // MARK: Lifecycle
     
@@ -121,6 +122,12 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     func didTapPost(sender: UIBarButtonItem)
     {
+        self.videoSettings = VideoSettings(title: "hello indeterminate", description: "how are you?", privacy: "nobody", users: nil)
+        if let descriptor = self.descriptor
+        {
+            descriptor.videoSettings = self.videoSettings
+        }
+        
         if let error = self.operation?.error
         {
             self.presentOperationErrorAlert(error)
@@ -201,10 +208,10 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
     private func startUpload(url: NSURL)
     {
-        let videoSettings = VideoSettings(title: "hey!!", description: nil, privacy: "goo", users: nil)
-        self.descriptor = UploadDescriptor(url: url, videoSettings: videoSettings)
-        self.descriptor!.identifier = "\(url.absoluteString.hash)"
-        
-        try! UploadManager.sharedInstance.descriptorManager.addDescriptor(self.descriptor!)
+        self.descriptor = UploadDescriptor(url: url)
+        self.descriptor?.identifier = "\(url.absoluteString.hash)"
+        self.descriptor?.videoSettings = self.videoSettings
+
+        UploadManager.sharedInstance.descriptorManager.addDescriptor(self.descriptor!)
     }    
 }

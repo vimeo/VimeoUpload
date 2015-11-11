@@ -60,14 +60,25 @@ extension VimeoResponseSerializer
         return location
     }
 
-    func processVideoSettingsResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws
+    func processVideoSettingsResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> VIMVideo
     {
-        let _ = try self.dictionaryForDownloadTaskResponse(response, url: url, error: error)
+        let responseObject = try self.dictionaryForDownloadTaskResponse(response, url: url, error: error)
+        
+        let mapper = VIMObjectMapper()
+        mapper.addMappingClass(VIMVideo.self, forKeypath: "")
+        
+        guard let video = mapper.applyMappingToJSON(responseObject) as? VIMVideo else
+        {
+            // TODO: error info
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "VideoSettings response did not contain error or video"])
+        }
+
+        return video
     }
     
     // MARK: Private API
     
-    // TODO: move this from extension into main class? 
+    // TODO: move this from extension into main class?
     
     private func dictionaryForDownloadTaskResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> [String: AnyObject]
     {

@@ -26,30 +26,6 @@
 
 import Foundation
 
-//enum Request: String
-//{
-//    case Create = "Create"
-//    case Upload = "Upload"
-//    case Activate = "Activate"
-//    case Settings = "Settings"
-//    
-//    static func orderedRequests() -> [Request]
-//    {
-//        return [.Create, .Upload, .Activate, .Settings]
-//    }
-//    
-//    static func nextRequest(currentRequest: Request) -> Request?
-//    {
-//        let orderedRequests = Request.orderedRequests()
-//        if let index = orderedRequests.indexOf(currentRequest) where index + 1 < orderedRequests.count
-//        {
-//            return orderedRequests[index + 1]
-//        }
-//        
-//        return nil
-//    }
-//}
-//
 //class HotUploadDescriptor: Descriptor
 //{    
 //    let url: NSURL

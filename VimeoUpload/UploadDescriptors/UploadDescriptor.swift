@@ -26,37 +26,20 @@
 
 import Foundation
 
-enum Request: String
-{
-    case Create = "Create"
-    case Upload = "Upload"
-    case Activate = "Activate"
-    case Settings = "Settings"
-    
-    static func orderedRequests() -> [Request]
-    {
-        return [.Create, .Upload, .Activate, .Settings]
-    }
-    
-    static func nextRequest(currentRequest: Request) -> Request?
-    {
-        let orderedRequests = Request.orderedRequests()
-        if let index = orderedRequests.indexOf(currentRequest) where index + 1 < orderedRequests.count
-        {
-            return orderedRequests[index + 1]
-        }
-        
-        return nil
-    }
-}
-
 class UploadDescriptor: Descriptor
-{    
-    let url: NSURL
-    let videoSettings: VideoSettings?
+{
+    // MARK:
     
-    private(set) var createVideoResponse: CreateVideoResponse?
-    private(set) var videoUri: String?
+    let url: NSURL
+    var videoSettings: VideoSettings?
+    
+    // MARK:
+    
+    private(set) var createVideoResponse: CreateVideoResponse? // Create response
+    private(set) var videoUri: String? // Activate response
+    private(set) var video: VIMVideo? // Settings response
+    
+    // MARK:
     
     private static let ProgressKeyPath = "fractionCompleted"
     private var progressKVOContext = UInt8()
@@ -64,7 +47,9 @@ class UploadDescriptor: Descriptor
     private var uploadProgressObject: NSProgress?
     private(set) dynamic var uploadProgress: Double = 0 // KVO on this property
 
-    private(set) var currentRequest = Request.Create
+    // MARK:
+    
+    private(set) var currentRequest = UploadRequest.Create
     {
         didSet
         {
@@ -83,6 +68,8 @@ class UploadDescriptor: Descriptor
             }
         }
     }
+    
+    // MARK:
     
     // MARK: Initialization
 
@@ -106,27 +93,20 @@ class UploadDescriptor: Descriptor
 
     // MARK: Overrides
     
-    // Start the first request and update the state accordingly
-
-    override func start(sessionManager: AFURLSessionManager)
+    override func start(sessionManager: AFURLSessionManager) throws
     {
-        guard let sessionManager = sessionManager as? VimeoSessionManager else
-        {
-            fatalError("sessionManager must be of type VimeoSessionManager")
-        }
-
         self.state = .Executing
-        self.currentRequest = .Create
 
         do
         {
-            let task = try sessionManager.createVideoDownloadTask(url: self.url, destination: nil, completionHandler: nil)
-            self.currentTaskIdentifier = task.taskIdentifier
-            task.resume()
+            let sessionManager = sessionManager as! VimeoSessionManager
+            try self.transitionToState(.Create, sessionManager: sessionManager)
         }
         catch let error as NSError
         {
-            self.error = error // TODO: do something with this error (desc mgr will need to remove desc from list)
+            self.error = error
+
+            throw error // Propagate this out so that DescriptorManager can remove the descriptor from the set
         }
     }
 
@@ -155,41 +135,31 @@ class UploadDescriptor: Descriptor
 
     override func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
     {
-        guard let sessionManager = sessionManager as? VimeoSessionManager else
-        {
-            fatalError("sessionManager must be of type VimeoSessionManager")
-        }
+        let sessionManager = sessionManager as! VimeoSessionManager
+        let responseSerializer = sessionManager.responseSerializer as! VimeoResponseSerializer
         
         // TODO: check for Vimeo error here?
         
-        switch self.currentRequest
+        do
         {
-        case .Create:
-            do
+            switch self.currentRequest
             {
-                self.createVideoResponse = try (sessionManager.responseSerializer as! VimeoResponseSerializer).processCreateVideoResponse(task.response, url: url, error: error)
+            case .Create:
+                self.createVideoResponse = try responseSerializer.processCreateVideoResponse(task.response, url: url, error: error)
+                
+            case .Upload:
+                break
+                
+            case .Activate:
+                self.videoUri = try responseSerializer.processActivateVideoResponse(task.response, url: url, error: error)
+                
+            case .Settings:
+                self.video = try responseSerializer.processVideoSettingsResponse(task.response, url: url, error: error)
             }
-            catch let error as NSError
-            {
-                self.error = error
-            }
-            
-        case .Upload:
-            print("Do nothing")
-            
-        case .Activate:
-            do
-            {
-                self.videoUri = try (sessionManager.responseSerializer as! VimeoResponseSerializer).processActivateVideoResponse(task.response, url: url, error: error)
-            }
-            catch let error as NSError
-            {
-                self.error = error
-            }
-
-        case .Settings:
-            print("To do")
-            // TODO: fill in settings response handling
+        }
+        catch let error as NSError
+        {
+            self.error = error
         }
 
         return nil
@@ -197,33 +167,24 @@ class UploadDescriptor: Descriptor
     
     override func taskDidComplete(sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
-        guard let sessionManager = sessionManager as? VimeoSessionManager else
-        {
-            fatalError("sessionManager must be of type VimeoSessionManager")
-        }
-
         if self.currentRequest == .Upload
         {
             self.cleanupAfterUpload()
         }
 
-        // task.error is reserved for client-side errors, so check it first
-        if let taskError = task.error where self.error == nil
+        if self.error == nil
         {
-            self.error = taskError // TODO: add proper vimeo domain
+            if let taskError = task.error // task.error is reserved for client-side errors, so check it first
+            {
+                self.error = taskError // TODO: add proper vimeo domain
+            }
+            else if let error = error
+            {
+                self.error = error // TODO: add proper vimeo domain
+            }
         }
-
-        if let error = error where self.error == nil
-        {
-            self.error = error // TODO: add proper vimeo domain
-        }
         
-        // The process is complete if there is an error,
-        // If there's no next request,
-        // Or if the next request is "settings" and there are no settings to apply.
-        
-        let nextRequest = Request.nextRequest(self.currentRequest)
-        
+        let nextRequest = UploadRequest.nextRequest(self.currentRequest)
         if self.error != nil || nextRequest == nil || (nextRequest == .Settings && self.videoSettings == nil)
         {
             self.currentTaskIdentifier = nil
@@ -232,75 +193,64 @@ class UploadDescriptor: Descriptor
             return
         }
         
-        self.currentRequest = nextRequest!
-        
-        switch self.currentRequest
+        do
         {
-        case .Create:
-            print("Do nothing")
-            
-        case .Upload:
-            guard let uploadUri = self.createVideoResponse?.uploadUri else
+            let sessionManager = sessionManager as! VimeoSessionManager
+            try self.transitionToState(nextRequest!, sessionManager: sessionManager)
+            if self.currentRequest == .Upload
             {
-                self.error = NSError.createResponseWithoutUploadUriError()
-
-                return
-            }
-            
-            do
-            {
-                let task = try sessionManager.uploadVideoTask(self.url, destination: uploadUri, progress: &self.uploadProgressObject, completionHandler: nil)
                 self.addObserver()
-                self.currentTaskIdentifier = task.taskIdentifier
-                task.resume()
             }
-            catch let error as NSError
-            {
-                self.error = error
-            }
-            
-        case .Activate:
-            guard let activationUri = self.createVideoResponse?.activationUri else
-            {
-                self.error = NSError.createResponseWithoutActivateUriError()
-                
-                return
-            }
-            
-            do
-            {
-                let task = try sessionManager.activateVideoTask(activationUri, destination: nil, completionHandler: nil)
-                self.currentTaskIdentifier = task.taskIdentifier
-                task.resume()
-            }
-            catch let error as NSError
-            {
-                self.error = error
-            }
-            
-        case .Settings:
-            guard let videoUri = self.videoUri, let videoSettings = self.videoSettings else
-            {
-                self.error = NSError.activateResponseWithoutVideoUriError()
-                
-                return
-            }
-            
-            do
-            {
-                let task = try sessionManager.videoSettingsTask(videoUri, videoSettings: videoSettings, destination: nil, completionHandler: nil)
-                self.currentTaskIdentifier = task.taskIdentifier
-                task.resume()
-            }
-            catch let error as NSError
-            {
-                self.error = error
-            }
+        }
+        catch let error as NSError
+        {
+            self.error = error
         }
     }
     
     // MARK: Private API
     
+    private func transitionToState(request: UploadRequest, sessionManager: VimeoSessionManager) throws
+    {
+        self.currentRequest = request
+        let task = try self.taskForRequest(request, sessionManager: sessionManager)
+        self.currentTaskIdentifier = task.taskIdentifier
+        task.resume()
+    }
+    
+    private func taskForRequest(request: UploadRequest, sessionManager: VimeoSessionManager) throws -> NSURLSessionTask
+    {
+        switch request
+        {
+        case .Create:
+            return try sessionManager.createVideoDownloadTask(url: self.url, destination: nil, completionHandler: nil)
+            
+        case .Upload:
+            guard let uploadUri = self.createVideoResponse?.uploadUri else
+            {
+                throw NSError.createResponseWithoutUploadUriError()
+            }
+
+            return try sessionManager.uploadVideoTask(self.url, destination: uploadUri, progress: &self.uploadProgressObject, completionHandler: nil)
+            
+        case .Activate:
+            guard let activationUri = self.createVideoResponse?.activationUri else
+            {
+                throw NSError.createResponseWithoutActivateUriError()
+            }
+            
+            return try sessionManager.activateVideoTask(activationUri, destination: nil, completionHandler: nil)
+
+        case .Settings:
+            guard let videoUri = self.videoUri, let videoSettings = self.videoSettings else
+            {
+                throw NSError.activateResponseWithoutVideoUriError()
+            }
+            
+            return try sessionManager.videoSettingsTask(videoUri, videoSettings: videoSettings, destination: nil, completionHandler: nil)
+        }
+    }
+
     private func cleanupAfterUpload()
     {
         self.removeObserverIfNecessary()
@@ -357,7 +307,7 @@ class UploadDescriptor: Descriptor
         self.videoSettings = aDecoder.decodeObjectForKey("videoSettings") as? VideoSettings
         self.createVideoResponse = aDecoder.decodeObjectForKey("createVideoResponse") as? CreateVideoResponse
         self.videoUri = aDecoder.decodeObjectForKey("videoUri") as? String
-        self.currentRequest = Request(rawValue: aDecoder.decodeObjectForKey("currentRequest") as! String)!
+        self.currentRequest = UploadRequest(rawValue: aDecoder.decodeObjectForKey("currentRequest") as! String)!
 
         super.init(coder: aDecoder)
     }

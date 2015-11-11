@@ -40,7 +40,11 @@ class UploadManager
         let sessionManager = VimeoSessionManager(authToken: "caf4648129ec56e580175c4b45cce7fc--")
         self.descriptorManager = DescriptorManager(sessionManager: sessionManager, delegate: self.reporter)
     }
-        
+    
+    // TODO: respond to logout event
+    
+    
+    
     // TODO: move this into test cases
     
 //    func upload(descriptor: UploadDescriptor) throws
