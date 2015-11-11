@@ -33,9 +33,8 @@ import Photos
 
 // This flow encapsulates the following steps:
 // 1. If inCloud, download
-// 2. Export
+// 2. Export (check disk space within this step)
 // 3. Check weekly quota
-// 4. Check disk space
 
 class VideoSettingsOperation: ConcurrentOperation
 {
@@ -232,53 +231,6 @@ class VideoSettingsOperation: ConcurrentOperation
                 }
                 else
                 {
-                    strongSelf.checkExactDiskSpace(avUrlAsset)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
-    }
-    
-    private func checkExactDiskSpace(avUrlAsset: AVURLAsset)
-    {
-        let filesize: NSNumber
-        do
-        {
-            filesize = try self.exactFilesize(avUrlAsset)
-        }
-        catch let error as NSError
-        {
-            self.error = error
-            
-            return
-        }
-
-        let operation = DiskSpaceOperation(filesize: filesize.doubleValue)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.cancelled == true
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else if let result = operation.result where result == false
-                {
-                    strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to export asset."])
-                }
-                else
-                {
                     strongSelf.state = .Finished
                 }
             })
@@ -286,7 +238,7 @@ class VideoSettingsOperation: ConcurrentOperation
         
         self.operationQueue.addOperation(operation)
     }
-    
+        
     // MARK: Utilities
     
     private func exactFilesize(avUrlAsset: AVURLAsset) throws -> NSNumber

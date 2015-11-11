@@ -31,8 +31,8 @@ import AVFoundation
 // 1. Request me
 // 1. Fulfill asset selection
 // 2. Check daily quota
-// 3. If asset, check weekly quota
-// 4. If asset, check disk space
+// 3. If non iCloud asset, check approximate weekly quota
+// 4. If non iCloud asset, check approximate disk space
 
 class CameraRollOperation: ConcurrentOperation
 {

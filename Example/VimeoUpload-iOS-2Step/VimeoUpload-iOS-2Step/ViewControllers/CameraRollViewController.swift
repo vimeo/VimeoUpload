@@ -290,6 +290,13 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     private func didSelectIndexPath(indexPath: NSIndexPath)
     {
+        if AFNetworkReachabilityManager.sharedManager().reachable == false
+        {
+            self.presentOfflineErrorAlert(indexPath)
+            
+            return
+        }
+        
         let phAssetContainer = self.assets[indexPath.item]
         
         // Check if an error occurred when attempting to retrieve the asset
@@ -327,6 +334,16 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     // MARK: UI Presentation
+
+    private func presentOfflineErrorAlert(indexPath: NSIndexPath)
+    {
+        let alert = UIAlertController(title: "Offline Error", message: "Connect to the internet to upload a video.", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+        }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
 
     private func presentAssetErrorAlert(indexPath: NSIndexPath)
     {

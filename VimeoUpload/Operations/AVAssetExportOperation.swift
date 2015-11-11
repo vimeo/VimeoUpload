@@ -35,6 +35,8 @@ import AVFoundation
 
 class AVAssetExportOperation: ConcurrentOperation
 {
+    private static let ErrorDomain = "AVAssetExportOperationErrorDomain"
+    
     private static let ProgressKeyPath = "progress"
     private static let FileType = AVFileTypeMPEG4
     private static let DocumentsURL = NSURL(string: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])!
@@ -54,21 +56,26 @@ class AVAssetExportOperation: ConcurrentOperation
     convenience init(asset: AVAsset)
     {
         let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)!
-        exportSession.timeRange = CMTimeRangeMake(kCMTimeZero, asset.duration)
         
         self.init(exportSession: exportSession)
     }
 
     init(exportSession: AVAssetExportSession)
     {
-        // timeRange must be valid so that the exportSession's estimatedOutputFileLength is non zero
+        // exportSession.timeRange must be valid so that the exportSession's estimatedOutputFileLength is non zero
         // We use estimatedOutputFileLength below to check that there is ample disk space to perform the export [AH] 10/15/2015
         
-        assert(CMTIMERANGE_IS_VALID(exportSession.timeRange) && CMTIMERANGE_IS_EMPTY(exportSession.timeRange) == false && CMTIMERANGE_IS_INDEFINITE(exportSession.timeRange) == false, "AVAssetExportSession is configured with invalid timeRange")
+        exportSession.timeRange = CMTimeRangeMake(kCMTimeZero, exportSession.asset.duration)
+
+        assert(CMTIMERANGE_IS_EMPTY(exportSession.timeRange) == false, "exportSession.timeRange is empty")
+        assert(CMTIMERANGE_IS_INDEFINITE(exportSession.timeRange) == false, "exportSession.timeRange is indefinite")
+        assert(CMTIMERANGE_IS_INVALID(exportSession.timeRange) == false, "exportSession.timeRange is invalid")
+        assert(CMTIMERANGE_IS_VALID(exportSession.timeRange) == true, "exportSession.timeRange is not valid")
+        assert(CMTIME_IS_POSITIVEINFINITY(exportSession.timeRange.duration) == false, "exportSession.timeRange.duration is infinite")
         
         exportSession.shouldOptimizeForNetworkUse = true
         exportSession.outputFileType = AVAssetExportOperation.FileType
-        
+
         do
         {
             exportSession.outputURL = try AVAssetExportOperation.DocumentsURL.vimeoUploadExportURL(AVAssetExportOperation.FileType)
@@ -103,13 +110,20 @@ class AVAssetExportOperation: ConcurrentOperation
         
         if self.exportSession.asset.exportable == false
         {
-            self.error = NSError.assetNotExportableError()
+            self.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Asset is not exportable"])
             self.state = .Finished
             
             return
         }
 
-        // TODO: playable, readable, composable, hasProtectedContent?
+        let availableDiskSpace = try! NSFileManager.defaultManager().availableDiskSpace()!
+        guard availableDiskSpace.longLongValue > self.exportSession.estimatedOutputFileLength else
+        {
+            self.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
+            self.state = .Finished
+            
+            return
+        }
 
         self.exportSession.exportAsynchronouslyWithCompletionHandler({ [weak self] () -> Void in
           
@@ -127,7 +141,7 @@ class AVAssetExportOperation: ConcurrentOperation
                 
                 if let error = strongSelf.exportSession.error
                 {
-                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.Export.rawValue)
+                    strongSelf.error = error
                 }
                 else if let outputURL = strongSelf.exportSession.outputURL, let path = outputURL.path where NSFileManager.defaultManager().fileExistsAtPath(path)
                 {
@@ -135,7 +149,7 @@ class AVAssetExportOperation: ConcurrentOperation
                 }
                 else
                 {
-                    strongSelf.error = NSError.invalidExportSessionError()
+                    strongSelf.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Export session finished with no error and no output URL."])
                 }
 
                 strongSelf.state = .Finished
