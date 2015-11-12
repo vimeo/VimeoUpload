@@ -25,10 +25,11 @@
 //
 
 import Foundation
-//import AFNetworking
 
 class VimeoResponseSerializer: AFJSONResponseSerializer
 {
+    static let ErrorDomain = "VimeoResponseSerializerErrorDomain"
+    
     override init()
     {
         super.init()

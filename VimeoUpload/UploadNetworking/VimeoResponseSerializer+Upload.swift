@@ -30,11 +30,19 @@ extension VimeoResponseSerializer
 {
     func processCreateVideoResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> CreateVideoResponse
     {
-        let dictionary = try self.dictionaryForDownloadTaskResponse(response, url: url, error: error)
+        let dictionary: [String: AnyObject]
+        do
+        {
+            dictionary = try self.dictionaryForDownloadTaskResponse(response, url: url, error: error)
+        }
+        catch let error as NSError
+        {
+            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
+        }
         
         guard let uploadUri = dictionary["upload_link_secure"] as? String, let activationUri = dictionary["complete_uri"] as? String else
         {
-            throw NSError.invalidCreateResponseError()
+            throw NSError(domain: UploadErrorDomain.Create.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Create response did not contain the required values."])
         }
         
         return CreateVideoResponse(uploadUri: uploadUri, activationUri: activationUri)
@@ -50,11 +58,18 @@ extension VimeoResponseSerializer
     
     func processActivateVideoResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> String
     {
-        let _ = try self.dictionaryForDownloadTaskResponse(response, url: url, error: error)
+        do
+        {
+            try self.dictionaryForDownloadTaskResponse(response, url: url, error: error)
+        }
+        catch let error as NSError
+        {
+            throw error.errorByAddingDomain(UploadErrorDomain.Activate.rawValue)
+        }
         
         guard let HTTPResponse = response as? NSHTTPURLResponse, let location = HTTPResponse.allHeaderFields["Location"] as? String else
         {
-            throw NSError.invalidActivateResponseError()
+            throw NSError(domain: UploadErrorDomain.Activate.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Activate response did not contain the required value."])
         }
         
         return location
@@ -62,15 +77,22 @@ extension VimeoResponseSerializer
 
     func processVideoSettingsResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> VIMVideo
     {
-        let responseObject = try self.dictionaryForDownloadTaskResponse(response, url: url, error: error)
+        let dictionary: [String: AnyObject]
+        do
+        {
+            dictionary = try self.dictionaryForDownloadTaskResponse(response, url: url, error: error)
+        }
+        catch let error as NSError
+        {
+            throw error.errorByAddingDomain(UploadErrorDomain.VideoSettings.rawValue)
+        }
         
         let mapper = VIMObjectMapper()
         mapper.addMappingClass(VIMVideo.self, forKeypath: "")
         
-        guard let video = mapper.applyMappingToJSON(responseObject) as? VIMVideo else
+        guard let video = mapper.applyMappingToJSON(dictionary) as? VIMVideo else
         {
-            // TODO: error info
-            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "VideoSettings response did not contain error or video"])
+            throw NSError(domain: UploadErrorDomain.VideoSettings.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Video settings response did not contain a video."])
         }
 
         return video
@@ -87,16 +109,14 @@ extension VimeoResponseSerializer
             throw error
         }
         
-        // TODO: add error domain
-        
         guard let url = url else
         {
-            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Url for completed download task is nil"])
+            throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Url for completed download task is nil."])
         }
         
         guard let data = NSData(contentsOfURL: url) else
         {
-            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Data at url for completed download task is nil"])
+            throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Data at url for completed download task is nil."])
         }
         
         var dictionary: [String: AnyObject]? = [:]
@@ -114,7 +134,7 @@ extension VimeoResponseSerializer
         
         if dictionary == nil
         {
-            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Download task response dictionary is nil"])
+            throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Download task response dictionary is nil."])
         }
 
         // TODO: add this check to taskDidComplete? So that we can catch upload errors too?
@@ -126,7 +146,7 @@ extension VimeoResponseSerializer
             
             let userInfo = [NSLocalizedDescriptionKey: "Invalid http status code for download task"]
             
-            throw NSError(domain: "", code: 0, userInfo: userInfo)
+            throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: userInfo)
         }
         
         return dictionary!

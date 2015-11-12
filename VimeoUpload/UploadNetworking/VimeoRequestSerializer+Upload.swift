@@ -37,7 +37,7 @@ extension VimeoRequestSerializer
         let request = self.requestWithMethod("GET", URLString: url.absoluteString, parameters: nil, error: &error)
         if let error = error
         {
-            throw error.errorByAddingDomain("MeErrorDomain")
+            throw error.errorByAddingDomain(UploadErrorDomain.Me.rawValue)
         }
         
         return request
@@ -59,7 +59,7 @@ extension VimeoRequestSerializer
         
         guard let aFileLength = fileLength else
         {
-            throw NSError.createFileLengthUnavailableError()
+            throw NSError(domain: UploadErrorDomain.Create.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to calculate file length."])
         }
         
         let url = NSURL(string: "/me/videos", relativeToURL: VimeoBaseURLString)!
@@ -79,7 +79,7 @@ extension VimeoRequestSerializer
     {
         guard let path = source.path where NSFileManager.defaultManager().fileExistsAtPath(path) else
         {
-            throw NSError.sourceFileDoesNotExistError()
+            throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to construct upload request but the source file does not exist."])
         }
         
         var error: NSError?
@@ -103,7 +103,7 @@ extension VimeoRequestSerializer
         
         guard let aFileLength = fileLength else
         {
-            throw NSError.uploadFileLengthNotAvailable()
+            throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to calculate file length."])
         }
         
         request.setValue("\(aFileLength)", forHTTPHeaderField: "Content-Length")
@@ -130,7 +130,7 @@ extension VimeoRequestSerializer
     {
         guard videoUri.characters.count > 0 else 
         {
-            throw NSError.nilVideoSettingsUriError()
+            throw NSError(domain: UploadErrorDomain.VideoSettings.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "videoUri has length of 0."])
         }
         
         let url = NSURL(string: videoUri, relativeToURL: VimeoBaseURLString)!
@@ -154,7 +154,7 @@ extension VimeoRequestSerializer
 
         if parameters.count == 0
         {
-            throw NSError.nilVideoSettingsError()
+            throw NSError(domain: UploadErrorDomain.VideoSettings.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Parameters dictionary is empty."])
         }
         
         let request = self.requestWithMethod("PATCH", URLString: url.absoluteString, parameters: parameters, error: &error)

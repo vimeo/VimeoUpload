@@ -226,7 +226,7 @@ class UploadDescriptor: Descriptor
         case .Upload:
             guard let uploadUri = self.createVideoResponse?.uploadUri else
             {
-                throw NSError.createResponseWithoutUploadUriError()
+                throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
 
             return try sessionManager.uploadVideoTask(self.url, destination: uploadUri, progress: &self.uploadProgressObject, completionHandler: nil)
@@ -234,7 +234,7 @@ class UploadDescriptor: Descriptor
         case .Activate:
             guard let activationUri = self.createVideoResponse?.activationUri else
             {
-                throw NSError.createResponseWithoutActivateUriError()
+                throw NSError(domain: UploadErrorDomain.Activate.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Activate response did not contain the required values."])
             }
             
             return try sessionManager.activateVideoDownloadTask(uri: activationUri)
@@ -242,7 +242,7 @@ class UploadDescriptor: Descriptor
         case .Settings:
             guard let videoUri = self.videoUri, let videoSettings = self.videoSettings else
             {
-                throw NSError.activateResponseWithoutVideoUriError()
+                throw NSError(domain: UploadErrorDomain.VideoSettings.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Video settings response did not contain the required values."])
             }
             
             return try sessionManager.videoSettingsDownloadTask(videoUri: videoUri, videoSettings: videoSettings)
