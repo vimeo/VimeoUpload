@@ -60,38 +60,33 @@ class MeOperation: ConcurrentOperation
         }
         
         self.task = try? self.sessionManager.meDataTask({ [weak self] (user, error) -> Void in
-            
-            // TODO: does this need to be on the main thread? Same for all internal completion blocks for concurrentOperations
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
 
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                strongSelf.task = nil
-                
-                if strongSelf.cancelled
-                {
-                    return
-                }
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            strongSelf.task = nil
+            
+            if strongSelf.cancelled
+            {
+                return
+            }
 
-                if let error = error
-                {
-                    strongSelf.error = error
-                }
-                else if let user = user
-                {
-                    strongSelf.result = user
-                }
-                else
-                {
-                    assertionFailure("Execution should never reach this point")
-                }
-                
-                strongSelf.state = .Finished
-            })
+            if let error = error
+            {
+                strongSelf.error = error
+            }
+            else if let user = user
+            {
+                strongSelf.result = user
+            }
+            else
+            {
+                assertionFailure("Execution should never reach this point")
+            }
+            
+            strongSelf.state = .Finished
         })
         
         self.task?.resume()

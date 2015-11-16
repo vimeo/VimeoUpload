@@ -128,34 +128,31 @@ class AVAssetExportOperation: ConcurrentOperation
         }
 
         self.exportSession.exportAsynchronouslyWithCompletionHandler({ [weak self] () -> Void in
-          
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
             
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if strongSelf.cancelled
-                {
-                    return
-                }
-                
-                if let error = strongSelf.exportSession.error
-                {
-                    strongSelf.error = error
-                }
-                else if let outputURL = strongSelf.exportSession.outputURL, let path = outputURL.path where NSFileManager.defaultManager().fileExistsAtPath(path)
-                {
-                    strongSelf.outputURL = outputURL
-                }
-                else
-                {
-                    strongSelf.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Export session finished with no error and no output URL."])
-                }
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            if strongSelf.cancelled
+            {
+                return
+            }
+            
+            if let error = strongSelf.exportSession.error
+            {
+                strongSelf.error = error
+            }
+            else if let outputURL = strongSelf.exportSession.outputURL, let path = outputURL.path where NSFileManager.defaultManager().fileExistsAtPath(path)
+            {
+                strongSelf.outputURL = outputURL
+            }
+            else
+            {
+                strongSelf.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Export session finished with no error and no output URL."])
+            }
 
-                strongSelf.state = .Finished
-            })
+            strongSelf.state = .Finished
         })
 
         // For some reason, not sure why, KVO on self.exportSession.progress does not trigger calls to observeValueForKeyPath
@@ -178,7 +175,7 @@ class AVAssetExportOperation: ConcurrentOperation
 
         print("AVAssetExportOperation cancelled")
 
-        self.deleteFile(self.outputURL)
+        self.deleteFile(self.outputURL) // TODO: confirm that this file is deleted
     }
     
     // MARK: Private API

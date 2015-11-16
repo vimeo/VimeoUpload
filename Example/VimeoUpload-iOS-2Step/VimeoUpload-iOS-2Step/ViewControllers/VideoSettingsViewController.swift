@@ -80,7 +80,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func setOperationBlocks(operation: VideoSettingsOperation)
     {
         operation.downloadProgressBlock = { (progress: Double) -> Void in
-            print("Download progress (settings): \(progress)")
+            print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
         }
         operation.exportProgressBlock = { (progress: Double) -> Void in
             print("Export progress (settings): \(progress)")
