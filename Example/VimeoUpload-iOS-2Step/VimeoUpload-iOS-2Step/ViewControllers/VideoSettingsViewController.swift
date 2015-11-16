@@ -46,11 +46,6 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     deinit
     {
         self.operation?.cancel()
-        
-        if let identifier = self.descriptor?.identifier
-        {
-            UploadManager.sharedInstance.descriptorManager.cancelDescriptorForIdentifier(identifier)
-        }
     }
     
     override func viewDidLoad()
@@ -152,7 +147,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                 // if create is complete, add video settings and dismiss the view controller
 
                 // 4-step upload
-                descriptor.videoSettings = self.videoSettings
+                descriptor.videoSettings = self.videoSettings // TODO: We need to somehow save the descriptor list after setting this
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
             else

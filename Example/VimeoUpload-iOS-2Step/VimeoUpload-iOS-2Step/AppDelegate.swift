@@ -48,6 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         
         UploadManager.sharedInstance // Ensure init is called on launch
         
+        UploadManager.sharedInstance.reporter.sendMessage("Launch")
+        
         return true
     }
     

@@ -115,24 +115,28 @@ class UploadDescriptor: Descriptor
 
     // If necessary, resume the current task and re-connect progress objects
 
-    override func didLoadFromCache(sessionManager: AFURLSessionManager)
+    override func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
-        guard self.state == .Executing else
+        guard self.state != .Ready else
         {
-            assertionFailure("Loaded a descriptor that's not in the .Executing state \(self.state)")
-            return
+            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Ready"])
         }
+
+        guard self.state != .Finished else
+        {
+            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Finished"])
+        }
+        
+        // For all .Executing tasks...
         
         if let taskIdentifier = self.currentTaskIdentifier
         {
             let tasks = sessionManager.tasks.filter( { ($0 as! NSURLSessionTask).taskIdentifier == taskIdentifier } )
             if tasks.count == 0
             {
-                return
+                throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache that does not have an active NSURLSessionTask"])
             }
             
-            assert(tasks.count == 1, "Loading descriptor from cache, current task identifier is non-nil but tasks count is 0")
-
             let uploadTasks = sessionManager.uploadTasks.filter( { ($0 as! NSURLSessionUploadTask).taskIdentifier == self.currentTaskIdentifier } )
             assert(tasks.count < 2, "Loading descriptor from cache, found 2 or more upload tasks with descriptor's current task identifier")
             
@@ -142,6 +146,12 @@ class UploadDescriptor: Descriptor
                 self.uploadProgressObject = sessionManager.uploadProgressForTask(task)
                 self.addObserver()
             }
+        }
+        else
+        {
+            // TODO: start next task? (But this should never be necessary)
+            
+            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache that does not have a currentTaskIdentifier"])
         }
     }
 

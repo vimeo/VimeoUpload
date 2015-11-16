@@ -77,7 +77,15 @@ class DescriptorManager
         {
             for descriptor in descriptors
             {
-                descriptor.didLoadFromCache(self.sessionManager)
+                do
+                {
+                    try descriptor.didLoadFromCache(self.sessionManager)
+                }
+                catch let error as NSError
+                {
+                    self.delegate?.didFailToLoadDescriptor(error)
+                    // TODO: remove this descriptor? Nil out background session completion handler block?
+                }
             }
             
             self.descriptors = descriptors
@@ -281,10 +289,10 @@ class DescriptorManager
             {
                 return
             }
-
-            for task in strongSelf.sessionManager.tasks
+            
+            for descriptor in strongSelf.descriptors
             {
-                task.cancel()
+                descriptor.cancel(strongSelf.sessionManager)
             }
         })
     }
@@ -338,9 +346,8 @@ class DescriptorManager
         return result
     }
     
-    private func save()
+    func save()
     {
-        self.delegate?.willSaveDescriptors(self.descriptors.count)
         self.archiver.saveObject(self.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
         self.delegate?.didSaveDescriptors(self.descriptors.count)
     }
