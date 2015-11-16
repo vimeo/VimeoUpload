@@ -78,7 +78,9 @@ class AVAssetExportOperation: ConcurrentOperation
 
         do
         {
-            exportSession.outputURL = try AVAssetExportOperation.DocumentsURL.vimeoUploadExportURL(AVAssetExportOperation.FileType)
+            var url = AVAssetExportOperation.DocumentsURL.URLByAppendingPathComponent("uploader")
+            url = url.URLByAppendingPathComponent("video_files")
+            exportSession.outputURL = try url.vimeoUploadExportURL(AVAssetExportOperation.FileType)
         }
         catch let error as NSError
         {

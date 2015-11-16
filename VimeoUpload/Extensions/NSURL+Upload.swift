@@ -36,12 +36,10 @@ extension NSURL
 {
     func vimeoUploadExportURL(fileType: String) throws -> NSURL
     {
-        var url = self.URLByAppendingPathComponent("vimeo_uploads")
-
         let unmanagedTag = UTTypeCopyPreferredTagWithClass(fileType, kUTTagClassFilenameExtension)!
         let ext = unmanagedTag.takeRetainedValue() as String
 
-        url = try self.prepareURL(ext)
+        let url = try self.prepareURL(ext)
         
         return NSURL.fileURLWithPath(url.absoluteString)
     }
