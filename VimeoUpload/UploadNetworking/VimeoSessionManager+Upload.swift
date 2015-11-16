@@ -46,34 +46,25 @@ extension VimeoSessionManager
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).meRequest()
 
-        let task = self.dataTaskWithRequest(request, completionHandler: { (response, responseObject, error) -> Void in
+        let task = self.dataTaskWithRequest(request, completionHandler: { [weak self] (response, responseObject, error) -> Void in
 
             // Do model parsing on a background thread
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] () -> Void in
                 
-                if let error = error
+                guard let strongSelf = self else
                 {
-                    completionHandler(user: nil, error: error)
-                    
                     return
                 }
-                
-                if let responseObject = responseObject as? [String: AnyObject]
-                {
-                    let mapper = VIMObjectMapper()
-                    mapper.addMappingClass(VIMUser.self, forKeypath: "")
 
-                    if let user = mapper.applyMappingToJSON(responseObject) as? VIMUser
-                    {
-                        completionHandler(user: user, error: nil)
-                        
-                        return
-                    }
+                do
+                {
+                    let user = try (strongSelf.responseSerializer as! VimeoResponseSerializer).processMeResponse(response, responseObject: responseObject, error: error)
+                    completionHandler(user: user, error: nil)
                 }
-                
-                // TODO: add error info
-                let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "/me returned no error and no user data"])
-                completionHandler(user: nil, error: error)
+                catch let error as NSError
+                {
+                    completionHandler(user: nil, error: error)
+                }
             })
         })
         
