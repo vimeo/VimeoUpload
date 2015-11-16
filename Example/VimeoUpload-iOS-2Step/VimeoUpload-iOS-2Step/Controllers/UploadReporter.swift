@@ -36,7 +36,17 @@ class UploadReporter: DescriptorManagerDelegate
     {
         self.sendMessage("Loaded \(descriptorsCount) descriptors")
     }
-    
+
+    func willSaveDescriptors(descriptorsCount: Int)
+    {
+        self.sendMessage("Will save \(descriptorsCount) descriptors")
+    }
+
+    func didSaveDescriptors(descriptorsCount: Int)
+    {
+        self.sendMessage("Did save \(descriptorsCount) descriptors")
+    }
+
     func sessionDidBecomeInvalid(error: NSError)
     {
         self.sendMessage("Session invalid \(error.localizedDescription)")

@@ -117,17 +117,31 @@ class UploadDescriptor: Descriptor
 
     override func didLoadFromCache(sessionManager: AFURLSessionManager)
     {
-        // TODO: restart tasks
-        
-        let results = sessionManager.uploadTasks.filter( { ($0 as! NSURLSessionUploadTask).taskIdentifier == self.currentTaskIdentifier } )
-        
-        assert(results.count < 2, "Upon reconnecting upload tasks with descriptors, found 2 tasks with same identifier")
-        
-        if results.count == 1
+        guard self.state == .Executing else
         {
-            let task  = results.first as! NSURLSessionUploadTask
-            self.uploadProgressObject = sessionManager.uploadProgressForTask(task)
-            self.addObserver()
+            assertionFailure("Loaded a descriptor that's not in the .Executing state \(self.state)")
+            return
+        }
+        
+        if let taskIdentifier = self.currentTaskIdentifier
+        {
+            let tasks = sessionManager.tasks.filter( { ($0 as! NSURLSessionTask).taskIdentifier == taskIdentifier } )
+            if tasks.count == 0
+            {
+                return
+            }
+            
+            assert(tasks.count == 1, "Loading descriptor from cache, current task identifier is non-nil but tasks count is 0")
+
+            let uploadTasks = sessionManager.uploadTasks.filter( { ($0 as! NSURLSessionUploadTask).taskIdentifier == self.currentTaskIdentifier } )
+            assert(tasks.count < 2, "Loading descriptor from cache, found 2 or more upload tasks with descriptor's current task identifier")
+            
+            if uploadTasks.count == 1
+            {
+                let task  = uploadTasks.first as! NSURLSessionUploadTask
+                self.uploadProgressObject = sessionManager.uploadProgressForTask(task)
+                self.addObserver()
+            }
         }
     }
 
@@ -135,8 +149,6 @@ class UploadDescriptor: Descriptor
     {
         let sessionManager = sessionManager as! VimeoSessionManager
         let responseSerializer = sessionManager.responseSerializer as! VimeoResponseSerializer
-        
-        // TODO: check for Vimeo error here?
         
         do
         {

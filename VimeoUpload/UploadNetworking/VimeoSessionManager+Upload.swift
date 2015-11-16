@@ -87,6 +87,7 @@ extension VimeoSessionManager
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url)
 
         let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
+        
         task.taskDescription = TaskDescription.CreateVideo.rawValue
         
         return task
@@ -125,6 +126,7 @@ extension VimeoSessionManager
         let request = try (self.requestSerializer as! VimeoRequestSerializer).activateVideoRequestWithUri(activationUri)
         
         let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
+        
         task.taskDescription = TaskDescription.ActivateVideo.rawValue
         
         return task
@@ -136,6 +138,7 @@ extension VimeoSessionManager
         let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequestWithUri(videoUri, videoSettings: videoSettings)
         
         let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
+        
         task.taskDescription = TaskDescription.VideoSettings.rawValue
         
         return task

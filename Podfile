@@ -4,7 +4,7 @@ xcodeproj 'Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj'
 xcodeproj 'Example/VimeoUpload-OSX-Example/VimeoUpload-OSX-Example.xcodeproj'
 
 def shared_pods
-    pod 'AFNetworking', '2.6.1'
+    pod 'AFNetworking', '2.6.3'
 end
 
 target :'VimeoUpload-iOS-2Step' do

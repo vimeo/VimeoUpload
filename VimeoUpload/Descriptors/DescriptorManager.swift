@@ -110,7 +110,7 @@ class DescriptorManager
                 }
 
                 strongSelf.descriptors.removeAll()
-                strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                strongSelf.save()
 
                 strongSelf.delegate?.sessionDidBecomeInvalid(error)
                 
@@ -146,7 +146,7 @@ class DescriptorManager
                     destination = url
                 }
                 
-                strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                strongSelf.save()
             })
             
             return destination
@@ -175,12 +175,12 @@ class DescriptorManager
 
                 descriptor.taskDidComplete(strongSelf.sessionManager, task: task, error: error)
 
-                strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                strongSelf.save()
                 
                 if descriptor.state == State.Finished
                 {
                     strongSelf.descriptors.remove(descriptor)
-                    strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                    strongSelf.save()
                     
                     if descriptor.error != nil
                     {
@@ -242,7 +242,7 @@ class DescriptorManager
             }
 
             strongSelf.descriptors.insert(descriptor)
-            strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+            strongSelf.save()
 
             strongSelf.delegate?.descriptorWillStart(descriptor.identifier)
 
@@ -251,12 +251,12 @@ class DescriptorManager
             do
             {
                 try descriptor.start(strongSelf.sessionManager)
-                strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                strongSelf.save()
             }
             catch
             {
                 strongSelf.descriptors.remove(descriptor)
-                strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                strongSelf.save()
                 
                 strongSelf.delegate?.descriptorDidFail(descriptor.identifier)
                 
@@ -344,5 +344,12 @@ class DescriptorManager
         }
 
         return result
+    }
+    
+    private func save()
+    {
+        self.delegate?.willSaveDescriptors(self.descriptors.count)
+        self.archiver.saveObject(self.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+        self.delegate?.didSaveDescriptors(self.descriptors.count)
     }
 }

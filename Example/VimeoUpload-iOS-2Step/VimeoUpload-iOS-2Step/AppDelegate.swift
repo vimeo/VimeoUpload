@@ -46,6 +46,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
         
+        UploadManager.sharedInstance // Ensure init is called on launch
+        
         return true
     }
     

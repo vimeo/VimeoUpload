@@ -31,6 +31,8 @@ import Foundation
 protocol DescriptorManagerDelegate: class
 {
     func didLoadDescriptors(descriptorsCount: Int)
+    func willSaveDescriptors(descriptorsCount: Int)
+    func didSaveDescriptors(descriptorsCount: Int)
     
     func sessionDidBecomeInvalid(error: NSError)
     func willHandleEventsForBackgroundSession()
