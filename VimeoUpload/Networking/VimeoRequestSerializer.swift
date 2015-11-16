@@ -59,14 +59,17 @@ class VimeoRequestSerializer: AFJSONRequestSerializer
         return request
     }
     
-    override func requestBySerializingRequest(request: NSURLRequest, withParameters parameters: AnyObject?) throws -> NSURLRequest
+    override func requestBySerializingRequest(request: NSURLRequest, withParameters parameters: AnyObject?, error: NSErrorPointer) -> NSURLRequest?
     {
-        let request = try super.requestBySerializingRequest(request, withParameters: parameters)
-
-        var mutableRequest = request.mutableCopy() as! NSMutableURLRequest
-        mutableRequest = self.setAuthorizationHeader(mutableRequest)
-
-        return mutableRequest.copy() as! NSURLRequest
+        if let request = super.requestBySerializingRequest(request, withParameters: parameters, error: error)
+        {
+            var mutableRequest = request.mutableCopy() as! NSMutableURLRequest
+            mutableRequest = self.setAuthorizationHeader(mutableRequest)
+            
+            return mutableRequest.copy() as? NSURLRequest
+        }
+        
+        return nil
     }
     
     override func requestWithMultipartFormRequest(request: NSURLRequest, writingStreamContentsToFile fileURL: NSURL, completionHandler handler: ((NSError?) -> Void)?) -> NSMutableURLRequest

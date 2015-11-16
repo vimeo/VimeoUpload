@@ -38,11 +38,6 @@ class DescriptorManager
 {
     private static let DescriptorsArchiveKey = "descriptors"
     
-    // DummyTempDirectoryURL is necessary to address AFNetworking and Swift 2 compatibility issues,
-    // See this issue: https://github.com/AFNetworking/AFNetworking/issues/3104 [AH] 10/28/2015
-    
-    private static let DummyTempDirectoryURL = NSURL(string: NSTemporaryDirectory())!
-
     private var sessionManager: AFURLSessionManager
     private var descriptors = Set<Descriptor>()
     private var archiver = KeyedArchiver(basePath: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])
@@ -118,17 +113,14 @@ class DescriptorManager
             })
         }
         
-        // This block should return an optional NSURL but in AFNetworking 2.6.1 this is not the case
-        // See link to Github issue above [AH] 10/28/2015
-        
-        self.sessionManager.setDownloadTaskDidFinishDownloadingBlock { [weak self] (session, task, url) -> NSURL in
+        self.sessionManager.setDownloadTaskDidFinishDownloadingBlock { [weak self] (session, task, url) -> NSURL? in
 
             guard let strongSelf = self else
             {
-                return DescriptorManager.DummyTempDirectoryURL
+                return nil
             }
 
-            var destination = DescriptorManager.DummyTempDirectoryURL
+            var destination: NSURL? = nil
 
             dispatch_sync(strongSelf.synchronizationQueue, { [weak self] () -> Void in
 
