@@ -142,30 +142,22 @@ extension VimeoSessionManager
         let task = self.dataTaskWithRequest(request, completionHandler: { (response, responseObject, error) -> Void in
             
             // Do model parsing on a background thread
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] () -> Void in
                 
-                if let error = error
+                guard let strongSelf = self else
                 {
-                    completionHandler(video: nil, error: error)
-                    
                     return
                 }
-                
-                if let responseObject = responseObject as? [String: AnyObject]
+
+                do
                 {
-                    let mapper = VIMObjectMapper()
-                    mapper.addMappingClass(VIMVideo.self, forKeypath: "")
-                    
-                    if let video = mapper.applyMappingToJSON(responseObject) as? VIMVideo
-                    {
-                        completionHandler(video: video, error: nil)
-                        
-                        return
-                    }
+                    let video = try (strongSelf.responseSerializer as! VimeoResponseSerializer).processVideoSettingsResponse(response, responseObject: responseObject, error: error)
+                    completionHandler(video: video, error: nil)
                 }
-                
-                let error = NSError(domain: UploadErrorDomain.VideoSettings.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "videoSettings request returned no error and no video"])
-                completionHandler(video: nil, error: error)
+                catch let error as NSError
+                {
+                    completionHandler(video: nil, error: error)
+                }
             })
         })
         
