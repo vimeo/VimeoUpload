@@ -196,11 +196,13 @@ class UploadDescriptor: Descriptor
         {
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first
             {
-                self.error = taskError // TODO: add proper vimeo domain
+                let domain = self.errorDomainForRequest(self.currentRequest)
+                self.error = taskError.errorByAddingDomain(domain)
             }
             else if let error = error
             {
-                self.error = error // TODO: add proper vimeo domain
+                let domain = self.errorDomainForRequest(self.currentRequest)
+                self.error = error.errorByAddingDomain(domain)
             }
         }
         
@@ -278,6 +280,24 @@ class UploadDescriptor: Descriptor
         if let path = self.url.path where NSFileManager.defaultManager().fileExistsAtPath(path)
         {
             _ = try! NSFileManager.defaultManager().removeItemAtPath(path)
+        }
+    }
+    
+    private func errorDomainForRequest(request: UploadRequest) -> String
+    {
+        switch request
+        {
+        case .Create:
+            return UploadErrorDomain.Create.rawValue
+
+        case .Upload:
+            return UploadErrorDomain.Upload.rawValue
+
+        case .Activate:
+            return UploadErrorDomain.Activate.rawValue
+
+        case .Settings:
+            return UploadErrorDomain.VideoSettings.rawValue
         }
     }
     
