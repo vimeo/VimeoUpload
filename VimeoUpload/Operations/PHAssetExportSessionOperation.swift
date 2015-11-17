@@ -87,22 +87,14 @@ class PHAssetExportSessionOperation: ConcurrentOperation
                 return
             }
             
-            if strongSelf.state == .Finished // Just in case
-            {
-                return
-            }
-
-            if let error = error
+            // We don't need to handle errors here, the same error will be delivered to the resultHandler below
+            if let _ = error
             {
                 strongSelf.progressBlock = nil
-                strongSelf.error = error
-                strongSelf.state = .Finished
             }
-            else if let info = info, let error = info[PHImageErrorKey] as? NSError
+            else if let info = info, let _ = info[PHImageErrorKey] as? NSError
             {
                 strongSelf.progressBlock = nil
-                strongSelf.error = error
-                strongSelf.state = .Finished
             }
             else
             {
@@ -129,11 +121,6 @@ class PHAssetExportSessionOperation: ConcurrentOperation
                 return
             }
             
-            if strongSelf.state == .Finished // If an error was thrown in the progressHandler above
-            {
-                return
-            }
-
             if let info = info, let error = info[PHImageErrorKey] as? NSError
             {
                 strongSelf.error = error
