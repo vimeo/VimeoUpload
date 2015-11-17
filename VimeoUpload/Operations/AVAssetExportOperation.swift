@@ -180,9 +180,6 @@ class AVAssetExportOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    // TODO: put descriptors and exports in different directories
-    // TODO: Delete contents of directory regularly?
-    
     private func deleteFile(url: NSURL?)
     {
         if let url = url where NSFileManager.defaultManager().fileExistsAtPath(url.absoluteString)

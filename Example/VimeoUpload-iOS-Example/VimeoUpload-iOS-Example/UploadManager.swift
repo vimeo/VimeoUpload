@@ -37,7 +37,7 @@ class UploadManager
     {
         self.reporter = UploadReporter()
         
-        let sessionManager = VimeoSessionManager(authToken: "caf4648129ec56e580175c4b45cce7fc--") // TODO: are these hyphens causing failures?
+        let sessionManager = VimeoSessionManager(authToken: "caf4648129ec56e580175c4b45cce7fc")
         self.descriptorManager = DescriptorManager(sessionManager: sessionManager, delegate: self.reporter)
     }
     
