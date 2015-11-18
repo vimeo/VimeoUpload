@@ -39,6 +39,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     // MARK:
     
     var input: CameraRollViewControllerResult?
+    var descriptorManager: DescriptorManager?
     
     // MARK:
     
@@ -54,11 +55,6 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK: Lifecycle
     
-    deinit
-    {
-        self.operation?.cancel()
-    }
-    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -73,29 +69,27 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: Setup
     
-    private func setupNavigationBar()
-    {
-        self.title = "Video Settings"
-
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.Done, target: self, action: "didTapUpload:")
-    }
-    
-    private func startOperation()
+    func startOperation()
     {
         self.operation = self.buildOperation()
         self.operation?.start()
     }
     
-    private func startUpload()
+    func startUpload()
     {
         self.descriptor = self.buildDescriptor()
-        
-        let descriptorManager = self.input!.descriptorManager
-        descriptorManager.addDescriptor(self.descriptor!)
+        self.descriptorManager!.addDescriptor(self.descriptor!)
     }
 
     // MARK: Subclass Overrides
     
+    func setupNavigationBar()
+    {
+        self.title = "Video Settings"
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.Done, target: self, action: "didTapUpload:")
+    }
+
     func buildOperation() -> ConcurrentOperation?
     {
         assertionFailure("Subclasses must override this method")

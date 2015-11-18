@@ -70,7 +70,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.setupNavigationBar()
         self.setupCollectionView()
         
-        self.setupOperation(self.sessionManager, me: nil)
+        self.setupOperation(self.sessionManager!, me: nil)
     }
     
     override func viewDidAppear(animated: Bool)
@@ -81,6 +81,13 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         {
             self.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
         }
+    }
+    
+    // MARK: Subclass Overrides
+    
+    func setupNavigationBar()
+    {
+        self.title = "Camera Roll"
     }
     
     // MARK: Setup
@@ -102,14 +109,6 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         })
         
         return assets
-    }
-
-    private func setupNavigationBar()
-    {
-        self.title = "Camera Roll"
-        
-        let cancelItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
-        self.navigationItem.leftBarButtonItem = cancelItem
     }
 
     private func setupCollectionView()

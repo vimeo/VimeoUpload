@@ -71,8 +71,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CameraRollViewControllerD
     {
         let viewController = OldVideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
         viewController.input = result
+        viewController.descriptorManager = UploadManager.sharedInstance.descriptorManager
+     
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.view.backgroundColor = UIColor.whiteColor()
         
-        self.navigationController?.presentViewController(viewController, animated: true, completion: nil)
+        self.navigationController?.presentViewController(navigationController, animated: true, completion: nil)
     }
 }
 
