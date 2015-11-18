@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MyVideosViewController: UIViewController
+class MyVideosViewController: UIViewController, CameraRollViewControllerDelegate
 {
     static let NibName = "MyVideosViewController"
     
@@ -24,45 +24,22 @@ class MyVideosViewController: UIViewController
     @IBAction func didTapUpload(sender: UIButton)
     {
         let viewController = CameraRollViewController(nibName: CameraRollViewController.NibName, bundle:NSBundle.mainBundle())
-        
+        viewController.delegate = self
+        viewController.sessionManager = UploadManager.sharedInstance.sessionManager
+
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.view.backgroundColor = UIColor.whiteColor()
         
         self.presentViewController(navigationController, animated: true, completion: nil)
     }
     
-//     MARK: KVO
-//
-//    private func addObservers()
-//    {
-//        self.uploadDescriptor?.addObserver(self, forKeyPath: VideoSettingsViewController.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.uploadProgressKVOContext)
-//    }
-//    
-//    private func removeObservers()
-//    {
-//        self.uploadDescriptor?.removeObserver(self, forKeyPath: VideoSettingsViewController.ProgressKeyPath, context: &self.uploadProgressKVOContext)
-//    }
-//    
-//    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
-//    {
-//        if let keyPath = keyPath
-//        {
-//            switch (keyPath, context)
-//            {
-//            case(VideoSettingsViewController.ProgressKeyPath, &self.uploadProgressKVOContext):
-//                let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
-//                
-//                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                    print("Outer progress: \(progress)")
-//                })
-//                
-//            default:
-//                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-//            }
-//        }
-//        else
-//        {
-//            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-//        }
-//    }
+    // MARK: CameraRollViewControllerDelegate
+    
+    func cameraRollViewControllerDidFinish(viewController: CameraRollViewController, result: CameraRollViewControllerResult)
+    {
+        let viewController = NewVideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
+        viewController.input = result
+        
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }    
 }

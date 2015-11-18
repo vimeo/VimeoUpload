@@ -31,8 +31,9 @@ end
 
 target :'VimeoUpload-iOS-Example' do
     platform :ios, '8.0'
-    use_frameworks!
+    #use_frameworks!
     shared_pods
+    pod 'VIMNetworking/Model', '5.6.1.4'
     xcodeproj 'Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj'
 end
 

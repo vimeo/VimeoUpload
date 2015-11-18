@@ -28,6 +28,15 @@ import UIKit
 import Photos
 import AVFoundation
 
+// Append the "class" keyword to allow weak references to objects that implement this protocol [AH] 11/18/2015
+
+protocol CameraRollViewControllerDelegate: class
+{
+    func cameraRollViewControllerDidFinish(viewController: CameraRollViewController, result: CameraRollViewControllerResult)
+}
+
+typealias CameraRollViewControllerResult = (me: VIMUser, phAssetContainer: PHAssetContainer)
+
 class CameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
     static let NibName = "CameraRollViewController"
@@ -35,6 +44,9 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
+    
+    var sessionManager: VimeoSessionManager?
+    weak var delegate: CameraRollViewControllerDelegate?
     
     private var assets: [PHAssetContainer] = []
     private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
@@ -58,8 +70,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.setupNavigationBar()
         self.setupCollectionView()
         
-        let sessionManager = UploadManager.sharedInstance.sessionManager
-        self.setupOperation(sessionManager, me: nil)
+        self.setupOperation(self.sessionManager, me: nil)
     }
     
     override func viewDidAppear(animated: Bool)
@@ -139,8 +150,6 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
 
                 if let error = operation.error
                 {
-                    print("Camera roll operation error: \(error)")
-
                     if let indexPath = strongSelf.selectedIndexPath
                     {
                         strongSelf.presentOperationErrorAlert(indexPath, error: error)
@@ -149,12 +158,10 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 }
                 else
                 {
-                    print("Camera roll operation complete!")
-
                     let indexPath = strongSelf.selectedIndexPath!
                     let phAssetContainer = strongSelf.assets[indexPath.item]
 
-                    strongSelf.presentVideoSettings(phAssetContainer)
+                    strongSelf.finish(phAssetContainer)
                 }
             })
         }
@@ -384,17 +391,14 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    private func presentVideoSettings(phAssetContainer: PHAssetContainer)
+    private func finish(phAssetContainer: PHAssetContainer)
     {
-        let sessionManager = self.operation!.sessionManager
         let me = self.operation!.me!
-        let input = VideoSettingsViewControllerInput(me: me, phAssetContainer: phAssetContainer)
 
-        self.setupOperation(sessionManager, me: me)
+        self.setupOperation(self.sessionManager!, me: me)
 
-        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.input = input
-
-        self.navigationController?.pushViewController(viewController, animated: true)
+        let result = CameraRollViewControllerResult(me: me, phAssetContainer: phAssetContainer)
+        
+        self.delegate?.cameraRollViewControllerDidFinish(self, result: result)
     }
 }

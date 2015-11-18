@@ -31,7 +31,7 @@ class UploadDescriptor: Descriptor
     // MARK:
     
     let url: NSURL
-    var videoSettings: VideoSettings?
+    let videoSettings: VideoSettings?
     
     // MARK:
     

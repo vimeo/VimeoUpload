@@ -7,3 +7,10 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
+
+#import "VIMObjectMapper.h"
+#import "VIMUser.h"
+#import "VIMUploadQuota.h"
+#import "VIMSpace.h"
+#import "VIMQuota.h"
+#import "VIMVideo.h"
