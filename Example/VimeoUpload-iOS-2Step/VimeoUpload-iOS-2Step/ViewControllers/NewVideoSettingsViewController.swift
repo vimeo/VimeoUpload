@@ -10,12 +10,6 @@ import UIKit
 
 class NewVideoSettingsViewController: VideoSettingsViewController
 {
-    override func viewDidLoad()
-    {
-        super.viewDidLoad()
-
-    }
-    
     // MARK: Overrides
     
     override func buildOperation() -> ConcurrentOperation?
@@ -34,15 +28,17 @@ class NewVideoSettingsViewController: VideoSettingsViewController
 
     override func didTapUpload(sender: UIBarButtonItem)
     {
+        let operation = self.operation as? VideoSettingsOperation
+
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil)
         
-        if self.operation?.state == .Executing
+        if operation?.state == .Executing
         {
             self.activityIndicatorView.startAnimating() // Listen for operation completion, dismiss
         }
-        else if let error = self.operation?.error
+        else if let error = operation?.error
         {
             self.presentOperationErrorAlert(error)
         }
@@ -72,9 +68,11 @@ class NewVideoSettingsViewController: VideoSettingsViewController
         
     private func applyVideoSettings()
     {
+        let descriptor = self.descriptor as? UploadDescriptor
+
         self.activityIndicatorView.startAnimating()
         
-        let videoUri = self.descriptor!.videoUri!
+        let videoUri = descriptor!.videoUri!
         let videoSettings = self.videoSettings!
         
         do

@@ -392,8 +392,8 @@
 			children = (
 				AF34DB681BE721150094D1F8 /* MyVideosViewController.swift */,
 				AF34DB691BE721150094D1F8 /* MyVideosViewController.xib */,
-				5043A4AA1BFD220200D70725 /* NewVideoSettingsViewController.swift */,
 				5043A5201BFD2CCC00D70725 /* NewCameraRollViewController.swift */,
+				5043A4AA1BFD220200D70725 /* NewVideoSettingsViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";

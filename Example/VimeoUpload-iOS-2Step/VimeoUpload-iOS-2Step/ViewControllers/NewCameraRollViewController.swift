@@ -10,6 +10,8 @@ import UIKit
 
 class NewCameraRollViewController: CameraRollViewController
 {
+    // MARK: Overrides
+    
     override func setupNavigationBar()
     {
         super.setupNavigationBar()

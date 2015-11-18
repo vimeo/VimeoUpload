@@ -23,7 +23,7 @@ class MyVideosViewController: UIViewController, CameraRollViewControllerDelegate
     
     @IBAction func didTapUpload(sender: UIButton)
     {
-        let viewController = CameraRollViewController(nibName: CameraRollViewController.NibName, bundle:NSBundle.mainBundle())
+        let viewController = NewCameraRollViewController(nibName: CameraRollViewController.NibName, bundle:NSBundle.mainBundle())
         viewController.delegate = self
         viewController.sessionManager = UploadManager.sharedInstance.sessionManager
 
@@ -37,9 +37,9 @@ class MyVideosViewController: UIViewController, CameraRollViewControllerDelegate
     
     func cameraRollViewControllerDidFinish(viewController: CameraRollViewController, result: CameraRollViewControllerResult)
     {
-        let viewController = NewVideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.input = result
+        let settingsViewController = NewVideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
+        settingsViewController.input = result
         
-        self.navigationController?.pushViewController(viewController, animated: true)
+        viewController.navigationController?.pushViewController(settingsViewController, animated: true)
     }    
 }

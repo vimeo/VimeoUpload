@@ -258,7 +258,6 @@ class VideoSettingsOperation: ConcurrentOperation
         return filesize!
     }
     
-    
     // MARK: Private API
     
     private func deleteFile(url: NSURL)

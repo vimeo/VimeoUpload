@@ -25,7 +25,7 @@ class OldVideoSettingsViewController: VideoSettingsViewController
     {
         super.setupNavigationBar()
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Done, target: self, action: "didTapCancel:")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
     }
 
     override func buildOperation() -> ConcurrentOperation
