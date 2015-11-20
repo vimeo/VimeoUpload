@@ -37,6 +37,6 @@ class UploadManager
     init()
     {
         self.sessionManager = VimeoSessionManager(authToken: "caf4648129ec56e580175c4b45cce7fc")
-        self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, delegate: self.reporter)
+        self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: "uploader", delegate: self.reporter)
     }
 }

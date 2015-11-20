@@ -161,8 +161,7 @@ extension VimeoSessionManager
                     }
                 }
                 
-                // TODO: add error info
-                let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "videoSettings request returned no error and no video"])
+                let error = NSError(domain: UploadErrorDomain.VideoSettings.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "videoSettings request returned no error and no video"])
                 completionHandler(video: nil, error: error)
             })
         })

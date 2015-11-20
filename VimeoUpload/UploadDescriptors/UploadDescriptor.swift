@@ -255,7 +255,7 @@ class UploadDescriptor: Descriptor
         
         if let path = self.url.path where NSFileManager.defaultManager().fileExistsAtPath(path)
         {
-            _ = try? NSFileManager.defaultManager().removeItemAtPath(path)
+            _ = try! NSFileManager.defaultManager().removeItemAtPath(path)
         }
     }
     
