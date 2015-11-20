@@ -279,7 +279,14 @@ class UploadDescriptor: Descriptor
         
         if let path = self.url.path where NSFileManager.defaultManager().fileExistsAtPath(path)
         {
-            _ = try! NSFileManager.defaultManager().removeItemAtPath(path)
+            do
+            {
+                _ = try NSFileManager.defaultManager().removeItemAtPath(path)
+            }
+            catch let error as NSError
+            {
+                assertionFailure("Error removing uploaded file \(error.localizedDescription)")
+            }
         }
     }
     

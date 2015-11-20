@@ -39,4 +39,11 @@ class UploadManager
         self.sessionManager = VimeoSessionManager(authToken: "caf4648129ec56e580175c4b45cce7fc")
         self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: "uploader", delegate: self.reporter)
     }
+    
+    // MARK: Public API
+    
+    func applicationDidFinishLaunching()
+    {
+        // Do nothing at the moment
+    }
 }

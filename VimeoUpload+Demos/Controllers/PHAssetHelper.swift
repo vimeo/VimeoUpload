@@ -131,7 +131,7 @@ class PHAssetHelper
                 }
                 else
                 {
-                    assertionFailure("Execution should never reach this point")
+                    fatalError("Execution should never reach this point")
                 }
             })
         }

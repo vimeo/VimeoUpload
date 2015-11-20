@@ -84,7 +84,7 @@ class AVAssetExportOperation: ConcurrentOperation
         }
         catch let error as NSError
         {
-            assertionFailure("Error creating upload export directory: \(error.localizedDescription)")
+            fatalError("Error creating upload export directory: \(error.localizedDescription)")
         }
 
         self.exportSession = exportSession
