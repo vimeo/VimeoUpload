@@ -50,9 +50,28 @@ extension NSError
 {
     func errorByAddingDomain(domain: String) -> NSError
     {
-        let userInfo = NSMutableDictionary(dictionary: self.userInfo)
-        userInfo["VimeoDomain"] = domain
+        return self.errorByAddingDomain(domain, userInfo: nil)
+    }
+
+    func errorByAddingUserInfo(userInfo: [String: AnyObject]) -> NSError
+    {
+        return self.errorByAddingDomain(nil, userInfo: userInfo)
+    }
+
+    func errorByAddingDomain(domain: String?, userInfo: [String: AnyObject]?) -> NSError
+    {
+        let augmentedInfo = NSMutableDictionary(dictionary: self.userInfo)
         
-        return NSError(domain: self.domain, code: self.code, userInfo: userInfo as [NSObject: AnyObject])
+        if let domain = domain
+        {
+            augmentedInfo["VimeoDomain"] = domain
+        }
+        
+        if let userInfo = userInfo
+        {
+            augmentedInfo.addEntriesFromDictionary(userInfo)
+        }
+        
+        return NSError(domain: self.domain, code: self.code, userInfo: augmentedInfo as [NSObject: AnyObject])
     }
 }

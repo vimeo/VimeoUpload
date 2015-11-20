@@ -42,31 +42,62 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
     {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // TODO: override to parse out Vimeo error?
-    
-    // MARK: Overrides
-    
-//    override func responseObjectForResponse(response: NSURLResponse?, data: NSData?, error: NSErrorPointer) -> AnyObject?
-//    {
-//        return super.responseObjectForResponse(response, data: data, error: error)
-//    }
-    
+        
     // MARK: Public API
     
-    func checkStatusCode(response: NSURLResponse?, responseObject: AnyObject?) throws
+    func checkDownloadResponseForError(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> [String: AnyObject]?
+    {
+        var responseObject: [String: AnyObject]? = nil
+        var serializationError: NSError? = nil
+        do
+        {
+            responseObject = try self.dictionaryFromDownloadTaskResponse(url)
+        }
+        catch let error as NSError
+        {
+            serializationError = error
+        }
+        
+        try checkDataResponseForError(response, responseObject: responseObject, error: error)
+        
+        if let serializationError = serializationError
+        {
+            throw serializationError
+        }
+        
+        return responseObject
+    }
+    
+    func checkDataResponseForError(response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws
+    {
+        let errorInfo = self.errorInfoFromResponse(response, responseObject: responseObject)
+        
+        if let error = error
+        {
+            throw error.errorByAddingDomain(nil, userInfo: errorInfo)
+        }
+        
+        do
+        {
+            try self.checkStatusCodeValidity(response)
+        }
+        catch let error as NSError
+        {
+            throw error.errorByAddingDomain(VimeoResponseSerializer.ErrorDomain, userInfo: errorInfo)
+        }
+    }
+
+    func checkStatusCodeValidity(response: NSURLResponse?) throws
     {
         if let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode < 200 || httpResponse.statusCode > 299
         {
-            // TODO: populate error object with dictionary contents, keep in sync with localytics keys
-            
             let userInfo = [NSLocalizedDescriptionKey: "Invalid http status code for download task"]
             
-            throw NSError(domain: UploadErrorDomain.Me.rawValue, code: 0, userInfo: userInfo)
+            throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: userInfo)
         }
     }
     
-    func dictionaryForDownloadTaskResponse(url: NSURL?) throws -> [String: AnyObject]
+    func dictionaryFromDownloadTaskResponse(url: NSURL?) throws -> [String: AnyObject]
     {
         guard let url = url else
         {
@@ -98,6 +129,32 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
         
         return dictionary!
     }
+    
+    func errorInfoFromResponse(response: NSURLResponse?, responseObject: AnyObject?) -> [String: AnyObject]?
+    {
+        if let dictionary = responseObject as? [String: AnyObject]
+        {
+            let errorKeys = ["error", "VimeoErrorCode", "error_code", "developer_message", "invalid_parameters"]
+            var errorInfo: [String: AnyObject] = [:]
+            
+            for (key, value) in dictionary
+            {
+                if errorKeys.contains(key)
+                {
+                    errorInfo[key] = value
+                }
+            }
+            
+            if let headerErrorCode = (response as? NSHTTPURLResponse)?.allHeaderFields["Vimeo-Error-Code"]
+            {
+                errorInfo["error_code"] = headerErrorCode
+            }
+            
+            return errorInfo
+        }
+        
+        return nil
+    }
 
     // MARK: Private API
 
@@ -110,7 +167,8 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
             "text/javascript",
             "application/vnd.vimeo.*+json",
             "application/vnd.vimeo.user+json",
-            "application/vnd.vimeo.video+json"]
+            "application/vnd.vimeo.video+json",
+            "application/vnd.vimeo.error+json"]
         )
     }
 }
