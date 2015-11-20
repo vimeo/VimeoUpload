@@ -28,13 +28,6 @@ import UIKit
 import Photos
 import AVFoundation
 
-// Append the "class" keyword to allow weak references to objects that implement this protocol [AH] 11/18/2015
-
-protocol CameraRollViewControllerDelegate: class
-{
-    func cameraRollViewControllerDidFinish(viewController: CameraRollViewController, result: CameraRollViewControllerResult)
-}
-
 typealias CameraRollViewControllerResult = (me: VIMUser, phAssetContainer: PHAssetContainer)
 
 class CameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
@@ -44,9 +37,6 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
-    
-    var sessionManager: VimeoSessionManager?
-    weak var delegate: CameraRollViewControllerDelegate?
     
     private var assets: [PHAssetContainer] = []
     private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
@@ -70,7 +60,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.setupNavigationBar()
         self.setupCollectionView()
         
-        self.setupOperation(self.sessionManager!, me: nil)
+        self.setupOperation(nil)
     }
     
     override func viewDidAppear(animated: Bool)
@@ -119,8 +109,9 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         layout?.minimumLineSpacing = CameraRollViewController.CollectionViewSpacing
     }
     
-    private func setupOperation(sessionManager: VimeoSessionManager, me: VIMUser?)
+    private func setupOperation(me: VIMUser?)
     {
+        let sessionManager = UploadManager.sharedInstance.sessionManager
         let operation = CameraRollOperation(sessionManager: sessionManager, me: me)
         self.setOperationBlocks(operation)
         self.operation = operation
@@ -371,7 +362,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             
             strongSelf.selectedIndexPath = nil
             strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
-            strongSelf.setupOperation(strongSelf.operation!.sessionManager, me: strongSelf.operation?.me)
+            strongSelf.setupOperation(strongSelf.operation?.me)
         }))
 
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
@@ -381,7 +372,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 return
             }
 
-            strongSelf.setupOperation(strongSelf.operation!.sessionManager, me: strongSelf.operation?.me)
+            strongSelf.setupOperation(strongSelf.operation?.me)
             strongSelf.didSelectIndexPath(indexPath)
         }))
         
@@ -392,10 +383,14 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     {
         let me = self.operation!.me!
 
-        self.setupOperation(self.sessionManager!, me: me)
-
-        let result = CameraRollViewControllerResult(me: me, phAssetContainer: phAssetContainer)
+        self.setupOperation(me) // Reset the operation
         
-        self.delegate?.cameraRollViewControllerDidFinish(self, result: result)
+        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
+        viewController.input = CameraRollViewControllerResult(me: me, phAssetContainer: phAssetContainer)
+        
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.view.backgroundColor = UIColor.whiteColor()
+        
+        self.navigationController?.presentViewController(navigationController, animated: true, completion: nil)
     }
 }

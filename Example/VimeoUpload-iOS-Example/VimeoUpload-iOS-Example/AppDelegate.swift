@@ -27,7 +27,7 @@
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, CameraRollViewControllerDelegate
+class AppDelegate: UIResponder, UIApplicationDelegate
 {
     var window: UIWindow?
     var navigationController: UINavigationController?
@@ -39,10 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CameraRollViewControllerD
         let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
         application.registerUserNotificationSettings(settings)
         
-        let viewController = CameraRollViewController(nibName: CameraRollViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.delegate = self
-        viewController.sessionManager = UploadManager.sharedInstance.sessionManager
-            
+        let viewController = CameraRollViewController(nibName: CameraRollViewController.NibName, bundle:NSBundle.mainBundle())            
         self.navigationController = UINavigationController(rootViewController: viewController)
         
         let frame = UIScreen.mainScreen().bounds
@@ -63,19 +60,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CameraRollViewControllerD
         {
             assertionFailure("Unhandled background events")
         }
-    }
-    
-    // MARK: CameraRollViewControllerDelegate
-    
-    func cameraRollViewControllerDidFinish(viewController: CameraRollViewController, result: CameraRollViewControllerResult)
-    {
-        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.input = result
-     
-        let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.view.backgroundColor = UIColor.whiteColor()
-        
-        self.navigationController?.presentViewController(navigationController, animated: true, completion: nil)
     }
 }
 
