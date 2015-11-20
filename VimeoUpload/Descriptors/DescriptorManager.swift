@@ -40,6 +40,7 @@ class DescriptorManager
     
     private var sessionManager: AFURLSessionManager
     private let name: String
+
     private var descriptors = Set<Descriptor>()
     private let archiver: KeyedArchiver
     private weak var delegate: DescriptorManagerDelegate?
