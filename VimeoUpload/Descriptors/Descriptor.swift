@@ -35,7 +35,7 @@ enum State: String
 
 class Descriptor: NSObject
 {
-    private static let ErrorDomain = "DescriptorErrorDomain"
+    static let ErrorDomain = "DescriptorErrorDomain"
     
     var state = State.Ready
     var identifier: String?
@@ -74,7 +74,7 @@ class Descriptor: NSObject
         }
     }
 
-    func didLoadFromCache(sessionManager: AFURLSessionManager)
+    func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
         fatalError("didLoadFromCache(sessionManager:) has not been implemented")
     }

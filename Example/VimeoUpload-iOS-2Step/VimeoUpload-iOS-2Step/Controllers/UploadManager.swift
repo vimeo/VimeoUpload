@@ -32,7 +32,7 @@ class UploadManager
     
     let descriptorManager: DescriptorManager
     let sessionManager: VimeoSessionManager
-    private let reporter: DescriptorManagerDelegate = UploadReporter()
+    let reporter: UploadReporter = UploadReporter() // TODO: mark as private
     
     init()
     {

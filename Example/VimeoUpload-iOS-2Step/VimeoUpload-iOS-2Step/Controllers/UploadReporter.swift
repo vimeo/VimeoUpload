@@ -36,6 +36,16 @@ class UploadReporter: DescriptorManagerDelegate
     {
         self.sendMessage("Loaded \(descriptorsCount) descriptors")
     }
+
+    func didSaveDescriptors(descriptorsCount: Int)
+    {
+        self.sendMessage("Did save \(descriptorsCount) descriptors")
+    }
+
+    func didFailToLoadDescriptor(error: NSError)
+    {
+        self.sendMessage("Did fail to load descriptor \(error.localizedDescription)")
+    }
     
     func sessionDidBecomeInvalid(error: NSError)
     {
@@ -114,7 +124,7 @@ class UploadReporter: DescriptorManagerDelegate
     
     // Private API
     
-    private func sendMessage(message: String)
+    func sendMessage(message: String) // TODO: Mark as private
     {
         print(message)
         

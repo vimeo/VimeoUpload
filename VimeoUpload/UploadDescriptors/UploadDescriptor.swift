@@ -115,19 +115,43 @@ class UploadDescriptor: Descriptor
 
     // If necessary, resume the current task and re-connect progress objects
 
-    override func didLoadFromCache(sessionManager: AFURLSessionManager)
+    override func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
-        // TODO: restart tasks
-        
-        let results = sessionManager.uploadTasks.filter( { ($0 as! NSURLSessionUploadTask).taskIdentifier == self.currentTaskIdentifier } )
-        
-        assert(results.count < 2, "Upon reconnecting upload tasks with descriptors, found 2 tasks with same identifier")
-        
-        if results.count == 1
+        guard self.state != .Ready else
         {
-            let task  = results.first as! NSURLSessionUploadTask
-            self.uploadProgressObject = sessionManager.uploadProgressForTask(task)
-            self.addObserver()
+            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Ready"])
+        }
+
+        guard self.state != .Finished else
+        {
+            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Finished"])
+        }
+        
+        // For all .Executing tasks...
+        
+        if let taskIdentifier = self.currentTaskIdentifier
+        {
+            let tasks = sessionManager.tasks.filter( { ($0 as! NSURLSessionTask).taskIdentifier == taskIdentifier } )
+            if tasks.count == 0
+            {
+                throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache that does not have an active NSURLSessionTask"])
+            }
+            
+            let uploadTasks = sessionManager.uploadTasks.filter( { ($0 as! NSURLSessionUploadTask).taskIdentifier == self.currentTaskIdentifier } )
+            assert(tasks.count < 2, "Loading descriptor from cache, found 2 or more upload tasks with descriptor's current task identifier")
+            
+            if uploadTasks.count == 1
+            {
+                let task  = uploadTasks.first as! NSURLSessionUploadTask
+                self.uploadProgressObject = sessionManager.uploadProgressForTask(task)
+                self.addObserver()
+            }
+        }
+        else
+        {
+            // TODO: start next task? (But this should never be necessary)
+            
+            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache that does not have a currentTaskIdentifier"])
         }
     }
 
@@ -135,8 +159,6 @@ class UploadDescriptor: Descriptor
     {
         let sessionManager = sessionManager as! VimeoSessionManager
         let responseSerializer = sessionManager.responseSerializer as! VimeoResponseSerializer
-        
-        // TODO: check for Vimeo error here?
         
         do
         {

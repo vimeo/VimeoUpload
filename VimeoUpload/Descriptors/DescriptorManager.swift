@@ -38,13 +38,9 @@ class DescriptorManager
 {
     private static let DescriptorsArchiveKey = "descriptors"
     
-    // DummyTempDirectoryURL is necessary to address AFNetworking and Swift 2 compatibility issues,
-    // See this issue: https://github.com/AFNetworking/AFNetworking/issues/3104 [AH] 10/28/2015
-    
-    private static let DummyTempDirectoryURL = NSURL(string: NSTemporaryDirectory())!
-
-    private let sessionManager: AFURLSessionManager
+    private var sessionManager: AFURLSessionManager
     private let name: String
+
     private var descriptors = Set<Descriptor>()
     private let archiver: KeyedArchiver
     private weak var delegate: DescriptorManagerDelegate?
@@ -101,7 +97,15 @@ class DescriptorManager
         {
             for descriptor in descriptors
             {
-                descriptor.didLoadFromCache(self.sessionManager)
+                do
+                {
+                    try descriptor.didLoadFromCache(self.sessionManager)
+                }
+                catch let error as NSError
+                {
+                    self.delegate?.didFailToLoadDescriptor(error)
+                    // TODO: remove this descriptor? Nil out background session completion handler block?
+                }
             }
             
             self.descriptors = descriptors
@@ -129,7 +133,7 @@ class DescriptorManager
                 }
 
                 strongSelf.descriptors.removeAll()
-                strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                strongSelf.save()
 
                 strongSelf.delegate?.sessionDidBecomeInvalid(error)
                 
@@ -137,17 +141,14 @@ class DescriptorManager
             })
         }
         
-        // This block should return an optional NSURL but in AFNetworking 2.6.1 this is not the case
-        // See link to Github issue above [AH] 10/28/2015
-        
-        self.sessionManager.setDownloadTaskDidFinishDownloadingBlock { [weak self] (session, task, url) -> NSURL in
+        self.sessionManager.setDownloadTaskDidFinishDownloadingBlock { [weak self] (session, task, url) -> NSURL? in
 
             guard let strongSelf = self else
             {
-                return DescriptorManager.DummyTempDirectoryURL
+                return nil
             }
 
-            var destination = DescriptorManager.DummyTempDirectoryURL
+            var destination: NSURL? = nil
 
             dispatch_sync(strongSelf.synchronizationQueue, { [weak self] () -> Void in
 
@@ -165,7 +166,7 @@ class DescriptorManager
                     destination = url
                 }
                 
-                strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                strongSelf.save()
             })
             
             return destination
@@ -194,12 +195,12 @@ class DescriptorManager
 
                 descriptor.taskDidComplete(strongSelf.sessionManager, task: task, error: error)
 
-                strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                strongSelf.save()
                 
                 if descriptor.state == State.Finished
                 {
                     strongSelf.descriptors.remove(descriptor)
-                    strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                    strongSelf.save()
                     
                     if descriptor.error != nil
                     {
@@ -261,7 +262,7 @@ class DescriptorManager
             }
 
             strongSelf.descriptors.insert(descriptor)
-            strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+            strongSelf.save()
 
             strongSelf.delegate?.descriptorWillStart(descriptor.identifier)
 
@@ -270,12 +271,12 @@ class DescriptorManager
             do
             {
                 try descriptor.start(strongSelf.sessionManager)
-                strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                strongSelf.save()
             }
             catch
             {
                 strongSelf.descriptors.remove(descriptor)
-                strongSelf.archiver.saveObject(strongSelf.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+                strongSelf.save()
                 
                 strongSelf.delegate?.descriptorDidFail(descriptor.identifier)
                 
@@ -308,10 +309,10 @@ class DescriptorManager
             {
                 return
             }
-
-            for task in strongSelf.sessionManager.tasks
+            
+            for descriptor in strongSelf.descriptors
             {
-                task.cancel()
+                descriptor.cancel(strongSelf.sessionManager)
             }
         })
     }
@@ -363,5 +364,11 @@ class DescriptorManager
         }
 
         return result
+    }
+    
+    func save()
+    {
+        self.archiver.saveObject(self.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
+        self.delegate?.didSaveDescriptors(self.descriptors.count)
     }
 }
