@@ -70,80 +70,84 @@ class PHAssetExportSessionOperation: ConcurrentOperation
         options.deliveryMode = .HighQualityFormat
         options.progressHandler = { [weak self] (progress: Double, error: NSError?, stop: UnsafeMutablePointer<ObjCBool>, info: [NSObject : AnyObject]?) -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            guard let strongSelf = self else
+            {
+                return
+            }
             
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                strongSelf.requestID = nil
-                
-                if strongSelf.cancelled
-                {
-                    return
-                }
-                
-                if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
-                {
-                    return
-                }
-                
-                // TODO: if an error is delivered here, will the completionHandler be called? Do we need to check these here?
-                
-                if let error = error
-                {
-                    strongSelf.error = error
-                    strongSelf.state = .Finished
-                }
-                else if let info = info, let error = info[PHImageErrorKey] as? NSError
-                {
-                    strongSelf.error = error
-                    strongSelf.state = .Finished
-                }
-                else
-                {
-                    strongSelf.progressBlock?(progress: progress)
-                }
-            })
+            strongSelf.requestID = nil
+            
+            if strongSelf.cancelled
+            {
+                return
+            }
+            
+            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
+            {
+                return
+            }
+            
+            if strongSelf.state == .Finished // Just in case
+            {
+                return
+            }
+
+            if let error = error
+            {
+                strongSelf.progressBlock = nil
+                strongSelf.error = error
+                strongSelf.state = .Finished
+            }
+            else if let info = info, let error = info[PHImageErrorKey] as? NSError
+            {
+                strongSelf.progressBlock = nil
+                strongSelf.error = error
+                strongSelf.state = .Finished
+            }
+            else
+            {
+                strongSelf.progressBlock?(progress: progress)
+            }
         }
         
-        self.requestID = PHImageManager.defaultManager().requestExportSessionForVideo(self.phAsset, options: options, exportPreset: self.exportPreset, resultHandler: { (exportSession, info) -> Void in
+        self.requestID = PHImageManager.defaultManager().requestExportSessionForVideo(self.phAsset, options: options, exportPreset: self.exportPreset, resultHandler: { [weak self] (exportSession, info) -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                strongSelf.requestID = nil
-                
-                if strongSelf.cancelled
-                {
-                    return
-                }
-                
-                if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
-                {
-                    return
-                }
-                
-                if let info = info, let error = info[PHImageErrorKey] as? NSError
-                {
-                    strongSelf.error = error
-                }
-                else if let exportSession = exportSession
-                {
-                    strongSelf.result = exportSession
-                }
-                else
-                {
-                    strongSelf.error = NSError(domain: PHAssetExportSessionOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Request for export session returned no error and no export session"])
-                }
-                
-                strongSelf.state = .Finished
-            })
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            strongSelf.requestID = nil
+            
+            if strongSelf.cancelled
+            {
+                return
+            }
+            
+            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
+            {
+                return
+            }
+            
+            if strongSelf.state == .Finished // If an error was thrown in the progressHandler above
+            {
+                return
+            }
+
+            if let info = info, let error = info[PHImageErrorKey] as? NSError
+            {
+                strongSelf.error = error
+            }
+            else if let exportSession = exportSession
+            {
+                strongSelf.result = exportSession
+            }
+            else
+            {
+                strongSelf.error = NSError(domain: PHAssetExportSessionOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Request for export session returned no error and no export session"])
+            }
+            
+            strongSelf.state = .Finished
         })
     }
     
