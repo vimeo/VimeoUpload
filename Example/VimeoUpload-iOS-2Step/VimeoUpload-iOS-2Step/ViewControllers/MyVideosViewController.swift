@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MyVideosViewController: UIViewController, CameraRollViewControllerDelegate
+class MyVideosViewController: UIViewController
 {
     static let NibName = "MyVideosViewController"
     
@@ -23,23 +23,11 @@ class MyVideosViewController: UIViewController, CameraRollViewControllerDelegate
     
     @IBAction func didTapUpload(sender: UIButton)
     {
-        let viewController = NewCameraRollViewController(nibName: CameraRollViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.delegate = self
-        viewController.sessionManager = UploadManager.sharedInstance.sessionManager
+        let viewController = CameraRollViewController(nibName: CameraRollViewController.NibName, bundle:NSBundle.mainBundle())
 
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.view.backgroundColor = UIColor.whiteColor()
         
         self.presentViewController(navigationController, animated: true, completion: nil)
     }
-    
-    // MARK: CameraRollViewControllerDelegate
-    
-    func cameraRollViewControllerDidFinish(viewController: CameraRollViewController, result: CameraRollViewControllerResult)
-    {
-        let settingsViewController = NewVideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
-        settingsViewController.input = result
-        
-        viewController.navigationController?.pushViewController(settingsViewController, animated: true)
-    }    
 }
