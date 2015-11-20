@@ -199,10 +199,10 @@ class VideoSettingsOperation: ConcurrentOperation
     
     private func checkExactWeeklyQuota(avUrlAsset: AVURLAsset)
     {
-        let filesize: NSNumber
+        let filesize: NSNumber?
         do
         {
-            filesize = try self.exactFilesize(avUrlAsset)
+            filesize = try avUrlAsset.fileSize()
         }
         catch let error as NSError
         {
@@ -211,7 +211,14 @@ class VideoSettingsOperation: ConcurrentOperation
             return
         }
         
-        let operation = WeeklyQuotaOperation(user: self.me, filesize: filesize.doubleValue)
+        guard let size = filesize else
+        {
+            self.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Exact filesize calculation failed, filesize is nil."])
+        
+            return
+        }
+        
+        let operation = WeeklyQuotaOperation(user: self.me, filesize: size.doubleValue)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -244,20 +251,6 @@ class VideoSettingsOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
         
-    // MARK: Utilities
-    
-    private func exactFilesize(avUrlAsset: AVURLAsset) throws -> NSNumber
-    {
-        let filesize = try avUrlAsset.fileSize()
-
-        if filesize == nil
-        {
-            throw NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Exact filesize calculation failed because filesize is nil."])
-        }
-        
-        return filesize!
-    }
-    
     // MARK: Private API
     
     private func deleteFile(url: NSURL)

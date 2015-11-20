@@ -69,9 +69,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CameraRollViewControllerD
     
     func cameraRollViewControllerDidFinish(viewController: CameraRollViewController, result: CameraRollViewControllerResult)
     {
-        let viewController = OldVideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
+        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
         viewController.input = result
-        viewController.descriptorManager = UploadManager.sharedInstance.descriptorManager
      
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.view.backgroundColor = UIColor.whiteColor()
