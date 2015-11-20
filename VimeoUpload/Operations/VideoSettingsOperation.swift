@@ -99,6 +99,11 @@ class VideoSettingsOperation: ConcurrentOperation
         print("VideoSettingsOperation cancelled")
 
         self.operationQueue.cancelAllOperations()
+        
+        if let url = self.result
+        {
+            self.deleteFile(url)
+        }
     }
     
     // MARK: Private API
@@ -251,5 +256,23 @@ class VideoSettingsOperation: ConcurrentOperation
         }
         
         return filesize!
+    }
+    
+    
+    // MARK: Private API
+    
+    private func deleteFile(url: NSURL)
+    {
+        if let path = url.path where NSFileManager.defaultManager().fileExistsAtPath(path)
+        {
+            do
+            {
+                try NSFileManager.defaultManager().removeItemAtPath(path)
+            }
+            catch let error as NSError
+            {
+                assertionFailure("Error removing exported file \(error)")
+            }
+        }
     }
 }

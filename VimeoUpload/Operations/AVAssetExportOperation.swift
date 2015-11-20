@@ -174,27 +174,8 @@ class AVAssetExportOperation: ConcurrentOperation
         self.exportSession.cancelExport()
 
         print("AVAssetExportOperation cancelled")
-
-        self.deleteFile(self.outputURL) // TODO: confirm that this file is deleted
     }
-    
-    // MARK: Private API
-    
-    private func deleteFile(url: NSURL?)
-    {
-        if let url = url where NSFileManager.defaultManager().fileExistsAtPath(url.absoluteString)
-        {
-            do
-            {
-                try NSFileManager.defaultManager().removeItemAtPath(url.absoluteString)
-            }
-            catch let error as NSError
-            {
-                assertionFailure("Error removing exported file \(error)")
-            }
-        }
-    }
-    
+        
     // MARK: KVO
     
     private func addObservers()

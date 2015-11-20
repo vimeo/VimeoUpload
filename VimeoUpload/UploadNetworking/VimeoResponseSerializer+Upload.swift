@@ -28,6 +28,10 @@ import Foundation
 
 extension VimeoResponseSerializer
 {
+    private static let LocationKey = "Location"
+    private static let UploadLinkSecureKey = "upload_link_secure"
+    private static let CompleteUriKey = "complete_uri"
+    
     func processMeResponse(response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMUser
     {
         do
@@ -61,7 +65,7 @@ extension VimeoResponseSerializer
             throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
         }
         
-        guard let uploadUri = responseObject?["upload_link_secure"] as? String, let activationUri = responseObject?["complete_uri"] as? String else
+        guard let uploadUri = responseObject?[VimeoResponseSerializer.UploadLinkSecureKey] as? String, let activationUri = responseObject?[VimeoResponseSerializer.CompleteUriKey] as? String else
         {
             throw NSError(domain: UploadErrorDomain.Create.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Create response did not contain the required values."])
         }
@@ -92,7 +96,7 @@ extension VimeoResponseSerializer
             throw error.errorByAddingDomain(UploadErrorDomain.Activate.rawValue)
         }
 
-        guard let HTTPResponse = response as? NSHTTPURLResponse, let location = HTTPResponse.allHeaderFields["Location"] as? String else
+        guard let HTTPResponse = response as? NSHTTPURLResponse, let location = HTTPResponse.allHeaderFields[VimeoResponseSerializer.LocationKey] as? String else
         {
             throw NSError(domain: UploadErrorDomain.Activate.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Activate response did not contain the required value."])
         }
