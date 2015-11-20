@@ -39,8 +39,10 @@ class DescriptorManager
     private static let DescriptorsArchiveKey = "descriptors"
     
     private var sessionManager: AFURLSessionManager
+    private let name: String
+
     private var descriptors = Set<Descriptor>()
-    private var archiver = KeyedArchiver(basePath: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])
+    private let archiver: KeyedArchiver
     private weak var delegate: DescriptorManagerDelegate?
     
     private let synchronizationQueue = dispatch_queue_create("descriptor_manager.synchronization_queue", DISPATCH_QUEUE_SERIAL)
@@ -49,15 +51,17 @@ class DescriptorManager
 
     // MARK: Initialization
     
-    convenience init(sessionManager: AFURLSessionManager)
+    convenience init(sessionManager: AFURLSessionManager, name: String)
     {
-        self.init(sessionManager: sessionManager, delegate: nil)
+        self.init(sessionManager: sessionManager, name: name, delegate: nil)
     }
     
-    init(sessionManager: AFURLSessionManager, delegate: DescriptorManagerDelegate?)
+    init(sessionManager: AFURLSessionManager, name: String, delegate: DescriptorManagerDelegate?)
     {
         self.sessionManager = sessionManager
+        self.name = name
         self.delegate = delegate
+        self.archiver = DescriptorManager.setupArchiver(name)
 
         // We must load the descriptors before we set the sessionBlocks,
         // Otherwise the blocks will be called before we have a list of descriptors to reconcile with [AH] 10/28/ 2015
@@ -70,6 +74,22 @@ class DescriptorManager
     }
 
     // MARK: Setup
+    
+    private static func setupArchiver(name: String) -> KeyedArchiver
+    {
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+        var documentsURL = NSURL(string: documentsPath)!
+        
+        documentsURL = documentsURL.URLByAppendingPathComponent(name)
+        documentsURL = documentsURL.URLByAppendingPathComponent("descriptors")
+        
+        if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
+        {
+            try! NSFileManager.defaultManager().createDirectoryAtPath(documentsURL.path!, withIntermediateDirectories: true, attributes: nil)
+        }
+        
+        return KeyedArchiver(basePath: documentsURL.path!)
+    }
     
     private func loadDescriptors()
     {
