@@ -165,4 +165,23 @@ extension VimeoRequestSerializer
         
         return request
     }
+    
+    func deleteVideoRequestWithUri(videoUri: String) throws -> NSMutableURLRequest
+    {
+        guard videoUri.characters.count > 0 else
+        {
+            throw NSError(domain: UploadErrorDomain.Delete.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "videoUri has length of 0."])
+        }
+        
+        let url = NSURL(string: videoUri, relativeToURL: VimeoBaseURLString)!
+        var error: NSError?
+        
+        let request = self.requestWithMethod("DELETE", URLString: url.absoluteString, parameters: nil, error: &error)
+        if let error = error
+        {
+            throw error.errorByAddingDomain(UploadErrorDomain.Delete.rawValue)
+        }
+        
+        return request
+    }
 }

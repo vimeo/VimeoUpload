@@ -93,7 +93,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let me = self.input!.me
         let phAssetContainer = self.input!.phAssetContainer
-        let operation = VideoSettingsOperation(me: me, phAssetContainer: phAssetContainer)
+        let operation = SimpleVideoSettingsOperation(me: me, phAssetContainer: phAssetContainer)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread

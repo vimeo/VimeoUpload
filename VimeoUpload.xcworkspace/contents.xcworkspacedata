@@ -123,6 +123,33 @@
          </FileRef>
       </Group>
    </Group>
+   <Group
+      location = "group:VimeoUpload+Demos"
+      name = "VimeoUpload+Demos">
+      <Group
+         location = "group:Cells"
+         name = "Cells">
+         <FileRef
+            location = "group:CameraRollCell.swift">
+         </FileRef>
+         <FileRef
+            location = "group:CameraRollCell.xib">
+         </FileRef>
+      </Group>
+      <Group
+         location = "group:Controllers"
+         name = "Controllers">
+         <FileRef
+            location = "group:PHAssetHelper.swift">
+         </FileRef>
+         <FileRef
+            location = "group:UploadManager.swift">
+         </FileRef>
+         <FileRef
+            location = "group:UploadReporter.swift">
+         </FileRef>
+      </Group>
+   </Group>
    <FileRef
       location = "group:Example/VimeoUpload-iOS-2Step/VimeoUpload-iOS-2Step.xcodeproj">
    </FileRef>

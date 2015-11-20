@@ -147,6 +147,18 @@ extension VimeoResponseSerializer
         }
     }
 
+    func processDeleteVideoResponse(response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws
+    {
+        do
+        {
+            try checkDataResponseForError(response, responseObject: responseObject, error: error)
+        }
+        catch let error as NSError
+        {
+            throw error.errorByAddingDomain(UploadErrorDomain.Delete.rawValue)
+        }
+    }
+
     // MARK: Private API
     
     private func videoFromResponseObject(responseObject: AnyObject?) throws -> VIMVideo

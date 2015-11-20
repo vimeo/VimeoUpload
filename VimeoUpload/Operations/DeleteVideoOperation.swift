@@ -26,23 +26,22 @@
 
 import Foundation
 
-// TODO: build out this class
-
 class DeleteVideoOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
+    private let videoUri: String
     
     private var task: NSURLSessionDataTask?
 
-    private(set) var result: VIMUser?
     private(set) var error: NSError?
     
     // MARK: Initialization
 
-    init(sessionManager: VimeoSessionManager)
+    init(sessionManager: VimeoSessionManager, videoUri: String)
     {
         self.sessionManager = sessionManager
-    
+        self.videoUri = videoUri
+        
         super.init()
     }
     
@@ -61,7 +60,7 @@ class DeleteVideoOperation: ConcurrentOperation
             return
         }
         
-        self.task = try? self.sessionManager.meDataTask({ [weak self] (user, error) -> Void in
+        self.task = try? self.sessionManager.deleteVideoDataTask(videoUri: self.videoUri, completionHandler: { [weak self] (error) -> Void in
 
             guard let strongSelf = self else
             {
@@ -78,14 +77,6 @@ class DeleteVideoOperation: ConcurrentOperation
             if let error = error
             {
                 strongSelf.error = error
-            }
-            else if let user = user
-            {
-                strongSelf.result = user
-            }
-            else
-            {
-                fatalError("Execution should never reach this point")
             }
             
             strongSelf.state = .Finished

@@ -44,6 +44,7 @@ enum UploadErrorDomain: String
     case Upload = "VideoUploadErrorDomain"
     case Activate = "ActivateVideoErrorDomain"
     case VideoSettings = "VideoSettingsErrorDomain"
+    case Delete = "DeleteVideoErrorDomain"
 }
 
 extension NSError

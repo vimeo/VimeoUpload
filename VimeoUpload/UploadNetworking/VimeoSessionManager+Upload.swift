@@ -33,12 +33,14 @@ enum TaskDescription: String
     case UploadVideo = "UploadVideo"
     case ActivateVideo = "ActivateVideo"
     case VideoSettings = "VideoSettings"
+    case DeleteVideo = "DeleteVideo"
 }
 
 typealias DestinationHandler = () -> NSURL
 typealias CreateVideoCompletionHandler = (response: CreateVideoResponse?, error: NSError?) -> Void
 typealias UserCompletionHandler = (user: VIMUser?, error: NSError?) -> Void
 typealias VideoCompletionHandler = (video: VIMVideo?, error: NSError?) -> Void
+typealias ErrorCompletionHandler = (error: NSError?) -> Void
 
 extension VimeoSessionManager
 {
@@ -162,6 +164,33 @@ extension VimeoSessionManager
         })
         
         task.taskDescription = TaskDescription.VideoSettings.rawValue
+        
+        return task
+    }
+    
+    func deleteVideoDataTask(videoUri videoUri: String, completionHandler: ErrorCompletionHandler) throws -> NSURLSessionDataTask
+    {
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).deleteVideoRequestWithUri(videoUri)
+        
+        let task = self.dataTaskWithRequest(request, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+            
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            do
+            {
+                try (strongSelf.responseSerializer as! VimeoResponseSerializer).processDeleteVideoResponse(response, responseObject: responseObject, error: error)
+                completionHandler(error: nil)
+            }
+            catch let error as NSError
+            {
+                completionHandler(error: error)
+            }
+        })
+        
+        task.taskDescription = TaskDescription.DeleteVideo.rawValue
         
         return task
     }
