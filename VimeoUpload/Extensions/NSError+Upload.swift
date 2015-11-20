@@ -64,7 +64,7 @@ extension NSError
         
         if let domain = domain
         {
-            augmentedInfo["VimeoDomain"] = domain
+            augmentedInfo["vimeo domain"] = domain
         }
         
         if let userInfo = userInfo
