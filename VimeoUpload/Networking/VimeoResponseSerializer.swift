@@ -43,7 +43,7 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
         fatalError("init(coder:) has not been implemented")
     }
     
-    // TODO: override to parse out Vimeo error
+    // TODO: override to parse out Vimeo error?
     
     // MARK: Overrides
     
@@ -52,6 +52,53 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
 //        return super.responseObjectForResponse(response, data: data, error: error)
 //    }
     
+    // MARK: Public API
+    
+    func checkStatusCode(response: NSURLResponse?, responseObject: AnyObject?) throws
+    {
+        if let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode < 200 || httpResponse.statusCode > 299
+        {
+            // TODO: populate error object with dictionary contents, keep in sync with localytics keys
+            
+            let userInfo = [NSLocalizedDescriptionKey: "Invalid http status code for download task"]
+            
+            throw NSError(domain: UploadErrorDomain.Me.rawValue, code: 0, userInfo: userInfo)
+        }
+    }
+    
+    func dictionaryForDownloadTaskResponse(url: NSURL?) throws -> [String: AnyObject]
+    {
+        guard let url = url else
+        {
+            throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Url for completed download task is nil."])
+        }
+        
+        guard let data = NSData(contentsOfURL: url) else
+        {
+            throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Data at url for completed download task is nil."])
+        }
+        
+        var dictionary: [String: AnyObject]? = [:]
+        if data.length > 0
+        {
+            do
+            {
+                dictionary = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? [String: AnyObject]
+            }
+            catch let error as NSError
+            {
+                throw error
+            }
+        }
+        
+        if dictionary == nil
+        {
+            throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Download task response dictionary is nil."])
+        }
+        
+        return dictionary!
+    }
+
     // MARK: Private API
 
     private static func acceptableContentTypes() -> Set<String>
