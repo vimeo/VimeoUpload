@@ -136,10 +136,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     
                     if let _ = strongSelf.videoSettings
                     {
-                        strongSelf.startUpload()
-                        
-                        strongSelf.activityIndicatorView.stopAnimating()
-                        strongSelf.dismissViewControllerAnimated(true, completion: nil)
+                        strongSelf.finish()
                     }
                 }
             })
@@ -178,6 +175,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
         if operation?.state == .Executing
         {
+            operation?.videoSettings = self.videoSettings
+
             self.activityIndicatorView.startAnimating() // Listen for operation completion, dismiss
         }
         else if let error = operation?.error
@@ -186,7 +185,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
         else
         {
-            // TODO: somethign
+            self.finish()
         }
     }
     
@@ -249,13 +248,27 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK: Private API
     
+    private func finish()
+    {
+        // TODO: if operation applied video settings, then start upload and dismiss
+        // else, apply video settings, start upload, and dismiss
+        
+        let operationDidApplyVideoSettings = true
+        
+        if operationDidApplyVideoSettings == true
+        {
+            self.startUpload()
+            
+            self.activityIndicatorView.stopAnimating()
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
+    }
+    
     private func applyVideoSettings()
     {
-        let descriptor = self.descriptor as? UploadDescriptor
-        
         self.activityIndicatorView.startAnimating()
         
-        let videoUri = descriptor!.videoUri!
+        let videoUri = self.uploadTicket!.video!.uri!
         let videoSettings = self.videoSettings!
         
         do

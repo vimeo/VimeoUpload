@@ -42,7 +42,7 @@ class SimplePrepareUploadOperation: ConcurrentOperation
     let me: VIMUser
     let phAssetContainer: PHAssetContainer
     let sessionManager: VimeoSessionManager
-    let videoSettings: VideoSettings?
+    var videoSettings: VideoSettings?
     
     private let operationQueue: NSOperationQueue
 
