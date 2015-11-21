@@ -28,7 +28,6 @@ import Foundation
 
 enum UploadErrorDomain: String
 {
-    case Me = "MeErrorDomain"
     case PHAssetDownload = "PHAssetDownloadErrorDomain"
     case PHAssetExportSession = "PHAssetExportSessionErrorDomain"
     case DailyQuota = "DailyQuotaErrorDomain"
@@ -36,14 +35,15 @@ enum UploadErrorDomain: String
     case DiskSpace = "DiskSpaceErrorDomain"
     case Export = "ExportVideoErrorDomain"
 
-    case CameraRollOperation = "CameraRollOperationErrorDomain"
-    case VideoSettingsOperation = "VideoSettingsOperationErrorDomain"
-
+    case Me = "MeErrorDomain"
     case Create = "CreateVideoErrorDomain"
     case Upload = "VideoUploadErrorDomain"
     case Activate = "ActivateVideoErrorDomain"
     case VideoSettings = "VideoSettingsErrorDomain"
     case Delete = "DeleteVideoErrorDomain"
+
+    case CameraRollOperation = "CameraRollOperationErrorDomain"
+    case PrepareUploadOperation = "PrepareUploadOperationErrorDomain"
 }
 
 extension NSError

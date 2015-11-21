@@ -5,6 +5,9 @@
 //  Created by Alfred Hanssen on 11/9/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
+//  Created by Hanssen, Alfie on 10/13/15.
+//  Copyright © 2015 Vimeo. All rights reserved.
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
@@ -32,13 +35,15 @@ import Photos
 // 1. If inCloud, download
 // 2. Export (check disk space within this step)
 // 3. Check weekly quota
+// 4. Create video record
 
-class VideoSettingsOperation: ConcurrentOperation
-{
-    private static let ErrorDomain = "VideoSettingsOperationErrorDomain"
-    
+class SimplePrepareUploadOperation: ConcurrentOperation
+{    
     let me: VIMUser
     let phAssetContainer: PHAssetContainer
+    let sessionManager: VimeoSessionManager
+    let videoSettings: VideoSettings?
+    
     private let operationQueue: NSOperationQueue
 
     var downloadProgressBlock: ProgressBlock?
@@ -54,12 +59,17 @@ class VideoSettingsOperation: ConcurrentOperation
             }
         }
     }
-    private(set) var result: NSURL?
+    private(set) var url: NSURL?
+    private(set) var uploadTicket: VIMUploadTicket?
 
-    init(me: VIMUser, phAssetContainer: PHAssetContainer)
+    // MARK: Initialization
+    
+    init(me: VIMUser, phAssetContainer: PHAssetContainer, sessionManager: VimeoSessionManager, videoSettings: VideoSettings?)
     {
         self.me = me
         self.phAssetContainer = phAssetContainer
+        self.sessionManager = sessionManager
+        self.videoSettings = videoSettings
         
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
@@ -93,11 +103,9 @@ class VideoSettingsOperation: ConcurrentOperation
     {
         super.cancel()
         
-        print("VideoSettingsOperation cancelled")
-
         self.operationQueue.cancelAllOperations()
         
-        if let url = self.result
+        if let url = self.url
         {
             self.deleteFile(url)
         }
@@ -183,10 +191,8 @@ class VideoSettingsOperation: ConcurrentOperation
                 }
                 else
                 {
-                    strongSelf.result = operation.outputURL!
-
-                    let avUrlAsset = AVURLAsset(URL: strongSelf.result!)
-                    strongSelf.checkExactWeeklyQuota(avUrlAsset)
+                    let url = operation.outputURL!
+                    strongSelf.checkExactWeeklyQuota(url)
                 }
             })
         }
@@ -194,8 +200,11 @@ class VideoSettingsOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    private func checkExactWeeklyQuota(avUrlAsset: AVURLAsset)
+    private func checkExactWeeklyQuota(url: NSURL)
     {
+        let me = self.me
+        let avUrlAsset = AVURLAsset(URL: url)
+
         let filesize: NSNumber?
         do
         {
@@ -210,12 +219,12 @@ class VideoSettingsOperation: ConcurrentOperation
         
         guard let size = filesize else
         {
-            self.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Exact filesize calculation failed, filesize is nil."])
+            self.error = NSError(domain: UploadErrorDomain.PrepareUploadOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Exact filesize calculation failed, filesize is nil."])
         
             return
         }
         
-        let operation = WeeklyQuotaOperation(user: self.me, filesize: size.doubleValue)
+        let operation = WeeklyQuotaOperation(user: me, filesize: size.doubleValue)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -236,10 +245,45 @@ class VideoSettingsOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: VideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.PrepareUploadOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
                 }
                 else
                 {
+                    strongSelf.createVideo(url)
+                }
+            })
+        }
+        
+        self.operationQueue.addOperation(operation)
+    }
+    
+    private func createVideo(url: NSURL)
+    {
+        let videoSettings = self.videoSettings
+
+        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
+        operation.completionBlock = { [weak self] () -> Void in
+            
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else
+                {
+                    strongSelf.url = url
+                    strongSelf.uploadTicket = operation.result!
                     strongSelf.state = .Finished
                 }
             })
@@ -247,7 +291,7 @@ class VideoSettingsOperation: ConcurrentOperation
         
         self.operationQueue.addOperation(operation)
     }
-        
+    
     // MARK: Private API
     
     private func deleteFile(url: NSURL)

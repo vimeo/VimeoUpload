@@ -48,6 +48,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     // MARK:
     
     private var url: NSURL?
+    private var uploadTicket: VIMUploadTicket?
     private var videoSettings: VideoSettings?
 
     // MARK:
@@ -93,7 +94,10 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let me = self.input!.me
         let phAssetContainer = self.input!.phAssetContainer
-        let operation = SimpleVideoSettingsOperation(me: me, phAssetContainer: phAssetContainer)
+        let sessionManager = UploadManager.sharedInstance.sessionManager
+        let videoSettings = self.videoSettings
+        
+        let operation = SimplePrepareUploadOperation(me: me, phAssetContainer: phAssetContainer, sessionManager: sessionManager, videoSettings: videoSettings)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
@@ -127,7 +131,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                 }
                 else
                 {
-                    strongSelf.url = operation.result!
+                    strongSelf.url = operation.url!
+                    strongSelf.uploadTicket = operation.uploadTicket!
                     
                     if let _ = strongSelf.videoSettings
                     {
@@ -145,8 +150,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     private func buildDescriptor() -> Descriptor
     {
-        let descriptor = UploadDescriptor(url: self.url!, videoSettings: self.videoSettings)
-        descriptor.identifier = "\(self.url!.absoluteString.hash)"
+        let url = self.url!
+        let uploadTicket = self.uploadTicket!
+        
+        let descriptor = SimpleUploadDescriptor(url: url, uploadTicket: uploadTicket)
+        descriptor.identifier = "\(url.absoluteString.hash)"
         
         return descriptor
     }
@@ -162,12 +170,12 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     func didTapUpload(sender: UIBarButtonItem)
     {
-        let operation = self.operation as? VideoSettingsOperation
-        
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil)
-        
+     
+        let operation = self.operation as? SimplePrepareUploadOperation
+
         if operation?.state == .Executing
         {
             self.activityIndicatorView.startAnimating() // Listen for operation completion, dismiss
@@ -266,9 +274,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     {
                         self?.dismissViewControllerAnimated(true, completion: nil)
                     }
-                    })
-                
-                })
+                })            
+            })
             task.resume()
         }
         catch let error as NSError

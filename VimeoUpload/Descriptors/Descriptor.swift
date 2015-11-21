@@ -81,7 +81,7 @@ class Descriptor: NSObject
     
     func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
     {
-        fatalError("taskDidFinishDownloading(sessionManager:task:url:) has not been implemented")
+        return nil
     }
 
     func taskDidComplete(sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)

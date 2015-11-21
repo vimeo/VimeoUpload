@@ -35,9 +35,7 @@ import AVFoundation
 // 4. If non iCloud asset, check approximate disk space
 
 class CameraRollOperation: ConcurrentOperation
-{
-    private static let ErrorDomain = "CameraRollOperationErrorDomain"
-    
+{    
     let sessionManager: VimeoSessionManager
     private(set) var me: VIMUser?
     private let operationQueue: NSOperationQueue
@@ -215,7 +213,7 @@ class CameraRollOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: CameraRollOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate daily quota."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.CameraRollOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate daily quota."])
                 }
                 else
                 {
@@ -254,7 +252,7 @@ class CameraRollOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: CameraRollOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.CameraRollOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
                 }
                 else
                 {
@@ -291,7 +289,7 @@ class CameraRollOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: CameraRollOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.CameraRollOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
                 }
                 else
                 {

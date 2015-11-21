@@ -62,13 +62,7 @@
          location = "group:Model"
          name = "Model">
          <FileRef
-            location = "group:CombinedCreateVideoResponse.swift">
-         </FileRef>
-         <FileRef
-            location = "group:CreateVideoResponse.swift">
-         </FileRef>
-         <FileRef
-            location = "group:GeneralTypes.swift">
+            location = "group:BlockTypes.swift">
          </FileRef>
          <FileRef
             location = "group:PHAssetContainer.swift">
@@ -134,7 +128,7 @@
                location = "group:PHAssetExportSessionOperation.swift">
             </FileRef>
             <FileRef
-               location = "group:VideoSettingsOperation.swift">
+               location = "group:PrepareUploadOperation.swift">
             </FileRef>
          </Group>
          <Group

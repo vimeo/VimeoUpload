@@ -26,9 +26,7 @@
 
 import Foundation
 
-// TODO: derive from VIMModelObject, make Objc and move into VIMNetworking
-
-class VideoSettings: VIMModelObject
+class VideoSettings
 {
     var title: String?
     var desc: String?
@@ -41,6 +39,30 @@ class VideoSettings: VIMModelObject
         self.desc = description
         self.privacy = privacy
         self.users = users
+    }
+    
+    // MARK: Public API
+    
+    func parameterDictionary() -> [String: AnyObject]
+    {
+        var parameters: [String: AnyObject] = [:]
+        
+        if let title = self.title where title.characters.count > 0
+        {
+            parameters["name"] = title
+        }
+        
+        if let description = self.desc where description.characters.count > 0
+        {
+            parameters["description"] = description
+        }
+        
+        if self.privacy.characters.count > 0
+        {
+            parameters["privacy"] = ["view": self.privacy]
+        }
+
+        return parameters
     }
     
     // MARK: NSCoding

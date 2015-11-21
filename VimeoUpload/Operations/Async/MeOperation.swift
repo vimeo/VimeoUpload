@@ -59,37 +59,45 @@ class MeOperation: ConcurrentOperation
             return
         }
         
-        self.task = try? self.sessionManager.meDataTask({ [weak self] (user, error) -> Void in
-
-            guard let strongSelf = self else
-            {
-                return
-            }
+        do
+        {
+            self.task = try self.sessionManager.meDataTask({ [weak self] (user, error) -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                strongSelf.task = nil
+                
+                if strongSelf.cancelled
+                {
+                    return
+                }
+                
+                if let error = error
+                {
+                    strongSelf.error = error
+                }
+                else if let user = user
+                {
+                    strongSelf.result = user
+                }
+                else
+                {
+                    fatalError("Execution should never reach this point")
+                }
+                
+                strongSelf.state = .Finished
+                })
             
-            strongSelf.task = nil
-            
-            if strongSelf.cancelled
-            {
-                return
-            }
-
-            if let error = error
-            {
-                strongSelf.error = error
-            }
-            else if let user = user
-            {
-                strongSelf.result = user
-            }
-            else
-            {
-                fatalError("Execution should never reach this point")
-            }
-            
-            strongSelf.state = .Finished
-        })
-        
-        self.task?.resume()
+            self.task?.resume()
+        }
+        catch let error as NSError
+        {
+            self.error = error
+            self.state = .Finished
+        }
     }
     
     override func cancel()

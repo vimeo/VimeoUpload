@@ -147,23 +147,8 @@ extension VimeoRequestSerializer
         
         let url = NSURL(string: videoUri, relativeToURL: VimeoBaseURLString)!
         var error: NSError?
-        
-        var parameters: [String: AnyObject] = [:]
-        if let title = videoSettings.title where title.characters.count > 0
-        {
-            parameters["name"] = title
-        }
 
-        if let description = videoSettings.desc where description.characters.count > 0
-        {
-            parameters["description"] = description
-        }
-
-        if videoSettings.privacy.characters.count > 0
-        {
-            parameters["privacy"] = ["view": videoSettings.privacy]
-        }
-
+        let parameters = videoSettings.parameterDictionary()
         if parameters.count == 0
         {
             throw NSError(domain: UploadErrorDomain.VideoSettings.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Parameters dictionary is empty."])

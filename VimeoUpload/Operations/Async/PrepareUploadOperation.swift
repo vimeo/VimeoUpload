@@ -5,9 +5,6 @@
 //  Created by Alfred Hanssen on 11/9/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
-//  Created by Hanssen, Alfie on 10/13/15.
-//  Copyright © 2015 Vimeo. All rights reserved.
-//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
@@ -35,12 +32,9 @@ import Photos
 // 1. If inCloud, download
 // 2. Export (check disk space within this step)
 // 3. Check weekly quota
-// 4. Create video record
 
-class SimpleVideoSettingsOperation: ConcurrentOperation
-{
-    private static let ErrorDomain = "SimpleVideoSettingsOperation"
-    
+class PrepareUploadOperation: ConcurrentOperation
+{    
     let me: VIMUser
     let phAssetContainer: PHAssetContainer
     private let operationQueue: NSOperationQueue
@@ -97,8 +91,6 @@ class SimpleVideoSettingsOperation: ConcurrentOperation
     {
         super.cancel()
         
-        print("VideoSettingsOperation cancelled")
-
         self.operationQueue.cancelAllOperations()
         
         if let url = self.result
@@ -187,10 +179,8 @@ class SimpleVideoSettingsOperation: ConcurrentOperation
                 }
                 else
                 {
-                    strongSelf.result = operation.outputURL!
-
-                    let avUrlAsset = AVURLAsset(URL: strongSelf.result!)
-                    strongSelf.checkExactWeeklyQuota(avUrlAsset)
+                    let url = operation.outputURL!
+                    strongSelf.checkExactWeeklyQuota(url)
                 }
             })
         }
@@ -198,8 +188,11 @@ class SimpleVideoSettingsOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    private func checkExactWeeklyQuota(avUrlAsset: AVURLAsset)
+    private func checkExactWeeklyQuota(url: NSURL)
     {
+        let me = self.me
+        let avUrlAsset = AVURLAsset(URL: url)
+
         let filesize: NSNumber?
         do
         {
@@ -214,12 +207,12 @@ class SimpleVideoSettingsOperation: ConcurrentOperation
         
         guard let size = filesize else
         {
-            self.error = NSError(domain: SimpleVideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Exact filesize calculation failed, filesize is nil."])
+            self.error = NSError(domain: UploadErrorDomain.PrepareUploadOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Exact filesize calculation failed, filesize is nil."])
         
             return
         }
         
-        let operation = WeeklyQuotaOperation(user: self.me, filesize: size.doubleValue)
+        let operation = WeeklyQuotaOperation(user: me, filesize: size.doubleValue)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -240,10 +233,11 @@ class SimpleVideoSettingsOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: SimpleVideoSettingsOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.PrepareUploadOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
                 }
                 else
                 {
+                    strongSelf.result = url
                     strongSelf.state = .Finished
                 }
             })
