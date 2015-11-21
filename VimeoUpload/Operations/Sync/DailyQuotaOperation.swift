@@ -1,8 +1,8 @@
 //
-//  CreateVideoResponse.swift
-//  VIMUpload
+//  DailyQuotaOperation.swift
+//  VimeoUpload
 //
-//  Created by Hanssen, Alfie on 10/12/15.
+//  Created by Alfred Hanssen on 11/9/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,30 +25,45 @@
 //
 
 import Foundation
+import AVFoundation
 
-class CreateVideoResponse: NSObject
+class DailyQuotaOperation: NSOperation
 {
-    var uploadUri: String
-    var activationUri: String
+    private static let ErrorDomain = "DailyQuotaOperationErrorDomain"
     
-    init(uploadUri: String, activationUri: String)
-    {
-        self.uploadUri = uploadUri
-        self.activationUri = activationUri
-    }    
-
-    // MARK: NSCoding
+    private let user: VIMUser
     
-    required init(coder aDecoder: NSCoder)
+    private(set) var result: Bool?
+    private(set) var error: NSError?
+    
+    init(user: VIMUser)
     {
-        self.uploadUri = aDecoder.decodeObjectForKey("uploadUri") as! String
-        self.activationUri = aDecoder.decodeObjectForKey("activationUri") as! String
+        self.user = user
+        
+        super.init()
     }
     
-    func encodeWithCoder(aCoder: NSCoder)
+    // MARK: Overrides
+
+    // Because we haven't yet exported the asset we check against approximate filesize
+    // If we can't calculate the available disk space we eval to true beacuse we'll catch any real error later during export
+
+    override func main()
     {
-        aCoder.encodeObject(self.uploadUri, forKey: "uploadUri")
-        aCoder.encodeObject(self.activationUri, forKey: "activationUri")
+        if let sd = self.user.uploadQuota?.quota?.sd, let hd = self.user.uploadQuota?.quota?.hd
+        {
+            self.result = (sd == true && hd == true)
+        }
+        else
+        {
+            self.error = NSError(domain: DailyQuotaOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.quota information"])
+        }
+    }
+    
+    override func cancel()
+    {
+        super.cancel()
+    
+        print("DailyQuotaOperation cancelled")
     }
 }
-

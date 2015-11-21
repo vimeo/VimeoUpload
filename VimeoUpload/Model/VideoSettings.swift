@@ -26,7 +26,9 @@
 
 import Foundation
 
-class VideoSettings: NSObject
+// TODO: derive from VIMModelObject, make Objc and move into VIMNetworking
+
+class VideoSettings: VIMModelObject
 {
     var title: String?
     var desc: String?

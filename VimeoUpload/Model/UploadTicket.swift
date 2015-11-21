@@ -1,8 +1,8 @@
 //
-//  CombinedCreateVideoResponse.swift
-//  VimeoUpload
+//  UploadTicket.swift
+//  VIMUpload
 //
-//  Created by Alfred Hanssen on 10/21/15.
+//  Created by Hanssen, Alfie on 10/12/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,14 +26,31 @@
 
 import Foundation
 
-class CombinedCreateVideoResponse: NSObject
+// TODO: derive from VIMModelObject, make Objc and move into VIMNetworking
+
+class UploadTicket: VIMModelObject
 {
     var uploadUri: String
-    var videoUri: String
-
-    init(uploadUri: String, videoUri: String)
+    var activationUri: String
+    
+    init(uploadUri: String, activationUri: String)
     {
         self.uploadUri = uploadUri
-        self.videoUri = videoUri
+        self.activationUri = activationUri
+    }    
+
+    // MARK: NSCoding
+    
+    required init(coder aDecoder: NSCoder)
+    {
+        self.uploadUri = aDecoder.decodeObjectForKey("uploadUri") as! String
+        self.activationUri = aDecoder.decodeObjectForKey("activationUri") as! String
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder)
+    {
+        aCoder.encodeObject(self.uploadUri, forKey: "uploadUri")
+        aCoder.encodeObject(self.activationUri, forKey: "activationUri")
     }
 }
+

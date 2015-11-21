@@ -5,8 +5,8 @@
       location = "group:VimeoUpload"
       name = "VimeoUpload">
       <Group
-         location = "group:DescriptorManager"
-         name = "DescriptorManager">
+         location = "group:Descriptors"
+         name = "Descriptors">
          <FileRef
             location = "group:ArchiverProtocol.swift">
          </FileRef>
@@ -22,39 +22,40 @@
          <FileRef
             location = "group:KeyedArchiver.swift">
          </FileRef>
+         <Group
+            location = "group:Upload"
+            name = "Upload">
+            <FileRef
+               location = "group:SimpleUploadDescriptor.swift">
+            </FileRef>
+            <FileRef
+               location = "group:UploadDescriptor.swift">
+            </FileRef>
+            <FileRef
+               location = "group:UploadRequest.swift">
+            </FileRef>
+         </Group>
       </Group>
       <Group
          location = "group:Extensions"
          name = "Extensions">
          <FileRef
+            location = "group:AVAsset+Extensions.swift">
+         </FileRef>
+         <FileRef
             location = "group:AVURLAsset+Extensions.swift">
          </FileRef>
          <FileRef
-            location = "group:NSError+Activate.swift">
-         </FileRef>
-         <FileRef
-            location = "group:NSError+Create.swift">
-         </FileRef>
-         <FileRef
-            location = "group:NSError+Descriptor.swift">
-         </FileRef>
-         <FileRef
-            location = "group:NSError+Export.swift">
-         </FileRef>
-         <FileRef
-            location = "group:NSError+PHAsset.swift">
-         </FileRef>
-         <FileRef
             location = "group:NSError+Upload.swift">
-         </FileRef>
-         <FileRef
-            location = "group:NSError+VideoSettings.swift">
          </FileRef>
          <FileRef
             location = "group:NSFileManager+Extensions.swift">
          </FileRef>
          <FileRef
             location = "group:NSURL+Upload.swift">
+         </FileRef>
+         <FileRef
+            location = "group:String+Extensions.swift">
          </FileRef>
       </Group>
       <Group
@@ -70,6 +71,9 @@
             location = "group:GeneralTypes.swift">
          </FileRef>
          <FileRef
+            location = "group:PHAssetContainer.swift">
+         </FileRef>
+         <FileRef
             location = "group:VideoSettings.swift">
          </FileRef>
       </Group>
@@ -79,6 +83,19 @@
          <FileRef
             location = "group:Constants.swift">
          </FileRef>
+         <Group
+            location = "group:Upload"
+            name = "Upload">
+            <FileRef
+               location = "group:VimeoRequestSerializer+Upload.swift">
+            </FileRef>
+            <FileRef
+               location = "group:VimeoResponseSerializer+Upload.swift">
+            </FileRef>
+            <FileRef
+               location = "group:VimeoSessionManager+Upload.swift">
+            </FileRef>
+         </Group>
          <FileRef
             location = "group:VimeoRequestSerializer.swift">
          </FileRef>
@@ -92,35 +109,47 @@
       <Group
          location = "group:Operations"
          name = "Operations">
-         <FileRef
-            location = "group:ConcurrentOperation.swift">
-         </FileRef>
-         <FileRef
-            location = "group:ExportVideoOperation.swift">
-         </FileRef>
-         <FileRef
-            location = "group:PHAssetOperation.swift">
-         </FileRef>
-      </Group>
-      <Group
-         location = "group:UploadDescriptorManager"
-         name = "UploadDescriptorManager">
-         <FileRef
-            location = "group:UploadDescriptor.swift">
-         </FileRef>
-      </Group>
-      <Group
-         location = "group:UploadNetworking"
-         name = "UploadNetworking">
-         <FileRef
-            location = "group:VimeoRequestSerializer+Upload.swift">
-         </FileRef>
-         <FileRef
-            location = "group:VimeoResponseSerializer+Upload.swift">
-         </FileRef>
-         <FileRef
-            location = "group:VimeoSessionManager+Upload.swift">
-         </FileRef>
+         <Group
+            location = "group:Async"
+            name = "Async">
+            <FileRef
+               location = "group:AVAssetExportOperation.swift">
+            </FileRef>
+            <FileRef
+               location = "group:CameraRollOperation.swift">
+            </FileRef>
+            <FileRef
+               location = "group:ConcurrentOperation.swift">
+            </FileRef>
+            <FileRef
+               location = "group:DeleteVideoOperation.swift">
+            </FileRef>
+            <FileRef
+               location = "group:MeOperation.swift">
+            </FileRef>
+            <FileRef
+               location = "group:PHAssetDownloadOperation.swift">
+            </FileRef>
+            <FileRef
+               location = "group:PHAssetExportSessionOperation.swift">
+            </FileRef>
+            <FileRef
+               location = "group:VideoSettingsOperation.swift">
+            </FileRef>
+         </Group>
+         <Group
+            location = "group:Sync"
+            name = "Sync">
+            <FileRef
+               location = "group:DailyQuotaOperation.swift">
+            </FileRef>
+            <FileRef
+               location = "group:DiskSpaceOperation.swift">
+            </FileRef>
+            <FileRef
+               location = "group:WeeklyQuotaOperation.swift">
+            </FileRef>
+         </Group>
       </Group>
    </Group>
    <Group

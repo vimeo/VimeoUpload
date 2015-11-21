@@ -1,11 +1,8 @@
 //
-//  DailyQuotaOperation.swift
+//  WeeklyQuotaOperation.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/9/15.
-//  Copyright © 2015 Vimeo. All rights reserved.
-//
-//  Created by Hanssen, Alfie on 10/12/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,43 +27,44 @@
 import Foundation
 import AVFoundation
 
-class DailyQuotaOperation: NSOperation
+class WeeklyQuotaOperation: NSOperation
 {
-    private static let ErrorDomain = "DailyQuotaOperationErrorDomain"
+    private static let ErrorDomain = "WeeklyQuotaOperationErrorDomain"
     
     private let user: VIMUser
+    private let filesize: Float64
     
     private(set) var result: Bool?
     private(set) var error: NSError?
-    
-    init(user: VIMUser)
+
+    init(user: VIMUser, filesize: Float64)
     {
         self.user = user
-        
+        self.filesize = filesize
+    
         super.init()
     }
     
     // MARK: Overrides
 
-    // Because we haven't yet exported the asset we check against approximate filesize
     // If we can't calculate the available disk space we eval to true beacuse we'll catch any real error later during export
 
     override func main()
     {
-        if let sd = self.user.uploadQuota?.quota?.sd, let hd = self.user.uploadQuota?.quota?.hd
+        if let free = self.user.uploadQuota?.space?.free?.doubleValue
         {
-            self.result = (sd == true && hd == true)
+            self.result = free > self.filesize
         }
         else
         {
-            self.error = NSError(domain: DailyQuotaOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.quota information"])
+            self.error = NSError(domain: WeeklyQuotaOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.space information"])
         }
     }
     
     override func cancel()
     {
         super.cancel()
-    
-        print("DailyQuotaOperation cancelled")
+        
+        print("WeeklyQuotaOperation cancelled")
     }
 }

@@ -37,7 +37,7 @@ enum TaskDescription: String
 }
 
 typealias DestinationHandler = () -> NSURL
-typealias CreateVideoCompletionHandler = (response: CreateVideoResponse?, error: NSError?) -> Void
+typealias CreateVideoCompletionHandler = (response: UploadTicket?, error: NSError?) -> Void
 typealias UserCompletionHandler = (user: VIMUser?, error: NSError?) -> Void
 typealias VideoCompletionHandler = (video: VIMVideo?, error: NSError?) -> Void
 typealias ErrorCompletionHandler = (error: NSError?) -> Void

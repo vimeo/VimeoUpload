@@ -35,7 +35,7 @@ class UploadDescriptor: Descriptor
     
     // MARK:
     
-    private(set) var createVideoResponse: CreateVideoResponse? // Create response
+    private(set) var uploadTicket: UploadTicket? // Create response
     private(set) var videoUri: String? // Activate response
     private(set) var video: VIMVideo? // Settings response
     
@@ -165,7 +165,7 @@ class UploadDescriptor: Descriptor
             switch self.currentRequest
             {
             case .Create:
-                self.createVideoResponse = try responseSerializer.processCreateVideoResponse(task.response, url: url, error: error)
+                self.uploadTicket = try responseSerializer.processCreateVideoResponse(task.response, url: url, error: error)
                 
             case .Upload:
                 break
@@ -248,7 +248,7 @@ class UploadDescriptor: Descriptor
             return try sessionManager.createVideoDownloadTask(url: self.url)
             
         case .Upload:
-            guard let uploadUri = self.createVideoResponse?.uploadUri else
+            guard let uploadUri = self.uploadTicket?.uploadUri else
             {
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
@@ -256,7 +256,7 @@ class UploadDescriptor: Descriptor
             return try sessionManager.uploadVideoTask(self.url, destination: uploadUri, progress: &self.uploadProgressObject, completionHandler: nil)
             
         case .Activate:
-            guard let activationUri = self.createVideoResponse?.activationUri else
+            guard let activationUri = self.uploadTicket?.activationUri else
             {
                 throw NSError(domain: UploadErrorDomain.Activate.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Activate response did not contain the required values."])
             }
@@ -352,7 +352,7 @@ class UploadDescriptor: Descriptor
     {
         self.url = aDecoder.decodeObjectForKey("url") as! NSURL // If force unwrap fails we have a big problem
         self.videoSettings = aDecoder.decodeObjectForKey("videoSettings") as? VideoSettings
-        self.createVideoResponse = aDecoder.decodeObjectForKey("createVideoResponse") as? CreateVideoResponse
+        self.uploadTicket = aDecoder.decodeObjectForKey("uploadTicket") as? UploadTicket
         self.videoUri = aDecoder.decodeObjectForKey("videoUri") as? String
         self.currentRequest = UploadRequest(rawValue: aDecoder.decodeObjectForKey("currentRequest") as! String)!
 
@@ -363,7 +363,7 @@ class UploadDescriptor: Descriptor
     {
         aCoder.encodeObject(self.url, forKey: "url")
         aCoder.encodeObject(self.videoSettings, forKey: "videoSettings")
-        aCoder.encodeObject(self.createVideoResponse, forKey: "createVideoResponse")
+        aCoder.encodeObject(self.uploadTicket, forKey: "uploadTicket")
         aCoder.encodeObject(self.videoUri, forKey: "videoUri")
         aCoder.encodeObject(self.currentRequest.rawValue, forKey: "currentRequest")
         

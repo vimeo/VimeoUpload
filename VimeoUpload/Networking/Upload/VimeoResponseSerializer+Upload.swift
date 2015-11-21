@@ -53,7 +53,7 @@ extension VimeoResponseSerializer
         }
     }
     
-    func processCreateVideoResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> CreateVideoResponse
+    func processCreateVideoResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> UploadTicket
     {
         let responseObject: [String: AnyObject]?
         do
@@ -70,7 +70,7 @@ extension VimeoResponseSerializer
             throw NSError(domain: UploadErrorDomain.Create.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Create response did not contain the required values."])
         }
         
-        return CreateVideoResponse(uploadUri: uploadUri, activationUri: activationUri)
+        return UploadTicket(uploadUri: uploadUri, activationUri: activationUri)
     }
     
     func processUploadVideoResponse(response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws

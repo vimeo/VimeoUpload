@@ -45,6 +45,28 @@ extension VimeoRequestSerializer
 
     func createVideoRequestWithUrl(url: NSURL) throws -> NSMutableURLRequest
     {
+        let parameters = try self.createVideoRequestBaseParameters(url)
+        
+        let url = NSURL(string: "/me/videos", relativeToURL: VimeoBaseURLString)!
+
+        return try self.createVideoRequestWithUrl(url, parameters: parameters)
+    }
+
+    func createVideoRequestWithUrl(url: NSURL, parameters: [String: AnyObject]) throws -> NSMutableURLRequest
+    {
+        var error: NSError?
+        let request = self.requestWithMethod("POST", URLString: url.absoluteString, parameters: parameters, error: &error)
+
+        if let error = error
+        {
+            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
+        }
+        
+        return request
+    }
+
+    func createVideoRequestBaseParameters(url: NSURL) throws -> [String: AnyObject]
+    {
         let asset = AVURLAsset(URL: url)
         
         var fileLength: NSNumber?
@@ -62,19 +84,9 @@ extension VimeoRequestSerializer
             throw NSError(domain: UploadErrorDomain.Create.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to calculate file length."])
         }
         
-        let url = NSURL(string: "/me/videos", relativeToURL: VimeoBaseURLString)!
-        let parameters = ["type": "streaming", "size": aFileLength]
-        var error: NSError?
-        
-        let request = self.requestWithMethod("POST", URLString: url.absoluteString, parameters: parameters, error: &error)
-        if let error = error
-        {
-            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
-        }
-        
-        return request
+        return ["type": "streaming", "size": aFileLength]
     }
-    
+
     func uploadVideoRequestWithSource(source: NSURL, destination: String) throws -> NSMutableURLRequest
     {
         guard let path = source.path where NSFileManager.defaultManager().fileExistsAtPath(path) else

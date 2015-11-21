@@ -40,7 +40,6 @@ enum UploadErrorDomain: String
     case VideoSettingsOperation = "VideoSettingsOperationErrorDomain"
 
     case Create = "CreateVideoErrorDomain"
-    case CombinedCreate = "CombinedCreateVideoErrorDomain"
     case Upload = "VideoUploadErrorDomain"
     case Activate = "ActivateVideoErrorDomain"
     case VideoSettings = "VideoSettingsErrorDomain"
