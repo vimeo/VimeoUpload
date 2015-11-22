@@ -34,5 +34,20 @@ extension NSFileManager
         let dictionary = try self.attributesOfFileSystemForPath(documentsPath)
 
         return dictionary[NSFileSystemSize] as? NSNumber
-    }    
+    }
+    
+    func deleteFileAtURL(url: NSURL)
+    {
+        if let path = url.path where self.fileExistsAtPath(path)
+        {
+            do
+            {
+                try self.removeItemAtPath(path)
+            }
+            catch let error as NSError
+            {
+                assertionFailure("Error removing exported file \(error)")
+            }
+        }
+    }
 }

@@ -276,22 +276,7 @@ class UploadDescriptor: Descriptor
     private func cleanupAfterUpload()
     {
         self.removeObserverIfNecessary()
-        self.deleteFile()
-    }
-    
-    private func deleteFile()
-    {
-        if let path = self.url.path where NSFileManager.defaultManager().fileExistsAtPath(path)
-        {
-            do
-            {
-                _ = try NSFileManager.defaultManager().removeItemAtPath(path)
-            }
-            catch let error as NSError
-            {
-                assertionFailure("Error removing uploaded file \(error.localizedDescription)")
-            }
-        }
+        NSFileManager.defaultManager().deleteFileAtURL(self.url)
     }
     
     private func errorDomainForRequest(request: UploadRequest) -> String

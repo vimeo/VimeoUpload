@@ -66,5 +66,5 @@ extension NSURL
         url = url.URLByAppendingPathExtension(ext)
 
         return url
-    }
+    }    
 }

@@ -95,7 +95,7 @@ class PrepareUploadOperation: ConcurrentOperation
         
         if let url = self.result
         {
-            self.deleteFile(url)
+            NSFileManager.defaultManager().deleteFileAtURL(url)
         }
     }
     
@@ -244,22 +244,5 @@ class PrepareUploadOperation: ConcurrentOperation
         }
         
         self.operationQueue.addOperation(operation)
-    }
-        
-    // MARK: Private API
-    
-    private func deleteFile(url: NSURL)
-    {
-        if let path = url.path where NSFileManager.defaultManager().fileExistsAtPath(path)
-        {
-            do
-            {
-                try NSFileManager.defaultManager().removeItemAtPath(path)
-            }
-            catch let error as NSError
-            {
-                assertionFailure("Error removing exported file \(error)")
-            }
-        }
     }
 }
