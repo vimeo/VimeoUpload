@@ -121,22 +121,32 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     return
                 }
                 
-                if let error = operation.error
+                if operation.error == nil
                 {
-                    if let _ = strongSelf.videoSettings
+                    strongSelf.url = operation.url!
+                    strongSelf.uploadTicket = operation.uploadTicket!
+                    strongSelf.startUpload()
+                }
+
+                if strongSelf.hasTappedUpload() == true
+                {
+                    if let error = operation.error
                     {
                         strongSelf.activityIndicatorView.stopAnimating()
                         strongSelf.presentOperationErrorAlert(error)
                     }
-                }
-                else
-                {
-                    strongSelf.url = operation.url!
-                    strongSelf.uploadTicket = operation.uploadTicket!
-                    
-                    if let _ = strongSelf.videoSettings
+                    else
                     {
-                        strongSelf.finish()
+                        let operationDidApplyVideoSettings = true // TODO: determine this by checking video privacy
+                        if operationDidApplyVideoSettings == true
+                        {
+                            strongSelf.activityIndicatorView.stopAnimating()
+                            strongSelf.dismissViewControllerAnimated(true, completion: nil)
+                        }
+                        else
+                        {
+                            strongSelf.applyVideoSettings()
+                        }
                     }
                 }
             })
@@ -161,7 +171,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     func didTapCancel(sender: UIBarButtonItem)
     {
         self.operation?.cancel()
-        
+        self.activityIndicatorView.stopAnimating()
         self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
@@ -185,7 +195,16 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
         else
         {
-            self.finish()
+            let operationDidApplyVideoSettings = true // TODO: determine this by checking video privacy
+            if operationDidApplyVideoSettings == true
+            {
+                self.dismissViewControllerAnimated(true, completion: nil)
+            }
+            else
+            {
+                self.activityIndicatorView.startAnimating()
+                self.applyVideoSettings()
+            }
         }
     }
     
@@ -205,27 +224,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+            self?.navigationController?.popViewControllerAnimated(true)
         }))
         
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.startOperation()
-        }))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
-    }
-
-    private func presentDescriptorErrorAlert(error: NSError)
-    {
-        let alert = UIAlertController(title: "Descriptor Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.dismissViewControllerAnimated(true, completion: nil)
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            // We start from the beginning (with the operation instead of the descriptor), 
-            // Because the exported file was deleted when the upload descriptor failed,
-            // We delete it because leaving it up to the API consumer to delete seems a little risky
+            self?.activityIndicatorView.startAnimating()
             self?.startOperation()
         }))
         
@@ -240,6 +243,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }))
         
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.activityIndicatorView.startAnimating()
             self?.applyVideoSettings()
         }))
         
@@ -248,26 +252,13 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK: Private API
     
-    private func finish()
+    private func hasTappedUpload() -> Bool
     {
-        // TODO: if operation applied video settings, then start upload and dismiss
-        // else, apply video settings, start upload, and dismiss
-        
-        let operationDidApplyVideoSettings = true // TODO: determine this by checking video privacy
-        
-        if operationDidApplyVideoSettings == true
-        {
-            self.startUpload()
-            
-            self.activityIndicatorView.stopAnimating()
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }
+        return self.videoSettings != nil
     }
     
     private func applyVideoSettings()
     {
-        self.activityIndicatorView.startAnimating()
-        
         let videoUri = self.uploadTicket!.video!.uri!
         let videoSettings = self.videoSettings!
         

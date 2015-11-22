@@ -117,19 +117,19 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     return
                 }
                 
-                if let error = operation.error
+                if operation.error == nil
                 {
-                    if let _ = strongSelf.videoSettings
+                    strongSelf.url = operation.result!
+                }
+                
+                if strongSelf.hasTappedUpload() == true
+                {
+                    if let error = operation.error
                     {
                         strongSelf.activityIndicatorView.stopAnimating()
                         strongSelf.presentOperationErrorAlert(error)
                     }
-                }
-                else
-                {
-                    strongSelf.url = operation.result!
-                    
-                    if let _ = strongSelf.videoSettings
+                    else
                     {
                         strongSelf.startUpload()
                         
@@ -224,5 +224,12 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: Private API
+    
+    private func hasTappedUpload() -> Bool
+    {
+        return self.videoSettings != nil
     }
 }
