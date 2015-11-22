@@ -253,7 +253,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         // TODO: if operation applied video settings, then start upload and dismiss
         // else, apply video settings, start upload, and dismiss
         
-        let operationDidApplyVideoSettings = true
+        let operationDidApplyVideoSettings = true // TODO: determine this by checking video privacy
         
         if operationDidApplyVideoSettings == true
         {

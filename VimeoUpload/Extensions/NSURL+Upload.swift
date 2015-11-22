@@ -1,5 +1,5 @@
 //
-//  NSURL+Extensions.swift
+//  NSURL+Upload.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/16/15.

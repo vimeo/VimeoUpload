@@ -1,6 +1,6 @@
 //
 //  VideoSettings.swift
-//  VIMUpload
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 10/3/15.
 //  Copyright © 2015 Vimeo. All rights reserved.

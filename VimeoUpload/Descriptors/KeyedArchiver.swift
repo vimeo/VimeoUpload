@@ -1,5 +1,5 @@
 //
-//  Archiver.swift
+//  KeyedArchiver.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/23/15.

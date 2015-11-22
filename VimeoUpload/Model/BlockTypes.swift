@@ -1,6 +1,6 @@
 //
-//  GeneralTypes.swift
-//  VIMUpload
+//  BlockTypes.swift
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/13/15.
 //  Copyright © 2015 Vimeo. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  CameraRollCell.swift
-//  VimeoUpload-iOS-2Step
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/1/15.
 //  Copyright © 2015 Vimeo. All rights reserved.

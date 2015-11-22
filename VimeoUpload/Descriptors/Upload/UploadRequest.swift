@@ -1,6 +1,6 @@
 //
 //  UploadRequest.swift
-//  VimeoUpload-iOS-2Step
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 11/11/15.
 //  Copyright © 2015 Vimeo. All rights reserved.

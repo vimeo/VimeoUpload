@@ -1,6 +1,6 @@
 //
-//  MyVimeoSessionManager.swift
-//  VimeoUpload-iOS-Example
+//  UploadManager.swift
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 10/18/15.
 //  Copyright © 2015 Vimeo. All rights reserved.

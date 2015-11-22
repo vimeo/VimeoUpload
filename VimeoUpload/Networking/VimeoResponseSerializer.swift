@@ -1,5 +1,5 @@
 //
-//  VimeoJSONResponseSerializer.swift
+//  VimeoResponseSerializer.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/16/15.

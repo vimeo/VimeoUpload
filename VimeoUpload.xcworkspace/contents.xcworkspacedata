@@ -26,9 +26,6 @@
             location = "group:Upload"
             name = "Upload">
             <FileRef
-               location = "group:SimpleUploadDescriptor.swift">
-            </FileRef>
-            <FileRef
                location = "group:UploadDescriptor.swift">
             </FileRef>
             <FileRef

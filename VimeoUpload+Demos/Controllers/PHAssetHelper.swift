@@ -1,6 +1,6 @@
 //
-//  PHAssetCollectionHelper.swift
-//  VimeoUpload-iOS-2Step
+//  PHAssetHelper.swift
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/3/15.
 //  Copyright © 2015 Vimeo. All rights reserved.

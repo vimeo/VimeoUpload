@@ -1,5 +1,5 @@
 //
-//  NSErrorExtensions.swift
+//  NSError+Upload.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/12/15.

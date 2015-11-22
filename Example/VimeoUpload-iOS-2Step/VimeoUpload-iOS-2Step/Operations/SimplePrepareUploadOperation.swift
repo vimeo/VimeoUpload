@@ -1,11 +1,8 @@
 //
-//  UploadPrepOperation.swift
-//  VimeoUpload
+//  SimpleUploadPrepOperation.swift
+//  VimeoUpload-iOS-Example
 //
 //  Created by Alfred Hanssen on 11/9/15.
-//  Copyright © 2015 Vimeo. All rights reserved.
-//
-//  Created by Hanssen, Alfie on 10/13/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -1,5 +1,5 @@
 //
-//  UploadPrepOperation.swift
+//  CameraRollOperation.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/9/15.
