@@ -39,6 +39,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     deinit
     {
         self.task?.cancel()
+        self.removeObservers()
     }
     
     override func viewDidLoad()
@@ -47,6 +48,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
 
         self.title = "My Videos"
         
+        self.addObservers()
         self.setupTableView()
         self.setupRefreshControl()
         
@@ -68,6 +70,29 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         self.refreshControl!.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         
         self.tableView.addSubview(self.refreshControl!)
+    }
+    
+    // MARK: Notifications
+    
+    private func addObservers()
+    {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "uploadInitiated:", name: VideoSettingsViewController.UploadInitiatedNotification, object: nil)
+    }
+    
+    private func removeObservers()
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func uploadInitiated(notification: NSNotification)
+    {
+        if let video = notification.object as? VIMVideo
+        {
+            self.items.insert(video, atIndex: 0)
+            
+            let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+            self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
+        }
     }
     
     // MARK: UITableViewDataSource
