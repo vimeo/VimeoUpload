@@ -33,3 +33,4 @@
 #import "VIMQuota.h"
 #import "VIMVideo.h"
 #import "VIMUploadTicket.h"
+#import "VIMPrivacy.h"

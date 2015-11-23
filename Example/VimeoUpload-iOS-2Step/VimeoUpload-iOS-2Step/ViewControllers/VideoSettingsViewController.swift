@@ -29,6 +29,7 @@ import UIKit
 class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
     static let NibName = "VideoSettingsViewController"
+    private static let PreUploadViewPrivacy = "pre_upload"
     
     // MARK: 
     
@@ -137,8 +138,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     }
                     else
                     {
-                        let operationDidApplyVideoSettings = true // TODO: determine this by checking video privacy
-                        if operationDidApplyVideoSettings == true
+                        if let viewPrivacy = strongSelf.uploadTicket?.video?.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
                         {
                             strongSelf.activityIndicatorView.stopAnimating()
                             strongSelf.dismissViewControllerAnimated(true, completion: nil)
@@ -197,8 +197,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
         else
         {
-            let operationDidApplyVideoSettings = true // TODO: determine this by checking video privacy
-            if operationDidApplyVideoSettings == true
+            if let viewPrivacy = self.uploadTicket?.video?.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
             {
                 self.dismissViewControllerAnimated(true, completion: nil)
             }

@@ -196,9 +196,7 @@ extension VimeoResponseSerializer
             let mapper = VIMObjectMapper()
             mapper.addMappingClass(VIMVideo.self, forKeypath: "data")
             
-            let result = mapper.applyMappingToJSON(dictionary) as! [String: AnyObject]
-            
-            if let videos = result["data"] as? [VIMVideo]
+            if let result = mapper.applyMappingToJSON(dictionary) as? [String: AnyObject], let videos = result["data"] as? [VIMVideo]
             {
                 return videos
             }
