@@ -285,21 +285,21 @@ class DescriptorManager
         })
     }
     
-    func cancelDescriptorForIdentifier(identifier: String)
-    {
-        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
-
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if let descriptor = strongSelf.descriptorForIdentifier(identifier)
-            {
-                descriptor.cancel(strongSelf.sessionManager)
-            }
-        })
-    }
+//    func cancelDescriptorForIdentifier(identifier: String)
+//    {
+//        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
+//
+//            guard let strongSelf = self else
+//            {
+//                return
+//            }
+//            
+//            if let descriptor = strongSelf.descriptorForIdentifier(identifier)
+//            {
+//                descriptor.cancel(strongSelf.sessionManager)
+//            }
+//        })
+//    }
     
     func cancelAllDescriptors()
     {
@@ -342,29 +342,29 @@ class DescriptorManager
         return result
     }
 
-    private func descriptorForIdentifier(identifier: String) -> Descriptor?
-    {
-        var result: Descriptor?
-        
-        for currentDescriptor in self.descriptors
-        {
-            if currentDescriptor.identifier == identifier
-            {
-                result = currentDescriptor
-                break
-            }
-        }
-        
-        // At present, this method is only called during a descriptor cancellation,
-        // If the descriptor is not found then perhaps it completed before the cancellation, no big deal,
-        // Logging this however just to keep an eye on it [AH] 10/29/2015
-        if result == nil
-        {
-            self.delegate?.descriptorForIdentifierNotFound(identifier)
-        }
-
-        return result
-    }
+//    private func descriptorForIdentifier(identifier: String) -> Descriptor?
+//    {
+//        var result: Descriptor?
+//        
+//        for currentDescriptor in self.descriptors
+//        {
+//            if currentDescriptor.identifier == identifier
+//            {
+//                result = currentDescriptor
+//                break
+//            }
+//        }
+//        
+//        // At present, this method is only called during a descriptor cancellation,
+//        // If the descriptor is not found then perhaps it completed before the cancellation, no big deal,
+//        // Logging this however just to keep an eye on it [AH] 10/29/2015
+//        if result == nil
+//        {
+//            self.delegate?.descriptorForIdentifierNotFound(identifier)
+//        }
+//
+//        return result
+//    }
     
     func save()
     {

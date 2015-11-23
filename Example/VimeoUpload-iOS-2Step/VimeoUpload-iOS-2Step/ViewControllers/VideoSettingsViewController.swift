@@ -45,7 +45,6 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     // MARK:
     
     private var operation: ConcurrentOperation?
-    private var descriptor: Descriptor?
 
     // MARK:
     
@@ -90,15 +89,17 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         // TODO: handle retry
         
-        self.descriptor = self.buildDescriptor()
-        UploadManager.sharedInstance.descriptorManager.addDescriptor(self.descriptor!)
+        let url = self.url!
+        let uploadTicket = self.uploadTicket!
+        
+        UploadManager.sharedInstance.uploadVideoWithUrl(url, uploadTicket: uploadTicket)
     }
     
     private func buildOperation() -> ConcurrentOperation
     {
         let me = self.input!.me
         let phAssetContainer = self.input!.phAssetContainer
-        let sessionManager = UploadManager.sharedInstance.sessionManager
+        let sessionManager = DemoSessionManager.sharedInstance
         let videoSettings = self.videoSettings
         
         let operation = SimplePrepareUploadOperation(me: me, phAssetContainer: phAssetContainer, sessionManager: sessionManager, videoSettings: videoSettings)
@@ -159,17 +160,6 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         return operation
     }
-    
-    private func buildDescriptor() -> Descriptor
-    {
-        let url = self.url!
-        let uploadTicket = self.uploadTicket!
-        
-        let descriptor = SimpleUploadDescriptor(url: url, uploadTicket: uploadTicket)
-        descriptor.identifier = "\(url.absoluteString.hash)"
-        
-        return descriptor
-    }
 
     // MARK: Actions
     
@@ -179,9 +169,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.activityIndicatorView.stopAnimating()
         self.navigationController?.popViewControllerAnimated(true)
     
+        // TODO: test this
+        
         if let videoUri = self.uploadTicket?.video?.uri
         {
-            UploadManager.sharedInstance.deletionManager.deleteVideoWithUri(videoUri)
+            UploadManager.sharedInstance.deleteVideoWithUri(videoUri)
         }
     }
 
@@ -277,7 +269,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         {
             // TODO: should this be cancelable?
             
-            let task = try UploadManager.sharedInstance.sessionManager.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+            let task = try DemoSessionManager.sharedInstance.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                     

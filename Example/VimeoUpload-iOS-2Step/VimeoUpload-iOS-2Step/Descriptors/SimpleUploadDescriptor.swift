@@ -44,7 +44,7 @@ class SimpleUploadDescriptor: Descriptor
     // MARK:
     
     override var error: NSError?
-        {
+    {
         didSet
         {
             if self.error != nil
