@@ -1,8 +1,8 @@
 //
-//  BlockTypes.swift
+//  VideoCell.swift
 //  VimeoUpload
 //
-//  Created by Hanssen, Alfie on 10/13/15.
+//  Created by Alfred Hanssen on 11/23/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,14 +24,22 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
+import UIKit
 
-typealias VoidBlock = () -> Void
-typealias ProgressBlock = (progress: Double) -> Void
-typealias ErrorBlock = (error: NSError?) -> Void
-typealias StringErrorBlock = (value: String?, error: NSError?) -> Void
+class VideoCell: UITableViewCell
+{
+    static let CellIdentifier = "VideoCellIdentifier"
+    static let NibName = "VideoCell"
 
-typealias UserCompletionHandler = (user: VIMUser?, error: NSError?) -> Void
-typealias VideoCompletionHandler = (video: VIMVideo?, error: NSError?) -> Void
-typealias VideosCompletionHandler = (videos: [VIMVideo]?, error: NSError?) -> Void
-typealias UploadTicketCompletionHandler = (uploadTicket: VIMUploadTicket?, error: NSError?) -> Void
+    override func awakeFromNib()
+    {
+        super.awakeFromNib()
+    
+    }
+
+    override func prepareForReuse()
+    {
+        super.prepareForReuse()
+    
+    }
+}

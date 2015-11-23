@@ -7,6 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MyVideosViewController" customModule="VimeoUpload_iOS_2Step" customModuleProvider="target">
             <connections>
+                <outlet property="tableView" destination="Zgf-p0-6Li" id="Ql0-JV-Y5t"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -15,6 +16,14 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Zgf-p0-6Li">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="Mc3-HR-8wH"/>
+                        <outlet property="delegate" destination="-1" id="y6I-TE-XHL"/>
+                    </connections>
+                </tableView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5gJ-Nk-Ekn">
                     <rect key="frame" x="505" y="536" width="75" height="44"/>
                     <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -32,8 +41,12 @@
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
+                <constraint firstItem="Zgf-p0-6Li" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="8OI-0a-dPp"/>
+                <constraint firstAttribute="trailing" secondItem="Zgf-p0-6Li" secondAttribute="trailing" id="Emg-o1-cDS"/>
                 <constraint firstAttribute="trailing" secondItem="5gJ-Nk-Ekn" secondAttribute="trailing" constant="20" id="Nir-j4-ovR"/>
                 <constraint firstAttribute="bottom" secondItem="5gJ-Nk-Ekn" secondAttribute="bottom" constant="20" id="Xi6-Z2-ssF"/>
+                <constraint firstAttribute="bottom" secondItem="Zgf-p0-6Li" secondAttribute="bottom" id="cLr-aW-h6p"/>
+                <constraint firstItem="Zgf-p0-6Li" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="dHy-5T-F7K"/>
             </constraints>
         </view>
     </objects>

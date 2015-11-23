@@ -51,6 +51,27 @@ extension VimeoResponseSerializer
         }
     }
 
+    func processMyVideosResponse(response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws -> [VIMVideo]
+    {
+        do
+        {
+            try checkDataResponseForError(response, responseObject: responseObject, error: error)
+        }
+        catch let error as NSError
+        {
+            throw error.errorByAddingDomain(UploadErrorDomain.MyVideos.rawValue)
+        }
+        
+        do
+        {
+            return try self.videosFromResponseObject(responseObject)
+        }
+        catch let error as NSError
+        {
+            throw error.errorByAddingDomain(UploadErrorDomain.MyVideos.rawValue)
+        }
+    }
+
     func processCreateVideoResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> VIMUploadTicket
     {
         let responseObject: [String: AnyObject]?
@@ -167,7 +188,25 @@ extension VimeoResponseSerializer
     }
 
     // MARK: Private API
-    
+
+    private func videosFromResponseObject(responseObject: AnyObject?) throws -> [VIMVideo]
+    {
+        if let dictionary = responseObject as? [String: AnyObject]
+        {
+            let mapper = VIMObjectMapper()
+            mapper.addMappingClass(VIMVideo.self, forKeypath: "data")
+            
+            let result = mapper.applyMappingToJSON(dictionary) as! [String: AnyObject]
+            
+            if let videos = result["data"] as? [VIMVideo]
+            {
+                return videos
+            }
+        }
+        
+        throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to parse videos array from responseObject failed"])
+    }
+
     private func videoFromResponseObject(responseObject: AnyObject?) throws -> VIMVideo
     {
         if let dictionary = responseObject as? [String: AnyObject]
@@ -206,7 +245,7 @@ extension VimeoResponseSerializer
         {
             let mapper = VIMObjectMapper()
             mapper.addMappingClass(VIMUploadTicket.self, forKeypath: "")
-            
+         
             if let uploadTicket = mapper.applyMappingToJSON(dictionary) as? VIMUploadTicket
             {
                 return uploadTicket

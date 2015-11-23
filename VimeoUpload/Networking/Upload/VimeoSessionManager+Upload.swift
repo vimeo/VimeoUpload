@@ -29,6 +29,7 @@ import Foundation
 enum TaskDescription: String
 {
     case Me = "Me"
+    case MyVideos = "MyVideos"
     case CreateVideo = "CreateVideo"
     case UploadVideo = "UploadVideo"
     case ActivateVideo = "ActivateVideo"
@@ -68,7 +69,38 @@ extension VimeoSessionManager
         
         return task
     }
-    
+
+    func myVideosDataTask(completionHandler: VideosCompletionHandler) throws -> NSURLSessionDataTask
+    {
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).myVideosRequest()
+        
+        let task = self.dataTaskWithRequest(request, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+            
+            // Do model parsing on a background thread
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                do
+                {
+                    let videos = try (strongSelf.responseSerializer as! VimeoResponseSerializer).processMyVideosResponse(response, responseObject: responseObject, error: error)
+                    completionHandler(videos: videos, error: nil)
+                }
+                catch let error as NSError
+                {
+                    completionHandler(videos: nil, error: error)
+                }
+            })
+        })
+        
+        task.taskDescription = TaskDescription.MyVideos.rawValue
+        
+        return task
+    }
+
     func createVideoDownloadTask(url url: NSURL) throws -> NSURLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url)

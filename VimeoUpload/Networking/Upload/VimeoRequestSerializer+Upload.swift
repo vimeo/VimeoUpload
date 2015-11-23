@@ -43,6 +43,20 @@ extension VimeoRequestSerializer
         return request
     }
 
+    func myVideosRequest() throws -> NSMutableURLRequest
+    {
+        let url = NSURL(string: "/me/videos", relativeToURL: VimeoBaseURLString)!
+        var error: NSError?
+        
+        let request = self.requestWithMethod("GET", URLString: url.absoluteString, parameters: nil, error: &error)
+        if let error = error
+        {
+            throw error.errorByAddingDomain(UploadErrorDomain.MyVideos.rawValue)
+        }
+        
+        return request
+    }
+
     func createVideoRequestWithUrl(url: NSURL) throws -> NSMutableURLRequest
     {
         let parameters = try self.createVideoRequestBaseParameters(url)

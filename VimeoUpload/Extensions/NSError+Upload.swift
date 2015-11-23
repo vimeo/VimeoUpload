@@ -36,6 +36,7 @@ enum UploadErrorDomain: String
     case Export = "ExportVideoErrorDomain"
 
     case Me = "MeErrorDomain"
+    case MyVideos = "MyVideosErrorDomain"
     case Create = "CreateVideoErrorDomain"
     case Upload = "VideoUploadErrorDomain"
     case Activate = "ActivateVideoErrorDomain"

@@ -170,6 +170,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     func didTapCancel(sender: UIBarButtonItem)
     {
+        // TODO: Delete video from servers
+        
         self.operation?.cancel()
         self.activityIndicatorView.stopAnimating()
         self.navigationController?.dismissViewControllerAnimated(true, completion: nil)

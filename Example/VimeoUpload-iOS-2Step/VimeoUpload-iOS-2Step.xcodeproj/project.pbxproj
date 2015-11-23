@@ -63,6 +63,8 @@
 		AFA63D5F1C011B92003B5821 /* VimeoSessionManager+SimpleUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63D5E1C011B92003B5821 /* VimeoSessionManager+SimpleUpload.swift */; };
 		AFA63DB31C012153003B5821 /* CreateVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63DB21C012153003B5821 /* CreateVideoOperation.swift */; };
 		AFA63DB61C012958003B5821 /* SimpleUploadDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63DB51C012958003B5821 /* SimpleUploadDescriptor.swift */; };
+		AFA63DBB1C0358D4003B5821 /* VideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63DB91C0358D3003B5821 /* VideoCell.swift */; };
+		AFA63DBC1C0358D4003B5821 /* VideoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFA63DBA1C0358D3003B5821 /* VideoCell.xib */; };
 		B08DAB676DD17B28E7B73739 /* Pods_VimeoUpload_iOS_2StepTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E5711A1FD4D8950313BE0BD /* Pods_VimeoUpload_iOS_2StepTests.framework */; };
 		EB309764A9C97EC431F40332 /* Pods_VimeoUpload_iOS_2StepUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BFDBA3DF1051D8BB02C74D9 /* Pods_VimeoUpload_iOS_2StepUITests.framework */; };
 /* End PBXBuildFile section */
@@ -154,6 +156,8 @@
 		AFA63D5E1C011B92003B5821 /* VimeoSessionManager+SimpleUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoSessionManager+SimpleUpload.swift"; sourceTree = "<group>"; };
 		AFA63DB21C012153003B5821 /* CreateVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateVideoOperation.swift; sourceTree = "<group>"; };
 		AFA63DB51C012958003B5821 /* SimpleUploadDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleUploadDescriptor.swift; sourceTree = "<group>"; };
+		AFA63DB91C0358D3003B5821 /* VideoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCell.swift; sourceTree = "<group>"; };
+		AFA63DBA1C0358D3003B5821 /* VideoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoCell.xib; sourceTree = "<group>"; };
 		B3EC29A4D46E1F80F673DE25 /* Pods-VimeoUpload-iOS-2Step.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-2Step.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-2Step/Pods-VimeoUpload-iOS-2Step.debug.xcconfig"; sourceTree = "<group>"; };
 		C7FCF0EF6EEF2391C32EE01C /* Pods-VimeoUpload-iOS-2StepUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-2StepUITests.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-2StepUITests/Pods-VimeoUpload-iOS-2StepUITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -211,6 +215,8 @@
 			children = (
 				5043A5431BFFA04F00D70725 /* CameraRollCell.swift */,
 				5043A5441BFFA04F00D70725 /* CameraRollCell.xib */,
+				AFA63DB91C0358D3003B5821 /* VideoCell.swift */,
+				AFA63DBA1C0358D3003B5821 /* VideoCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -564,6 +570,7 @@
 			files = (
 				50596E1B1BE2D57700D1F8EC /* LaunchScreen.storyboard in Resources */,
 				5043A54A1BFFA04F00D70725 /* CameraRollCell.xib in Resources */,
+				AFA63DBC1C0358D4003B5821 /* VideoCell.xib in Resources */,
 				AF34DB711BE721150094D1F8 /* MyVideosViewController.xib in Resources */,
 				5043A53E1BFFA00300D70725 /* CameraRollViewController.xib in Resources */,
 				5043A5401BFFA00300D70725 /* VideoSettingsViewController.xib in Resources */,
@@ -732,6 +739,7 @@
 				50596E751BE2D70000D1F8EC /* BlockTypes.swift in Sources */,
 				AFA63CF51BFFECA0003B5821 /* DeleteVideoOperation.swift in Sources */,
 				50596E7A1BE2D70000D1F8EC /* VimeoSessionManager.swift in Sources */,
+				AFA63DBB1C0358D4003B5821 /* VideoCell.swift in Sources */,
 				AFA63CF81BFFECA0003B5821 /* PHAssetExportSessionOperation.swift in Sources */,
 				AFA63DB61C012958003B5821 /* SimpleUploadDescriptor.swift in Sources */,
 				AFA63CF91BFFECA0003B5821 /* PrepareUploadOperation.swift in Sources */,
