@@ -111,7 +111,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     private func setupOperation(me: VIMUser?)
     {
-        let sessionManager = DemoSessionManager.sharedInstance
+        let sessionManager = ForegroundSessionManager.sharedInstance
         let operation = CameraRollOperation(sessionManager: sessionManager, me: me)
         self.setOperationBlocks(operation)
         self.operation = operation

@@ -99,7 +99,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let me = self.input!.me
         let phAssetContainer = self.input!.phAssetContainer
-        let sessionManager = DemoSessionManager.sharedInstance
+        let sessionManager = ForegroundSessionManager.sharedInstance
         let videoSettings = self.videoSettings
         
         let operation = SimplePrepareUploadOperation(me: me, phAssetContainer: phAssetContainer, sessionManager: sessionManager, videoSettings: videoSettings)
@@ -269,7 +269,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         {
             // TODO: should this be cancelable?
             
-            let task = try DemoSessionManager.sharedInstance.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+            let task = try ForegroundSessionManager.sharedInstance.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                     

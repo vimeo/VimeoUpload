@@ -28,17 +28,27 @@
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8PW-nQ-Kdm" userLabel="Progress View">
+                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="43"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
                 </subviews>
                 <constraints>
+                    <constraint firstAttribute="bottom" secondItem="8PW-nQ-Kdm" secondAttribute="bottom" id="3b2-CW-tpL"/>
                     <constraint firstItem="J46-9g-WWz" firstAttribute="leading" secondItem="k8H-JT-9qF" secondAttribute="trailing" constant="15" id="7Oh-4d-7yQ"/>
                     <constraint firstItem="J46-9g-WWz" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Jk0-gY-wYC"/>
+                    <constraint firstItem="8PW-nQ-Kdm" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="Tlu-0D-YGg"/>
                     <constraint firstAttribute="bottomMargin" secondItem="k8H-JT-9qF" secondAttribute="bottom" id="ZDh-mL-apB"/>
+                    <constraint firstItem="8PW-nQ-Kdm" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="qSC-Be-HG3"/>
                     <constraint firstItem="k8H-JT-9qF" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="w4h-jY-Iin"/>
                     <constraint firstAttribute="trailingMargin" secondItem="J46-9g-WWz" secondAttribute="trailing" constant="10" id="yF4-ke-jeZ"/>
                     <constraint firstItem="k8H-JT-9qF" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="yQr-M3-o5F"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="8PW-nQ-Kdm" secondAttribute="trailing" priority="750" id="yUq-uW-f1v"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="progressConstraint" destination="yUq-uW-f1v" id="h5v-vy-7Yw"/>
+                <outlet property="progressView" destination="8PW-nQ-Kdm" id="zLr-XP-Ufy"/>
                 <outlet property="statusLabel" destination="J46-9g-WWz" id="8lU-R6-gCu"/>
                 <outlet property="thumbnailImageView" destination="k8H-JT-9qF" id="iXP-Mj-6jF"/>
             </connections>

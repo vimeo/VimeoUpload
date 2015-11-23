@@ -1,5 +1,5 @@
 //
-//  DemoSessionManager.swift
+//  ForegroundSessionManager.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/23/15.
@@ -26,7 +26,7 @@
 
 import Foundation
 
-class DemoSessionManager: VimeoSessionManager
+class ForegroundSessionManager: VimeoSessionManager
 {
     static let sharedInstance = VimeoSessionManager.defaultSessionManager("caf4648129ec56e580175c4b45cce7fc")
 }

@@ -37,6 +37,8 @@ class VideoCell: UITableViewCell
 
     @IBOutlet weak var thumbnailImageView: UIImageView!
     @IBOutlet weak var statusLabel: UILabel!
+    @IBOutlet weak var progressView: UIView!
+    @IBOutlet weak var progressConstraint: NSLayoutConstraint!
     
     // MARK:
 
@@ -90,6 +92,8 @@ class VideoCell: UITableViewCell
         self.video = nil
         self.thumbnailImageView?.image = nil
         self.statusLabel.text = ""
+        self.progressView.hidden = true
+        self.progressConstraint.constant = 0
     }
     
     // MARK: Private API

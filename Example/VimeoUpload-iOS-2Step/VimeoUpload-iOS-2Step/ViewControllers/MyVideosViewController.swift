@@ -128,7 +128,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func refresh()
     {
-        let sessionManager = DemoSessionManager.sharedInstance
+        let sessionManager = ForegroundSessionManager.sharedInstance
         
         do
         {
