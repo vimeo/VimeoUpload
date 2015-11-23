@@ -170,11 +170,14 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     func didTapCancel(sender: UIBarButtonItem)
     {
-        // TODO: Delete video from servers
-        
         self.operation?.cancel()
         self.activityIndicatorView.stopAnimating()
         self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+    
+        if let videoUri = self.uploadTicket?.video?.uri
+        {
+            // TODO: Delete video from vimeo servers
+        }
     }
 
     func didTapUpload(sender: UIBarButtonItem)
@@ -265,6 +268,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         do
         {
+            // TODO: should this be cancelable?
+            
             let task = try UploadManager.sharedInstance.sessionManager.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
