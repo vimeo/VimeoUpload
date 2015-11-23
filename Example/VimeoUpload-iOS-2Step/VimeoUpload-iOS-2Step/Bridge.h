@@ -34,3 +34,6 @@
 #import "VIMVideo.h"
 #import "VIMUploadTicket.h"
 #import "VIMPrivacy.h"
+#import "VIMPictureCollection.h"
+#import "VIMPicture.h"
+#import "UIImageView+AFNetworking.h"
