@@ -117,11 +117,6 @@ class UploadReporter: DescriptorManagerDelegate
         }
     }
     
-    func descriptorForIdentifierNotFound(descriptorIdentifier: String)
-    {
-        self.sendMessage("Descriptor not found (id) \(descriptorIdentifier)")
-    }
-    
     // Private API
     
     func sendMessage(message: String) // TODO: Mark as private

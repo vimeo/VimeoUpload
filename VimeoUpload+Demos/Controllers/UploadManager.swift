@@ -30,8 +30,7 @@ class UploadManager
 {
     static let sharedInstance = UploadManager()
     
-    let sessionManager: VimeoSessionManager
-    
+    private let sessionManager: VimeoSessionManager
     private let descriptorManager: DescriptorManager
     private let deletionManager: DeletionManager
     private let reporter: UploadReporter = UploadReporter()
@@ -58,16 +57,17 @@ class UploadManager
     func uploadVideoWithUrl(url: NSURL, uploadTicket: VIMUploadTicket)
     {
         let descriptor = SimpleUploadDescriptor(url: url, uploadTicket: uploadTicket)
-        descriptor.identifier = "\(url.absoluteString.hash)"
+        descriptor.identifier = uploadTicket.video!.uri
         
         self.descriptorManager.addDescriptor(descriptor)
     }
     
+    // TODO: this progress object isn't set right away on start, race condition, need to resolve
     func uploadProgressForVideoUri(videoUri: String) -> NSProgress?
     {
         if let descriptor = self.descriptorForVideoUri(videoUri)
         {
-            return nil
+            return descriptor.progress
         }
         
         return nil
@@ -102,6 +102,15 @@ class UploadManager
     
     private func descriptorForVideoUri(videoUri: String) -> SimpleUploadDescriptor?
     {
-        return nil
+        let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
+            if let descriptor = descriptor as? SimpleUploadDescriptor, let currentVideoUri = descriptor.uploadTicket.video?.uri
+            {
+                return videoUri == currentVideoUri
+            }
+            
+            return false
+        })
+        
+        return descriptor as? SimpleUploadDescriptor
     }
 }

@@ -40,30 +40,47 @@ class VideoCell: UITableViewCell
     
     // MARK:
 
+    private static let ProgressKeyPath = "fractionCompleted"
+    private var progressKVOContext = UInt8()
+    
+    private var progress: NSProgress?
+    {
+        willSet
+        {
+            self.progress?.removeObserver(self, forKeyPath: VideoCell.ProgressKeyPath, context: &self.progressKVOContext)
+        }
+        
+        didSet
+        {
+            self.progress?.addObserver(self, forKeyPath: VideoCell.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
+        }
+    }
+    
     var video: VIMVideo?
     {
         didSet
         {
+            self.progress = nil
+
             if let video = self.video
             {
-                let width = Float(self.thumbnailImageView.frame.size.width * UIScreen.mainScreen().scale)
-                if let picture = video.pictureCollection?.pictureForWidth(width), let link = picture.link, let url = NSURL(string: link)
-                {
-                    self.setupImageView(url)
-                }
-                
-                let status = video.videoStatus
-                self.setupLabel(status)
+                self.setupImageView(video)
+                self.setupLabel(video)
+                self.progress = UploadManager.sharedInstance.uploadProgressForVideoUri(video.uri!)
             }
         }
     }
     
     // MARK:
+
+    deinit
+    {
+        self.video = nil
+    }
     
     override func awakeFromNib()
     {
         super.awakeFromNib()
-    
     }
 
     override func prepareForReuse()
@@ -77,13 +94,39 @@ class VideoCell: UITableViewCell
     
     // MARK: Private API
     
-    private func setupImageView(url: NSURL)
+    private func setupImageView(video: VIMVideo)
     {
-        self.thumbnailImageView.setImageWithURL(url)
+        let width = Float(self.thumbnailImageView.frame.size.width * UIScreen.mainScreen().scale)
+        if let picture = video.pictureCollection?.pictureForWidth(width), let link = picture.link, let url = NSURL(string: link)
+        {
+            self.thumbnailImageView.setImageWithURL(url)
+        }
     }
     
-    private func setupLabel(status: VIMVideoProcessingStatus)
+    private func setupLabel(video: VIMVideo)
     {
-        self.statusLabel.text = self.video?.status
+        self.statusLabel.text = video.status
+    }
+    
+    // MARK: KVO
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+    {
+        if let keyPath = keyPath
+        {
+            switch (keyPath, context)
+            {
+            case(VideoCell.ProgressKeyPath, &self.progressKVOContext):
+                let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
+                print("Cell progress: \(progress)")
+                
+            default:
+                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            }
+        }
+        else
+        {
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+        }
     }
 }

@@ -35,11 +35,7 @@ class SimpleUploadDescriptor: Descriptor
     
     // MARK:
     
-    private static let ProgressKeyPath = "fractionCompleted"
-    private var progressKVOContext = UInt8()
-    private var isObserving = false
-    private var uploadProgressObject: NSProgress?
-    private(set) dynamic var uploadProgress: Double = 0 // KVO on this property
+    private(set) var progress: NSProgress?
     
     // MARK:
     
@@ -59,11 +55,6 @@ class SimpleUploadDescriptor: Descriptor
     // MARK:
     
     // MARK: Initialization
-    
-    deinit
-    {
-        self.removeObserverIfNecessary()
-    }
     
     init(url: NSURL, uploadTicket: VIMUploadTicket)
     {
@@ -89,9 +80,7 @@ class SimpleUploadDescriptor: Descriptor
             }
             
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try sessionManager.uploadVideoTask(self.url, destination: uploadLinkSecure, progress: &self.uploadProgressObject, completionHandler: nil)
-
-            self.addObserver()
+            let task = try sessionManager.uploadVideoTask(self.url, destination: uploadLinkSecure, progress: &self.progress, completionHandler: nil)
 
             self.currentTaskIdentifier = task.taskIdentifier
             task.resume()
@@ -129,8 +118,7 @@ class SimpleUploadDescriptor: Descriptor
             if tasks.count == 1
             {
                 let task  = tasks.first as! NSURLSessionUploadTask
-                self.uploadProgressObject = sessionManager.uploadProgressForTask(task)
-                self.addObserver()
+                self.progress = sessionManager.uploadProgressForTask(task)
             }
         }
         else
@@ -141,7 +129,7 @@ class SimpleUploadDescriptor: Descriptor
     
     override func taskDidComplete(sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
-        self.cleanupAfterUpload()
+        NSFileManager.defaultManager().deleteFileAtURL(self.url)
         
         if self.error == nil
         {
@@ -158,53 +146,9 @@ class SimpleUploadDescriptor: Descriptor
         self.currentTaskIdentifier = nil
         self.state = .Finished
     }
-    
-    // MARK: Private API
-    
-    private func cleanupAfterUpload()
-    {
-        self.removeObserverIfNecessary()
-        NSFileManager.defaultManager().deleteFileAtURL(self.url)
-    }
-    
+
     // MARK: KVO
     
-    private func addObserver()
-    {
-        self.uploadProgressObject?.addObserver(self, forKeyPath: SimpleUploadDescriptor.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
-        self.isObserving = true
-    }
-    
-    private func removeObserverIfNecessary()
-    {
-        if self.isObserving
-        {
-            self.uploadProgressObject?.removeObserver(self, forKeyPath: SimpleUploadDescriptor.ProgressKeyPath, context: &self.progressKVOContext)
-            self.isObserving = false
-        }
-    }
-    
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
-    {
-        if let keyPath = keyPath
-        {
-            switch (keyPath, context)
-            {
-            case(SimpleUploadDescriptor.ProgressKeyPath, &self.progressKVOContext):
-                let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
-                self.uploadProgress = progress
-                print("Inner Upload: \(progress)")
-                
-            default:
-                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-            }
-        }
-        else
-        {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-        }
-    }
-
     // MARK: NSCoding
     
     required init(coder aDecoder: NSCoder)
