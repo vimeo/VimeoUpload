@@ -47,15 +47,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         self.window?.makeKeyAndVisible()
         
         UploadManager.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
-        
-        UploadManager.sharedInstance.reporter.sendMessage("Launch")
-        
+                
         return true
     }
     
     func application(application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: () -> Void)
     {
-        if UploadManager.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier, completionHandler: completionHandler) == false
+        if UploadManager.sharedInstance.handleEventsForBackgroundURLSession(identifier, completionHandler: completionHandler) == false
         {
             assertionFailure("Unhandled background events")
         }

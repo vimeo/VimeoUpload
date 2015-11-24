@@ -1,8 +1,8 @@
 //
-//  UploadManager.swift
+//  ForegroundSessionManager.swift
 //  VimeoUpload
 //
-//  Created by Alfred Hanssen on 10/18/15.
+//  Created by Alfred Hanssen on 11/23/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,28 +24,9 @@
 //  THE SOFTWARE.
 //
 
-import UIKit
+import Foundation
 
-class UploadManager
+class ForegroundSessionManager: VimeoSessionManager
 {
-    static let sharedInstance = UploadManager()
-    
-    let descriptorManager: DescriptorManager
-    let sessionManager: VimeoSessionManager
-    let reporter: UploadReporter = UploadReporter() // TODO: mark as private
-    let deletionManager: DeletionManager
-    
-    init()
-    {
-        self.sessionManager = VimeoSessionManager(authToken: "caf4648129ec56e580175c4b45cce7fc")
-        self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: "uploader", delegate: self.reporter)
-        self.deletionManager = DeletionManager(sessionManager: self.sessionManager, retryCount: 2)
-    }
-    
-    // MARK: Public API
-    
-    func applicationDidFinishLaunching()
-    {
-        // Do nothing at the moment
-    }
+    static let sharedInstance = VimeoSessionManager.defaultSessionManager("caf4648129ec56e580175c4b45cce7fc")
 }

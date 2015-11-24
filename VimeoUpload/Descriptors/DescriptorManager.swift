@@ -34,6 +34,8 @@ enum DescriptorManagerNotification: String
     case SessionDidBecomeInvalid = "SessionDidBecomeInvalidNotification"
 }
 
+typealias TestBlock = (descriptor: Descriptor) -> Bool
+
 class DescriptorManager
 {
     private static let DescriptorsArchiveKey = "descriptors"
@@ -252,9 +254,11 @@ class DescriptorManager
         return true
     }
     
-    func addDescriptor(descriptor: Descriptor)
+    func addDescriptor(descriptor: Descriptor) // TODO: throw error?
     {
-        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
+        // TODO: should this be async?
+        
+        dispatch_sync(self.synchronizationQueue, { [weak self] () -> Void in
             
             guard let strongSelf = self else
             {
@@ -285,36 +289,29 @@ class DescriptorManager
         })
     }
     
-    func cancelDescriptorForIdentifier(identifier: String)
+    func descriptorPassingTest(test: TestBlock) -> Descriptor?
     {
-        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
+        var descriptor: Descriptor?
+        
+        dispatch_sync(self.synchronizationQueue, { [weak self] () -> Void in
+            
+            guard let strongSelf = self else
+            {
+                return
+            }
 
-            guard let strongSelf = self else
+            for currentDescriptor in strongSelf.descriptors
             {
-                return
-            }
-            
-            if let descriptor = strongSelf.descriptorForIdentifier(identifier)
-            {
-                descriptor.cancel(strongSelf.sessionManager)
-            }
-        })
-    }
-    
-    func cancelAllDescriptors()
-    {
-        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
-            
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            for descriptor in strongSelf.descriptors
-            {
-                descriptor.cancel(strongSelf.sessionManager)
+                let didPass = test(descriptor: currentDescriptor)
+                if didPass == true
+                {
+                    descriptor = currentDescriptor
+                    break
+                }
             }
         })
+        
+        return descriptor
     }
     
     // MARK: Private API
@@ -332,8 +329,9 @@ class DescriptorManager
             }
         }
         
-        // If the descriptor is not found then the session.tasks and self.descriptors are out of sync
-        // This is a major problem [AH] 10/29/2015
+        // If the descriptor is not found then the session.tasks and self.descriptors are out of sync (his is a major problem)
+        // Or we're using the background session for a standalone task, independent of a descriptor
+        
         if result == nil
         {
             self.delegate?.descriptorForTaskNotFound(task.taskDescription)
@@ -341,32 +339,8 @@ class DescriptorManager
         
         return result
     }
-
-    private func descriptorForIdentifier(identifier: String) -> Descriptor?
-    {
-        var result: Descriptor?
-        
-        for currentDescriptor in self.descriptors
-        {
-            if currentDescriptor.identifier == identifier
-            {
-                result = currentDescriptor
-                break
-            }
-        }
-        
-        // At present, this method is only called during a descriptor cancellation,
-        // If the descriptor is not found then perhaps it completed before the cancellation, no big deal,
-        // Logging this however just to keep an eye on it [AH] 10/29/2015
-        if result == nil
-        {
-            self.delegate?.descriptorForIdentifierNotFound(identifier)
-        }
-
-        return result
-    }
     
-    func save()
+    private func save()
     {
         self.archiver.saveObject(self.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
         self.delegate?.didSaveDescriptors(self.descriptors.count)

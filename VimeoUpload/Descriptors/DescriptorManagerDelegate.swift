@@ -46,5 +46,4 @@ protocol DescriptorManagerDelegate: class
     func descriptorDidFail(descriptorIdentifier: String?)
     
     func descriptorForTaskNotFound(taskDescription: String?)
-    func descriptorForIdentifierNotFound(descriptorIdentifier: String)
 }

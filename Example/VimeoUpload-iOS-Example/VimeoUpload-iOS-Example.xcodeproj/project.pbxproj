@@ -10,7 +10,6 @@
 		5043A52C1BFF6DD100D70725 /* CameraRollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5043A5261BFF6DD100D70725 /* CameraRollCell.swift */; };
 		5043A52D1BFF6DD100D70725 /* CameraRollCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5043A5271BFF6DD100D70725 /* CameraRollCell.xib */; };
 		5043A52E1BFF6DD100D70725 /* PHAssetHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5043A5291BFF6DD100D70725 /* PHAssetHelper.swift */; };
-		5043A52F1BFF6DD100D70725 /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5043A52A1BFF6DD100D70725 /* UploadManager.swift */; };
 		5043A5301BFF6DD100D70725 /* UploadReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5043A52B1BFF6DD100D70725 /* UploadReporter.swift */; };
 		5043A5351BFF6DE000D70725 /* CameraRollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5043A5311BFF6DE000D70725 /* CameraRollViewController.swift */; };
 		5043A5361BFF6DE000D70725 /* CameraRollViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5043A5321BFF6DE000D70725 /* CameraRollViewController.xib */; };
@@ -57,6 +56,7 @@
 		AFA63DAF1C0120F0003B5821 /* DailyQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63D8B1C0120F0003B5821 /* DailyQuotaOperation.swift */; };
 		AFA63DB01C0120F0003B5821 /* DiskSpaceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63D8C1C0120F0003B5821 /* DiskSpaceOperation.swift */; };
 		AFA63DB11C0120F0003B5821 /* WeeklyQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63D8D1C0120F0003B5821 /* WeeklyQuotaOperation.swift */; };
+		AFF28ECA1C03D59100258476 /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF28EC91C03D59100258476 /* UploadManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,7 +80,6 @@
 		5043A5261BFF6DD100D70725 /* CameraRollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollCell.swift; sourceTree = "<group>"; };
 		5043A5271BFF6DD100D70725 /* CameraRollCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CameraRollCell.xib; sourceTree = "<group>"; };
 		5043A5291BFF6DD100D70725 /* PHAssetHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetHelper.swift; sourceTree = "<group>"; };
-		5043A52A1BFF6DD100D70725 /* UploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
 		5043A52B1BFF6DD100D70725 /* UploadReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadReporter.swift; sourceTree = "<group>"; };
 		5043A5311BFF6DE000D70725 /* CameraRollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollViewController.swift; sourceTree = "<group>"; };
 		5043A5321BFF6DE000D70725 /* CameraRollViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CameraRollViewController.xib; sourceTree = "<group>"; };
@@ -134,6 +133,7 @@
 		AFA63D8B1C0120F0003B5821 /* DailyQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyQuotaOperation.swift; sourceTree = "<group>"; };
 		AFA63D8C1C0120F0003B5821 /* DiskSpaceOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskSpaceOperation.swift; sourceTree = "<group>"; };
 		AFA63D8D1C0120F0003B5821 /* WeeklyQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeeklyQuotaOperation.swift; sourceTree = "<group>"; };
+		AFF28EC91C03D59100258476 /* UploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
 		E58543EFDB473CB816D12DD8 /* libPods-VimeoUpload-iOS-Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VimeoUpload-iOS-Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB2373E62701FFE4416B73DF /* Pods-VimeoUpload-iOS-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-Example.release.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-Example/Pods-VimeoUpload-iOS-Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -198,7 +198,6 @@
 			isa = PBXGroup;
 			children = (
 				5043A5291BFF6DD100D70725 /* PHAssetHelper.swift */,
-				5043A52A1BFF6DD100D70725 /* UploadManager.swift */,
 				5043A52B1BFF6DD100D70725 /* UploadReporter.swift */,
 			);
 			path = Controllers;
@@ -230,6 +229,7 @@
 			isa = PBXGroup;
 			children = (
 				50596D381BE296FA00D1F8EC /* AppDelegate.swift */,
+				AFF28EC81C03D59100258476 /* Controllers */,
 				5043A4AD1BFD22C500D70725 /* ViewControllers */,
 				AFA63D601C0120EF003B5821 /* VimeoUpload */,
 				5043A5241BFF6DD100D70725 /* VimeoUpload+Demos */,
@@ -372,6 +372,14 @@
 				AFA63D8D1C0120F0003B5821 /* WeeklyQuotaOperation.swift */,
 			);
 			path = Sync;
+			sourceTree = "<group>";
+		};
+		AFF28EC81C03D59100258476 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				AFF28EC91C03D59100258476 /* UploadManager.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		E0CB7DD9456C90F9A0FEE1CB /* Frameworks */ = {
@@ -615,7 +623,7 @@
 				AFA63DA01C0120F0003B5821 /* VimeoRequestSerializer+Upload.swift in Sources */,
 				AFA63D911C0120F0003B5821 /* DescriptorManagerDelegate.swift in Sources */,
 				AFA63DAE1C0120F0003B5821 /* PrepareUploadOperation.swift in Sources */,
-				5043A52F1BFF6DD100D70725 /* UploadManager.swift in Sources */,
+				AFF28ECA1C03D59100258476 /* UploadManager.swift in Sources */,
 				AFA63D9D1C0120F0003B5821 /* PHAssetContainer.swift in Sources */,
 				AFA63D8E1C0120F0003B5821 /* ArchiverProtocol.swift in Sources */,
 			);
