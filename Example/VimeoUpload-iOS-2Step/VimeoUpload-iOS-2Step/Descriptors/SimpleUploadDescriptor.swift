@@ -147,8 +147,6 @@ class SimpleUploadDescriptor: Descriptor
         self.state = .Finished
     }
 
-    // MARK: KVO
-    
     // MARK: NSCoding
     
     required init(coder aDecoder: NSCoder)

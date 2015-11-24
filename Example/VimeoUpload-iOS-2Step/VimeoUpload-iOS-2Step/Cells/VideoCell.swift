@@ -49,17 +49,26 @@ class VideoCell: UITableViewCell
     // MARK:
 
     private static let ProgressKeyPath = "fractionCompleted"
+    private static let StateKeyPath = "stateObservable"
     private var progressKVOContext = UInt8()
-    private var progress: NSProgress?
+    private var stateKVOContext = UInt8()
+    private var descriptor: SimpleUploadDescriptor?
     {
         willSet
         {
-            self.progress?.removeObserver(self, forKeyPath: VideoCell.ProgressKeyPath, context: &self.progressKVOContext)
+            self.descriptor?.removeObserver(self, forKeyPath: VideoCell.StateKeyPath, context: &self.stateKVOContext)
+            self.descriptor?.progress?.removeObserver(self, forKeyPath: VideoCell.ProgressKeyPath, context: &self.progressKVOContext)
         }
         
         didSet
         {
-            self.progress?.addObserver(self, forKeyPath: VideoCell.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
+            if let state = descriptor?.state
+            {
+                self.updateState(state)
+            }
+            
+            self.descriptor?.addObserver(self, forKeyPath: VideoCell.StateKeyPath, options: NSKeyValueObservingOptions.New, context: &self.stateKVOContext)
+            self.descriptor?.progress?.addObserver(self, forKeyPath: VideoCell.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
         }
     }
     
@@ -69,13 +78,11 @@ class VideoCell: UITableViewCell
     {
         didSet
         {
-            self.progress = nil
-
             if let video = self.video
             {
                 self.setupImageView(video)
                 self.setupLabel(video)
-                self.progress = UploadManager.sharedInstance.uploadProgressForVideoUri(video.uri!)
+                self.descriptor = UploadManager.sharedInstance.uploadDescriptorForVideo(videoUri: video.uri!)
             }
         }
     }
@@ -84,6 +91,7 @@ class VideoCell: UITableViewCell
 
     deinit
     {
+        self.descriptor = nil
         self.video = nil
     }
     
@@ -92,19 +100,20 @@ class VideoCell: UITableViewCell
         super.awakeFromNib()
         
         self.updateProgress(1)
-        self.updateButton(0)
+        self.updateState(State.Finished)
     }
 
     override func prepareForReuse()
     {
         super.prepareForReuse()
     
+        self.descriptor = nil
         self.video = nil
         self.thumbnailImageView?.image = nil
         self.statusLabel.text = ""
 
         self.updateProgress(1)
-        self.updateButton(0)
+        self.updateState(State.Finished)
     }
     
     // MARK: Actions
@@ -113,10 +122,10 @@ class VideoCell: UITableViewCell
     {
         if let videoUri = self.video?.uri
         {
-            self.progress = nil
+            self.descriptor = nil
             self.updateProgress(0)
             
-            UploadManager.sharedInstance.cancelUploadWithVideoUri(videoUri)
+            UploadManager.sharedInstance.deleteUpload(videoUri: videoUri)
             
             self.delegate?.cellDidDeleteVideoWithUri(cell: self, videoUri: videoUri)
         }
@@ -140,25 +149,24 @@ class VideoCell: UITableViewCell
     
     private func updateProgress(progress: Double)
     {
-        let hidden = (progress <= 0 || progress >= 1)
-        self.progressView.hidden = hidden
-
         let width = self.contentView.frame.size.width
         let constant = CGFloat(1 - progress) * width
         
         self.progressConstraint.constant = constant
     }
 
-    private func updateButton(progress: Double)
+    private func updateState(state: State)
     {
-        let cancellable = (progress > 0 && progress < 1)
-        if cancellable == true
+        print("state: \(state)")
+        switch state
         {
+        case State.Executing, State.Ready:
             self.button.setTitle("Cancel", forState: .Normal)
-        }
-        else
-        {
+            self.progressView.hidden = false
+
+        case State.Finished:
             self.button.setTitle("Delete", forState: .Normal)
+            self.progressView.hidden = true
         }
     }
 
@@ -171,12 +179,22 @@ class VideoCell: UITableViewCell
             switch (keyPath, context)
             {
             case(VideoCell.ProgressKeyPath, &self.progressKVOContext):
+                
                 let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
+                
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                     self?.updateProgress(progress)
-                    self?.updateButton(progress)
                 })
+
+            case(VideoCell.StateKeyPath, &self.stateKVOContext):
                 
+                let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? State.Ready.rawValue;
+                let state = State(rawValue: stateRaw)!
+                
+                dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                    self?.updateState(state)
+                })
+
             default:
                 super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
             }
