@@ -81,7 +81,7 @@ class DeleteVideoOperation: ConcurrentOperation
                 }
                 
                 strongSelf.state = .Finished
-                })
+            })
             
             self.task?.resume()
         }

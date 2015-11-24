@@ -79,8 +79,15 @@ class DeletionManager
                     return
                 }
                 
-                if let _ = operation.error
+                if let error = operation.error
                 {
+                    if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? NSHTTPURLResponse where response.statusCode == 404
+                    {
+                        strongSelf.deletions.removeValueForKey(uri) // The video has already been deleted
+
+                        return
+                    }
+                    
                     if let retryCount = strongSelf.deletions[uri] where retryCount > 0
                     {
                         let newRetryCount = retryCount - 1
