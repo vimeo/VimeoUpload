@@ -28,6 +28,7 @@ import UIKit
 
 class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
+    static let UploadInitiatedNotification = "VideoSettingsViewControllerUploadInitiatedNotification"
     static let NibName = "VideoSettingsViewController"
     private static let PreUploadViewPrivacy = "pre_upload"
     
@@ -140,8 +141,10 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     }
                     else
                     {
-                        if let viewPrivacy = strongSelf.uploadTicket?.video?.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
+                        if let video = strongSelf.uploadTicket?.video, let viewPrivacy = video.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
                         {
+                            NSNotificationCenter.defaultCenter().postNotificationName(VideoSettingsViewController.UploadInitiatedNotification, object: video)
+
                             strongSelf.activityIndicatorView.stopAnimating()
                             strongSelf.dismissViewControllerAnimated(true, completion: nil)
                         }
@@ -202,8 +205,10 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
         else
         {
-            if let viewPrivacy = self.uploadTicket?.video?.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
+            if let video = self.uploadTicket?.video, let viewPrivacy = video.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
             {
+                NSNotificationCenter.defaultCenter().postNotificationName(VideoSettingsViewController.UploadInitiatedNotification, object: video)
+                
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
             else
@@ -284,6 +289,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     }
                     else
                     {
+                        NSNotificationCenter.defaultCenter().postNotificationName(VideoSettingsViewController.UploadInitiatedNotification, object: video)
+                        
                         self?.dismissViewControllerAnimated(true, completion: nil)
                     }
                 })            
