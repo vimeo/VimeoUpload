@@ -54,6 +54,14 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK:
 
+    private var hasTappedUpload: Bool
+    {
+        get
+        {
+            return self.videoSettings != nil
+        }
+    }
+    
     // MARK: Lifecycle
     
     override func viewDidLoad()
@@ -133,7 +141,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     strongSelf.startUpload()
                 }
 
-                if strongSelf.hasTappedUpload() == true
+                if strongSelf.hasTappedUpload == true
                 {
                     if let error = operation.error
                     {
@@ -254,11 +262,6 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     }
 
     // MARK: Private API
-    
-    private func hasTappedUpload() -> Bool
-    {
-        return self.videoSettings != nil
-    }
     
     private func applyVideoSettings()
     {

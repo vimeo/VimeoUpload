@@ -48,7 +48,7 @@ enum UploadErrorDomain: String
 }
 
 extension NSError
-{
+{    
     func errorByAddingDomain(domain: String) -> NSError
     {
         return self.errorByAddingDomain(domain, userInfo: nil)

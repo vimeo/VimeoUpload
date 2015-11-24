@@ -48,7 +48,6 @@ class DeleteVideoOperation: ConcurrentOperation
     deinit
     {
         self.task?.cancel()
-        self.task = nil
     }
     
     // MARK: Overrides
