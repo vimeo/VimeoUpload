@@ -83,6 +83,9 @@ class VideoCell: UITableViewCell
     override func awakeFromNib()
     {
         super.awakeFromNib()
+        
+        self.progressView.hidden = true
+        self.progressConstraint.constant = 0
     }
 
     override func prepareForReuse()
@@ -112,6 +115,17 @@ class VideoCell: UITableViewCell
         self.statusLabel.text = video.status
     }
     
+    private func updateProgress(progress: Double)
+    {
+        let hidden = progress == 0
+        self.progressView.hidden = hidden
+
+        let width = self.contentView.frame.size.width
+        let constant = CGFloat(1 - progress) * width
+        
+        self.progressConstraint.constant = constant
+    }
+    
     // MARK: KVO
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
@@ -122,7 +136,9 @@ class VideoCell: UITableViewCell
             {
             case(VideoCell.ProgressKeyPath, &self.progressKVOContext):
                 let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
-                print("Cell progress: \(progress)")
+                dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                    self?.updateProgress(progress)
+                })
                 
             default:
                 super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)

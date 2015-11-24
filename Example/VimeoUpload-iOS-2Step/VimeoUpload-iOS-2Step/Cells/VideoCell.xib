@@ -28,9 +28,9 @@
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8PW-nQ-Kdm" userLabel="Progress View">
-                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="43"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8PW-nQ-Kdm" userLabel="Progress View">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                        <color key="backgroundColor" red="0.0" green="0.71741144913291333" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                 </subviews>
                 <constraints>
@@ -43,7 +43,7 @@
                     <constraint firstItem="k8H-JT-9qF" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="w4h-jY-Iin"/>
                     <constraint firstAttribute="trailingMargin" secondItem="J46-9g-WWz" secondAttribute="trailing" constant="10" id="yF4-ke-jeZ"/>
                     <constraint firstItem="k8H-JT-9qF" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="yQr-M3-o5F"/>
-                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="8PW-nQ-Kdm" secondAttribute="trailing" priority="750" id="yUq-uW-f1v"/>
+                    <constraint firstAttribute="trailing" secondItem="8PW-nQ-Kdm" secondAttribute="trailing" priority="750" id="yUq-uW-f1v"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
