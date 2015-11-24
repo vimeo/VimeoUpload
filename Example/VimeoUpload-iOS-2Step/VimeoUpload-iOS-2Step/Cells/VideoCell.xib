@@ -16,6 +16,22 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8HZ-Hd-GCj">
+                        <rect key="frame" x="260" y="10" width="50" height="23"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="E9i-yE-4HV"/>
+                            <constraint firstAttribute="width" constant="50" id="iHy-5H-Uy7"/>
+                        </constraints>
+                        <state key="normal" title="Button"/>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="E9i-yE-4HV"/>
+                            </mask>
+                        </variation>
+                        <connections>
+                            <action selector="didTapButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="QEl-Op-huh"/>
+                        </connections>
+                    </button>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="k8H-JT-9qF">
                         <rect key="frame" x="8" y="8" width="27" height="27"/>
                         <constraints>
@@ -39,6 +55,9 @@
                     <constraint firstItem="J46-9g-WWz" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Jk0-gY-wYC"/>
                     <constraint firstItem="8PW-nQ-Kdm" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="Tlu-0D-YGg"/>
                     <constraint firstAttribute="bottomMargin" secondItem="k8H-JT-9qF" secondAttribute="bottom" id="ZDh-mL-apB"/>
+                    <constraint firstItem="8HZ-Hd-GCj" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="bMt-eb-DJq"/>
+                    <constraint firstAttribute="bottom" secondItem="8HZ-Hd-GCj" secondAttribute="bottom" constant="10" id="gTk-2L-qnR"/>
+                    <constraint firstAttribute="trailing" secondItem="8HZ-Hd-GCj" secondAttribute="trailing" constant="10" id="o93-MB-S5Q"/>
                     <constraint firstItem="8PW-nQ-Kdm" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="qSC-Be-HG3"/>
                     <constraint firstItem="k8H-JT-9qF" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="w4h-jY-Iin"/>
                     <constraint firstAttribute="trailingMargin" secondItem="J46-9g-WWz" secondAttribute="trailing" constant="10" id="yF4-ke-jeZ"/>
@@ -47,6 +66,7 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="button" destination="8HZ-Hd-GCj" id="hdO-pv-Kdg"/>
                 <outlet property="progressConstraint" destination="yUq-uW-f1v" id="h5v-vy-7Yw"/>
                 <outlet property="progressView" destination="8PW-nQ-Kdm" id="zLr-XP-Ufy"/>
                 <outlet property="statusLabel" destination="J46-9g-WWz" id="8lU-R6-gCu"/>
