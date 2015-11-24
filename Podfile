@@ -37,6 +37,20 @@ target :'VimeoUpload-iOS-Example' do
     xcodeproj 'Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj'
 end
 
+target :'VimeoUpload-iOS-ExampleTests' do
+    platform :ios, '8.0'
+    use_frameworks!
+    shared_pods
+    xcodeproj 'Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj'
+end
+
+target :'VimeoUpload-iOS-ExampleUITests' do
+    platform :ios, '8.0'
+    use_frameworks!
+    shared_pods
+    xcodeproj 'Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj'
+end
+
 target :'VimeoUpload-OSX-Example' do
     platform :osx, '10.9'
     shared_pods
