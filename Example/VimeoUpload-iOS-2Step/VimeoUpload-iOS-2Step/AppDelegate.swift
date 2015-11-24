@@ -30,7 +30,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate
 {
     var window: UIWindow?
-
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
     {
         AFNetworkReachabilityManager.sharedManager().startMonitoring()
@@ -46,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
         
-        UploadManager.sharedInstance // Ensure init is called on launch
+        UploadManager.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
         
         UploadManager.sharedInstance.reporter.sendMessage("Launch")
         
@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     {
         if UploadManager.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier, completionHandler: completionHandler) == false
         {
-            // Handle events elsewhere
+            assertionFailure("Unhandled background events")
         }
     }
 }

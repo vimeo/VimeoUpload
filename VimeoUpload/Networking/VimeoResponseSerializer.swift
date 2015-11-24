@@ -1,5 +1,5 @@
 //
-//  VimeoJSONResponseSerializer.swift
+//  VimeoResponseSerializer.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/16/15.
@@ -168,7 +168,8 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
             "application/vnd.vimeo.*+json",
             "application/vnd.vimeo.user+json",
             "application/vnd.vimeo.video+json",
-            "application/vnd.vimeo.error+json"]
+            "application/vnd.vimeo.error+json",
+            "application/vnd.vimeo.uploadticket+json"]
         )
     }
 }

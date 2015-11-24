@@ -1,5 +1,5 @@
 //
-//  DebugMessengerProtocol.swift
+//  DescriptorManagerDelegate.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/26/15.

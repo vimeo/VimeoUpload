@@ -1,5 +1,5 @@
 //
-//  VimeoJSONRequestSerializer.swift
+//  VimeoRequestSerializer.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/16/15.
@@ -25,7 +25,6 @@
 //
 
 import Foundation
-//import AFNetworking
 
 class VimeoRequestSerializer: AFJSONRequestSerializer
 {

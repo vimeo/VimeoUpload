@@ -26,27 +26,35 @@
 
 import UIKit
 
-typealias VideoSettingsViewControllerInput = (me: VIMUser, phAssetContainer: PHAssetContainer)
-
 class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
     static let NibName = "VideoSettingsViewController"
+    private static let PreUploadViewPrivacy = "pre_upload"
+    
+    // MARK: 
     
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var descriptionTextView: UITextView!
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
 
-    var input: VideoSettingsViewControllerInput?
-    private var operation: VideoSettingsOperation?
-    private var descriptor: UploadDescriptor?
+    // MARK:
+    
+    var input: CameraRollViewControllerResult?
+    
+    // MARK:
+    
+    private var operation: ConcurrentOperation?
+    private var descriptor: Descriptor?
+
+    // MARK:
+    
+    private var url: NSURL?
+    private var uploadTicket: VIMUploadTicket?
     private var videoSettings: VideoSettings?
-    
+
+    // MARK:
+
     // MARK: Lifecycle
-    
-    deinit
-    {
-        self.operation?.cancel()
-    }
     
     override func viewDidLoad()
     {
@@ -65,26 +73,41 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func setupNavigationBar()
     {
         self.title = "Video Settings"
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Post", style: UIBarButtonItemStyle.Done, target: self, action: "didTapPost:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.Done, target: self, action: "didTapUpload:")
     }
-    
-    private func setupOperation(me: VIMUser, phAssetContainer: PHAssetContainer)
+
+    private func startOperation()
     {
-        let operation = VideoSettingsOperation(me: me, phAssetContainer: phAssetContainer)
-        self.setOperationBlocks(operation)
-        self.operation = operation
+        self.operation = self.buildOperation()
         self.operation?.start()
     }
     
-    private func setOperationBlocks(operation: VideoSettingsOperation)
+    private func startUpload()
     {
+        self.descriptor = self.buildDescriptor()
+        UploadManager.sharedInstance.descriptorManager.addDescriptor(self.descriptor!)
+    }
+    
+    private func buildOperation() -> ConcurrentOperation
+    {
+        let me = self.input!.me
+        let phAssetContainer = self.input!.phAssetContainer
+        let sessionManager = UploadManager.sharedInstance.sessionManager
+        let videoSettings = self.videoSettings
+        
+        let operation = SimplePrepareUploadOperation(me: me, phAssetContainer: phAssetContainer, sessionManager: sessionManager, videoSettings: videoSettings)
+        
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
         }
+        
         operation.exportProgressBlock = { (progress: Double) -> Void in
             print("Export progress (settings): \(progress)")
         }
+        
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -99,67 +122,92 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     return
                 }
                 
-                if let error = operation.error
+                if operation.error == nil
                 {
-                    if let _ = strongSelf.videoSettings
+                    strongSelf.url = operation.url!
+                    strongSelf.uploadTicket = operation.uploadTicket!
+                    strongSelf.startUpload()
+                }
+
+                if strongSelf.hasTappedUpload() == true
+                {
+                    if let error = operation.error
                     {
                         strongSelf.activityIndicatorView.stopAnimating()
                         strongSelf.presentOperationErrorAlert(error)
                     }
-                }
-                else
-                {
-                    strongSelf.startUpload(operation.result!)
-                    
-                    if let _ = strongSelf.videoSettings
+                    else
                     {
-                        strongSelf.activityIndicatorView.stopAnimating()
-                        strongSelf.dismissViewControllerAnimated(true, completion: nil)
+                        if let viewPrivacy = strongSelf.uploadTicket?.video?.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
+                        {
+                            strongSelf.activityIndicatorView.stopAnimating()
+                            strongSelf.dismissViewControllerAnimated(true, completion: nil)
+                        }
+                        else
+                        {
+                            strongSelf.applyVideoSettings()
+                        }
                     }
                 }
             })
         }
+        
+        return operation
     }
     
-    // MARK: Actions
+    private func buildDescriptor() -> Descriptor
+    {
+        let url = self.url!
+        let uploadTicket = self.uploadTicket!
+        
+        let descriptor = SimpleUploadDescriptor(url: url, uploadTicket: uploadTicket)
+        descriptor.identifier = "\(url.absoluteString.hash)"
+        
+        return descriptor
+    }
 
-    // 4-step upload
-    func didTapPost(sender: UIBarButtonItem)
+    // MARK: Actions
+    
+    func didTapCancel(sender: UIBarButtonItem)
+    {
+        self.operation?.cancel()
+        self.activityIndicatorView.stopAnimating()
+        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+    
+        if let videoUri = self.uploadTicket?.video?.uri
+        {
+            // TODO: Delete video from vimeo servers
+        }
+    }
+
+    func didTapUpload(sender: UIBarButtonItem)
     {
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil)
-        
-        if self.operation?.state == .Executing
+     
+        let operation = self.operation as? SimplePrepareUploadOperation
+
+        if operation?.state == .Executing
         {
+            operation?.videoSettings = self.videoSettings
+
             self.activityIndicatorView.startAnimating() // Listen for operation completion, dismiss
         }
-        else if let error = self.operation?.error
+        else if let error = operation?.error
         {
             self.presentOperationErrorAlert(error)
         }
-        else if let descriptor = self.descriptor
+        else
         {
-            if descriptor.state == .Executing
+            if let viewPrivacy = self.uploadTicket?.video?.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
             {
-                // TODO: 2-step upload
-                // if create is in progress, show activity indicator and listen for create completion
-                // if create is complete, add video settings and dismiss the view controller
-
-                // 4-step upload
-                descriptor.videoSettings = self.videoSettings // TODO: We need to somehow save the descriptor list after setting this
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
             else
             {
-                if let error = descriptor.error
-                {
-                    self.presentDescriptorErrorAlert(error)
-                }
-                else
-                {
-                    self.applyVideoSettings()
-                }
+                self.activityIndicatorView.startAnimating()
+                self.applyVideoSettings()
             }
         }
     }
@@ -184,29 +232,13 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }))
         
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.activityIndicatorView.startAnimating()
             self?.startOperation()
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
     }
-
-    private func presentDescriptorErrorAlert(error: NSError)
-    {
-        let alert = UIAlertController(title: "Descriptor Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.popViewControllerAnimated(true)
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            // We start from the beginning (with the operation instead of the descriptor), 
-            // Because the exported file was deleted when the upload descriptor failed,
-            // We delete it because leaving it up to the API consumer to delete seems a little risky
-            self?.startOperation()
-        }))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
-    }
-
+    
     private func presentVideoSettingsErrorAlert(error: NSError)
     {
         let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
@@ -215,6 +247,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }))
         
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.activityIndicatorView.startAnimating()
             self?.applyVideoSettings()
         }))
         
@@ -223,21 +256,26 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK: Private API
     
+    private func hasTappedUpload() -> Bool
+    {
+        return self.videoSettings != nil
+    }
+    
     private func applyVideoSettings()
     {
-        self.activityIndicatorView.startAnimating()
-
-        let videoUri = self.descriptor!.videoUri!
+        let videoUri = self.uploadTicket!.video!.uri!
         let videoSettings = self.videoSettings!
         
         do
         {
+            // TODO: should this be cancelable?
+            
             let task = try UploadManager.sharedInstance.sessionManager.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                     
                     self?.activityIndicatorView.stopAnimating()
-
+                    
                     if let error = error
                     {
                         self?.presentVideoSettingsErrorAlert(error)
@@ -246,8 +284,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     {
                         self?.dismissViewControllerAnimated(true, completion: nil)
                     }
-                })
-                
+                })            
             })
             task.resume()
         }
@@ -257,20 +294,4 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
             self.presentVideoSettingsErrorAlert(error)
         }
     }
-    
-    private func startOperation()
-    {
-        let me = self.input!.me
-        let phAssetContainer = self.input!.phAssetContainer
-        self.setupOperation(me, phAssetContainer: phAssetContainer)
-    }
-    
-    private func startUpload(url: NSURL)
-    {
-        self.descriptor = UploadDescriptor(url: url)
-        self.descriptor?.identifier = "\(url.absoluteString.hash)"
-        self.descriptor?.videoSettings = self.videoSettings
-
-        UploadManager.sharedInstance.descriptorManager.addDescriptor(self.descriptor!)
-    }    
 }

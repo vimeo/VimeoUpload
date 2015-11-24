@@ -28,6 +28,8 @@ import UIKit
 import Photos
 import AVFoundation
 
+typealias CameraRollViewControllerResult = (me: VIMUser, phAssetContainer: PHAssetContainer)
+
 class CameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
     static let NibName = "CameraRollViewController"
@@ -58,8 +60,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.setupNavigationBar()
         self.setupCollectionView()
         
-        let sessionManager = UploadManager.sharedInstance.sessionManager
-        self.setupOperation(sessionManager, me: nil)
+        self.setupOperation(nil)
     }
     
     override func viewDidAppear(animated: Bool)
@@ -74,6 +75,13 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     // MARK: Setup
 
+    private func setupNavigationBar()
+    {
+        self.title = "Camera Roll"
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
+    }
+    
     private func loadAssets() -> [PHAssetContainer]
     {
         let options = PHFetchOptions()
@@ -93,14 +101,6 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         return assets
     }
 
-    private func setupNavigationBar()
-    {
-        self.title = "Camera Roll"
-        
-        let cancelItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
-        self.navigationItem.leftBarButtonItem = cancelItem
-    }
-
     private func setupCollectionView()
     {
         let nib = UINib(nibName: CameraRollCell.NibName, bundle: nil)
@@ -111,8 +111,9 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         layout?.minimumLineSpacing = CameraRollViewController.CollectionViewSpacing
     }
     
-    private func setupOperation(sessionManager: VimeoSessionManager, me: VIMUser?)
+    private func setupOperation(me: VIMUser?)
     {
+        let sessionManager = UploadManager.sharedInstance.sessionManager
         let operation = CameraRollOperation(sessionManager: sessionManager, me: me)
         self.setOperationBlocks(operation)
         self.operation = operation
@@ -139,8 +140,6 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
 
                 if let error = operation.error
                 {
-                    print("Camera roll operation error: \(error)")
-
                     if let indexPath = strongSelf.selectedIndexPath
                     {
                         strongSelf.presentOperationErrorAlert(indexPath, error: error)
@@ -149,12 +148,10 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 }
                 else
                 {
-                    print("Camera roll operation complete!")
-
                     let indexPath = strongSelf.selectedIndexPath!
                     let phAssetContainer = strongSelf.assets[indexPath.item]
 
-                    strongSelf.presentVideoSettings(phAssetContainer)
+                    strongSelf.finish(phAssetContainer)
                 }
             })
         }
@@ -367,7 +364,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             
             strongSelf.selectedIndexPath = nil
             strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
-            strongSelf.setupOperation(strongSelf.operation!.sessionManager, me: strongSelf.operation?.me)
+            strongSelf.setupOperation(strongSelf.operation?.me)
         }))
 
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
@@ -377,24 +374,22 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 return
             }
 
-            strongSelf.setupOperation(strongSelf.operation!.sessionManager, me: strongSelf.operation?.me)
+            strongSelf.setupOperation(strongSelf.operation?.me)
             strongSelf.didSelectIndexPath(indexPath)
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    private func presentVideoSettings(phAssetContainer: PHAssetContainer)
+    private func finish(phAssetContainer: PHAssetContainer)
     {
-        let sessionManager = self.operation!.sessionManager
         let me = self.operation!.me!
-        let input = VideoSettingsViewControllerInput(me: me, phAssetContainer: phAssetContainer)
 
-        self.setupOperation(sessionManager, me: me)
-
+        self.setupOperation(me) // Reset the operation
+        
         let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.input = input
-
+        viewController.input = CameraRollViewControllerResult(me: me, phAssetContainer: phAssetContainer)
+        
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

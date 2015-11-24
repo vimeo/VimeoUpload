@@ -30,21 +30,26 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate
 {
     var window: UIWindow?
+    var navigationController: UINavigationController?
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
     {
-        UploadManager.sharedInstance // Ensure that the sharedInstance is created at launch
+        AFNetworkReachabilityManager.sharedManager().startMonitoring()
         
         let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
         application.registerUserNotificationSettings(settings)
         
-        let viewController = CameraRollViewController(nibName:"CameraRollViewController", bundle:NSBundle.mainBundle())
-        let navigationController = UINavigationController(rootViewController: viewController)
+        let viewController = CameraRollViewController(nibName: CameraRollViewController.NibName, bundle:NSBundle.mainBundle())            
+        self.navigationController = UINavigationController(rootViewController: viewController)
         
         let frame = UIScreen.mainScreen().bounds
         self.window = UIWindow(frame: frame)
         self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
+        
+        UploadManager.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
+        
+        UploadManager.sharedInstance.reporter.sendMessage("Launch")
         
         return true
     }
@@ -53,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     {
         if UploadManager.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier, completionHandler: completionHandler) == false
         {
-            // Handle events elsewhere
+            assertionFailure("Unhandled background events")
         }
     }
 }

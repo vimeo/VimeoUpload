@@ -26,6 +26,15 @@
 
 import Foundation
 
+@objc protocol DescriptorProtocol
+{
+    func start(sessionManager: AFURLSessionManager) throws
+    func cancel(sessionManager: AFURLSessionManager)
+    func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    optional func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    func taskDidComplete(sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+}
+
 enum State: String
 {
     case Ready = "Ready"
@@ -33,7 +42,7 @@ enum State: String
     case Finished = "Finished"
 }
 
-class Descriptor: NSObject
+class Descriptor: NSObject, DescriptorProtocol
 {
     static let ErrorDomain = "DescriptorErrorDomain"
     
@@ -81,7 +90,7 @@ class Descriptor: NSObject
     
     func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
     {
-        fatalError("taskDidFinishDownloading(sessionManager:task:url:) has not been implemented")
+        return nil
     }
 
     func taskDidComplete(sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)

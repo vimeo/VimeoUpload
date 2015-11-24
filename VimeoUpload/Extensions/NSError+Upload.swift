@@ -1,5 +1,5 @@
 //
-//  NSErrorExtensions.swift
+//  NSError+Upload.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/12/15.
@@ -28,7 +28,6 @@ import Foundation
 
 enum UploadErrorDomain: String
 {
-    case Me = "MeErrorDomain"
     case PHAssetDownload = "PHAssetDownloadErrorDomain"
     case PHAssetExportSession = "PHAssetExportSessionErrorDomain"
     case DailyQuota = "DailyQuotaErrorDomain"
@@ -36,14 +35,16 @@ enum UploadErrorDomain: String
     case DiskSpace = "DiskSpaceErrorDomain"
     case Export = "ExportVideoErrorDomain"
 
-    case CameraRollOperation = "CameraRollOperationErrorDomain"
-    case VideoSettingsOperation = "VideoSettingsOperationErrorDomain"
-
+    case Me = "MeErrorDomain"
+    case MyVideos = "MyVideosErrorDomain"
     case Create = "CreateVideoErrorDomain"
-    case CombinedCreate = "CombinedCreateVideoErrorDomain"
     case Upload = "VideoUploadErrorDomain"
     case Activate = "ActivateVideoErrorDomain"
     case VideoSettings = "VideoSettingsErrorDomain"
+    case Delete = "DeleteVideoErrorDomain"
+
+    case CameraRollOperation = "CameraRollOperationErrorDomain"
+    case PrepareUploadOperation = "PrepareUploadOperationErrorDomain"
 }
 
 extension NSError
@@ -64,7 +65,7 @@ extension NSError
         
         if let domain = domain
         {
-            augmentedInfo["VimeoDomain"] = domain
+            augmentedInfo["vimeo domain"] = domain
         }
         
         if let userInfo = userInfo
