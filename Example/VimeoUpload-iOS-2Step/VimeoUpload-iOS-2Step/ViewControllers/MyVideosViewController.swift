@@ -81,9 +81,15 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     {
         let cell = tableView.dequeueReusableCellWithIdentifier(VideoCell.CellIdentifier) as! VideoCell
 
-        cell.textLabel?.text = "test"
+        let video = self.items[indexPath.row]
+        cell.video = video
         
         return cell
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+    {
+        return 100
     }
     
     // MARK: UITableViewDelegate
@@ -150,6 +156,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.refreshControl?.beginRefreshing()
             self?.refresh()
         }))
         

@@ -33,11 +33,13 @@ class UploadManager
     let descriptorManager: DescriptorManager
     let sessionManager: VimeoSessionManager
     let reporter: UploadReporter = UploadReporter() // TODO: mark as private
+    let deletionManager: DeletionManager
     
     init()
     {
         self.sessionManager = VimeoSessionManager(authToken: "caf4648129ec56e580175c4b45cce7fc")
         self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: "uploader", delegate: self.reporter)
+        self.deletionManager = DeletionManager(sessionManager: self.sessionManager, retryCount: 2)
     }
     
     // MARK: Public API

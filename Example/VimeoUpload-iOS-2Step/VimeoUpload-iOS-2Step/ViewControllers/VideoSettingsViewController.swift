@@ -87,6 +87,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     private func startUpload()
     {
+        // TODO: handle retry
+        
         self.descriptor = self.buildDescriptor()
         UploadManager.sharedInstance.descriptorManager.addDescriptor(self.descriptor!)
     }
@@ -172,11 +174,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         self.operation?.cancel()
         self.activityIndicatorView.stopAnimating()
-        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        self.navigationController?.popViewControllerAnimated(true)
     
         if let videoUri = self.uploadTicket?.video?.uri
         {
-            // TODO: Delete video from vimeo servers
+            UploadManager.sharedInstance.deletionManager.deleteVideoWithUri(videoUri)
         }
     }
 
