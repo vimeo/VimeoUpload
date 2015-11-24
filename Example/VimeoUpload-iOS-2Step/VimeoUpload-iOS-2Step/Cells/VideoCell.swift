@@ -73,6 +73,7 @@ class VideoCell: UITableViewCell
     }
     
     // MARK: 
+    
     weak var delegate: VideoCellDelegate?
     var video: VIMVideo?
     {
@@ -88,6 +89,7 @@ class VideoCell: UITableViewCell
     }
     
     // MARK:
+    // MARK: Initialization
 
     deinit
     {
@@ -157,7 +159,6 @@ class VideoCell: UITableViewCell
 
     private func updateState(state: State)
     {
-        print("state: \(state)")
         switch state
         {
         case State.Executing, State.Ready:
