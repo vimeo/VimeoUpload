@@ -28,11 +28,11 @@ import Foundation
 
 @objc protocol DescriptorProtocol
 {
-    func start(sessionManager: AFURLSessionManager) throws
-    func cancel(sessionManager: AFURLSessionManager)
-    func didLoadFromCache(sessionManager: AFURLSessionManager) throws
-    optional func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
-    func taskDidComplete(sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    func start(sessionManager sessionManager: AFURLSessionManager) throws
+    func cancel(sessionManager sessionManager: AFURLSessionManager)
+    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    optional func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
 }
 
 enum State: String
@@ -64,7 +64,6 @@ class Descriptor: NSObject, DescriptorProtocol
     var currentTaskIdentifier: Int?
 
     // MARK:
-    
     // MARK: Initialization
 
     override init()
@@ -74,7 +73,7 @@ class Descriptor: NSObject, DescriptorProtocol
     
     // MARK: Subclass Overrides
 
-    func start(sessionManager: AFURLSessionManager) throws
+    func start(sessionManager sessionManager: AFURLSessionManager) throws
     {
         if self.state != .Ready
         {
@@ -87,7 +86,7 @@ class Descriptor: NSObject, DescriptorProtocol
         }        
     }
 
-    func cancel(sessionManager: AFURLSessionManager)
+    func cancel(sessionManager sessionManager: AFURLSessionManager)
     {
         for task in sessionManager.tasks
         {
@@ -99,17 +98,17 @@ class Descriptor: NSObject, DescriptorProtocol
         }
     }
 
-    func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
         fatalError("didLoadFromCache(sessionManager:) has not been implemented")
     }
     
-    func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
     {
         return nil
     }
 
-    func taskDidComplete(sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
         fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
     }

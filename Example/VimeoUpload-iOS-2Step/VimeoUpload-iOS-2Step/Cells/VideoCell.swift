@@ -88,8 +88,8 @@ class VideoCell: UITableViewCell
         {
             if let video = self.video
             {
-                self.setupImageView(video)
-                self.setupStatusLabel(video)
+                self.setupImageView(video: video)
+                self.setupStatusLabel(video: video)
                 self.descriptor = UploadManager.sharedInstance.uploadDescriptorForVideo(videoUri: video.uri!)
             }
         }
@@ -107,8 +107,7 @@ class VideoCell: UITableViewCell
     {
         super.awakeFromNib()
         
-        self.updateProgress(0)
-        self.updateState(State.Finished)
+        self.updateState(.Finished)
     }
 
     override func prepareForReuse()
@@ -121,8 +120,7 @@ class VideoCell: UITableViewCell
         self.statusLabel.text = ""
         self.errorLabel.text = ""
 
-        self.updateProgress(0)
-        self.updateState(State.Finished)
+        self.updateState(.Finished)
     }
     
     // MARK: Actions
@@ -133,8 +131,6 @@ class VideoCell: UITableViewCell
         {
             self.descriptor = nil
             self.updateProgress(0)
-            
-            UploadManager.sharedInstance.deleteUpload(videoUri: videoUri)
             
             self.delegate?.cellDidDeleteVideoWithUri(cell: self, videoUri: videoUri)
         }
@@ -151,7 +147,7 @@ class VideoCell: UITableViewCell
 
     // MARK: Video Setup
     
-    private func setupImageView(video: VIMVideo)
+    private func setupImageView(video video: VIMVideo)
     {
         let width = Float(self.thumbnailImageView.frame.size.width * UIScreen.mainScreen().scale)
         if let picture = video.pictureCollection?.pictureForWidth(width), let link = picture.link, let url = NSURL(string: link)
@@ -160,7 +156,7 @@ class VideoCell: UITableViewCell
         }
     }
     
-    private func setupStatusLabel(video: VIMVideo)
+    private func setupStatusLabel(video video: VIMVideo)
     {
         self.statusLabel.text = video.status
     }
@@ -171,7 +167,6 @@ class VideoCell: UITableViewCell
     {
         let width = self.contentView.frame.size.width
         let constant = CGFloat(1 - progress) * width
-        
         self.progressConstraint.constant = constant
     }
 
@@ -179,15 +174,14 @@ class VideoCell: UITableViewCell
     {
         switch state
         {
-        case State.Ready, State.Executing:
-            self.progressView.hidden = false
+        case .Ready, .Executing:
             self.deleteButton.setTitle("Cancel", forState: .Normal)
             
             self.errorLabel.text = ""
             self.retryButton.hidden = true
 
-        case State.Finished:
-            self.updateProgress(0)
+        case .Finished:
+            self.updateProgress(0) // Reset the progress bar to 0
             self.progressView.hidden = true
             self.deleteButton.setTitle("Delete", forState: .Normal)
 
@@ -217,6 +211,10 @@ class VideoCell: UITableViewCell
                 let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
                 
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                    // Set the progress view to visible here so that the view has already been laid out
+                    // And therefore the initial state is calculated based on the laid out width of the cell
+                    // Doing this in awakeFromNib is too early, the width is incorrect [AH] 11/25/2015
+                    self?.progressView.hidden = false
                     self?.updateProgress(progress)
                 })
 

@@ -45,7 +45,7 @@ class PHAssetHelper
 
     // MARK: Public API
     
-    func requestImage(phAsset: PHAsset, size: CGSize, completion: PHAssetHelperImageBlock)
+    func requestImage(phAsset phAsset: PHAsset, size: CGSize, completion: PHAssetHelperImageBlock)
     {
         self.cancelImageRequestForPHAsset(phAsset)
         
@@ -85,7 +85,7 @@ class PHAssetHelper
         self.activeImageRequests[phAsset.localIdentifier] = requestID
     }
     
-    func requestAsset(phAsset: PHAsset, completion: PHAssetHelperAssetBlock)
+    func requestAsset(phAsset phAsset: PHAsset, completion: PHAssetHelperAssetBlock)
     {
         self.cancelAssetRequestForPHAsset(phAsset)
         

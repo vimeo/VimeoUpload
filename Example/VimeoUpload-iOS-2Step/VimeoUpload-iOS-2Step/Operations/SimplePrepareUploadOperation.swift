@@ -88,7 +88,7 @@ class SimplePrepareUploadOperation: ConcurrentOperation
 
         if let asset = self.phAssetContainer.avAsset
         {
-            self.export(asset)
+            self.export(asset: asset)
         }
         else
         {
@@ -136,7 +136,7 @@ class SimplePrepareUploadOperation: ConcurrentOperation
                 else
                 {
                     let exportSession = operation.result!
-                    strongSelf.export(exportSession)
+                    strongSelf.export(exportSession: exportSession)
                 }
             })
         }
@@ -144,19 +144,19 @@ class SimplePrepareUploadOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    private func export(exportSession: AVAssetExportSession)
+    private func export(exportSession exportSession: AVAssetExportSession)
     {
         let operation = AVAssetExportOperation(exportSession: exportSession)
-        self.export(operation)
+        self.export(operation: operation)
     }
     
-    private func export(asset: AVAsset)
+    private func export(asset asset: AVAsset)
     {
         let operation = AVAssetExportOperation(asset: asset)
-        self.export(operation)
+        self.export(operation: operation)
     }
     
-    private func export(operation: AVAssetExportOperation)
+    private func export(operation operation: AVAssetExportOperation)
     {
         operation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
             
@@ -189,7 +189,7 @@ class SimplePrepareUploadOperation: ConcurrentOperation
                 else
                 {
                     let url = operation.outputURL!
-                    strongSelf.checkExactWeeklyQuota(url)
+                    strongSelf.checkExactWeeklyQuota(url: url)
                 }
             })
         }
@@ -197,7 +197,7 @@ class SimplePrepareUploadOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    private func checkExactWeeklyQuota(url: NSURL)
+    private func checkExactWeeklyQuota(url url: NSURL)
     {
         let me = self.me
         let avUrlAsset = AVURLAsset(URL: url)
@@ -246,7 +246,7 @@ class SimplePrepareUploadOperation: ConcurrentOperation
                 }
                 else
                 {
-                    strongSelf.createVideo(url)
+                    strongSelf.createVideo(url: url)
                 }
             })
         }
@@ -254,7 +254,7 @@ class SimplePrepareUploadOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    private func createVideo(url: NSURL)
+    private func createVideo(url url: NSURL)
     {
         let videoSettings = self.videoSettings
 

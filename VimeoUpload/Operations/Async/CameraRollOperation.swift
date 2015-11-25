@@ -107,7 +107,7 @@ class CameraRollOperation: ConcurrentOperation
     // Then we're dealing with an iCloud asset
     // This is ok, but download of iCloud asset is not handled by this workflow
     
-    func fulfillSelection(avAsset: AVAsset?)
+    func fulfillSelection(avAsset avAsset: AVAsset?)
     {
         if self.selectionFulfilled == true
         {

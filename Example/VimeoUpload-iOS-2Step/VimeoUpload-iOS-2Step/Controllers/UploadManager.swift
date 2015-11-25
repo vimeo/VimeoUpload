@@ -115,7 +115,7 @@ import Foundation
     
     func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidBlock) -> Bool
     {
-        return self.descriptorManager.handleEventsForBackgroundURLSession(identifier, completionHandler: completionHandler)
+        return self.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler)
     }
     
     func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket)
@@ -130,7 +130,7 @@ import Foundation
     {
         if let descriptor = self.uploadDescriptorForVideo(videoUri: videoUri)
         {
-            descriptor.cancel(self.sessionManager)
+            descriptor.cancel(sessionManager: self.sessionManager)
         }
         
         if let _ = self.failedDescriptors.removeValueForKey(videoUri)

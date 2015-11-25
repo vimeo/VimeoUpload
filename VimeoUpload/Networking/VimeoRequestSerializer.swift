@@ -53,7 +53,7 @@ class VimeoRequestSerializer: AFJSONRequestSerializer
     {
         var request = super.requestWithMethod(method, URLString: URLString, parameters: parameters, error: error)
        
-        request = self.setAuthorizationHeader(request)
+        request = self.setAuthorizationHeader(request: request)
         
         return request
     }
@@ -63,7 +63,7 @@ class VimeoRequestSerializer: AFJSONRequestSerializer
         if let request = super.requestBySerializingRequest(request, withParameters: parameters, error: error)
         {
             var mutableRequest = request.mutableCopy() as! NSMutableURLRequest
-            mutableRequest = self.setAuthorizationHeader(mutableRequest)
+            mutableRequest = self.setAuthorizationHeader(request: mutableRequest)
             
             return mutableRequest.copy() as? NSURLRequest
         }
@@ -75,14 +75,14 @@ class VimeoRequestSerializer: AFJSONRequestSerializer
     {
         var request = super.requestWithMultipartFormRequest(request, writingStreamContentsToFile: fileURL, completionHandler: handler)
     
-        request = self.setAuthorizationHeader(request)
+        request = self.setAuthorizationHeader(request: request)
         
         return request
     }
     
     // MARK: Private API
 
-    private func setAuthorizationHeader(request: NSMutableURLRequest) -> NSMutableURLRequest
+    private func setAuthorizationHeader(request request: NSMutableURLRequest) -> NSMutableURLRequest
     {
         let authHeaderValue = self.authTokenBlock()
         request.setValue(authHeaderValue, forHTTPHeaderField: "Authorization")

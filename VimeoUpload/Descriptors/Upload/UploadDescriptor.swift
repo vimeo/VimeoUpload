@@ -94,16 +94,16 @@ class UploadDescriptor: Descriptor
 
     // MARK: Overrides
     
-    override func start(sessionManager: AFURLSessionManager) throws
+    override func start(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        try super.start(sessionManager)
+        try super.start(sessionManager: sessionManager)
         
         self.state = .Executing
 
         do
         {
             let sessionManager = sessionManager as! VimeoSessionManager
-            try self.transitionToState(.Create, sessionManager: sessionManager)
+            try self.transitionToState(request: .Create, sessionManager: sessionManager)
         }
         catch let error as NSError
         {
@@ -115,7 +115,7 @@ class UploadDescriptor: Descriptor
 
     // If necessary, resume the current task and re-connect progress objects
 
-    override func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
         guard self.state != .Ready else
         {
@@ -155,7 +155,7 @@ class UploadDescriptor: Descriptor
         }
     }
 
-    override func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    override func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
     {
         let sessionManager = sessionManager as! VimeoSessionManager
         let responseSerializer = sessionManager.responseSerializer as! VimeoResponseSerializer
@@ -185,7 +185,7 @@ class UploadDescriptor: Descriptor
         return nil
     }
     
-    override func taskDidComplete(sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
         if self.currentRequest == .Upload
         {
@@ -218,7 +218,7 @@ class UploadDescriptor: Descriptor
         do
         {
             let sessionManager = sessionManager as! VimeoSessionManager
-            try self.transitionToState(nextRequest!, sessionManager: sessionManager)
+            try self.transitionToState(request: nextRequest!, sessionManager: sessionManager)
             if self.currentRequest == .Upload
             {
                 self.addObserver()
@@ -232,7 +232,7 @@ class UploadDescriptor: Descriptor
     
     // MARK: Private API
     
-    private func transitionToState(request: UploadRequest, sessionManager: VimeoSessionManager) throws
+    private func transitionToState(request request: UploadRequest, sessionManager: VimeoSessionManager) throws
     {
         self.currentRequest = request
         let task = try self.taskForRequest(request, sessionManager: sessionManager)
@@ -253,7 +253,7 @@ class UploadDescriptor: Descriptor
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
 
-            return try sessionManager.uploadVideoTask(self.url, destination: uploadUri, progress: &self.uploadProgressObject, completionHandler: nil)
+            return try sessionManager.uploadVideoTask(source: self.url, destination: uploadUri, progress: &self.uploadProgressObject, completionHandler: nil)
             
         case .Activate:
             guard let activationUri = self.uploadTicket?.completeUri else

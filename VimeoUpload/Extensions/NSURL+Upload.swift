@@ -34,12 +34,12 @@ import Foundation
 
 extension NSURL
 {
-    func vimeoUploadExportURL(fileType: String) throws -> NSURL
+    func vimeoUploadExportURL(fileType fileType: String) throws -> NSURL
     {
         let unmanagedTag = UTTypeCopyPreferredTagWithClass(fileType, kUTTagClassFilenameExtension)!
         let ext = unmanagedTag.takeRetainedValue() as String
 
-        let url = try self.prepareURL(ext)
+        let url = try self.prepareURL(ext: ext)
         
         return NSURL.fileURLWithPath(url.absoluteString)
     }
@@ -48,12 +48,12 @@ extension NSURL
     {
         var url = self.URLByAppendingPathComponent("vimeo_download_data")
         
-        url = try self.prepareURL("data")
+        url = try self.prepareURL(ext: "data")
         
         return NSURL.fileURLWithPath(url.absoluteString)
     }
     
-    private func prepareURL(ext: String) throws -> NSURL
+    private func prepareURL(ext ext: String) throws -> NSURL
     {
         if NSFileManager.defaultManager().fileExistsAtPath(self.absoluteString) == false
         {

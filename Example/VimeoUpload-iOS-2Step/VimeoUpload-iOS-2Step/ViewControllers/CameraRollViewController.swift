@@ -220,7 +220,9 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         let scale = UIScreen.mainScreen().scale
         let scaledSize = CGSizeMake(scale * size.width, scale * size.height)
 
-        self.phAssetHelper.requestImage(phAsset, size: scaledSize) { [weak self] (image, inCloud, error) -> Void in
+        // TODO: weak cell?
+        
+        self.phAssetHelper.requestImage(phAsset: phAsset, size: scaledSize) { [weak self] (image, inCloud, error) -> Void in
             
             guard let _ = self else
             {
@@ -252,7 +254,9 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     {
         let phAsset = phAssetContainer.phAsset
         
-        self.phAssetHelper.requestAsset(phAsset, completion: { [weak self] (asset, inCloud, error) -> Void in
+        // TODO: weak cell?
+        
+        self.phAssetHelper.requestAsset(phAsset: phAsset, completion: { [weak self] (asset, inCloud, error) -> Void in
             
             guard let _ = self else
             {
@@ -326,7 +330,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 self.activityIndicatorView.startAnimating()
             }
             
-            self.operation?.fulfillSelection(phAssetContainer.avAsset) // avAsset may or may not be nil, which is fine
+            self.operation?.fulfillSelection(avAsset: phAssetContainer.avAsset) // avAsset may or may not be nil, which is fine
         }
     }
     

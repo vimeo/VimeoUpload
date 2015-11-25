@@ -41,21 +41,21 @@ class KeyedArchiver: ArchiverProtocol
     
     func loadObjectForKey(key: String) -> AnyObject?
     {
-        let path = self.archivePath(key)
+        let path = self.archivePath(key: key)
         
         return NSKeyedUnarchiver.unarchiveObjectWithFile(path)
     }
     
     func saveObject(object: AnyObject, key: String)
     {
-        let path = self.archivePath(key)
+        let path = self.archivePath(key: key)
         
         NSKeyedArchiver.archiveRootObject(object, toFile: path)
     }
     
     // MARK: Utilities
     
-    func archivePath(key: String) -> String
+    func archivePath(key key: String) -> String
     {
         var URL = NSURL(string: self.basePath)!
         

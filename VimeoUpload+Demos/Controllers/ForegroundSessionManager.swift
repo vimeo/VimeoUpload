@@ -28,5 +28,5 @@ import Foundation
 
 class ForegroundSessionManager: VimeoSessionManager
 {
-    static let sharedInstance = VimeoSessionManager.defaultSessionManager("caf4648129ec56e580175c4b45cce7fc")
+    static let sharedInstance = VimeoSessionManager.defaultSessionManager(authToken: "caf4648129ec56e580175c4b45cce7fc")
 }

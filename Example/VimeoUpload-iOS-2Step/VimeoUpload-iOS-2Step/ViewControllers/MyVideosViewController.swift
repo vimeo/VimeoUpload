@@ -129,6 +129,8 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
     {
+        UploadManager.sharedInstance.deleteUpload(videoUri: videoUri)
+
         for (index, video) in self.items.enumerate()
         {
             if video.uri == videoUri
@@ -155,7 +157,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         
         do
         {
-            self.task = try sessionManager.myVideosDataTask({ [weak self] (videos, error) -> Void in
+            self.task = try sessionManager.myVideosDataTask(completionHandler: { [weak self] (videos, error) -> Void in
                 
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                     
