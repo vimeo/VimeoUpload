@@ -26,20 +26,84 @@
 
 import Foundation
 
-class UploadManager
+@objc class UploadManager: NSObject
 {
     static let sharedInstance = UploadManager()
+
+    // MARK:
+    
+    private static let BackgroundSessionIdentifier = "com.vimeo.upload"
+    private static let DescriptorManagerName = "uploader"
+    private static let AuthToken = "caf4648129ec56e580175c4b45cce7fc"
+    private static let FailedDescriptorsArchiveKey = "failed_descriptors"
+    
+    // MARK: 
     
     private let sessionManager: VimeoSessionManager
     private let descriptorManager: DescriptorManager
     private let deletionManager: DeletionManager
-    private let reporter: UploadReporter = UploadReporter()
+    private let archiver: KeyedArchiver
     
-    init()
+    // MARK:
+
+    private let reporter: UploadReporter = UploadReporter()
+    private var failedDescriptors: [String: SimpleUploadDescriptor] = [:]
+    
+    // MARK:
+    // MARK: Initialization
+    
+    deinit
     {
-        self.sessionManager = VimeoSessionManager.backgroundSessionManager("com.vimeo.upload", authToken: "caf4648129ec56e580175c4b45cce7fc")
-        self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: "uploader", delegate: self.reporter)
+        self.removeObservers()
+    }
+    
+    override init()
+    {
+        self.sessionManager = VimeoSessionManager.backgroundSessionManager(identifier: UploadManager.BackgroundSessionIdentifier, authToken: UploadManager.AuthToken)
+        self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: UploadManager.DescriptorManagerName, delegate: self.reporter)
         self.deletionManager = DeletionManager(sessionManager: ForegroundSessionManager.sharedInstance, retryCount: 2)
+        self.archiver = UploadManager.setupArchiver(name: UploadManager.DescriptorManagerName)
+
+        super.init()
+
+        self.failedDescriptors = self.loadFailedDescriptors()
+        print("Loaded \(self.failedDescriptors.count) failed descriptors")
+        
+        self.addObservers()
+    }
+    
+    // MARK: Setup
+    
+    private static func setupArchiver(name name: String) -> KeyedArchiver
+    {
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+        var documentsURL = NSURL(string: documentsPath)!
+        
+        documentsURL = documentsURL.URLByAppendingPathComponent(name)
+        documentsURL = documentsURL.URLByAppendingPathComponent(UploadManager.FailedDescriptorsArchiveKey)
+        
+        if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
+        {
+            try! NSFileManager.defaultManager().createDirectoryAtPath(documentsURL.path!, withIntermediateDirectories: true, attributes: nil)
+        }
+        
+        return KeyedArchiver(basePath: documentsURL.path!)
+    }
+    
+    private func loadFailedDescriptors() -> [String: SimpleUploadDescriptor]
+    {
+        if let failedDescriptors = self.archiver.loadObjectForKey(UploadManager.FailedDescriptorsArchiveKey) as? [String: SimpleUploadDescriptor]
+        {
+            return failedDescriptors
+        }
+        
+        return [:]
+    }
+    
+    private func save()
+    {
+        self.archiver.saveObject(self.failedDescriptors, key: UploadManager.FailedDescriptorsArchiveKey)
+        print("Saved \(self.failedDescriptors.count) failed descriptors")
     }
     
     // MARK: Public API
@@ -49,12 +113,12 @@ class UploadManager
         // Do nothing at the moment
     }
     
-    func handleEventsForBackgroundURLSession(identifier: String, completionHandler: VoidBlock) -> Bool
+    func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidBlock) -> Bool
     {
         return self.descriptorManager.handleEventsForBackgroundURLSession(identifier, completionHandler: completionHandler)
     }
     
-    func uploadVideoWithUrl(url: NSURL, uploadTicket: VIMUploadTicket)
+    func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket)
     {
         let descriptor = SimpleUploadDescriptor(url: url, uploadTicket: uploadTicket)
         descriptor.identifier = uploadTicket.video!.uri
@@ -62,47 +126,26 @@ class UploadManager
         self.descriptorManager.addDescriptor(descriptor)
     }
     
-    // TODO: this progress object isn't set right away on start, race condition, need to resolve
-    func uploadProgressForVideoUri(videoUri: String) -> NSProgress?
+    func deleteUpload(videoUri videoUri: String)
     {
-        if let descriptor = self.descriptorForVideoUri(videoUri)
-        {
-            return descriptor.progress
-        }
-        
-        return nil
-    }
-    
-    func uploadErrorForVideoUri(videoUri: String) -> NSError?
-    {
-        if let descriptor = self.descriptorForVideoUri(videoUri)
-        {
-            return descriptor.error
-        }
-        
-        return nil
-    }
-    
-    func cancelUploadWithVideoUri(videoUri: String)
-    {
-        if let descriptor = self.descriptorForVideoUri(videoUri)
+        if let descriptor = self.uploadDescriptorForVideo(videoUri: videoUri)
         {
             descriptor.cancel(self.sessionManager)
         }
-
-        self.deleteVideoWithUri(videoUri)
-    }
-
-    func deleteVideoWithUri(videoUri: String)
-    {
+        
+        if let _ = self.failedDescriptors.removeValueForKey(videoUri)
+        {
+            self.save()
+        }
+        
         self.deletionManager.deleteVideoWithUri(videoUri)
     }
-    
-    // MARK: Private API
-    
-    private func descriptorForVideoUri(videoUri: String) -> SimpleUploadDescriptor?
+
+    func uploadDescriptorForVideo(videoUri videoUri: String) -> SimpleUploadDescriptor?
     {
-        let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
+        // Check active descriptors
+        var descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
+            
             if let descriptor = descriptor as? SimpleUploadDescriptor, let currentVideoUri = descriptor.uploadTicket.video?.uri
             {
                 return videoUri == currentVideoUri
@@ -111,6 +154,46 @@ class UploadManager
             return false
         })
         
+        // Then check failed descriptors
+        if descriptor == nil
+        {
+            descriptor = self.failedDescriptors[videoUri]
+        }
+        
         return descriptor as? SimpleUploadDescriptor
+    }
+    
+    // MARK: Notifications
+    
+    private func addObservers()
+    {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "descriptorDidFail:", name: DescriptorManagerNotification.DescriptorDidFail.rawValue, object: nil)
+    }
+    
+    private func removeObservers()
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func descriptorDidFail(notification: NSNotification)
+    {
+        dispatch_async(dispatch_get_main_queue()) { [weak self] () -> Void in
+
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            if let descriptor = notification.object as? SimpleUploadDescriptor, let videoUri = descriptor.uploadTicket.video?.uri, let error = descriptor.error
+            {
+                if error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled // No need to store failures that occurred due to cancellation
+                {
+                    return
+                }
+                
+                strongSelf.failedDescriptors[videoUri] = descriptor
+                strongSelf.save()
+            }
+        }
     }
 }

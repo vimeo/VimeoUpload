@@ -39,24 +39,34 @@ typealias TestBlock = (descriptor: Descriptor) -> Bool
 class DescriptorManager
 {
     private static let DescriptorsArchiveKey = "descriptors"
+    private static let QueueName = "descriptor_manager.synchronization_queue"
+    
+    // MARK:
     
     private var sessionManager: AFURLSessionManager
     private let name: String
 
+    // MARK:
+    
     private var descriptors = Set<Descriptor>()
     private let archiver: KeyedArchiver
     private weak var delegate: DescriptorManagerDelegate?
-    
-    private let synchronizationQueue = dispatch_queue_create("descriptor_manager.synchronization_queue", DISPATCH_QUEUE_SERIAL)
+    private let synchronizationQueue = dispatch_queue_create(DescriptorManager.QueueName, DISPATCH_QUEUE_SERIAL)
 
+    // MARK:
+    
     var backgroundEventsCompletionHandler: VoidBlock?
 
+    // MARK:
     // MARK: Initialization
     
     convenience init(sessionManager: AFURLSessionManager, name: String)
     {
         self.init(sessionManager: sessionManager, name: name, delegate: nil)
     }
+    
+    // By passing the delegate into the constructor (as opposed to using a public property) 
+    // We ensure that early events like "load" can be reported [AH] 11/25/2015
     
     init(sessionManager: AFURLSessionManager, name: String, delegate: DescriptorManagerDelegate?)
     {
@@ -83,7 +93,7 @@ class DescriptorManager
         var documentsURL = NSURL(string: documentsPath)!
         
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
-        documentsURL = documentsURL.URLByAppendingPathComponent("descriptors")
+        documentsURL = documentsURL.URLByAppendingPathComponent(DescriptorManager.DescriptorsArchiveKey)
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
         {
@@ -208,13 +218,13 @@ class DescriptorManager
                     {
                         strongSelf.delegate?.descriptorDidFail(descriptor.identifier)
                         
-                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor.identifier)
+                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
                     }
                     else
                     {
                         strongSelf.delegate?.descriptorDidSucceed(descriptor.identifier)
 
-                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidSucceed.rawValue, object: descriptor.identifier)
+                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidSucceed.rawValue, object: descriptor)
                     }
                 }
             })
@@ -270,7 +280,7 @@ class DescriptorManager
 
             strongSelf.delegate?.descriptorWillStart(descriptor.identifier)
 
-            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorWillStart.rawValue, object: descriptor.identifier)
+            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorWillStart.rawValue, object: descriptor)
             
             do
             {
@@ -284,7 +294,7 @@ class DescriptorManager
                 
                 strongSelf.delegate?.descriptorDidFail(descriptor.identifier)
                 
-                NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor.identifier)
+                NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
             }
         })
     }

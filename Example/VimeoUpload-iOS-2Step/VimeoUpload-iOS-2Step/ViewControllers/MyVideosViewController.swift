@@ -142,6 +142,11 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
+    func cellDidRetryVideoWithUri(cell cell: VideoCell, videoUri: String, error: NSError)
+    {
+        
+    }
+    
     // MARK: Actions
     
     func refresh()

@@ -46,10 +46,26 @@ class Descriptor: NSObject, DescriptorProtocol
 {
     static let ErrorDomain = "DescriptorErrorDomain"
     
+    // MARK: 
+    
+    dynamic private(set) var stateObservable: String = State.Ready.rawValue
     var state = State.Ready
+    {
+        didSet
+        {
+            self.stateObservable = state.rawValue
+        }
+    }
+    
+    // MARK:
+    
     var identifier: String?
     var error: NSError?
     var currentTaskIdentifier: Int?
+
+    // MARK:
+    
+    // MARK: Initialization
 
     override init()
     {

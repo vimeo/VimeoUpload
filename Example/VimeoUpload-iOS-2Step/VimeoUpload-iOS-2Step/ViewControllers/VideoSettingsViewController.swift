@@ -95,12 +95,10 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     private func startUpload()
     {
-        // TODO: handle retry
-        
         let url = self.url!
         let uploadTicket = self.uploadTicket!
         
-        UploadManager.sharedInstance.uploadVideoWithUrl(url, uploadTicket: uploadTicket)
+        UploadManager.sharedInstance.uploadVideo(url: url, uploadTicket: uploadTicket)
     }
     
     private func buildOperation() -> ConcurrentOperation
@@ -176,12 +174,10 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.operation?.cancel()
         self.activityIndicatorView.stopAnimating()
         self.navigationController?.popViewControllerAnimated(true)
-    
-        // TODO: test this
         
         if let videoUri = self.uploadTicket?.video?.uri
         {
-            UploadManager.sharedInstance.deleteVideoWithUri(videoUri)
+            UploadManager.sharedInstance.deleteUpload(videoUri: videoUri)
         }
     }
 

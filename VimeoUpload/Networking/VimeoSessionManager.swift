@@ -50,7 +50,7 @@ class VimeoSessionManager: AFHTTPSessionManager
 
     // MARK:
     
-    static func backgroundSessionManager(identifier: String, authToken: String) -> VimeoSessionManager
+    static func backgroundSessionManager(identifier identifier: String, authToken: String) -> VimeoSessionManager
     {
         let sessionConfiguration = VimeoSessionManager.backgroundSessionConfiguration(identifier)
         
