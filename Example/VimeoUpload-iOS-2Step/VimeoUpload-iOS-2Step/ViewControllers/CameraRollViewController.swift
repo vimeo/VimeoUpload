@@ -220,6 +220,8 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         let scale = UIScreen.mainScreen().scale
         let scaledSize = CGSizeMake(scale * size.width, scale * size.height)
 
+        // TODO: weak cell?
+        
         self.phAssetHelper.requestImage(phAsset: phAsset, size: scaledSize) { [weak self] (image, inCloud, error) -> Void in
             
             guard let _ = self else
@@ -251,6 +253,8 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     private func requestAssetForCell(cell: CameraRollCell, phAssetContainer: PHAssetContainer)
     {
         let phAsset = phAssetContainer.phAsset
+        
+        // TODO: weak cell?
         
         self.phAssetHelper.requestAsset(phAsset: phAsset, completion: { [weak self] (asset, inCloud, error) -> Void in
             
