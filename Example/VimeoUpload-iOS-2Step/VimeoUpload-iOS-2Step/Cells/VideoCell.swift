@@ -26,6 +26,11 @@
 
 import UIKit
 
+protocol VideoCellDelegate: class
+{
+    func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
+}
+
 class VideoCell: UITableViewCell
 {
     // MARK:
@@ -39,12 +44,12 @@ class VideoCell: UITableViewCell
     @IBOutlet weak var statusLabel: UILabel!
     @IBOutlet weak var progressView: UIView!
     @IBOutlet weak var progressConstraint: NSLayoutConstraint!
+    @IBOutlet weak var button: UIButton!
     
     // MARK:
 
     private static let ProgressKeyPath = "fractionCompleted"
     private var progressKVOContext = UInt8()
-    
     private var progress: NSProgress?
     {
         willSet
@@ -58,6 +63,8 @@ class VideoCell: UITableViewCell
         }
     }
     
+    // MARK: 
+    weak var delegate: VideoCellDelegate?
     var video: VIMVideo?
     {
         didSet
@@ -84,8 +91,8 @@ class VideoCell: UITableViewCell
     {
         super.awakeFromNib()
         
-        self.progressView.hidden = true
-        self.progressConstraint.constant = 0
+        self.updateProgress(1)
+        self.updateButton(0)
     }
 
     override func prepareForReuse()
@@ -95,8 +102,24 @@ class VideoCell: UITableViewCell
         self.video = nil
         self.thumbnailImageView?.image = nil
         self.statusLabel.text = ""
-        self.progressView.hidden = true
-        self.progressConstraint.constant = 0
+
+        self.updateProgress(1)
+        self.updateButton(0)
+    }
+    
+    // MARK: Actions
+    
+    @IBAction func didTapButton(sender: UIButton)
+    {
+        if let videoUri = self.video?.uri
+        {
+            self.progress = nil
+            self.updateProgress(0)
+            
+            UploadManager.sharedInstance.cancelUploadWithVideoUri(videoUri)
+            
+            self.delegate?.cellDidDeleteVideoWithUri(cell: self, videoUri: videoUri)
+        }
     }
     
     // MARK: Private API
@@ -117,7 +140,7 @@ class VideoCell: UITableViewCell
     
     private func updateProgress(progress: Double)
     {
-        let hidden = progress == 0
+        let hidden = (progress <= 0 || progress >= 1)
         self.progressView.hidden = hidden
 
         let width = self.contentView.frame.size.width
@@ -125,7 +148,20 @@ class VideoCell: UITableViewCell
         
         self.progressConstraint.constant = constant
     }
-    
+
+    private func updateButton(progress: Double)
+    {
+        let cancellable = (progress > 0 && progress < 1)
+        if cancellable == true
+        {
+            self.button.setTitle("Cancel", forState: .Normal)
+        }
+        else
+        {
+            self.button.setTitle("Delete", forState: .Normal)
+        }
+    }
+
     // MARK: KVO
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
@@ -138,6 +174,7 @@ class VideoCell: UITableViewCell
                 let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                     self?.updateProgress(progress)
+                    self?.updateButton(progress)
                 })
                 
             default:

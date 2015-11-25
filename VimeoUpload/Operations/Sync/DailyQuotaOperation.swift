@@ -50,7 +50,7 @@ class DailyQuotaOperation: NSOperation
 
     override func main()
     {
-        if let sd = self.user.uploadQuota?.quota?.sd, let hd = self.user.uploadQuota?.quota?.hd
+        if let sd = self.user.uploadQuota?.quantityQuota?.canUploadSd, let hd = self.user.uploadQuota?.quantityQuota?.canUploadHd
         {
             self.result = (sd == true && hd == true)
         }

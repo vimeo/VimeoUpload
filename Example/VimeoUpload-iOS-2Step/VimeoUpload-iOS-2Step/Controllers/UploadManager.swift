@@ -39,7 +39,7 @@ class UploadManager
     {
         self.sessionManager = VimeoSessionManager.backgroundSessionManager("com.vimeo.upload", authToken: "caf4648129ec56e580175c4b45cce7fc")
         self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: "uploader", delegate: self.reporter)
-        self.deletionManager = DeletionManager(sessionManager: self.sessionManager, retryCount: 2)
+        self.deletionManager = DeletionManager(sessionManager: ForegroundSessionManager.sharedInstance, retryCount: 2)
     }
     
     // MARK: Public API

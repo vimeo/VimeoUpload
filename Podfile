@@ -11,7 +11,7 @@ target :'VimeoUpload-iOS-2Step' do
     platform :ios, '8.0'
     #use_frameworks!
     shared_pods
-    pod 'VIMNetworking/Model', '5.6.1.11'
+    pod 'VIMNetworking/Model', '5.6.1.13'
     xcodeproj 'Example/VimeoUpload-iOS-2Step/VimeoUpload-iOS-2Step.xcodeproj'
 end
 
@@ -33,7 +33,21 @@ target :'VimeoUpload-iOS-Example' do
     platform :ios, '8.0'
     #use_frameworks!
     shared_pods
-    pod 'VIMNetworking/Model', '5.6.1.11'
+    pod 'VIMNetworking/Model', '5.6.1.13'
+    xcodeproj 'Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj'
+end
+
+target :'VimeoUpload-iOS-ExampleTests' do
+    platform :ios, '8.0'
+    use_frameworks!
+    shared_pods
+    xcodeproj 'Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj'
+end
+
+target :'VimeoUpload-iOS-ExampleUITests' do
+    platform :ios, '8.0'
+    use_frameworks!
+    shared_pods
     xcodeproj 'Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj'
 end
 

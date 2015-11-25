@@ -26,7 +26,7 @@
 
 import UIKit
 
-class MyVideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate
+class MyVideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, VideoCellDelegate
 {
     static let NibName = "MyVideosViewController"
     
@@ -107,6 +107,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         let cell = tableView.dequeueReusableCellWithIdentifier(VideoCell.CellIdentifier) as! VideoCell
 
         let video = self.items[indexPath.row]
+        cell.delegate = self
         cell.video = video
         
         return cell
@@ -122,6 +123,23 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
         
+    }
+    
+    // MARK: VideoCellDelegate
+    
+    func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
+    {
+        for (index, video) in self.items.enumerate()
+        {
+            if video.uri == videoUri
+            {
+                self.items.removeAtIndex(index)
+                let indexPath = NSIndexPath(forRow: index, inSection: 0)
+                self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+                
+                break
+            }
+        }
     }
     
     // MARK: Actions

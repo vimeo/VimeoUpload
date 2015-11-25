@@ -51,7 +51,7 @@ class WeeklyQuotaOperation: NSOperation
 
     override func main()
     {
-        if let free = self.user.uploadQuota?.space?.free?.doubleValue
+        if let free = self.user.uploadQuota?.sizeQuota?.free?.doubleValue
         {
             self.result = free > self.filesize
         }
