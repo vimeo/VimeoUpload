@@ -129,6 +129,8 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
     {
+        UploadManager.sharedInstance.deleteUpload(videoUri: videoUri)
+
         for (index, video) in self.items.enumerate()
         {
             if video.uri == videoUri
