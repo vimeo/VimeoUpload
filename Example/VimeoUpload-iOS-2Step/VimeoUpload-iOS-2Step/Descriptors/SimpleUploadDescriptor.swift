@@ -43,7 +43,7 @@ class SimpleUploadDescriptor: Descriptor
     {
         didSet
         {
-            if self.error != nil
+            if error != nil
             {
                 print(self.error!.localizedDescription)
                 self.currentTaskIdentifier = nil
@@ -130,7 +130,9 @@ class SimpleUploadDescriptor: Descriptor
     override func taskDidComplete(sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
         NSFileManager.defaultManager().deleteFileAtURL(self.url)
-        
+
+        self.error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "test error"])
+
         if self.error == nil
         {
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first
@@ -141,6 +143,11 @@ class SimpleUploadDescriptor: Descriptor
             {
                 self.error = error.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
             }
+        }
+        
+        if self.error != nil
+        {
+            return
         }
         
         self.currentTaskIdentifier = nil

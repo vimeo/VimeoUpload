@@ -29,6 +29,7 @@ import UIKit
 protocol VideoCellDelegate: class
 {
     func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
+    func cellDidRetryVideoWithUri(cell cell: VideoCell, videoUri: String, error: NSError)
 }
 
 class VideoCell: UITableViewCell
@@ -42,16 +43,23 @@ class VideoCell: UITableViewCell
 
     @IBOutlet weak var thumbnailImageView: UIImageView!
     @IBOutlet weak var statusLabel: UILabel!
+    @IBOutlet weak var errorLabel: UILabel!
     @IBOutlet weak var progressView: UIView!
     @IBOutlet weak var progressConstraint: NSLayoutConstraint!
-    @IBOutlet weak var button: UIButton!
+    @IBOutlet weak var deleteButton: UIButton!
+    @IBOutlet weak var retryButton: UIButton!
     
     // MARK:
 
+    weak var delegate: VideoCellDelegate?
+
+    // MARK: 
+    
     private static let ProgressKeyPath = "fractionCompleted"
     private static let StateKeyPath = "stateObservable"
     private var progressKVOContext = UInt8()
     private var stateKVOContext = UInt8()
+    
     private var descriptor: SimpleUploadDescriptor?
     {
         willSet
@@ -74,7 +82,6 @@ class VideoCell: UITableViewCell
     
     // MARK: 
     
-    weak var delegate: VideoCellDelegate?
     var video: VIMVideo?
     {
         didSet
@@ -82,7 +89,7 @@ class VideoCell: UITableViewCell
             if let video = self.video
             {
                 self.setupImageView(video)
-                self.setupLabel(video)
+                self.setupStatusLabel(video)
                 self.descriptor = UploadManager.sharedInstance.uploadDescriptorForVideo(videoUri: video.uri!)
             }
         }
@@ -94,14 +101,13 @@ class VideoCell: UITableViewCell
     deinit
     {
         self.descriptor = nil
-        self.video = nil
     }
     
     override func awakeFromNib()
     {
         super.awakeFromNib()
         
-        self.updateProgress(1)
+        self.updateProgress(0)
         self.updateState(State.Finished)
     }
 
@@ -113,14 +119,15 @@ class VideoCell: UITableViewCell
         self.video = nil
         self.thumbnailImageView?.image = nil
         self.statusLabel.text = ""
+        self.errorLabel.text = ""
 
-        self.updateProgress(1)
+        self.updateProgress(0)
         self.updateState(State.Finished)
     }
     
     // MARK: Actions
     
-    @IBAction func didTapButton(sender: UIButton)
+    @IBAction func didTapDeleteButton(sender: UIButton)
     {
         if let videoUri = self.video?.uri
         {
@@ -132,8 +139,17 @@ class VideoCell: UITableViewCell
             self.delegate?.cellDidDeleteVideoWithUri(cell: self, videoUri: videoUri)
         }
     }
-    
-    // MARK: Private API
+
+    @IBAction func didTapRetryButton(sender: UIButton)
+    {
+        if let videoUri = self.video?.uri, let error = self.descriptor?.error
+        {
+            // TODO; retry
+            self.delegate?.cellDidRetryVideoWithUri(cell: self, videoUri: videoUri, error: error)
+        }
+    }
+
+    // MARK: Video Setup
     
     private func setupImageView(video: VIMVideo)
     {
@@ -144,11 +160,13 @@ class VideoCell: UITableViewCell
         }
     }
     
-    private func setupLabel(video: VIMVideo)
+    private func setupStatusLabel(video: VIMVideo)
     {
         self.statusLabel.text = video.status
     }
-    
+
+    // MARK: Descriptor Setup
+
     private func updateProgress(progress: Double)
     {
         let width = self.contentView.frame.size.width
@@ -161,13 +179,28 @@ class VideoCell: UITableViewCell
     {
         switch state
         {
-        case State.Executing, State.Ready:
-            self.button.setTitle("Cancel", forState: .Normal)
+        case State.Ready, State.Executing:
             self.progressView.hidden = false
+            self.deleteButton.setTitle("Cancel", forState: .Normal)
+            
+            self.errorLabel.text = ""
+            self.retryButton.hidden = true
 
         case State.Finished:
-            self.button.setTitle("Delete", forState: .Normal)
+            self.updateProgress(0)
             self.progressView.hidden = true
+            self.deleteButton.setTitle("Delete", forState: .Normal)
+
+            if let error = self.descriptor?.error
+            {
+                self.errorLabel.text = error.localizedDescription
+                self.retryButton.hidden = false
+            }
+            else
+            {
+                self.errorLabel.text = ""
+                self.retryButton.hidden = true
+            }
         }
     }
 

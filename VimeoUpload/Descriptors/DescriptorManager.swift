@@ -208,13 +208,13 @@ class DescriptorManager
                     {
                         strongSelf.delegate?.descriptorDidFail(descriptor.identifier)
                         
-                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor.identifier)
+                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
                     }
                     else
                     {
                         strongSelf.delegate?.descriptorDidSucceed(descriptor.identifier)
 
-                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidSucceed.rawValue, object: descriptor.identifier)
+                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidSucceed.rawValue, object: descriptor)
                     }
                 }
             })
@@ -270,7 +270,7 @@ class DescriptorManager
 
             strongSelf.delegate?.descriptorWillStart(descriptor.identifier)
 
-            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorWillStart.rawValue, object: descriptor.identifier)
+            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorWillStart.rawValue, object: descriptor)
             
             do
             {
@@ -284,7 +284,7 @@ class DescriptorManager
                 
                 strongSelf.delegate?.descriptorDidFail(descriptor.identifier)
                 
-                NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor.identifier)
+                NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
             }
         })
     }

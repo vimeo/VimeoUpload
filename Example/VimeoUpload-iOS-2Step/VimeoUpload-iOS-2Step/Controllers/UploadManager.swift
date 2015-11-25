@@ -67,6 +67,8 @@ class UploadManager: NSObject, NSCoding
         self.addObservers()
     }
     
+    // TODO: load from cache, and save at the appropriate moments
+    
     // MARK: Public API
     
     func applicationDidFinishLaunching()
