@@ -88,8 +88,8 @@ class VideoCell: UITableViewCell
         {
             if let video = self.video
             {
-                self.setupImageView(video)
-                self.setupStatusLabel(video)
+                self.setupImageView(video: video)
+                self.setupStatusLabel(video: video)
                 self.descriptor = UploadManager.sharedInstance.uploadDescriptorForVideo(videoUri: video.uri!)
             }
         }
@@ -151,7 +151,7 @@ class VideoCell: UITableViewCell
 
     // MARK: Video Setup
     
-    private func setupImageView(video: VIMVideo)
+    private func setupImageView(video video: VIMVideo)
     {
         let width = Float(self.thumbnailImageView.frame.size.width * UIScreen.mainScreen().scale)
         if let picture = video.pictureCollection?.pictureForWidth(width), let link = picture.link, let url = NSURL(string: link)
@@ -160,7 +160,7 @@ class VideoCell: UITableViewCell
         }
     }
     
-    private func setupStatusLabel(video: VIMVideo)
+    private func setupStatusLabel(video video: VIMVideo)
     {
         self.statusLabel.text = video.status
     }

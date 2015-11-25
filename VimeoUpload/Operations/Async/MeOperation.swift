@@ -61,7 +61,7 @@ class MeOperation: ConcurrentOperation
         
         do
         {
-            self.task = try self.sessionManager.meDataTask({ [weak self] (user, error) -> Void in
+            self.task = try self.sessionManager.meDataTask(completionHandler: { [weak self] (user, error) -> Void in
                 
                 guard let strongSelf = self else
                 {

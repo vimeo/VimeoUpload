@@ -32,22 +32,22 @@ class UploadReporter: DescriptorManagerDelegate
 {
     // MARK: DescriptorManagerDelegate
     
-    func didLoadDescriptors(descriptorsCount: Int)
+    func didLoadDescriptors(count count: Int)
     {
-        self.sendMessage("Loaded \(descriptorsCount) descriptors")
+        self.sendMessage("Loaded \(count) descriptors")
     }
 
-    func didSaveDescriptors(descriptorsCount: Int)
+    func didSaveDescriptors(count count: Int)
     {
-        self.sendMessage("Did save \(descriptorsCount) descriptors")
+        self.sendMessage("Did save \(count) descriptors")
     }
 
-    func didFailToLoadDescriptor(error: NSError)
+    func didFailToLoadDescriptor(error error: NSError)
     {
         self.sendMessage("Did fail to load descriptor \(error.localizedDescription)")
     }
     
-    func sessionDidBecomeInvalid(error: NSError)
+    func sessionDidBecomeInvalid(error error: NSError)
     {
         self.sendMessage("Session invalid \(error.localizedDescription)")
     }
@@ -62,59 +62,56 @@ class UploadReporter: DescriptorManagerDelegate
         self.sendMessage("Did handle background events")
     }
     
-    func descriptorWillStart(descriptorIdentifier: String?)
+    func descriptorWillStart(descriptor: Descriptor)
     {
-        if let identifier = descriptorIdentifier
+        if let identifier = descriptor.identifier
         {
             self.sendMessage("Start \(identifier)")
         }
     }
     
-    func downloadTaskDidFinishDownloading(taskDescription: String?, descriptorIdentifier: String?)
+    func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
     {
-        if let taskDescription = taskDescription, let descriptorIdentifier = descriptorIdentifier
+        if let descriptorIdentifier = descriptor.identifier
         {
-            self.sendMessage("Task download \(taskDescription) descriptor \(descriptorIdentifier)")
+            self.sendMessage("Task download \(task.description) descriptor \(descriptorIdentifier)")
         }
     }
     
-    func taskDidComplete(taskDescription: String?, descriptorIdentifier: String?, error: NSError?)
+    func taskDidComplete(task task: NSURLSessionTask, descriptor: Descriptor, error: NSError?)
     {
-        if let taskDescription = taskDescription, let descriptorIdentifier = descriptorIdentifier
+        if let descriptorIdentifier = descriptor.identifier
         {
             if let error = error
             {
-                self.sendMessage("Task complete \(taskDescription) descriptor \(descriptorIdentifier) error \(error.localizedDescription)")
+                self.sendMessage("Task complete \(task.description) descriptor \(descriptorIdentifier) error \(error.localizedDescription)")
             }
             else
             {
-                self.sendMessage("Task complete \(taskDescription) descriptor \(descriptorIdentifier)")
+                self.sendMessage("Task complete \(task.description) descriptor \(descriptorIdentifier)")
             }
         }
     }
     
-    func descriptorDidSucceed(descriptorIdentifier: String?)
+    func descriptorDidSucceed(descriptor: Descriptor)
     {
-        if let descriptorIdentifier = descriptorIdentifier
+        if let descriptorIdentifier = descriptor.identifier
         {
             self.sendMessage("Success \(descriptorIdentifier)")
         }
     }
     
-    func descriptorDidFail(descriptorIdentifier: String?)
+    func descriptorDidFail(descriptor: Descriptor)
     {
-        if let descriptorIdentifier = descriptorIdentifier
+        if let descriptorIdentifier = descriptor.identifier
         {
             self.sendMessage("Failure \(descriptorIdentifier)")
         }
     }
     
-    func descriptorForTaskNotFound(taskDescription: String?)
+    func descriptorForTaskNotFound(task: NSURLSessionTask)
     {
-        if let taskDescription = taskDescription
-        {
-            self.sendMessage("Descriptor not found (task) \(taskDescription)")
-        }
+        self.sendMessage("Descriptor not found (task) \(task.description)")
     }
     
     // Private API

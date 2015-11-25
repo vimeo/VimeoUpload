@@ -73,21 +73,21 @@ class DescriptorManager
         self.sessionManager = sessionManager
         self.name = name
         self.delegate = delegate
-        self.archiver = DescriptorManager.setupArchiver(name)
+        self.archiver = DescriptorManager.setupArchiver(name: name)
 
         // We must load the descriptors before we set the sessionBlocks,
         // Otherwise the blocks will be called before we have a list of descriptors to reconcile with [AH] 10/28/ 2015
         
         self.loadDescriptors()
 
-        self.delegate?.didLoadDescriptors(self.descriptors.count)
+        self.delegate?.didLoadDescriptors(count: self.descriptors.count)
 
         self.setupSessionBlocks()
     }
 
     // MARK: Setup
     
-    private static func setupArchiver(name: String) -> KeyedArchiver
+    private static func setupArchiver(name name: String) -> KeyedArchiver
     {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
         var documentsURL = NSURL(string: documentsPath)!
@@ -111,11 +111,11 @@ class DescriptorManager
             {
                 do
                 {
-                    try descriptor.didLoadFromCache(self.sessionManager)
+                    try descriptor.didLoadFromCache(sessionManager: self.sessionManager)
                 }
                 catch let error as NSError
                 {
-                    self.delegate?.didFailToLoadDescriptor(error)
+                    self.delegate?.didFailToLoadDescriptor(error: error)
                     // TODO: remove this descriptor? Nil out background session completion handler block?
                 }
             }
@@ -147,7 +147,7 @@ class DescriptorManager
                 strongSelf.descriptors.removeAll()
                 strongSelf.save()
 
-                strongSelf.delegate?.sessionDidBecomeInvalid(error)
+                strongSelf.delegate?.sessionDidBecomeInvalid(error: error)
                 
                 NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.SessionDidBecomeInvalid.rawValue, object: error)
             })
@@ -171,9 +171,9 @@ class DescriptorManager
                     return
                 }
 
-                strongSelf.delegate?.downloadTaskDidFinishDownloading(task.taskDescription, descriptorIdentifier: descriptor.identifier)
+                strongSelf.delegate?.downloadTaskDidFinishDownloading(task: task, descriptor: descriptor)
 
-                if let url = descriptor.taskDidFinishDownloading(strongSelf.sessionManager, task: task, url: url)
+                if let url = descriptor.taskDidFinishDownloading(sessionManager: strongSelf.sessionManager, task: task, url: url)
                 {
                     destination = url
                 }
@@ -203,9 +203,9 @@ class DescriptorManager
                     return
                 }
 
-                strongSelf.delegate?.taskDidComplete(task.taskDescription, descriptorIdentifier: descriptor.identifier, error: error)
+                strongSelf.delegate?.taskDidComplete(task: task, descriptor: descriptor, error: error)
 
-                descriptor.taskDidComplete(strongSelf.sessionManager, task: task, error: error)
+                descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error)
 
                 strongSelf.save()
                 
@@ -216,13 +216,13 @@ class DescriptorManager
                     
                     if descriptor.error != nil
                     {
-                        strongSelf.delegate?.descriptorDidFail(descriptor.identifier)
+                        strongSelf.delegate?.descriptorDidFail(descriptor)
                         
                         NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
                     }
                     else
                     {
-                        strongSelf.delegate?.descriptorDidSucceed(descriptor.identifier)
+                        strongSelf.delegate?.descriptorDidSucceed(descriptor)
 
                         NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidSucceed.rawValue, object: descriptor)
                     }
@@ -250,7 +250,7 @@ class DescriptorManager
     
     // MARK: Public API
     
-    func handleEventsForBackgroundURLSession(identifier: String, completionHandler: VoidBlock) -> Bool
+    func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidBlock) -> Bool
     {
         guard identifier == self.sessionManager.session.configuration.identifier else
         {
@@ -278,13 +278,13 @@ class DescriptorManager
             strongSelf.descriptors.insert(descriptor)
             strongSelf.save()
 
-            strongSelf.delegate?.descriptorWillStart(descriptor.identifier)
+            strongSelf.delegate?.descriptorWillStart(descriptor)
 
             NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorWillStart.rawValue, object: descriptor)
             
             do
             {
-                try descriptor.start(strongSelf.sessionManager)
+                try descriptor.start(sessionManager: strongSelf.sessionManager)
                 strongSelf.save()
             }
             catch
@@ -292,7 +292,7 @@ class DescriptorManager
                 strongSelf.descriptors.remove(descriptor)
                 strongSelf.save()
                 
-                strongSelf.delegate?.descriptorDidFail(descriptor.identifier)
+                strongSelf.delegate?.descriptorDidFail(descriptor)
                 
                 NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
             }
@@ -344,7 +344,7 @@ class DescriptorManager
         
         if result == nil
         {
-            self.delegate?.descriptorForTaskNotFound(task.taskDescription)
+            self.delegate?.descriptorForTaskNotFound(task)
         }
         
         return result
@@ -353,6 +353,6 @@ class DescriptorManager
     private func save()
     {
         self.archiver.saveObject(self.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
-        self.delegate?.didSaveDescriptors(self.descriptors.count)
+        self.delegate?.didSaveDescriptors(count: self.descriptors.count)
     }
 }

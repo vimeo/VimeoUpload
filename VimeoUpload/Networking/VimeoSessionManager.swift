@@ -34,14 +34,14 @@ class VimeoSessionManager: AFHTTPSessionManager
     
     // MARK:
     
-    static func defaultSessionManager(authToken: String) -> VimeoSessionManager
+    static func defaultSessionManager(authToken authToken: String) -> VimeoSessionManager
     {
         let sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
         
         return VimeoSessionManager(sessionConfiguration: sessionConfiguration, authToken: authToken)
     }
 
-    static func defaultSessionManagerWithAuthTokenBlock(authTokenBlock: AuthTokenBlock) -> VimeoSessionManager
+    static func defaultSessionManagerWithAuthTokenBlock(authTokenBlock authTokenBlock: AuthTokenBlock) -> VimeoSessionManager
     {
         let sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
         
@@ -52,14 +52,14 @@ class VimeoSessionManager: AFHTTPSessionManager
     
     static func backgroundSessionManager(identifier identifier: String, authToken: String) -> VimeoSessionManager
     {
-        let sessionConfiguration = VimeoSessionManager.backgroundSessionConfiguration(identifier)
+        let sessionConfiguration = VimeoSessionManager.backgroundSessionConfiguration(identifier: identifier)
         
         return VimeoSessionManager(sessionConfiguration: sessionConfiguration, authToken: authToken)
     }
 
-    static func backgroundSessionManager(identifier: String, authTokenBlock: AuthTokenBlock) -> VimeoSessionManager
+    static func backgroundSessionManager(identifier identifier: String, authTokenBlock: AuthTokenBlock) -> VimeoSessionManager
     {
-        let sessionConfiguration = VimeoSessionManager.backgroundSessionConfiguration(identifier)
+        let sessionConfiguration = VimeoSessionManager.backgroundSessionConfiguration(identifier: identifier)
         
         return VimeoSessionManager(sessionConfiguration: sessionConfiguration, authTokenBlock: authTokenBlock)
     }
@@ -90,7 +90,7 @@ class VimeoSessionManager: AFHTTPSessionManager
     
     // MARK: Private API
     
-    private static func backgroundSessionConfiguration(identifier: String) -> NSURLSessionConfiguration
+    private static func backgroundSessionConfiguration(identifier identifier: String) -> NSURLSessionConfiguration
     {
         let sessionConfiguration: NSURLSessionConfiguration
         

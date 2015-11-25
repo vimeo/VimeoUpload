@@ -39,7 +39,7 @@ enum TaskDescription: String
 
 extension VimeoSessionManager
 {
-    func meDataTask(completionHandler: UserCompletionHandler) throws -> NSURLSessionDataTask
+    func meDataTask(completionHandler completionHandler: UserCompletionHandler) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).meRequest()
 
@@ -70,7 +70,7 @@ extension VimeoSessionManager
         return task
     }
 
-    func myVideosDataTask(completionHandler: VideosCompletionHandler) throws -> NSURLSessionDataTask
+    func myVideosDataTask(completionHandler completionHandler: VideosCompletionHandler) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).myVideosRequest()
         
@@ -112,7 +112,7 @@ extension VimeoSessionManager
         return task
     }
     
-    func uploadVideoTask(source: NSURL, destination: String, progress: AutoreleasingUnsafeMutablePointer<NSProgress?>, completionHandler: ErrorBlock?) throws -> NSURLSessionUploadTask
+    func uploadVideoTask(source source: NSURL, destination: String, progress: AutoreleasingUnsafeMutablePointer<NSProgress?>, completionHandler: ErrorBlock?) throws -> NSURLSessionUploadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadVideoRequestWithSource(source, destination: destination)
         

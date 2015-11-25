@@ -155,7 +155,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         
         do
         {
-            self.task = try sessionManager.myVideosDataTask({ [weak self] (videos, error) -> Void in
+            self.task = try sessionManager.myVideosDataTask(completionHandler: { [weak self] (videos, error) -> Void in
                 
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                     

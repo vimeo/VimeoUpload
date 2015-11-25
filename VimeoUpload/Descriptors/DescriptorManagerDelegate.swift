@@ -30,20 +30,20 @@ import Foundation
 
 protocol DescriptorManagerDelegate: class
 {
-    func didLoadDescriptors(descriptorsCount: Int)
-    func didSaveDescriptors(descriptorsCount: Int)
-    func didFailToLoadDescriptor(error: NSError)
+    func didLoadDescriptors(count count: Int)
+    func didSaveDescriptors(count count: Int)
+    func didFailToLoadDescriptor(error error: NSError)
     
-    func sessionDidBecomeInvalid(error: NSError)
+    func sessionDidBecomeInvalid(error error: NSError)
     func willHandleEventsForBackgroundSession()
     func didFinishEventsForBackgroundSession()
     
-    func downloadTaskDidFinishDownloading(taskDescription: String?, descriptorIdentifier: String?)
-    func taskDidComplete(taskDescription: String?, descriptorIdentifier: String?, error: NSError?)
+    func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
+    func taskDidComplete(task task: NSURLSessionTask, descriptor: Descriptor, error: NSError?)
 
-    func descriptorWillStart(descriptorIdentifier: String?)
-    func descriptorDidSucceed(descriptorIdentifier: String?)
-    func descriptorDidFail(descriptorIdentifier: String?)
+    func descriptorWillStart(descriptor: Descriptor)
+    func descriptorDidSucceed(descriptor: Descriptor)
+    func descriptorDidFail(descriptor: Descriptor)
     
-    func descriptorForTaskNotFound(taskDescription: String?)
+    func descriptorForTaskNotFound(task: NSURLSessionTask)
 }

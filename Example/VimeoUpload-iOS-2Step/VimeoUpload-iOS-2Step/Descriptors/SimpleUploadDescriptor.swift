@@ -66,9 +66,9 @@ class SimpleUploadDescriptor: Descriptor
 
     // MARK: Overrides
     
-    override func start(sessionManager: AFURLSessionManager) throws
+    override func start(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        try super.start(sessionManager)
+        try super.start(sessionManager: sessionManager)
         
         self.state = .Executing
         
@@ -80,7 +80,7 @@ class SimpleUploadDescriptor: Descriptor
             }
             
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try sessionManager.uploadVideoTask(self.url, destination: uploadLinkSecure, progress: &self.progress, completionHandler: nil)
+            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, progress: &self.progress, completionHandler: nil)
 
             self.currentTaskIdentifier = task.taskIdentifier
             task.resume()
@@ -93,7 +93,7 @@ class SimpleUploadDescriptor: Descriptor
         }
     }
     
-    override func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
         guard self.state != .Ready else
         {
@@ -127,7 +127,7 @@ class SimpleUploadDescriptor: Descriptor
         }
     }
     
-    override func taskDidComplete(sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
         NSFileManager.defaultManager().deleteFileAtURL(self.url)
 

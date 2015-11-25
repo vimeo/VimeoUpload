@@ -59,7 +59,7 @@ extension VimeoRequestSerializer
 
     func createVideoRequestWithUrl(url: NSURL) throws -> NSMutableURLRequest
     {
-        let parameters = try self.createVideoRequestBaseParameters(url)
+        let parameters = try self.createVideoRequestBaseParameters(url: url)
         
         let url = NSURL(string: "/me/videos", relativeToURL: VimeoBaseURLString)!
 
@@ -79,7 +79,7 @@ extension VimeoRequestSerializer
         return request
     }
 
-    func createVideoRequestBaseParameters(url: NSURL) throws -> [String: AnyObject]
+    func createVideoRequestBaseParameters(url url: NSURL) throws -> [String: AnyObject]
     {
         let asset = AVURLAsset(URL: url)
         
