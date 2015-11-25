@@ -209,7 +209,7 @@ class DescriptorManager
 
                 strongSelf.save()
                 
-                if descriptor.state == State.Finished
+                if descriptor.state == .Finished
                 {
                     strongSelf.descriptors.remove(descriptor)
                     strongSelf.save()

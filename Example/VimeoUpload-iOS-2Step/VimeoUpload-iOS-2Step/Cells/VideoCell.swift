@@ -107,7 +107,7 @@ class VideoCell: UITableViewCell
     {
         super.awakeFromNib()
         
-        self.updateState(State.Finished)
+        self.updateState(.Finished)
     }
 
     override func prepareForReuse()
@@ -120,7 +120,7 @@ class VideoCell: UITableViewCell
         self.statusLabel.text = ""
         self.errorLabel.text = ""
 
-        self.updateState(State.Finished)
+        self.updateState(.Finished)
     }
     
     // MARK: Actions
@@ -174,13 +174,13 @@ class VideoCell: UITableViewCell
     {
         switch state
         {
-        case State.Ready, State.Executing:
+        case .Ready, .Executing:
             self.deleteButton.setTitle("Cancel", forState: .Normal)
             
             self.errorLabel.text = ""
             self.retryButton.hidden = true
 
-        case State.Finished:
+        case .Finished:
             self.updateProgress(0) // Reset the progress bar to 0
             self.progressView.hidden = true
             self.deleteButton.setTitle("Delete", forState: .Normal)
