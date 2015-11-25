@@ -131,8 +131,6 @@ class SimpleUploadDescriptor: Descriptor
     {
         NSFileManager.defaultManager().deleteFileAtURL(self.url)
 
-        self.error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "test error"])
-
         if self.error == nil
         {
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first

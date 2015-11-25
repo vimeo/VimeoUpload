@@ -53,7 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     
     func application(application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: () -> Void)
     {
-        if UploadManager.sharedInstance.handleEventsForBackgroundURLSession(identifier, completionHandler: completionHandler) == false
+        if UploadManager.sharedInstance.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
         {
             assertionFailure("Unhandled background events")
         }
