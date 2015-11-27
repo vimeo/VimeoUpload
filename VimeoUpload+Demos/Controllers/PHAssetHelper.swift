@@ -62,6 +62,8 @@ class PHAssetHelper
                 return
             }
             
+            // TODO: determine if we can use this here and below Phimageresultrequestidkey
+            
             strongSelf.cancelImageRequestForPHAsset(phAsset)
             
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
