@@ -125,9 +125,29 @@ import Foundation
         
         self.descriptorManager.addDescriptor(descriptor)
     }
-    
+
+    func retryUpload(descriptor descriptor: SimpleUploadDescriptor)
+    {
+        let url = descriptor.url
+        let uploadTicket = descriptor.uploadTicket
+        let videoUri = descriptor.uploadTicket.video!.uri!
+        
+        let newDescriptor = SimpleUploadDescriptor(url: url, uploadTicket: uploadTicket)
+        newDescriptor.identifier = videoUri
+        
+        if let _ = self.failedDescriptors.removeValueForKey(videoUri)
+        {
+            self.save()
+        }
+
+        self.descriptorManager.addDescriptor(newDescriptor)
+    }
+
     func deleteUpload(videoUri videoUri: String)
     {
+        // Upload failure does not delete the exported file, so that the file can be used for retry
+        // Therefore we must delete it here [AH] 11/29/2015
+        
         if let descriptor = self.uploadDescriptorForVideo(videoUri: videoUri)
         {
             descriptor.cancel(sessionManager: self.sessionManager)

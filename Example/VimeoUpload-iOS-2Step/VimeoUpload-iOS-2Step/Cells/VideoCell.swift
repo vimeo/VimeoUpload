@@ -138,7 +138,7 @@ class VideoCell: UITableViewCell
 
     @IBAction func didTapRetryButton(sender: UIButton)
     {
-        let descriptor = self.descriptor
+        if let descriptor = self.descriptor
         {
             self.delegate?.cellDidRetryUploadDescriptor(cell: self, descriptor: descriptor)
         }

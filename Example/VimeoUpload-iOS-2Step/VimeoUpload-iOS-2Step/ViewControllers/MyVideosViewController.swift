@@ -131,16 +131,10 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     {
         UploadManager.sharedInstance.deleteUpload(videoUri: videoUri)
 
-        for (index, video) in self.items.enumerate()
+        if let indexPath = self.indexPathForVideoUri(videoUri)
         {
-            if video.uri == videoUri
-            {
-                self.items.removeAtIndex(index)
-                let indexPath = NSIndexPath(forRow: index, inSection: 0)
-                self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-                
-                break
-            }
+            self.items.removeAtIndex(indexPath.row)
+            self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         }
     }
     
@@ -148,20 +142,32 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: SimpleUploadDescriptor)
     {
-        /*
+        // TODO: We'll need to check with Naren's team to see if we can always just attempt to re-put the video file
+
+        // TODO: fetch user, check daily and weekly quota
+
+        // Initiate the retry
+        UploadManager.sharedInstance.retryUpload(descriptor: descriptor)
+
+        // And then reload the cell so that it reflects the state of the newly retried upload
+        let videoUri = descriptor.uploadTicket.video!.uri!
+        if let indexPath = self.indexPathForVideoUri(videoUri)
+        {
+            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+        }
+    }
+    
+    private func indexPathForVideoUri(videoUri: String) -> NSIndexPath?
+    {
+        for (index, video) in self.items.enumerate()
+        {
+            if video.uri == videoUri
+            {
+                return NSIndexPath(forRow: index, inSection: 0)
+            }
+        }
         
-        The exported video file is deleted upon failure. We can either:
-        (1) not delete it upon failure, so that it can be reused for retry, (we would need to re-check quotas) or
-        (2) go through the entire download/export/quota check process again (this would mean deleting the video object and creating a new one).
-        
-        We'll need to check with Naren's team to see if we can always just attempt to re-put the video file
-        
-        */
-        
-        let url = descriptor.url
-        let uploadTicket = descriptor.uploadTicket
-        
-        UploadManager.sharedInstance.uploadVideo(url: url, uploadTicket: uploadTicket)
+        return nil
     }
     
     // MARK: Actions

@@ -82,7 +82,7 @@ class SimpleUploadDescriptor: Descriptor
             let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, progress: &self.progress, completionHandler: nil)
 
             self.currentTaskIdentifier = task.taskIdentifier
-            task.resume()
+            task.resume()            
         }
         catch let error as NSError
         {
