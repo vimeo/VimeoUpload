@@ -131,10 +131,12 @@ import Foundation
         if let descriptor = self.uploadDescriptorForVideo(videoUri: videoUri)
         {
             descriptor.cancel(sessionManager: self.sessionManager)
+            NSFileManager.defaultManager().deleteFileAtURL(descriptor.url)
         }
         
-        if let _ = self.failedDescriptors.removeValueForKey(videoUri)
+        if let descriptor = self.failedDescriptors.removeValueForKey(videoUri)
         {
+            NSFileManager.defaultManager().deleteFileAtURL(descriptor.url)
             self.save()
         }
         

@@ -146,9 +146,22 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // TODO: review this doc https://github.vimeows.com/Vimeo/vimeo/wiki/Upload-Server-Response-Codes
     
-    func cellDidRetryVideoWithUri(cell cell: VideoCell, videoUri: String, error: NSError)
+    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: SimpleUploadDescriptor)
     {
+        /*
         
+        The exported video file is deleted upon failure. We can either:
+        (1) not delete it upon failure, so that it can be reused for retry, (we would need to re-check quotas) or
+        (2) go through the entire download/export/quota check process again (this would mean deleting the video object and creating a new one).
+        
+        We'll need to check with Naren's team to see if we can always just attempt to re-put the video file
+        
+        */
+        
+        let url = descriptor.url
+        let uploadTicket = descriptor.uploadTicket
+        
+        UploadManager.sharedInstance.uploadVideo(url: url, uploadTicket: uploadTicket)
     }
     
     // MARK: Actions

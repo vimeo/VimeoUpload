@@ -81,9 +81,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
     }
-    
-    // TODO: What happens when this returns 1000 assets?
-    
+        
     private func loadAssets() -> [PHAssetContainer]
     {
         let options = PHFetchOptions()
