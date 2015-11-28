@@ -25,6 +25,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class MyVideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, VideoCellDelegate
 {
@@ -143,18 +144,47 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: SimpleUploadDescriptor)
     {
         // TODO: We'll need to check with Naren's team to see if we can always just attempt to re-put the video file
-
-        // TODO: fetch user, check daily and weekly quota
-
-        // Initiate the retry
-        UploadManager.sharedInstance.retryUpload(descriptor: descriptor)
-
-        // And then reload the cell so that it reflects the state of the newly retried upload
-        let videoUri = descriptor.uploadTicket.video!.uri!
-        if let indexPath = self.indexPathForVideoUri(videoUri)
-        {
-            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+        // Or if we need to clear it out on the servers first
+        
+        let operation = CompositeQuotaOperation(sessionManager: ForegroundSessionManager.sharedInstance)
+        operation.completionBlock = { [weak self] () -> Void in
+            
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.presentUploadRetryErrorAlert(error)
+                }
+                else
+                {
+                    // Initiate the retry
+                    UploadManager.sharedInstance.retryUpload(descriptor: descriptor)
+                    
+                    // And then reload the cell so that it reflects the state of the newly retried upload
+                    let videoUri = descriptor.uploadTicket.video!.uri!
+                    if let indexPath = strongSelf.indexPathForVideoUri(videoUri)
+                    {
+                        strongSelf.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                    }
+                }
+            })
         }
+        operation.shouldCheckDiskSpace = false // We already have an exported asset, no need to check disk space for export
+        operation.start()
+        
+        let url = descriptor.url
+        let asset = AVURLAsset(URL: url)
+        operation.fulfillSelection(avAsset: asset)
     }
     
     private func indexPathForVideoUri(videoUri: String) -> NSIndexPath?
@@ -192,7 +222,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
                     
                     if let error = error
                     {
-                        strongSelf.presentErrorAlert(error)
+                        strongSelf.presentRefreshErrorAlert(error)
                     }
                     else
                     {
@@ -206,7 +236,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         catch let error as NSError
         {
-            self.presentErrorAlert(error)
+            self.presentRefreshErrorAlert(error)
         }
     }
     
@@ -222,7 +252,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: Alerts
     
-    private func presentErrorAlert(error: NSError)
+    private func presentRefreshErrorAlert(error: NSError)
     {
         let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
@@ -230,6 +260,14 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
             self?.refreshControl?.beginRefreshing()
             self?.refresh()
         }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    private func presentUploadRetryErrorAlert(error: NSError)
+    {
+        let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
         
         self.presentViewController(alert, animated: true, completion: nil)
     }

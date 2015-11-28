@@ -1,6 +1,6 @@
 //
-//  SimpleUploadPrepOperation.swift
-//  VimeoUpload-iOS-Example
+//  CompositeExportOperation.swift
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/9/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
@@ -32,15 +32,11 @@ import Photos
 // 1. If inCloud, download
 // 2. Export (check disk space within this step)
 // 3. Check weekly quota
-// 4. Create video record
 
-class SimplePrepareUploadOperation: ConcurrentOperation
+class CompositeExportOperation: ConcurrentOperation
 {    
     let me: VIMUser
     let phAssetContainer: PHAssetContainer
-    let sessionManager: VimeoSessionManager
-    var videoSettings: VideoSettings?
-    
     private let operationQueue: NSOperationQueue
 
     var downloadProgressBlock: ProgressBlock?
@@ -56,17 +52,12 @@ class SimplePrepareUploadOperation: ConcurrentOperation
             }
         }
     }
-    private(set) var url: NSURL?
-    private(set) var uploadTicket: VIMUploadTicket?
+    private(set) var result: NSURL?
 
-    // MARK: Initialization
-    
-    init(me: VIMUser, phAssetContainer: PHAssetContainer, sessionManager: VimeoSessionManager, videoSettings: VideoSettings?)
+    init(me: VIMUser, phAssetContainer: PHAssetContainer)
     {
         self.me = me
         self.phAssetContainer = phAssetContainer
-        self.sessionManager = sessionManager
-        self.videoSettings = videoSettings
         
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
@@ -102,7 +93,7 @@ class SimplePrepareUploadOperation: ConcurrentOperation
         
         self.operationQueue.cancelAllOperations()
         
-        if let url = self.url
+        if let url = self.result
         {
             NSFileManager.defaultManager().deleteFileAtURL(url)
         }
@@ -216,7 +207,7 @@ class SimplePrepareUploadOperation: ConcurrentOperation
         
         guard let size = filesize else
         {
-            self.error = NSError(domain: UploadErrorDomain.PrepareUploadOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Exact filesize calculation failed, filesize is nil."])
+            self.error = NSError(domain: UploadErrorDomain.CompositeExportOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Exact filesize calculation failed, filesize is nil."])
         
             return
         }
@@ -242,45 +233,11 @@ class SimplePrepareUploadOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.PrepareUploadOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.CompositeExportOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
                 }
                 else
                 {
-                    strongSelf.createVideo(url: url)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
-    }
-    
-    private func createVideo(url url: NSURL)
-    {
-        let videoSettings = self.videoSettings
-
-        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.cancelled == true
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else
-                {
-                    strongSelf.url = url
-                    strongSelf.uploadTicket = operation.result!
+                    strongSelf.result = url
                     strongSelf.state = .Finished
                 }
             })

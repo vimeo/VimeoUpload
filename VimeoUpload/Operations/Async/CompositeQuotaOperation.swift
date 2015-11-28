@@ -1,5 +1,5 @@
 //
-//  CameraRollOperation.swift
+//  CompositeQuotaOperation.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/9/15.
@@ -34,12 +34,14 @@ import AVFoundation
 // 3. If non iCloud asset, check approximate weekly quota
 // 4. If non iCloud asset, check approximate disk space
 
-class CameraRollOperation: ConcurrentOperation
+class CompositeQuotaOperation: ConcurrentOperation
 {    
     let sessionManager: VimeoSessionManager
+    var shouldCheckDiskSpace = true
+    
     private(set) var me: VIMUser?
     private let operationQueue: NSOperationQueue
-
+    
     private var avAsset: AVAsset?
     private var selectionFulfilled: Bool = false
 
@@ -95,8 +97,6 @@ class CameraRollOperation: ConcurrentOperation
     override func cancel()
     {
         super.cancel()
-        
-        print("CameraRollOperation cancelled")
         
         self.operationQueue.cancelAllOperations()
     }
@@ -213,7 +213,7 @@ class CameraRollOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.CameraRollOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate daily quota."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.CompositeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate daily quota."])
                 }
                 else
                 {
@@ -252,11 +252,18 @@ class CameraRollOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.CameraRollOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.CompositeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
                 }
                 else
                 {
-                    strongSelf.checkApproximateDiskSpace()
+                    if strongSelf.shouldCheckDiskSpace == true
+                    {
+                        strongSelf.checkApproximateDiskSpace()
+                    }
+                    else
+                    {
+                        strongSelf.state = .Finished
+                    }
                 }
             })
         }
@@ -289,7 +296,7 @@ class CameraRollOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.CameraRollOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.CompositeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
                 }
                 else
                 {

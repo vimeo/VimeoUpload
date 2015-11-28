@@ -108,7 +108,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let sessionManager = ForegroundSessionManager.sharedInstance
         let videoSettings = self.videoSettings
         
-        let operation = SimplePrepareUploadOperation(me: me, phAssetContainer: phAssetContainer, sessionManager: sessionManager, videoSettings: videoSettings)
+        let operation = SimpleCompositeExportOperation(me: me, phAssetContainer: phAssetContainer, sessionManager: sessionManager, videoSettings: videoSettings)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
@@ -187,7 +187,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil)
      
-        let operation = self.operation as? SimplePrepareUploadOperation
+        let operation = self.operation as? SimpleCompositeExportOperation
 
         if operation?.state == .Executing
         {
