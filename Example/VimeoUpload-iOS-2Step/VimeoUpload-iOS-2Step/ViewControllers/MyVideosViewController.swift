@@ -143,6 +143,10 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: SimpleUploadDescriptor)
     {
+        // TODO: This should be cancellable
+        
+        // TODO: Should most of this logic be moved into the UploadManager?
+        
         // TODO: We'll need to check with Naren's team to see if we can always just attempt to re-put the video file
         // Or if we need to clear it out on the servers first
         
