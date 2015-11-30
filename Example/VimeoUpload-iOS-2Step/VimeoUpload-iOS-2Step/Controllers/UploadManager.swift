@@ -41,7 +41,7 @@ import Foundation
     
     private let sessionManager: VimeoSessionManager
     private let descriptorManager: DescriptorManager
-    private let deletionManager: DeletionManager
+    private let deletionManager: VideoDeletionManager
     private let archiver: KeyedArchiver
     
     // MARK:
@@ -61,7 +61,7 @@ import Foundation
     {
         self.sessionManager = VimeoSessionManager.backgroundSessionManager(identifier: UploadManager.BackgroundSessionIdentifier, authToken: UploadManager.AuthToken)
         self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: UploadManager.DescriptorManagerName, delegate: self.reporter)
-        self.deletionManager = DeletionManager(sessionManager: ForegroundSessionManager.sharedInstance, retryCount: 2)
+        self.deletionManager = VideoDeletionManager(sessionManager: ForegroundSessionManager.sharedInstance, retryCount: 2)
         self.archiver = UploadManager.setupArchiver(name: UploadManager.DescriptorManagerName)
 
         super.init()
