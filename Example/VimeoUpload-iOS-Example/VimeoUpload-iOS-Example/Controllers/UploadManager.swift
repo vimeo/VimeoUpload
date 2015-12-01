@@ -34,10 +34,13 @@ class UploadManager
     private let descriptorManager: DescriptorManager
     private let deletionManager: VideoDeletionManager
     private let reporter: UploadReporter = UploadReporter()
-    
+
+    private static let BasicUserToken = "3e9dae312853936216aba3ce56cf5066"
+    private static let ProUserToken = "caf4648129ec56e580175c4b45cce7fc"
+
     init()
     {
-        self.sessionManager = VimeoSessionManager.backgroundSessionManager("com.vimeo.upload", authToken: "caf4648129ec56e580175c4b45cce7fc")
+        self.sessionManager = VimeoSessionManager.backgroundSessionManager("com.vimeo.upload", authToken: UploadManager.BasicUserToken)
         self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: "uploader", delegate: self.reporter)
         self.deletionManager = VideoDeletionManager(sessionManager: self.sessionManager, retryCount: 2)
     }

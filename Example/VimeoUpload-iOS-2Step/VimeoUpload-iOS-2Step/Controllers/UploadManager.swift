@@ -34,7 +34,8 @@ import Foundation
     
     private static let BackgroundSessionIdentifier = "com.vimeo.upload"
     private static let DescriptorManagerName = "uploader"
-    private static let AuthToken = "caf4648129ec56e580175c4b45cce7fc"
+    private static let BasicUserToken = "3e9dae312853936216aba3ce56cf5066"
+    private static let ProUserToken = "caf4648129ec56e580175c4b45cce7fc"
     private static let FailedDescriptorsArchiveKey = "failed_descriptors"
     
     // MARK: 
@@ -59,7 +60,7 @@ import Foundation
     
     override init()
     {
-        self.sessionManager = VimeoSessionManager.backgroundSessionManager(identifier: UploadManager.BackgroundSessionIdentifier, authToken: UploadManager.AuthToken)
+        self.sessionManager = VimeoSessionManager.backgroundSessionManager(identifier: UploadManager.BackgroundSessionIdentifier, authToken: UploadManager.BasicUserToken)
         self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: UploadManager.DescriptorManagerName, delegate: self.reporter)
         self.deletionManager = VideoDeletionManager(sessionManager: ForegroundSessionManager.sharedInstance, retryCount: 2)
         self.archiver = UploadManager.setupArchiver(name: UploadManager.DescriptorManagerName)
