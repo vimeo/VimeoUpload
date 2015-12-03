@@ -45,17 +45,20 @@ import AVFoundation
 class RetryUploadOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
-    private let avAsset: AVAsset
+    private let phAssetContainer: PHAssetContainer
     private let operationQueue: NSOperationQueue
     
     // MARK: 
     
-    private var me: VIMUser?
+    var downloadProgressBlock: ProgressBlock?
+    var exportProgressBlock: ProgressBlock?
 
     // MARK:
     
+    private(set) var url: NSURL?
+    private(set) var uploadTicket: VIMUploadTicket?
     private(set) var error: NSError?
-        {
+    {
         didSet
         {
             if self.error != nil
@@ -67,10 +70,10 @@ class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Initialization
     
-    init(sessionManager: VimeoSessionManager, avAsset: AVAsset)
+    init(sessionManager: VimeoSessionManager, phAssetContainer: PHAssetContainer)
     {
         self.sessionManager = sessionManager
-        self.avAsset = avAsset
+        self.phAssetContainer = phAssetContainer
         
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
@@ -90,7 +93,7 @@ class RetryUploadOperation: ConcurrentOperation
             return
         }
         
-        self.performCompositeQuotaOperation()
+        self.performCompositeMeQuotaOperation()
     }
     
     override func cancel()
@@ -102,9 +105,9 @@ class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    private func performCompositeQuotaOperation()
+    private func performCompositeMeQuotaOperation()
     {
-        let operation = CompositeMeQuotaOperation(sessionManager: ForegroundSessionManager.sharedInstance, avAsset: self.avAsset)
+        let operation = CompositeMeQuotaOperation(sessionManager: ForegroundSessionManager.sharedInstance)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -122,28 +125,31 @@ class RetryUploadOperation: ConcurrentOperation
                 if let error = operation.error
                 {
                     strongSelf.error = error
-                    
-                    return
                 }
-                
-                strongSelf.me = operation.me!
-                strongSelf.performCompositeExportOperation()
+                else
+                {
+                    let user = operation.me!
+                    strongSelf.performCompositeCloudExportCreateOperation(user: user)
+                }
             })
         }
         
         self.operationQueue.addOperation(operation)
+
+        let avAsset = self.phAssetContainer.avAsset
+        operation.fulfillSelection(avAsset: avAsset)
     }
     
-    private func performCompositeExportOperation()
+    private func performCompositeCloudExportCreateOperation(user user: VIMUser)
     {
-        let operation = CompositeCloudExportCreateOperation(me: self.me, phAssetContainer: phAssetContainer, sessionManager: self.sessionManager)
+        let operation = CompositeCloudExportCreateOperation(me: user, phAssetContainer: self.phAssetContainer, sessionManager: self.sessionManager)
         
-        operation.downloadProgressBlock = { (progress: Double) -> Void in
-            print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
+        operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
+            self?.downloadProgressBlock?(progress: progress)
         }
         
-        operation.exportProgressBlock = { (progress: Double) -> Void in
-            print("Export progress (settings): \(progress)")
+        operation.exportProgressBlock = { [weak self] (progress: Double) -> Void in
+            self?.exportProgressBlock?(progress: progress)
         }
         
         operation.completionBlock = { [weak self] () -> Void in
@@ -163,30 +169,12 @@ class RetryUploadOperation: ConcurrentOperation
                 if let error = operation.error
                 {
                     strongSelf.error = error
-                    
-                    return
                 }
-
-                strongSelf.url = operation.url!
-                strongSelf.uploadTicket = operation.uploadTicket!
-                strongSelf.startUpload()
-
-                // TODO: video settings have already been applied?
-                
-                
-                
-                // TODO: ensure we have a reference to the asset
-                
-                // Initiate the retry
-                UploadManager.sharedInstance.retryUpload(descriptor: descriptor)
-                
-                // And then reload the cell so that it reflects the state of the newly retried upload
-                let videoUri = descriptor.uploadTicket.video!.uri!
-                if let indexPath = strongSelf.indexPathForVideoUri(videoUri)
+                else
                 {
-                    strongSelf.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                    strongSelf.url = operation.url!
+                    strongSelf.uploadTicket = operation.uploadTicket!
                 }
-
             })
         }
         

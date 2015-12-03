@@ -43,12 +43,17 @@ class CompositeCloudExportCreateOperation: ConcurrentOperation
     let phAssetContainer: PHAssetContainer
     let sessionManager: VimeoSessionManager
     var videoSettings: VideoSettings?
-    
     private let operationQueue: NSOperationQueue
 
+    // MARK:
+    
     var downloadProgressBlock: ProgressBlock?
     var exportProgressBlock: ProgressBlock?
+
+    // MARK: 
     
+    private(set) var url: NSURL?
+    private(set) var uploadTicket: VIMUploadTicket?
     private(set) var error: NSError?
     {
         didSet
@@ -59,8 +64,6 @@ class CompositeCloudExportCreateOperation: ConcurrentOperation
             }
         }
     }
-    private(set) var url: NSURL?
-    private(set) var uploadTicket: VIMUploadTicket?
 
     // MARK: Initialization
     

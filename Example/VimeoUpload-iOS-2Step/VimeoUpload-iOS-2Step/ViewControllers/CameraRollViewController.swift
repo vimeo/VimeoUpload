@@ -30,6 +30,16 @@ import AVFoundation
 
 typealias CameraRollViewControllerResult = (me: VIMUser, phAssetContainer: PHAssetContainer)
 
+/*
+    This viewController displays the device camera roll video contents. 
+
+    It starts an operation on load that requests a fresh version of the authenticated user, checks that user's daily quota, and if the user selects a non-iCloud asset it checks the weekly quota and available diskspace. 
+
+    Essentially, it performs all checks possible at this UX juncture to determine if we can proceed with the upload.
+
+    [AH] 12/03/2015
+*/
+
 class CameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
     static let NibName = "CameraRollViewController"
@@ -59,8 +69,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
 
         self.setupNavigationBar()
         self.setupCollectionView()
-        
-        self.setupOperation(nil)
+        self.setupAndStartOperation(me: nil)
     }
     
     override func viewDidAppear(animated: Bool)
@@ -111,21 +120,15 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         layout?.minimumLineSpacing = CameraRollViewController.CollectionViewSpacing
     }
     
-    private func setupOperation(me: VIMUser?)
+    private func setupAndStartOperation(me me: VIMUser?)
     {
         let sessionManager = ForegroundSessionManager.sharedInstance
+     
         let operation = CompositeMeQuotaOperation(sessionManager: sessionManager, me: me)
-        self.setOperationBlocks(operation)
-        self.operation = operation
-        self.operation?.start()
-    }
-        
-    private func setOperationBlocks(operation: CompositeMeQuotaOperation)
-    {
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-              
+                
                 guard let strongSelf = self else
                 {
                     return
@@ -137,7 +140,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 }
                 
                 strongSelf.activityIndicatorView.stopAnimating()
-
+                
                 if let error = operation.error
                 {
                     if let indexPath = strongSelf.selectedIndexPath
@@ -150,13 +153,17 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 {
                     let indexPath = strongSelf.selectedIndexPath!
                     let phAssetContainer = strongSelf.assets[indexPath.item]
-
-                    strongSelf.finish(phAssetContainer)
+                    let me = operation.me!
+   
+                    strongSelf.finish(phAssetContainer: phAssetContainer, me: me)
                 }
             })
         }
+
+        self.operation = operation
+        self.operation?.start()
     }
-     
+    
     // MARK: Actions
     
     func didTapCancel(sender: UIBarButtonItem)
@@ -343,7 +350,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             
             strongSelf.selectedIndexPath = nil
             strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
-            strongSelf.setupOperation(strongSelf.operation?.me)
+            strongSelf.setupAndStartOperation(me: strongSelf.operation?.me)
         }))
 
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
@@ -353,18 +360,16 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 return
             }
 
-            strongSelf.setupOperation(strongSelf.operation?.me)
+            strongSelf.setupAndStartOperation(me: strongSelf.operation?.me)
             strongSelf.didSelectIndexPath(indexPath)
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    private func finish(phAssetContainer: PHAssetContainer)
+    private func finish(phAssetContainer phAssetContainer: PHAssetContainer, me: VIMUser)
     {
-        let me = self.operation!.me!
-
-        self.setupOperation(me) // Reset the operation
+        self.setupAndStartOperation(me: me) // Reset the operation
         
         let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
         viewController.input = CameraRollViewControllerResult(me: me, phAssetContainer: phAssetContainer)

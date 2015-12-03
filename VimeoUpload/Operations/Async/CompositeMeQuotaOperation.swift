@@ -55,16 +55,10 @@ class CompositeMeQuotaOperation: ConcurrentOperation
         }
     }
     
-    init(sessionManager: VimeoSessionManager, me: VIMUser? = nil, avAsset: AVAsset? = nil)
+    init(sessionManager: VimeoSessionManager, me: VIMUser? = nil)
     {
         self.sessionManager = sessionManager
         self.me = me
-        self.avAsset = avAsset
-        
-        if avAsset != nil
-        {
-            self.selectionFulfilled = true
-        }
         
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1

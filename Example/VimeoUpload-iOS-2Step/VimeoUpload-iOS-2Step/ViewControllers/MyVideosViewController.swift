@@ -143,49 +143,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: SimpleUploadDescriptor)
     {
-        // TODO: This should be cancellable
-        
-        // TODO: Should most of this logic be moved into the UploadManager?
-        
-        let operation = CompositeMeQuotaOperation(sessionManager: ForegroundSessionManager.sharedInstance)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.cancelled == true
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.presentUploadRetryErrorAlert(error)
-                }
-                else
-                {
-                    // TODO: Perform CompositeCloudExportCreateOperation
-                    // TODO: ensure we have a reference to the asset
-                    
-                    // Initiate the retry
-                    UploadManager.sharedInstance.retryUpload(descriptor: descriptor)
-                    
-                    // And then reload the cell so that it reflects the state of the newly retried upload
-                    let videoUri = descriptor.uploadTicket.video!.uri!
-                    if let indexPath = strongSelf.indexPathForVideoUri(videoUri)
-                    {
-                        strongSelf.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-                    }
-                }
-            })
-        }
-        operation.start()
-        
-        operation.fulfillSelection(avAsset: asset)
+        self.retryUpload()
     }
     
     private func indexPathForVideoUri(videoUri: String) -> NSIndexPath?
@@ -271,5 +229,54 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
         
         self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: Private API
+    
+    private func retryUpload()
+    {
+//        // TODO: This should be cancellable
+//        
+//        // TODO: Should most of this logic be moved into the UploadManager?
+//        
+//        let operation = CompositeMeQuotaOperation(sessionManager: ForegroundSessionManager.sharedInstance)
+//        operation.completionBlock = { [weak self] () -> Void in
+//            
+//            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+//                
+//                guard let strongSelf = self else
+//                {
+//                    return
+//                }
+//                
+//                if operation.cancelled == true
+//                {
+//                    return
+//                }
+//                
+//                if let error = operation.error
+//                {
+//                    strongSelf.presentUploadRetryErrorAlert(error)
+//                }
+//                else
+//                {
+//                    // TODO: Perform CompositeCloudExportCreateOperation
+//                    // TODO: ensure we have a reference to the asset
+//                    
+//                    // Initiate the retry
+//                    UploadManager.sharedInstance.retryUpload(descriptor: descriptor)
+//                    
+//                    // And then reload the cell so that it reflects the state of the newly retried upload
+//                    let videoUri = descriptor.uploadTicket.video!.uri!
+//                    if let indexPath = strongSelf.indexPathForVideoUri(videoUri)
+//                    {
+//                        strongSelf.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+//                    }
+//                }
+//                })
+//        }
+//        operation.start()
+//        
+//        operation.fulfillSelection(avAsset: asset)
     }
 }
