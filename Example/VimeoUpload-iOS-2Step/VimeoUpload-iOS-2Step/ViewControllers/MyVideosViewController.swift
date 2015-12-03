@@ -144,6 +144,8 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
+    // TODO: review this doc https://github.vimeows.com/Vimeo/vimeo/wiki/Upload-Server-Response-Codes
+    
     func cellDidRetryVideoWithUri(cell cell: VideoCell, videoUri: String, error: NSError)
     {
         

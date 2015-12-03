@@ -82,6 +82,8 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
     }
     
+    // TODO: What happens when this returns 1000 assets?
+    
     private func loadAssets() -> [PHAssetContainer]
     {
         let options = PHFetchOptions()
@@ -142,7 +144,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 {
                     if let indexPath = strongSelf.selectedIndexPath
                     {
-                        strongSelf.presentOperationErrorAlert(indexPath, error: error)
+                        strongSelf.presentErrorAlert(indexPath, error: error)
                     }
                     // else: do nothing, the error will be communicated at the time of cell selection
                 }
@@ -219,33 +221,30 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         let size = cell.bounds.size
         let scale = UIScreen.mainScreen().scale
         let scaledSize = CGSizeMake(scale * size.width, scale * size.height)
-
-        // TODO: weak cell?
         
-        self.phAssetHelper.requestImage(phAsset: phAsset, size: scaledSize) { [weak self] (image, inCloud, error) -> Void in
+        self.phAssetHelper.requestImage(phAsset: phAsset, size: scaledSize) { [weak self, weak cell] (image, inCloud, error) -> Void in
             
-            guard let _ = self else
+            guard let _ = self, let strongCell = cell else
             {
                 return
             }
             
-            if let inCloud = inCloud
+            // Cache the inCloud value for later use in didSelectItem
+            phAssetContainer.inCloud = inCloud
+            phAssetContainer.error = error
+
+            if let inCloud = inCloud where inCloud == true
             {
-                phAssetContainer.inCloud = inCloud
-                
-                if inCloud == true
-                {
-                    cell.setError("iCloud Asset")
-                }
+                strongCell.setError("iCloud Asset")
             }
 
             if let image = image
             {
-                cell.setImage(image)
+                strongCell.setImage(image)
             }
             else if let error = error
             {
-                cell.setError(error.localizedDescription)
+                strongCell.setError(error.localizedDescription)
             }
         }
     }
@@ -254,65 +253,44 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     {
         let phAsset = phAssetContainer.phAsset
         
-        // TODO: weak cell?
-        
-        self.phAssetHelper.requestAsset(phAsset: phAsset, completion: { [weak self] (asset, inCloud, error) -> Void in
+        self.phAssetHelper.requestAsset(phAsset: phAsset, completion: { [weak self, weak cell] (asset, inCloud, error) -> Void in
             
-            guard let _ = self else
+            guard let _ = self, let strongCell = cell else
             {
                 return
             }
             
             // Cache the asset and inCloud values for later use in didSelectItem
-            
-            if let inCloud = inCloud
+            phAssetContainer.avAsset = asset
+            phAssetContainer.inCloud = inCloud
+            phAssetContainer.error = error
+
+            if let inCloud = inCloud where inCloud == true
             {
-                phAssetContainer.inCloud = inCloud
-                
-                if inCloud == true
-                {
-                    cell.setError("iCloud Asset")
-                }
+                strongCell.setError("iCloud Asset")
             }
             
             if let asset = asset
             {
-                phAssetContainer.avAsset = asset
-                
                 let megabytes = asset.approximateFileSizeInMegabytes()
-                cell.setFileSize(megabytes)
+                strongCell.setFileSize(megabytes)
             }
             else if let error = error
             {
-                cell.setError(error.localizedDescription)
+                strongCell.setError(error.localizedDescription)
             }
         })
     }
     
     private func didSelectIndexPath(indexPath: NSIndexPath)
     {
-        if AFNetworkReachabilityManager.sharedManager().reachable == false
-        {
-            self.presentOfflineErrorAlert(indexPath)
-            
-            return
-        }
-        
         let phAssetContainer = self.assets[indexPath.item]
         
         // Check if an error occurred when attempting to retrieve the asset
-        if phAssetContainer.inCloud == nil && phAssetContainer.avAsset == nil
+        if let error = phAssetContainer.error
         {
-            self.presentAssetErrorAlert(indexPath)
+            self.presentAssetErrorAlert(indexPath, error: error)
             
-            return
-        }
-        
-        // Check if we were told the asset is on device but were not provided an asset (this should never happen)
-        if let inCloud = phAssetContainer.inCloud where inCloud == false && phAssetContainer.avAsset == nil
-        {
-            self.presentAssetErrorAlert(indexPath)
-        
             return
         }
         
@@ -320,10 +298,18 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
 
         if let error = self.operation?.error
         {
-            self.presentOperationErrorAlert(indexPath, error: error)
+            self.presentErrorAlert(indexPath, error: error)
         }
         else
         {
+            if AFNetworkReachabilityManager.sharedManager().reachable == false
+            {
+                let error = NSError(domain: NSURLErrorDomain, code: NSURLErrorNotConnectedToInternet, userInfo: [NSLocalizedDescriptionKey: "The internet connection appears to be offline."])
+                self.presentErrorAlert(indexPath, error: error)
+                
+                return
+            }
+
             // Only show the activity indicator UI if the network request is in progress
             if self.operation?.me == nil
             {
@@ -336,19 +322,9 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     // MARK: UI Presentation
 
-    private func presentOfflineErrorAlert(indexPath: NSIndexPath)
+    private func presentAssetErrorAlert(indexPath: NSIndexPath, error: NSError)
     {
-        let alert = UIAlertController(title: "Offline Error", message: "Connect to the internet to upload a video.", preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
-        }))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
-    }
-
-    private func presentAssetErrorAlert(indexPath: NSIndexPath)
-    {
-        let alert = UIAlertController(title: "Asset Error", message: "An error occurred when requesting the avAsset.", preferredStyle: UIAlertControllerStyle.Alert)
+        let alert = UIAlertController(title: "Asset Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
             self?.collectionView.reloadItemsAtIndexPaths([indexPath]) // Let the user manually reselect the cell since reload is async
         }))
@@ -356,9 +332,9 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    private func presentOperationErrorAlert(indexPath: NSIndexPath, error: NSError)
+    private func presentErrorAlert(indexPath: NSIndexPath, error: NSError)
     {
-        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
             
             guard let strongSelf = self else

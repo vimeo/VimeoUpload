@@ -62,6 +62,8 @@ class PHAssetHelper
                 return
             }
             
+            // TODO: determine if we can use this here and below Phimageresultrequestidkey
+            
             strongSelf.cancelImageRequestForPHAsset(phAsset)
             
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
@@ -69,15 +71,15 @@ class PHAssetHelper
                 return
             }
             
-            let inCloud = info?[PHImageResultIsInCloudKey] as? Bool
             let error = info?[PHImageErrorKey] as? NSError
 
             if let error = error
             {
-                completion(image: nil, inCloud: inCloud, error: error)
+                completion(image: nil, inCloud: nil, error: error)
             }
             else if let image = image
             {
+                let inCloud = info?[PHImageResultIsInCloudKey] as? Bool
                 completion(image: image, inCloud: inCloud, error: nil)
             }
         })
@@ -119,15 +121,15 @@ class PHAssetHelper
 
                 if let inCloud = inCloud where inCloud == true
                 {
-                    completion(asset: nil, inCloud: inCloud, error: nil)
+                    completion(asset: nil, inCloud: true, error: nil)
                 }
                 else if let error = error
                 {
-                    completion(asset: nil, inCloud: inCloud, error: error)
+                    completion(asset: nil, inCloud: nil, error: error)
                 }
                 else if let asset = asset
                 {
-                    completion(asset: asset, inCloud: inCloud, error: nil)
+                    completion(asset: asset, inCloud: false, error: nil)
                 }
                 else
                 {

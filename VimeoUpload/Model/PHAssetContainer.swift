@@ -33,6 +33,7 @@ class PHAssetContainer
     let phAsset: PHAsset
     var avAsset: AVAsset?
     var inCloud: Bool?
+    var error: NSError?
     
     init(phAsset: PHAsset)
     {
