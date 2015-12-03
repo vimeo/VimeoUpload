@@ -28,7 +28,7 @@ import UIKit
 import Photos
 import AVFoundation
 
-typealias CameraRollViewControllerResult = (me: VIMUser, phAssetContainer: PHAssetContainer)
+typealias CameraRollViewControllerResult = (me: VIMUser, phAsset: PHAsset)
 
 /*
     This viewController displays the device camera roll video contents. 
@@ -153,9 +153,10 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 {
                     let indexPath = strongSelf.selectedIndexPath!
                     let phAssetContainer = strongSelf.assets[indexPath.item]
+                    let phAsset = phAssetContainer.phAsset
                     let me = operation.me!
    
-                    strongSelf.finish(phAssetContainer: phAssetContainer, me: me)
+                    strongSelf.finish(phAsset: phAsset, me: me)
                 }
             })
         }
@@ -367,12 +368,12 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    private func finish(phAssetContainer phAssetContainer: PHAssetContainer, me: VIMUser)
+    private func finish(phAsset phAsset: PHAsset, me: VIMUser)
     {
         self.setupAndStartOperation(me: me) // Reset the operation
         
         let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.input = CameraRollViewControllerResult(me: me, phAssetContainer: phAssetContainer)
+        viewController.input = CameraRollViewControllerResult(me: me, phAsset: phAsset)
         
         self.navigationController?.pushViewController(viewController, animated: true)
     }

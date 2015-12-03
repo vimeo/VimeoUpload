@@ -107,11 +107,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func setupAndStartOperation()
     {
         let me = self.input!.me
-        let phAssetContainer = self.input!.phAssetContainer
+        let phAsset = self.input!.phAsset
         let sessionManager = ForegroundSessionManager.sharedInstance
         let videoSettings = self.videoSettings
         
-        let operation = CompositeCloudExportCreateOperation(me: me, phAssetContainer: phAssetContainer, sessionManager: sessionManager, videoSettings: videoSettings)
+        let operation = CompositeCloudExportCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
@@ -175,8 +175,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let url = self.url!
         let uploadTicket = self.uploadTicket!
-        
-        UploadManager.sharedInstance.uploadVideo(url: url, uploadTicket: uploadTicket) // TODO: Also store PHAsset ID
+        UploadManager.sharedInstance.uploadVideo(url: url, uploadTicket: uploadTicket)
     }
 
     // MARK: Actions

@@ -157,7 +157,7 @@ class SimpleUploadDescriptor: Descriptor
     {
         self.url = aDecoder.decodeObjectForKey("url") as! NSURL // If force unwrap fails we have a big problem
         self.uploadTicket = aDecoder.decodeObjectForKey("uploadTicket") as! VIMUploadTicket
-        
+
         super.init(coder: aDecoder)
     }
     

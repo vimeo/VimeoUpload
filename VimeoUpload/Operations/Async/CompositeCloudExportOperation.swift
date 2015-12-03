@@ -36,7 +36,7 @@ import Photos
 class CompositeCloudExportOperation: ConcurrentOperation
 {    
     let me: VIMUser
-    let phAssetContainer: PHAssetContainer
+    let phAsset: PHAsset
     private let operationQueue: NSOperationQueue
 
     var downloadProgressBlock: ProgressBlock?
@@ -54,10 +54,10 @@ class CompositeCloudExportOperation: ConcurrentOperation
     }
     private(set) var result: NSURL?
 
-    init(me: VIMUser, phAssetContainer: PHAssetContainer)
+    init(me: VIMUser, phAsset: PHAsset)
     {
         self.me = me
-        self.phAssetContainer = phAssetContainer
+        self.phAsset = phAsset
         
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
@@ -77,14 +77,7 @@ class CompositeCloudExportOperation: ConcurrentOperation
             return
         }
 
-        if let asset = self.phAssetContainer.avAsset
-        {
-            self.export(asset: asset)
-        }
-        else
-        {
-            self.downloadPHAssetExportSession()
-        }
+        self.requestExportSession()
     }
     
     override func cancel()
@@ -101,10 +94,9 @@ class CompositeCloudExportOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    private func downloadPHAssetExportSession()
+    private func requestExportSession()
     {
-        let phAsset = self.phAssetContainer.phAsset
-        let operation = PHAssetExportSessionOperation(phAsset: phAsset)
+        let operation = PHAssetExportSessionOperation(phAsset: self.phAsset)
         operation.progressBlock = self.downloadProgressBlock
         operation.completionBlock = { [weak self] () -> Void in
             
@@ -138,17 +130,6 @@ class CompositeCloudExportOperation: ConcurrentOperation
     private func export(exportSession exportSession: AVAssetExportSession)
     {
         let operation = AVAssetExportOperation(exportSession: exportSession)
-        self.export(operation: operation)
-    }
-    
-    private func export(asset asset: AVAsset)
-    {
-        let operation = AVAssetExportOperation(asset: asset)
-        self.export(operation: operation)
-    }
-    
-    private func export(operation operation: AVAssetExportOperation)
-    {
         operation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
             
             if let progressBlock = self?.exportProgressBlock

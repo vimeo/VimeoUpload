@@ -172,14 +172,7 @@ class CompositeMeQuotaOperation: ConcurrentOperation
             return
         }
         
-        if self.avAsset == nil
-        {
-            self.state = .Finished
-        }
-        else
-        {
-            self.checkDailyQuota()
-        }
+        self.checkDailyQuota()
     }
     
     private func checkDailyQuota()
@@ -211,7 +204,14 @@ class CompositeMeQuotaOperation: ConcurrentOperation
                 }
                 else
                 {
-                    strongSelf.checkApproximateWeeklyQuota()
+                    if strongSelf.avAsset != nil
+                    {
+                        strongSelf.checkApproximateWeeklyQuota() // If the asset is not nil, then we can perform the the MB-based checks
+                    }
+                    else
+                    {
+                        strongSelf.state = .Finished // If the asset is nil, then it's in iCloud and we don't yet have access to the filesize
+                    }
                 }
             })
         }

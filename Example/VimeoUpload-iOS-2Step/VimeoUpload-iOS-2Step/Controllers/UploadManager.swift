@@ -124,9 +124,8 @@ import Foundation
         self.descriptorManager.addDescriptor(descriptor)
     }
 
-    func retryUpload(descriptor descriptor: SimpleUploadDescriptor)
+    func retryUpload(descriptor descriptor: SimpleUploadDescriptor, url: NSURL)
     {
-        let url = descriptor.url
         let uploadTicket = descriptor.uploadTicket
         let videoUri = descriptor.uploadTicket.video!.uri!
         

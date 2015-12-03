@@ -40,7 +40,7 @@ import Photos
 class CompositeCloudExportCreateOperation: ConcurrentOperation
 {    
     let me: VIMUser
-    let phAssetContainer: PHAssetContainer
+    let phAsset: PHAsset
     let sessionManager: VimeoSessionManager
     var videoSettings: VideoSettings?
     private let operationQueue: NSOperationQueue
@@ -67,10 +67,10 @@ class CompositeCloudExportCreateOperation: ConcurrentOperation
 
     // MARK: Initialization
     
-    init(me: VIMUser, phAssetContainer: PHAssetContainer, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    init(me: VIMUser, phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {
         self.me = me
-        self.phAssetContainer = phAssetContainer
+        self.phAsset = phAsset
         self.sessionManager = sessionManager
         self.videoSettings = videoSettings
         
@@ -111,9 +111,7 @@ class CompositeCloudExportCreateOperation: ConcurrentOperation
     
     private func performCloudExportOperation()
     {
-        let me = self.me
-        let phAssetContainer = self.phAssetContainer
-        let operation = CompositeCloudExportOperation(me: me, phAssetContainer: phAssetContainer)
+        let operation = CompositeCloudExportOperation(me: self.me, phAsset: self.phAsset)
         
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
             self?.downloadProgressBlock?(progress: progress)

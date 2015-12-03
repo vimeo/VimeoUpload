@@ -143,7 +143,26 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: SimpleUploadDescriptor)
     {
-        self.retryUpload()
+        let videoUri = descriptor.uploadTicket.video!.uri!
+
+        self.retryUploadDescriptor(descriptor, completion: { [weak self] (error) in
+         
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            if error != nil
+            {
+                return
+            }
+            
+            // Reload the cell so that it reflects the state of the newly retried upload
+            if let indexPath = strongSelf.indexPathForVideoUri(videoUri)
+            {
+                strongSelf.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+            }
+        })
     }
     
     private func indexPathForVideoUri(videoUri: String) -> NSIndexPath?
@@ -233,50 +252,48 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: Private API
     
-    private func retryUpload()
+    private func retryUploadDescriptor(descriptor: SimpleUploadDescriptor, completion: ErrorBlock)
     {
-//        // TODO: This should be cancellable
-//        
-//        // TODO: Should most of this logic be moved into the UploadManager?
-//        
-//        let operation = CompositeMeQuotaOperation(sessionManager: ForegroundSessionManager.sharedInstance)
-//        operation.completionBlock = { [weak self] () -> Void in
-//            
-//            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-//                
-//                guard let strongSelf = self else
-//                {
-//                    return
-//                }
-//                
-//                if operation.cancelled == true
-//                {
-//                    return
-//                }
-//                
-//                if let error = operation.error
-//                {
-//                    strongSelf.presentUploadRetryErrorAlert(error)
-//                }
-//                else
-//                {
-//                    // TODO: Perform CompositeCloudExportCreateOperation
-//                    // TODO: ensure we have a reference to the asset
-//                    
-//                    // Initiate the retry
-//                    UploadManager.sharedInstance.retryUpload(descriptor: descriptor)
-//                    
-//                    // And then reload the cell so that it reflects the state of the newly retried upload
-//                    let videoUri = descriptor.uploadTicket.video!.uri!
-//                    if let indexPath = strongSelf.indexPathForVideoUri(videoUri)
-//                    {
-//                        strongSelf.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-//                    }
-//                }
-//                })
-//        }
-//        operation.start()
-//        
-//        operation.fulfillSelection(avAsset: asset)
+        // TODO: This should be cancellable
+        // TODO: Should most of this logic be moved into the UploadManager?
+        
+        let operation = RetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
+        operation.downloadProgressBlock = { (progress: Double) -> Void in
+            print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
+        }
+        
+        operation.exportProgressBlock = { (progress: Double) -> Void in
+            print("Export progress (settings): \(progress)")
+        }
+        operation.completionBlock = { [weak self] () -> Void in
+            
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.presentUploadRetryErrorAlert(error)
+                }
+                else
+                {
+                    // Initiate the retry
+
+                    let url = operation.result!
+                    UploadManager.sharedInstance.retryUpload(descriptor: descriptor, url: url)
+                }
+                
+                errorBlock(error: operation.error)
+            })
+        }
+        operation.start()
     }
 }

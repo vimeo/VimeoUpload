@@ -26,6 +26,7 @@
 
 import Foundation
 import AVFoundation
+import Photos
 
 // This flow encapsulates the following steps:
 
@@ -35,17 +36,15 @@ import AVFoundation
 //// 3. If non iCloud asset, check approximate weekly quota
 //// 4. If non iCloud asset, check approximate disk space
 
-// 2. Perform a CompositeCloudExportCreateOperation
-//// 1. Perorm a CompositeCloudExportOperation
-////// 1. If inCloud, download
-////// 2. Export (check disk space within this step)
-////// 3. Check weekly quota
-//// 2. Create video record
+// 2. Perform a CompositeCloudExportOperation
+//// 1. If inCloud, download
+//// 2. Export (check disk space within this step)
+//// 3. Check weekly quota
 
 class RetryUploadOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
-    private let phAssetContainer: PHAssetContainer
+    private let phAsset: PHAsset
     private let operationQueue: NSOperationQueue
     
     // MARK: 
@@ -56,7 +55,6 @@ class RetryUploadOperation: ConcurrentOperation
     // MARK:
     
     private(set) var url: NSURL?
-    private(set) var uploadTicket: VIMUploadTicket?
     private(set) var error: NSError?
     {
         didSet
@@ -70,10 +68,10 @@ class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Initialization
     
-    init(sessionManager: VimeoSessionManager, phAssetContainer: PHAssetContainer)
+    init(sessionManager: VimeoSessionManager, phAsset: PHAsset)
     {
         self.sessionManager = sessionManager
-        self.phAssetContainer = phAssetContainer
+        self.phAsset = phAsset
         
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
@@ -129,20 +127,19 @@ class RetryUploadOperation: ConcurrentOperation
                 else
                 {
                     let user = operation.me!
-                    strongSelf.performCompositeCloudExportCreateOperation(user: user)
+                    strongSelf.performCompositeCloudExportOperation(user: user)
                 }
             })
         }
         
         self.operationQueue.addOperation(operation)
 
-        let avAsset = self.phAssetContainer.avAsset
-        operation.fulfillSelection(avAsset: avAsset)
+        operation.fulfillSelection(avAsset: nil) 
     }
     
-    private func performCompositeCloudExportCreateOperation(user user: VIMUser)
+    private func performCompositeCloudExportOperation(user user: VIMUser)
     {
-        let operation = CompositeCloudExportCreateOperation(me: user, phAssetContainer: self.phAssetContainer, sessionManager: self.sessionManager)
+        let operation = CompositeCloudExportOperation(me: user, phAsset: self.phAsset)
         
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
             self?.downloadProgressBlock?(progress: progress)
@@ -172,8 +169,7 @@ class RetryUploadOperation: ConcurrentOperation
                 }
                 else
                 {
-                    strongSelf.url = operation.url!
-                    strongSelf.uploadTicket = operation.uploadTicket!
+                    strongSelf.url = operation.result!
                 }
             })
         }
