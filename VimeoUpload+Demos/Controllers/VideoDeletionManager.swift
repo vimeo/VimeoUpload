@@ -1,5 +1,5 @@
 //
-//  RetryManager.swift
+//  VideoDeletionManager.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/23/15.
@@ -26,9 +26,11 @@
 
 import Foundation
 
-class DeletionManager
+class VideoDeletionManager: NSObject
 {
-    // MARK: 
+    private static let DeletionsArchiveKey = "deletions"
+    
+    // MARK:
     
     private let sessionManager: VimeoSessionManager
     private let retryCount: Int
@@ -37,18 +39,76 @@ class DeletionManager
     
     private var deletions: [String: Int] = [:]
     private let operationQueue: NSOperationQueue
-    
+    private let archiver: KeyedArchiver
+
     // MARK:
-    
     // MARK: Initialization
+    
+    deinit
+    {
+        self.removeObservers()
+    }
+    
+    // TODO: support deletion of password protected videos
     
     init(sessionManager: VimeoSessionManager, retryCount: Int)
     {
         self.sessionManager = sessionManager
         self.retryCount = retryCount
-        
+     
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
+        self.archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey)
+   
+        super.init()
+        
+        self.addObservers()
+        
+        self.deletions = self.loadDeletions()
+        self.startDeletions()
+    }
+    
+    // MARK: Setup
+    
+    private static func setupArchiver(name name: String) -> KeyedArchiver
+    {
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+        var documentsURL = NSURL(string: documentsPath)!
+        
+        documentsURL = documentsURL.URLByAppendingPathComponent(name)
+        documentsURL = documentsURL.URLByAppendingPathComponent(VideoDeletionManager.DeletionsArchiveKey)
+        
+        if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
+        {
+            try! NSFileManager.defaultManager().createDirectoryAtPath(documentsURL.path!, withIntermediateDirectories: true, attributes: nil)
+        }
+        
+        return KeyedArchiver(basePath: documentsURL.path!)
+    }
+    
+    // MARK: Archiving
+    
+    private func loadDeletions() -> [String: Int]
+    {
+        if let deletions = self.archiver.loadObjectForKey(VideoDeletionManager.DeletionsArchiveKey) as? [String: Int]
+        {
+            return deletions
+        }
+        
+        return [:]
+    }
+
+    private func startDeletions()
+    {
+        for (key, value) in self.deletions
+        {
+            self.deleteVideoWithUri(key, retryCount: value)
+        }
+    }
+    
+    private func save()
+    {
+        self.archiver.saveObject(self.deletions, key: VideoDeletionManager.DeletionsArchiveKey)
     }
     
     // MARK: Public API
@@ -63,6 +123,7 @@ class DeletionManager
     private func deleteVideoWithUri(uri: String, retryCount: Int)
     {
         self.deletions[uri] = retryCount
+        self.save()
         
         let operation = DeleteVideoOperation(sessionManager: self.sessionManager, videoUri: uri)
         operation.completionBlock = { [weak self] () -> Void in
@@ -84,6 +145,7 @@ class DeletionManager
                     if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? NSHTTPURLResponse where response.statusCode == 404
                     {
                         strongSelf.deletions.removeValueForKey(uri) // The video has already been deleted
+                        strongSelf.save()
 
                         return
                     }
@@ -96,11 +158,13 @@ class DeletionManager
                     else
                     {
                         strongSelf.deletions.removeValueForKey(uri) // We retried the required number of times, nothing more to do
+                        strongSelf.save()
                     }
                 }
                 else
                 {
                     strongSelf.deletions.removeValueForKey(uri)
+                    strongSelf.save()
                 }
             })
         }
@@ -108,7 +172,27 @@ class DeletionManager
         self.operationQueue.addOperation(operation)
     }
     
-    // TODO: cancel all operations on app backgrounded
-    // TODO: start all operations on app launch or foregrounded
-    // TODO: implement NSCoding, save and load the dictionary at the appropriate times
+    // MARK: Notifications
+    
+    private func addObservers()
+    {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidBecomeActive:", name: UIApplicationDidBecomeActiveNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationWillResignActive:", name: UIApplicationWillResignActiveNotification, object: nil)
+    }
+    
+    private func removeObservers()
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func applicationDidBecomeActive(notification: NSNotification)
+    {
+        self.startDeletions()
+    }
+
+    func applicationWillResignActive(notification: NSNotification)
+    {
+        self.operationQueue.cancelAllOperations()
+    }
 }

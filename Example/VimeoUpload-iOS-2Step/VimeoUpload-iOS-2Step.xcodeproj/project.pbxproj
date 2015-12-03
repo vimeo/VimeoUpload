@@ -62,7 +62,7 @@
 		AFA63D5F1C011B92003B5821 /* VimeoSessionManager+SimpleUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63D5E1C011B92003B5821 /* VimeoSessionManager+SimpleUpload.swift */; };
 		AFA63DB31C012153003B5821 /* CreateVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63DB21C012153003B5821 /* CreateVideoOperation.swift */; };
 		AFA63DB61C012958003B5821 /* SimpleUploadDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63DB51C012958003B5821 /* SimpleUploadDescriptor.swift */; };
-		AFF28EBD1C037AC500258476 /* DeletionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF28EBC1C037AC500258476 /* DeletionManager.swift */; };
+		AFF28EBD1C037AC500258476 /* VideoDeletionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF28EBC1C037AC500258476 /* VideoDeletionManager.swift */; };
 		AFF28EBF1C03C3BF00258476 /* ForegroundSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF28EBE1C03C3BF00258476 /* ForegroundSessionManager.swift */; };
 		AFF28EC51C03D52900258476 /* VideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF28EC11C03D52900258476 /* VideoCell.swift */; };
 		AFF28EC61C03D52900258476 /* VideoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFF28EC21C03D52900258476 /* VideoCell.xib */; };
@@ -157,7 +157,7 @@
 		AFA63D5E1C011B92003B5821 /* VimeoSessionManager+SimpleUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoSessionManager+SimpleUpload.swift"; sourceTree = "<group>"; };
 		AFA63DB21C012153003B5821 /* CreateVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateVideoOperation.swift; sourceTree = "<group>"; };
 		AFA63DB51C012958003B5821 /* SimpleUploadDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleUploadDescriptor.swift; sourceTree = "<group>"; };
-		AFF28EBC1C037AC500258476 /* DeletionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeletionManager.swift; sourceTree = "<group>"; };
+		AFF28EBC1C037AC500258476 /* VideoDeletionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDeletionManager.swift; sourceTree = "<group>"; };
 		AFF28EBE1C03C3BF00258476 /* ForegroundSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForegroundSessionManager.swift; sourceTree = "<group>"; };
 		AFF28EC11C03D52900258476 /* VideoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCell.swift; sourceTree = "<group>"; };
 		AFF28EC21C03D52900258476 /* VideoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoCell.xib; sourceTree = "<group>"; };
@@ -229,7 +229,7 @@
 				5043A5461BFFA04F00D70725 /* PHAssetHelper.swift */,
 				AFF28EBE1C03C3BF00258476 /* ForegroundSessionManager.swift */,
 				5043A5481BFFA04F00D70725 /* UploadReporter.swift */,
-				AFF28EBC1C037AC500258476 /* DeletionManager.swift */,
+				AFF28EBC1C037AC500258476 /* VideoDeletionManager.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -772,7 +772,7 @@
 				AFA63CF21BFFECA0003B5821 /* AVAssetExportOperation.swift in Sources */,
 				AFA63CFA1BFFECA0003B5821 /* DailyQuotaOperation.swift in Sources */,
 				50596E691BE2D70000D1F8EC /* AVURLAsset+Extensions.swift in Sources */,
-				AFF28EBD1C037AC500258476 /* DeletionManager.swift in Sources */,
+				AFF28EBD1C037AC500258476 /* VideoDeletionManager.swift in Sources */,
 				AFA63CF31BFFECA0003B5821 /* CameraRollOperation.swift in Sources */,
 				AFA63CE41BFFEC52003B5821 /* UploadRequest.swift in Sources */,
 				5043A5491BFFA04F00D70725 /* CameraRollCell.swift in Sources */,
