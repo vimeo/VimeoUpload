@@ -147,10 +147,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         
         // TODO: Should most of this logic be moved into the UploadManager?
         
-        // TODO: We'll need to check with Naren's team to see if we can always just attempt to re-put the video file
-        // Or if we need to clear it out on the servers first
-        
-        let operation = CompositeQuotaOperation(sessionManager: ForegroundSessionManager.sharedInstance)
+        let operation = CompositeMeQuotaOperation(sessionManager: ForegroundSessionManager.sharedInstance)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -171,6 +168,9 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 else
                 {
+                    // TODO: Perform CompositeCloudExportCreateOperation
+                    // TODO: ensure we have a reference to the asset
+                    
                     // Initiate the retry
                     UploadManager.sharedInstance.retryUpload(descriptor: descriptor)
                     
@@ -183,11 +183,8 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
             })
         }
-        operation.shouldCheckDiskSpace = false // We already have an exported asset, no need to check disk space for export
         operation.start()
         
-        let url = descriptor.url
-        let asset = AVURLAsset(URL: url)
         operation.fulfillSelection(avAsset: asset)
     }
     

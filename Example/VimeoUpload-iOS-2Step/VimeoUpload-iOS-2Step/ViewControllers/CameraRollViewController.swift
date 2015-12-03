@@ -40,7 +40,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     private var assets: [PHAssetContainer] = []
     private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
-    private var operation: CompositeQuotaOperation?
+    private var operation: CompositeMeQuotaOperation?
     
     private var selectedIndexPath: NSIndexPath?
     
@@ -114,13 +114,13 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     private func setupOperation(me: VIMUser?)
     {
         let sessionManager = ForegroundSessionManager.sharedInstance
-        let operation = CompositeQuotaOperation(sessionManager: sessionManager, me: me)
+        let operation = CompositeMeQuotaOperation(sessionManager: sessionManager, me: me)
         self.setOperationBlocks(operation)
         self.operation = operation
         self.operation?.start()
     }
         
-    private func setOperationBlocks(operation: CompositeQuotaOperation)
+    private func setOperationBlocks(operation: CompositeMeQuotaOperation)
     {
         operation.completionBlock = { [weak self] () -> Void in
             
@@ -314,7 +314,8 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 self.activityIndicatorView.startAnimating()
             }
             
-            self.operation?.fulfillSelection(avAsset: phAssetContainer.avAsset) // avAsset may or may not be nil, which is fine
+            // The avAsset may or may not be nil, which is fine. Becuase at the very least this operation needs to fetch "me"
+            self.operation?.fulfillSelection(avAsset: phAssetContainer.avAsset)
         }
     }
     

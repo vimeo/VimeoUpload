@@ -67,7 +67,6 @@ import Foundation
         super.init()
 
         self.failedDescriptors = self.loadFailedDescriptors()
-        print("Loaded \(self.failedDescriptors.count) failed descriptors")
         
         self.addObservers()
     }
@@ -103,7 +102,6 @@ import Foundation
     private func save()
     {
         self.archiver.saveObject(self.failedDescriptors, key: UploadManager.FailedDescriptorsArchiveKey)
-        print("Saved \(self.failedDescriptors.count) failed descriptors")
     }
     
     // MARK: Public API

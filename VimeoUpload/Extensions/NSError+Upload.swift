@@ -43,8 +43,8 @@ enum UploadErrorDomain: String
     case VideoSettings = "VideoSettingsErrorDomain"
     case Delete = "DeleteVideoErrorDomain"
 
-    case CompositeQuotaOperation = "CompositeQuotaOperationErrorDomain"
-    case CompositeExportOperation = "CompositeExportOperationErrorDomain"
+    case CompositeMeQuotaOperation = "CompositeMeQuotaOperationErrorDomain"
+    case CompositeCloudExportOperation = "CompositeCloudExportOperationErrorDomain"
 }
 
 extension NSError

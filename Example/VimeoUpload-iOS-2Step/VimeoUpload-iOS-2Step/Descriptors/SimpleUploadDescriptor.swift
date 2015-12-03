@@ -128,6 +128,8 @@ class SimpleUploadDescriptor: Descriptor
     
     override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
+        NSFileManager.defaultManager().deleteFileAtURL(self.url)
+        
         if self.error == nil
         {
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first
@@ -145,8 +147,6 @@ class SimpleUploadDescriptor: Descriptor
             return
         }
         
-        NSFileManager.defaultManager().deleteFileAtURL(self.url) // Delete the file upon success, preserve the file upon failure (for retry)
-
         self.currentTaskIdentifier = nil
         self.state = .Finished
     }
