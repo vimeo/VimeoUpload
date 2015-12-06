@@ -26,7 +26,7 @@
 
 import Foundation
 
-class DeletionManager: NSObject
+class VideoDeletionManager: NSObject
 {
     private static let DeletionsArchiveKey = "deletions"
     
@@ -58,7 +58,7 @@ class DeletionManager: NSObject
      
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
-        self.archiver = DeletionManager.setupArchiver(name: DeletionManager.DeletionsArchiveKey)
+        self.archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey)
    
         super.init()
         
@@ -76,7 +76,7 @@ class DeletionManager: NSObject
         var documentsURL = NSURL(string: documentsPath)!
         
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
-        documentsURL = documentsURL.URLByAppendingPathComponent(DeletionManager.DeletionsArchiveKey)
+        documentsURL = documentsURL.URLByAppendingPathComponent(VideoDeletionManager.DeletionsArchiveKey)
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
         {
@@ -90,7 +90,7 @@ class DeletionManager: NSObject
     
     private func loadDeletions() -> [String: Int]
     {
-        if let deletions = self.archiver.loadObjectForKey(DeletionManager.DeletionsArchiveKey) as? [String: Int]
+        if let deletions = self.archiver.loadObjectForKey(VideoDeletionManager.DeletionsArchiveKey) as? [String: Int]
         {
             return deletions
         }
@@ -108,7 +108,7 @@ class DeletionManager: NSObject
     
     private func save()
     {
-        self.archiver.saveObject(self.deletions, key: DeletionManager.DeletionsArchiveKey)
+        self.archiver.saveObject(self.deletions, key: VideoDeletionManager.DeletionsArchiveKey)
     }
     
     // MARK: Public API

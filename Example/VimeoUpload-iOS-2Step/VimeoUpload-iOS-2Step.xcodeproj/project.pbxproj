@@ -37,8 +37,8 @@
 		AF34DB701BE721150094D1F8 /* MyVideosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF34DB681BE721150094D1F8 /* MyVideosViewController.swift */; };
 		AF34DB711BE721150094D1F8 /* MyVideosViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AF34DB691BE721150094D1F8 /* MyVideosViewController.xib */; };
 		AF34DB761BE7213C0094D1F8 /* AVAsset+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF34DB741BE7213C0094D1F8 /* AVAsset+Extensions.swift */; };
-		AF6213DF1C0A3B76007902A8 /* DeletionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF6213DE1C0A3B76007902A8 /* DeletionManager.swift */; };
 		AF6213E21C0A3BB9007902A8 /* PHAssetContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF6213E11C0A3BB9007902A8 /* PHAssetContainer.swift */; };
+		AF6213E41C149A41007902A8 /* VideoDeletionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF6213E31C149A41007902A8 /* VideoDeletionManager.swift */; };
 		AFA63CC41BF2FEB2003B5821 /* ArchiverProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63CBD1BF2FEB2003B5821 /* ArchiverProtocol.swift */; };
 		AFA63CC51BF2FEB2003B5821 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63CBE1BF2FEB2003B5821 /* Descriptor.swift */; };
 		AFA63CC61BF2FEB2003B5821 /* DescriptorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63CBF1BF2FEB2003B5821 /* DescriptorManager.swift */; };
@@ -133,8 +133,8 @@
 		AF34DB681BE721150094D1F8 /* MyVideosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyVideosViewController.swift; sourceTree = "<group>"; };
 		AF34DB691BE721150094D1F8 /* MyVideosViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyVideosViewController.xib; sourceTree = "<group>"; };
 		AF34DB741BE7213C0094D1F8 /* AVAsset+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVAsset+Extensions.swift"; sourceTree = "<group>"; };
-		AF6213DE1C0A3B76007902A8 /* DeletionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeletionManager.swift; sourceTree = "<group>"; };
 		AF6213E11C0A3BB9007902A8 /* PHAssetContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetContainer.swift; sourceTree = "<group>"; };
+		AF6213E31C149A41007902A8 /* VideoDeletionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDeletionManager.swift; sourceTree = "<group>"; };
 		AFA63CBD1BF2FEB2003B5821 /* ArchiverProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiverProtocol.swift; sourceTree = "<group>"; };
 		AFA63CBE1BF2FEB2003B5821 /* Descriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
 		AFA63CBF1BF2FEB2003B5821 /* DescriptorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorManager.swift; sourceTree = "<group>"; };
@@ -392,7 +392,7 @@
 		AF6213DD1C0A3B76007902A8 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				AF6213DE1C0A3B76007902A8 /* DeletionManager.swift */,
+				AF6213E31C149A41007902A8 /* VideoDeletionManager.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -788,6 +788,7 @@
 				AFA63D521BFFEF36003B5821 /* VimeoRequestSerializer+SimpleUpload.swift in Sources */,
 				AFA63CC71BF2FEB2003B5821 /* DescriptorManagerDelegate.swift in Sources */,
 				AF6213E21C0A3BB9007902A8 /* PHAssetContainer.swift in Sources */,
+				AF6213E41C149A41007902A8 /* VideoDeletionManager.swift in Sources */,
 				AFA63CDB1BFFEC3F003B5821 /* VimeoRequestSerializer+Upload.swift in Sources */,
 				AFA63CF21BFFECA0003B5821 /* AVAssetExportOperation.swift in Sources */,
 				AFA63CFA1BFFECA0003B5821 /* DailyQuotaOperation.swift in Sources */,
@@ -810,7 +811,6 @@
 				AFA63CFB1BFFECA0003B5821 /* DiskSpaceOperation.swift in Sources */,
 				AFA63D5F1C011B92003B5821 /* VimeoSessionManager+SimpleUpload.swift in Sources */,
 				AFA63CF61BFFECA0003B5821 /* MeOperation.swift in Sources */,
-				AF6213DF1C0A3B76007902A8 /* DeletionManager.swift in Sources */,
 				AFF28EC71C03D52900258476 /* UploadManager.swift in Sources */,
 				AFA63CC51BF2FEB2003B5821 /* Descriptor.swift in Sources */,
 				AFA63CDD1BFFEC3F003B5821 /* VimeoSessionManager+Upload.swift in Sources */,
