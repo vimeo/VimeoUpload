@@ -33,7 +33,7 @@ extension NSFileManager
         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
         let dictionary = try self.attributesOfFileSystemForPath(documentsPath)
 
-        return dictionary[NSFileSystemSize] as? NSNumber
+        return dictionary[NSFileSystemFreeSize] as? NSNumber
     }
     
     func deleteFileAtURL(url: NSURL)
