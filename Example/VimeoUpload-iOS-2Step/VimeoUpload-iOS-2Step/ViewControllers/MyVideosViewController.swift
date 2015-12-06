@@ -127,6 +127,8 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         
     }
     
+    // TODO: review this doc https://github.vimeows.com/Vimeo/vimeo/wiki/Upload-Server-Response-Codes
+
     // MARK: VideoCellDelegate
     
     func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
@@ -139,8 +141,6 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
             self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         }
     }
-    
-    // TODO: review this doc https://github.vimeows.com/Vimeo/vimeo/wiki/Upload-Server-Response-Codes
     
     func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: SimpleUploadDescriptor)
     {
