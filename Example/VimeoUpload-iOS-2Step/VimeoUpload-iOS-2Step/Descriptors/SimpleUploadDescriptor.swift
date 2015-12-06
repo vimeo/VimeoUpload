@@ -32,6 +32,7 @@ class SimpleUploadDescriptor: Descriptor
     
     let url: NSURL
     let uploadTicket: VIMUploadTicket
+    let assetIdentifier: String // Used to track the original ALAsset or PHAsset
     
     // MARK:
     
@@ -55,10 +56,11 @@ class SimpleUploadDescriptor: Descriptor
     // MARK:
     // MARK: Initialization
     
-    init(url: NSURL, uploadTicket: VIMUploadTicket)
+    init(url: NSURL, uploadTicket: VIMUploadTicket, assetIdentifier: String)
     {
         self.url = url
         self.uploadTicket = uploadTicket
+        self.assetIdentifier = assetIdentifier
         
         super.init()
     }
@@ -82,7 +84,7 @@ class SimpleUploadDescriptor: Descriptor
             let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, progress: &self.progress, completionHandler: nil)
 
             self.currentTaskIdentifier = task.taskIdentifier
-            task.resume()
+            task.resume()            
         }
         catch let error as NSError
         {
@@ -157,6 +159,7 @@ class SimpleUploadDescriptor: Descriptor
     {
         self.url = aDecoder.decodeObjectForKey("url") as! NSURL // If force unwrap fails we have a big problem
         self.uploadTicket = aDecoder.decodeObjectForKey("uploadTicket") as! VIMUploadTicket
+        self.assetIdentifier = aDecoder.decodeObjectForKey("assetIdentifier") as! String
 
         super.init(coder: aDecoder)
     }
@@ -165,6 +168,7 @@ class SimpleUploadDescriptor: Descriptor
     {
         aCoder.encodeObject(self.url, forKey: "url")
         aCoder.encodeObject(self.uploadTicket, forKey: "uploadTicket")
+        aCoder.encodeObject(self.assetIdentifier, forKey: "assetIdentifier")
         
         super.encodeWithCoder(aCoder)
     }

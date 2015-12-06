@@ -175,7 +175,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let url = self.url!
         let uploadTicket = self.uploadTicket!
-        UploadManager.sharedInstance.uploadVideo(url: url, uploadTicket: uploadTicket)
+        let assetIdentifier = self.input!.phAsset.localIdentifier
+        UploadManager.sharedInstance.uploadVideo(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
     }
 
     // MARK: Actions

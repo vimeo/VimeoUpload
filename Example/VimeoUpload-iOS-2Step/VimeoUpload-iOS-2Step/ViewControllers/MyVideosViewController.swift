@@ -26,6 +26,7 @@
 
 import UIKit
 import AVFoundation
+import Photos
 
 class MyVideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, VideoCellDelegate
 {
@@ -255,7 +256,22 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     private func retryUploadDescriptor(descriptor: SimpleUploadDescriptor, completion: ErrorBlock)
     {
         // TODO: This should be cancellable
-        // TODO: Should most of this logic be moved into the UploadManager?
+        
+        let assetIdentifier = descriptor.assetIdentifier
+        
+        let options = PHFetchOptions()
+        options.predicate = NSPredicate(format: "localIdentifier = %@", assetIdentifier)
+
+        let result = PHAsset.fetchAssetsWithLocalIdentifiers([assetIdentifier], options: options)
+        
+        guard result.count == 1 else
+        {
+            // TODO: present asset not found error
+            
+            return
+        }
+        
+        let phAsset = result.firstObject as! PHAsset
         
         let operation = RetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
         operation.downloadProgressBlock = { (progress: Double) -> Void in
@@ -287,11 +303,11 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
                 {
                     // Initiate the retry
 
-                    let url = operation.result!
+                    let url = operation.url!
                     UploadManager.sharedInstance.retryUpload(descriptor: descriptor, url: url)
                 }
                 
-                errorBlock(error: operation.error)
+                completion(error: operation.error)
             })
         }
         operation.start()

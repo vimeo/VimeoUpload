@@ -170,6 +170,7 @@ class RetryUploadOperation: ConcurrentOperation
                 else
                 {
                     strongSelf.url = operation.result!
+                    strongSelf.state = .Finished
                 }
             })
         }
