@@ -143,7 +143,14 @@ class AVAssetExportOperation: ConcurrentOperation
             
             if let error = strongSelf.exportSession.error
             {
-                strongSelf.error = error
+                if error.domain == AVFoundationErrorDomain && error.code == AVError.DiskFull.rawValue
+                {
+                    strongSelf.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
+                }
+                else
+                {
+                    strongSelf.error = error
+                }
             }
             else if let outputURL = strongSelf.exportSession.outputURL, let path = outputURL.path where NSFileManager.defaultManager().fileExistsAtPath(path)
             {
