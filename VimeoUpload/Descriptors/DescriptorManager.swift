@@ -26,6 +26,8 @@
 
 import Foundation
 
+// TODO: use the session's delegateQueue instead of our own synchronization queue
+
 enum DescriptorManagerNotification: String
 {
     case DescriptorWillStart = "DescriptorWillStartNotification"

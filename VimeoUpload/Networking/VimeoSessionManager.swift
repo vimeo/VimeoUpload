@@ -72,7 +72,7 @@ class VimeoSessionManager: AFHTTPSessionManager
     }
     
     init(sessionConfiguration: NSURLSessionConfiguration, authTokenBlock: AuthTokenBlock)
-    {
+    {        
         super.init(baseURL: VimeoBaseURLString, sessionConfiguration: sessionConfiguration)
         
         self.requestSerializer = VimeoRequestSerializer(authTokenBlock: authTokenBlock)
