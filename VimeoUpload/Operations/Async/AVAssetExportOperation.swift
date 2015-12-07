@@ -118,15 +118,17 @@ class AVAssetExportOperation: ConcurrentOperation
             return
         }
 
-        let availableDiskSpace = try! NSFileManager.defaultManager().availableDiskSpace()!
-        guard availableDiskSpace.longLongValue > self.exportSession.estimatedOutputFileLength else
+        // AVAssetExportSession does not do an internal check to see if there's ample disk space available to perform the export [AH] 12/06/2015
+        
+        let availableDiskSpace = try? NSFileManager.defaultManager().availableDiskSpace() // Double optional
+        if let diskSpace = availableDiskSpace, let space = diskSpace where space.longLongValue < self.exportSession.estimatedOutputFileLength
         {
             self.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
             self.state = .Finished
             
             return
         }
-
+        
         self.exportSession.exportAsynchronouslyWithCompletionHandler({ [weak self] () -> Void in
             
             guard let strongSelf = self else
@@ -172,8 +174,6 @@ class AVAssetExportOperation: ConcurrentOperation
         
         self.progressBlock = nil
         self.exportSession.cancelExport()
-
-        print("AVAssetExportOperation cancelled")
     }
         
     // MARK: KVO
