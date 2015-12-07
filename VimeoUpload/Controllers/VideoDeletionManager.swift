@@ -40,7 +40,7 @@ class VideoDeletionManager: NSObject
     private var deletions: [String: Int] = [:]
     private let operationQueue: NSOperationQueue
     private let archiver: KeyedArchiver
-
+    
     // MARK:
     // MARK: Initialization
     
@@ -59,7 +59,7 @@ class VideoDeletionManager: NSObject
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
         self.archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey)
-   
+        
         super.init()
         
         self.addObservers()
@@ -125,6 +125,11 @@ class VideoDeletionManager: NSObject
         self.deletions[uri] = retryCount
         self.save()
         
+        if AFNetworkReachabilityManager.sharedManager().reachable == false
+        {
+            return
+        }
+        
         let operation = DeleteVideoOperation(sessionManager: self.sessionManager, videoUri: uri)
         operation.completionBlock = { [weak self] () -> Void in
             
@@ -179,6 +184,8 @@ class VideoDeletionManager: NSObject
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationWillEnterForeground:", name: UIApplicationWillEnterForegroundNotification, object: nil)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidEnterBackground:", name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityDidChange:", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
     }
     
     private func removeObservers()
@@ -194,5 +201,12 @@ class VideoDeletionManager: NSObject
     func applicationDidEnterBackground(notification: NSNotification)
     {
         self.operationQueue.cancelAllOperations()
+    }
+
+    func reachabilityDidChange(notification: NSNotification)
+    {
+        let currentlyReachable = AFNetworkReachabilityManager.sharedManager().reachable
+        
+        self.operationQueue.suspended = !currentlyReachable
     }
 }
