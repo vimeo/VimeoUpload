@@ -164,7 +164,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                         }
                     }
                 }
-                })
+            })
         }
         
         self.operation = operation
@@ -241,6 +241,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     private func presentOperationErrorAlert(error: NSError)
     {
+        // TODO: check error.code == AVError.DiskFull.rawValue and message appropriately
+        
         let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
             self?.navigationController?.popViewControllerAnimated(true)

@@ -123,8 +123,7 @@ class AVAssetExportOperation: ConcurrentOperation
         let availableDiskSpace = try? NSFileManager.defaultManager().availableDiskSpace() // Double optional
         if let diskSpace = availableDiskSpace, let space = diskSpace where space.longLongValue < self.exportSession.estimatedOutputFileLength
         {
-            // TODO: add unique error code here
-            self.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
+            self.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: AVError.DiskFull.rawValue, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
             self.state = .Finished
             
             return
@@ -144,10 +143,9 @@ class AVAssetExportOperation: ConcurrentOperation
             
             if let error = strongSelf.exportSession.error
             {
-                // TODO: categorize this as not enough disk space (using unique code, plus error above) [AH]
                 if error.domain == AVFoundationErrorDomain && error.code == AVError.DiskFull.rawValue
                 {
-                    strongSelf.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
+                    strongSelf.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: AVError.DiskFull.rawValue, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
                 }
                 else
                 {
