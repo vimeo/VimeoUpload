@@ -59,11 +59,4 @@ class DailyQuotaOperation: NSOperation
             self.error = NSError(domain: DailyQuotaOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.quota information"])
         }
     }
-    
-    override func cancel()
-    {
-        super.cancel()
-    
-        print("DailyQuotaOperation cancelled")
-    }
 }

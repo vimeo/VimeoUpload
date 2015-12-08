@@ -181,11 +181,11 @@ class VideoDeletionManager: NSObject
     
     private func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidBecomeActive:", name: UIApplicationDidBecomeActiveNotification, object: nil)
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationWillResignActive:", name: UIApplicationWillResignActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationWillEnterForeground:", name: UIApplicationWillEnterForegroundNotification, object: nil)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityDidChange:", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidEnterBackground:", name: UIApplicationDidEnterBackgroundNotification, object: nil)
     }
     
     private func removeObservers()
@@ -193,12 +193,12 @@ class VideoDeletionManager: NSObject
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    func applicationDidBecomeActive(notification: NSNotification)
+    func applicationWillEnterForeground(notification: NSNotification)
     {
         self.startDeletions()
     }
 
-    func applicationWillResignActive(notification: NSNotification)
+    func applicationDidEnterBackground(notification: NSNotification)
     {
         self.operationQueue.cancelAllOperations()
     }

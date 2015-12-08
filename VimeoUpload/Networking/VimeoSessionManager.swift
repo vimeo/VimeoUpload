@@ -31,9 +31,7 @@ typealias AuthTokenBlock = () -> String
 class VimeoSessionManager: AFHTTPSessionManager
 {    
     // MARK: Initialization
-    
-    // MARK:
-    
+        
     static func defaultSessionManager(authToken authToken: String) -> VimeoSessionManager
     {
         let sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
