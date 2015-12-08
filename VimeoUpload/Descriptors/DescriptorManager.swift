@@ -26,11 +26,9 @@
 
 import Foundation
 
-// TODO: use the session's delegateQueue instead of our own synchronization queue
-
 enum DescriptorManagerNotification: String
 {
-    case DescriptorWillStart = "DescriptorWillStartNotification"
+    case DescriptorAdded = "DescriptorAddedNotification"
     case DescriptorDidFail = "DescriptorDidFailNotification"
     case DescriptorDidSucceed = "DescriptorDidSucceedNotification"
     case SessionDidBecomeInvalid = "SessionDidBecomeInvalidNotification"
@@ -305,7 +303,8 @@ class DescriptorManager
                 descriptor.suspend(sessionManager: strongSelf.sessionManager)
             }
             
-            strongSelf.saveDescriptors() // TODO: do we need to save within the loops?
+            // Doing this after the loop rather than within, incrementally greater margin for error but faster
+            strongSelf.saveDescriptors()
         })
     }
     
@@ -339,7 +338,8 @@ class DescriptorManager
                 }
             }
 
-            strongSelf.saveDescriptors() // TODO: do we need to save within the loops?
+            // Doing this after the loop rather than within, incrementally greater margin for error but faster
+            strongSelf.saveDescriptors()
 
             for descriptor in deletedDescriptors
             {
@@ -349,7 +349,8 @@ class DescriptorManager
                 NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
             }
             
-            strongSelf.saveDescriptors() // TODO: do we need to save within the loops?
+            // Doing this after the loop rather than within, incrementally greater margin for error but faster
+            strongSelf.saveDescriptors()
         })
     }
     
@@ -366,12 +367,10 @@ class DescriptorManager
 
             strongSelf.descriptors.insert(descriptor)
             strongSelf.saveDescriptors()
-
-            // TODO: is it misleading to call these notifications if the manager is in the paused state?
             
-            strongSelf.delegate?.descriptorWillStart(descriptor)
+            strongSelf.delegate?.descriptorAdded(descriptor)
 
-            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorWillStart.rawValue, object: descriptor)
+            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorAdded.rawValue, object: descriptor)
             
             if strongSelf.suspended // If the manager is suspended, resume will be called on the descriptor when the manager is next resumed
             {

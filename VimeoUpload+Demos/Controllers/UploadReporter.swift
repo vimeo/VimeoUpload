@@ -62,14 +62,6 @@ class UploadReporter: DescriptorManagerDelegate
         self.sendMessage("Did handle background events")
     }
     
-    func descriptorWillStart(descriptor: Descriptor)
-    {
-        if let identifier = descriptor.identifier
-        {
-            self.sendMessage("Start \(identifier)")
-        }
-    }
-    
     func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
@@ -93,6 +85,14 @@ class UploadReporter: DescriptorManagerDelegate
         }
     }
     
+    func descriptorAdded(descriptor: Descriptor)
+    {
+        if let identifier = descriptor.identifier
+        {
+            self.sendMessage("Start \(identifier)")
+        }
+    }
+
     func descriptorDidSucceed(descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier

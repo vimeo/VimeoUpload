@@ -26,6 +26,8 @@
 
 import Foundation
 
+typealias VideoUri = String
+
 @objc class UploadManager: NSObject
 {
     static let sharedInstance = UploadManager()
@@ -48,7 +50,7 @@ import Foundation
     // MARK:
 
     private let reporter: UploadReporter = UploadReporter()
-    private var failedDescriptors: [String: SimpleUploadDescriptor] = [:] // video_uri: descriptor
+    private var failedDescriptors: [VideoUri: SimpleUploadDescriptor] = [:]
     
     // MARK: 
     

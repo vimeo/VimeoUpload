@@ -41,7 +41,7 @@ protocol DescriptorManagerDelegate: class
     func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
     func taskDidComplete(task task: NSURLSessionTask, descriptor: Descriptor, error: NSError?)
 
-    func descriptorWillStart(descriptor: Descriptor)
+    func descriptorAdded(descriptor: Descriptor)
     func descriptorDidSucceed(descriptor: Descriptor)
     func descriptorDidFail(descriptor: Descriptor)
     
