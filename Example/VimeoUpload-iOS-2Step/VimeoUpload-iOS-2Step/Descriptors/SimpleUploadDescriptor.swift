@@ -95,10 +95,12 @@ class SimpleUploadDescriptor: Descriptor
         }
         else if state == .Suspended
         {            
-            if let identifier = self.currentTaskIdentifier, let task = sessionManager.taskForIdentifier(identifier)
+            guard let identifier = self.currentTaskIdentifier, let task = sessionManager.taskForIdentifier(identifier) else
             {
-                task.resume()
+                throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to resume a .Suspended descriptor that does not have a session task."])
             }
+            
+            task.resume()
         }
         else
         {
@@ -108,11 +110,19 @@ class SimpleUploadDescriptor: Descriptor
     
     override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        guard self.state != .Ready && self.state != .Finished else
+        guard self.state != .Finished else
         {
             throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Ready or .Finished"])
         }
         
+        if self.state == .Ready
+        {
+            try self.resume(sessionManager: sessionManager)
+        
+            return
+        }
+        
+        // .Executing || .Suspended
         if let taskIdentifier = self.currentTaskIdentifier
         {
             let tasks = sessionManager.uploadTasks.filter( { ($0 as! NSURLSessionUploadTask).taskIdentifier == taskIdentifier } )

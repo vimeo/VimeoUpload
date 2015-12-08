@@ -77,7 +77,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     deinit
     {
-        self.operation?.cancel()
+        // Do not cancel operation, it will delete the source file
         self.task?.cancel()
     }
     

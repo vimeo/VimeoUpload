@@ -52,7 +52,7 @@ import Foundation
     
     // MARK: 
     
-    var allowsCellularUpload = true // TODO: load from suer defaults
+    var allowsCellularUpload = false // TODO: load from suer defaults
     {
         didSet
         {

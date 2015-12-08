@@ -111,8 +111,9 @@ class DescriptorManager
     
     private func loadDescriptors() -> Set<Descriptor>
     {
-        if let descriptors = self.archiver.loadObjectForKey(DescriptorManager.DescriptorsArchiveKey) as? Set<Descriptor>
+        if var descriptors = self.archiver.loadObjectForKey(DescriptorManager.DescriptorsArchiveKey) as? Set<Descriptor>
         {
+            var deletedDescriptors: [Descriptor] = []
             for descriptor in descriptors
             {
                 do
@@ -121,9 +122,14 @@ class DescriptorManager
                 }
                 catch let error as NSError
                 {
+                    deletedDescriptors.append(descriptor)
                     self.delegate?.didFailToLoadDescriptor(error: error)
-                    // TODO: remove this descriptor? Nil out background session completion handler block?
                 }
+            }
+            
+            for descriptor in deletedDescriptors
+            {
+                descriptors.remove(descriptor)
             }
             
             return descriptors
@@ -298,6 +304,8 @@ class DescriptorManager
             {
                 descriptor.suspend(sessionManager: strongSelf.sessionManager)
             }
+            
+            strongSelf.saveDescriptors() // TODO: do we need to save within the loops?
         })
     }
     
@@ -367,7 +375,7 @@ class DescriptorManager
             
             if strongSelf.suspended // If the manager is suspended, resume will be called on the descriptor when the manager is next resumed
             {
-                return
+                return // TODO: make descriptor state == .Suspended
             }
             
             do
