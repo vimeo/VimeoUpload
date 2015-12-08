@@ -50,6 +50,19 @@ import Foundation
     private let reporter: UploadReporter = UploadReporter()
     private var failedDescriptors: [String: SimpleUploadDescriptor] = [:] // video_uri: descriptor
     
+    // MARK: 
+    
+    var allowsCellularUpload = true // TODO: load from suer defaults
+    {
+        didSet
+        {
+            if oldValue != allowsCellularUpload
+            {
+                self.updateDescriptorManagerState()
+            }
+        }
+    }
+    
     // MARK:
     // MARK: Initialization
     
@@ -77,10 +90,9 @@ import Foundation
     private static func setupArchiver(name name: String) -> KeyedArchiver
     {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        var documentsURL = NSURL(string: documentsPath)!
         
+        var documentsURL = NSURL(string: documentsPath)!
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
-//        documentsURL = documentsURL.URLByAppendingPathComponent(UploadManager.FailedDescriptorsArchiveKey)
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
         {
@@ -192,6 +204,8 @@ import Foundation
     private func addObservers()
     {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "descriptorDidFail:", name: DescriptorManagerNotification.DescriptorDidFail.rawValue, object: nil)
+    
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityDidChange:", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
     }
     
     private func removeObservers()
@@ -218,6 +232,37 @@ import Foundation
                 strongSelf.failedDescriptors[videoUri] = descriptor
                 strongSelf.saveFailedDescriptors()
             }
+        }
+    }
+    
+    func reachabilityDidChange(notification: NSNotification)
+    {
+        self.updateDescriptorManagerState()
+    }
+    
+    private func updateDescriptorManagerState()
+    {
+        if AFNetworkReachabilityManager.sharedManager().reachable == true
+        {
+            if AFNetworkReachabilityManager.sharedManager().reachableViaWiFi
+            {
+                self.descriptorManager.resume()
+            }
+            else
+            {
+                if self.allowsCellularUpload
+                {
+                    self.descriptorManager.resume()
+                }
+                else
+                {
+                    self.descriptorManager.suspend()
+                }
+            }
+        }
+        else
+        {
+            self.descriptorManager.suspend()
         }
     }
 }

@@ -28,8 +28,6 @@ import Foundation
 
 class SimpleUploadDescriptor: Descriptor
 {
-    // MARK:
-    
     let url: NSURL
     let uploadTicket: VIMUploadTicket
     let assetIdentifier: String // Used to track the original ALAsset or PHAsset
@@ -46,7 +44,6 @@ class SimpleUploadDescriptor: Descriptor
         {
             if error != nil
             {
-                print(self.error!.localizedDescription)
                 self.currentTaskIdentifier = nil
                 self.state = .Finished
             }
@@ -67,46 +64,54 @@ class SimpleUploadDescriptor: Descriptor
 
     // MARK: Overrides
     
-    override func start(sessionManager sessionManager: AFURLSessionManager) throws
+    override func resume(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        try super.start(sessionManager: sessionManager)
+        try super.resume(sessionManager: sessionManager)
         
+        let state = self.state
         self.state = .Executing
         
-        do
+        if state == .Ready
         {
-            guard let uploadLinkSecure = self.uploadTicket.uploadLinkSecure else
+            do
             {
-                throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
+                guard let uploadLinkSecure = self.uploadTicket.uploadLinkSecure else
+                {
+                    throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
+                }
+                
+                let sessionManager = sessionManager as! VimeoSessionManager
+                let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, progress: &self.progress, completionHandler: nil)
+                
+                self.currentTaskIdentifier = task.taskIdentifier
+                task.resume()
             }
-            
-            let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, progress: &self.progress, completionHandler: nil)
-
-            self.currentTaskIdentifier = task.taskIdentifier
-            task.resume()            
+            catch let error as NSError
+            {
+                self.error = error
+                
+                throw error // Propagate this out so that DescriptorManager can remove the descriptor from the set
+            }
         }
-        catch let error as NSError
+        else if state == .Suspended
+        {            
+            if let identifier = self.currentTaskIdentifier, let task = sessionManager.taskForIdentifier(identifier)
+            {
+                task.resume()
+            }
+        }
+        else
         {
-            self.error = error
-            
-            throw error // Propagate this out so that DescriptorManager can remove the descriptor from the set
+            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Cannot start a descriptor that is not in the .Ready or .Suspended state"])
         }
     }
     
     override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        guard self.state != .Ready else
+        guard self.state != .Ready && self.state != .Finished else
         {
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Ready"])
+            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Ready or .Finished"])
         }
-        
-        guard self.state != .Finished else
-        {
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Finished"])
-        }
-        
-        // For all .Executing tasks...
         
         if let taskIdentifier = self.currentTaskIdentifier
         {

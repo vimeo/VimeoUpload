@@ -94,16 +94,16 @@ class UploadDescriptor: Descriptor
 
     // MARK: Overrides
     
-    override func start(sessionManager sessionManager: AFURLSessionManager) throws
+    override func resume(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        try super.start(sessionManager: sessionManager)
+        try super.resume(sessionManager: sessionManager)
         
         self.state = .Executing
 
         do
         {
             let sessionManager = sessionManager as! VimeoSessionManager
-            try self.transitionToState(request: .Create, sessionManager: sessionManager)
+            try self.transitionToState(request: .Create, sessionManager: sessionManager) // TODO: fix this
         }
         catch let error as NSError
         {
