@@ -51,6 +51,8 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     private var assets: [PHAssetContainer] = []
     private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
     private var operation: CompositeMeQuotaOperation?
+    private var me: VIMUser? // We store this in a property instead of on the operation itself, so that we can refresh it independent of the operation [AH]
+    private var meOperation: MeOperation?
     
     private var selectedIndexPath: NSIndexPath?
     
@@ -58,6 +60,8 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     deinit
     {
+        self.removeObservers()
+        self.meOperation?.cancel()
         self.operation?.cancel()
     }
     
@@ -67,9 +71,10 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         
         self.assets = self.loadAssets()
 
+        self.addObservers()
         self.setupNavigationBar()
         self.setupCollectionView()
-        self.setupAndStartOperation(me: nil)
+        self.setupAndStartOperation()
     }
     
     override func viewDidAppear(animated: Bool)
@@ -82,6 +87,58 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         }
     }
     
+    // MARK: Observers
+    
+    private func addObservers()
+    {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationWillEnterForeground:", name: UIApplicationWillEnterForegroundNotification, object: nil)
+    }
+    
+    private func removeObservers()
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    // Ensure that we refresh the me object on return from background
+    // In the event that a user modified their upload quota while the app was backgrounded [AH] 12/06/2015
+    
+    func applicationWillEnterForeground(notification: NSNotification)
+    {
+        if self.meOperation != nil
+        {
+            return
+        }
+        
+        let operation = MeOperation(sessionManager: ForegroundSessionManager.sharedInstance)
+        operation.completionBlock = { [weak self] () -> Void in
+            
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                strongSelf.meOperation = nil
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if operation.error != nil
+                {
+                    return
+                }
+
+                strongSelf.me = operation.result!
+            })
+        }
+
+        self.meOperation = operation
+        operation.start()
+    }
+
     // MARK: Setup
 
     private func setupNavigationBar()
@@ -120,11 +177,11 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         layout?.minimumLineSpacing = CameraRollViewController.CollectionViewSpacing
     }
     
-    private func setupAndStartOperation(me me: VIMUser?)
+    private func setupAndStartOperation()
     {
         let sessionManager = ForegroundSessionManager.sharedInstance
      
-        let operation = CompositeMeQuotaOperation(sessionManager: sessionManager, me: me)
+        let operation = CompositeMeQuotaOperation(sessionManager: sessionManager, me: self.me)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -154,9 +211,9 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                     let indexPath = strongSelf.selectedIndexPath!
                     let phAssetContainer = strongSelf.assets[indexPath.item]
                     let phAsset = phAssetContainer.phAsset
-                    let me = operation.me!
+                    strongSelf.me = operation.me!
    
-                    strongSelf.finish(phAsset: phAsset, me: me)
+                    strongSelf.finish(phAsset: phAsset)
                 }
             })
         }
@@ -351,7 +408,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             
             strongSelf.selectedIndexPath = nil
             strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
-            strongSelf.setupAndStartOperation(me: strongSelf.operation?.me)
+            strongSelf.setupAndStartOperation()
         }))
 
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
@@ -361,17 +418,20 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 return
             }
 
-            strongSelf.setupAndStartOperation(me: strongSelf.operation?.me)
+            strongSelf.setupAndStartOperation()
             strongSelf.didSelectIndexPath(indexPath)
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    private func finish(phAsset phAsset: PHAsset, me: VIMUser)
+    private func finish(phAsset phAsset: PHAsset)
     {
-        self.setupAndStartOperation(me: me) // Reset the operation
-        
+        let me = self.me!
+
+        // Reset the operation so we're prepared to retry upon cancellation from video settings [AH] 12/06/2015
+        self.setupAndStartOperation()
+                
         let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
         viewController.input = CameraRollViewControllerResult(me: me, phAsset: phAsset)
         
