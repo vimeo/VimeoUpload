@@ -60,11 +60,4 @@ class WeeklyQuotaOperation: NSOperation
             self.error = NSError(domain: WeeklyQuotaOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.space information"])
         }
     }
-    
-    override func cancel()
-    {
-        super.cancel()
-        
-        print("WeeklyQuotaOperation cancelled")
-    }
 }
