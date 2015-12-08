@@ -48,7 +48,7 @@ import Foundation
     // MARK:
 
     private let reporter: UploadReporter = UploadReporter()
-    private var failedDescriptors: [String: SimpleUploadDescriptor] = [:]
+    private var failedDescriptors: [String: SimpleUploadDescriptor] = [:] // video_uri: descriptor
     
     // MARK:
     // MARK: Initialization
@@ -68,7 +68,6 @@ import Foundation
         super.init()
 
         self.failedDescriptors = self.loadFailedDescriptors()
-        print("Loaded \(self.failedDescriptors.count) failed descriptors")
         
         self.addObservers()
     }
@@ -81,7 +80,7 @@ import Foundation
         var documentsURL = NSURL(string: documentsPath)!
         
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
-        documentsURL = documentsURL.URLByAppendingPathComponent(UploadManager.FailedDescriptorsArchiveKey)
+//        documentsURL = documentsURL.URLByAppendingPathComponent(UploadManager.FailedDescriptorsArchiveKey)
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
         {
@@ -93,20 +92,19 @@ import Foundation
     
     private func loadFailedDescriptors() -> [String: SimpleUploadDescriptor]
     {
-        if let failedDescriptors = self.archiver.loadObjectForKey(UploadManager.FailedDescriptorsArchiveKey) as? [String: SimpleUploadDescriptor]
+        if let object = self.archiver.loadObjectForKey(UploadManager.FailedDescriptorsArchiveKey) as? [String: SimpleUploadDescriptor]
         {
-            return failedDescriptors
+            return object
         }
         
         return [:]
     }
-    
-    private func save()
+
+    private func saveFailedDescriptors()
     {
         self.archiver.saveObject(self.failedDescriptors, key: UploadManager.FailedDescriptorsArchiveKey)
-        print("Saved \(self.failedDescriptors.count) failed descriptors")
     }
-    
+
     // MARK: Public API
     
     func applicationDidFinishLaunching()
@@ -119,24 +117,49 @@ import Foundation
         return self.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler)
     }
     
-    func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket)
+    // We need a reference (via the assetIdentifier) to the original asset so that we can retry failed uploads
+    func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket, assetIdentifier: String)
     {
-        let descriptor = SimpleUploadDescriptor(url: url, uploadTicket: uploadTicket)
-        descriptor.identifier = uploadTicket.video!.uri
+        let videoUri = uploadTicket.video!.uri
+        
+        let descriptor = SimpleUploadDescriptor(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
+        descriptor.identifier = videoUri
         
         self.descriptorManager.addDescriptor(descriptor)
     }
-    
-    func deleteUpload(videoUri videoUri: String)
+
+    func retryUpload(descriptor descriptor: SimpleUploadDescriptor, url: NSURL)
     {
-        if let descriptor = self.uploadDescriptorForVideo(videoUri: videoUri)
-        {
-            descriptor.cancel(sessionManager: self.sessionManager)
-        }
+        let uploadTicket = descriptor.uploadTicket
+        let videoUri = descriptor.uploadTicket.video!.uri!
+        let assetIdentifier = descriptor.assetIdentifier
+        
+        let newDescriptor = SimpleUploadDescriptor(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
+        newDescriptor.identifier = videoUri
         
         if let _ = self.failedDescriptors.removeValueForKey(videoUri)
         {
-            self.save()
+            self.saveFailedDescriptors()
+        }
+
+        self.descriptorManager.addDescriptor(newDescriptor)
+    }
+
+    func deleteUpload(videoUri videoUri: String)
+    {
+        // Upload failure does not delete the exported file, so that the file can be used for retry
+        // Therefore we must delete it here [AH] 11/29/2015
+        
+        if let descriptor = self.uploadDescriptorForVideo(videoUri: videoUri)
+        {
+            descriptor.cancel(sessionManager: self.sessionManager)
+            NSFileManager.defaultManager().deleteFileAtURL(descriptor.url)
+        }
+        
+        if let descriptor = self.failedDescriptors.removeValueForKey(videoUri)
+        {
+            NSFileManager.defaultManager().deleteFileAtURL(descriptor.url)
+            self.saveFailedDescriptors()
         }
         
         self.deletionManager.deleteVideoWithUri(videoUri)
@@ -193,7 +216,7 @@ import Foundation
                 }
                 
                 strongSelf.failedDescriptors[videoUri] = descriptor
-                strongSelf.save()
+                strongSelf.saveFailedDescriptors()
             }
         }
     }

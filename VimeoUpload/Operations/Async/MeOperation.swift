@@ -104,8 +104,6 @@ class MeOperation: ConcurrentOperation
     {
         super.cancel()
         
-        print("MeOperation cancelled")
-
         self.task?.cancel()
         self.task = nil
     }

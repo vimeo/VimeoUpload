@@ -40,7 +40,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     private var assets: [PHAssetContainer] = []
     private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
-    private var operation: CameraRollOperation?
+    private var operation: CompositeMeQuotaOperation?
     
     private var selectedIndexPath: NSIndexPath?
     
@@ -112,13 +112,13 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     private func setupOperation(me: VIMUser?)
     {
         let sessionManager = ForegroundSessionManager.sharedInstance
-        let operation = CameraRollOperation(sessionManager: sessionManager, me: me)
+        let operation = CompositeMeQuotaOperation(sessionManager: sessionManager, me: me)
         self.setOperationBlocks(operation)
         self.operation = operation
         self.operation?.start()
     }
         
-    private func setOperationBlocks(operation: CameraRollOperation)
+    private func setOperationBlocks(operation: CompositeMeQuotaOperation)
     {
         operation.completionBlock = { [weak self] () -> Void in
             

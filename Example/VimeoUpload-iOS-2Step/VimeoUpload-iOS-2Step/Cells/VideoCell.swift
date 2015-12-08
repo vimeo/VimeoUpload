@@ -29,7 +29,7 @@ import UIKit
 protocol VideoCellDelegate: class
 {
     func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
-    func cellDidRetryVideoWithUri(cell cell: VideoCell, videoUri: String, error: NSError)
+    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: SimpleUploadDescriptor)
 }
 
 class VideoCell: UITableViewCell
@@ -138,10 +138,9 @@ class VideoCell: UITableViewCell
 
     @IBAction func didTapRetryButton(sender: UIButton)
     {
-        if let videoUri = self.video?.uri, let error = self.descriptor?.error
+        if let descriptor = self.descriptor
         {
-            // TODO; retry
-            self.delegate?.cellDidRetryVideoWithUri(cell: self, videoUri: videoUri, error: error)
+            self.delegate?.cellDidRetryUploadDescriptor(cell: self, descriptor: descriptor)
         }
     }
 

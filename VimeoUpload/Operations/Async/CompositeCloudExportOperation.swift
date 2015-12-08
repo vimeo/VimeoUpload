@@ -1,5 +1,5 @@
 //
-//  CameraRollOperation.swift
+//  CompositeCloudExportOperation.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/9/15.
@@ -26,23 +26,22 @@
 
 import Foundation
 import AVFoundation
+import Photos
 
 // This flow encapsulates the following steps:
-// 1. Request me
-// 1. Fulfill asset selection
-// 2. Check daily quota
-// 3. If non iCloud asset, check approximate weekly quota
-// 4. If non iCloud asset, check approximate disk space
+// 1. If inCloud, download
+// 2. Export (check disk space within this step)
+// 3. Check weekly quota
 
-class CameraRollOperation: ConcurrentOperation
+class CompositeCloudExportOperation: ConcurrentOperation
 {    
-    let sessionManager: VimeoSessionManager
-    private(set) var me: VIMUser?
+    let me: VIMUser
+    let phAsset: PHAsset
     private let operationQueue: NSOperationQueue
 
-    private var avAsset: AVAsset?
-    private var selectionFulfilled: Bool = false
-
+    var downloadProgressBlock: ProgressBlock?
+    var exportProgressBlock: ProgressBlock?
+    
     private(set) var error: NSError?
     {
         didSet
@@ -53,21 +52,17 @@ class CameraRollOperation: ConcurrentOperation
             }
         }
     }
-    
-    convenience init(sessionManager: VimeoSessionManager)
-    {
-        self.init(sessionManager: sessionManager, me: nil)
-    }
+    private(set) var result: NSURL?
 
-    init(sessionManager: VimeoSessionManager, me: VIMUser?)
+    init(me: VIMUser, phAsset: PHAsset)
     {
-        self.sessionManager = sessionManager
         self.me = me
+        self.phAsset = phAsset
         
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
     }
-
+    
     deinit
     {
         self.operationQueue.cancelAllOperations()
@@ -82,65 +77,31 @@ class CameraRollOperation: ConcurrentOperation
             return
         }
 
-        if let _ = self.me
-        {
-            self.proceedIfMeAndSelectionFulfilled()
-        }
-        else
-        {
-            self.requestMe()
-        }
+        self.requestExportSession()
     }
     
     override func cancel()
     {
         super.cancel()
         
-        print("CameraRollOperation cancelled")
-        
         self.operationQueue.cancelAllOperations()
-    }
-
-    // MARK: Public API
-    
-    // If selection is fulfilled with a nil AVAsset,
-    // Then we're dealing with an iCloud asset
-    // This is ok, but download of iCloud asset is not handled by this workflow
-    
-    func fulfillSelection(avAsset avAsset: AVAsset?)
-    {
-        if self.selectionFulfilled == true
-        {
-            assertionFailure("Attempt to fulfill selection that has already been fulfilled")
-            
-            return
-        }
         
-        if self.cancelled
+        if let url = self.result
         {
-            return
+            NSFileManager.defaultManager().deleteFileAtURL(url)
         }
-
-        if let _ = self.error
-        {
-            return
-        }
-
-        self.avAsset = avAsset
-        self.selectionFulfilled = true
-        
-        self.proceedIfMeAndSelectionFulfilled()
     }
     
     // MARK: Private API
     
-    private func requestMe()
+    private func requestExportSession()
     {
-        let operation = MeOperation(sessionManager: self.sessionManager)
+        let operation = PHAssetExportSessionOperation(phAsset: self.phAsset)
+        operation.progressBlock = self.downloadProgressBlock
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-
+            
                 guard let strongSelf = self else
                 {
                     return
@@ -150,15 +111,15 @@ class CameraRollOperation: ConcurrentOperation
                 {
                     return
                 }
-                
+
                 if let error = operation.error
                 {
                     strongSelf.error = error
                 }
                 else
                 {
-                    strongSelf.me = operation.result!
-                    strongSelf.proceedIfMeAndSelectionFulfilled()
+                    let exportSession = operation.result!
+                    strongSelf.export(exportSession: exportSession)
                 }
             })
         }
@@ -166,109 +127,73 @@ class CameraRollOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    private func proceedIfMeAndSelectionFulfilled()
+    private func export(exportSession exportSession: AVAssetExportSession)
     {
-        if let _ = self.error
-        {
-            return
+        let operation = AVAssetExportOperation(exportSession: exportSession)
+        operation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
+            
+            if let progressBlock = self?.exportProgressBlock
+            {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    progressBlock(progress: progress)
+                })
+            }
+        }
+
+        operation.completionBlock = { [weak self] () -> Void in
+            
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else
+                {
+                    let url = operation.outputURL!
+                    strongSelf.checkExactWeeklyQuota(url: url)
+                }
+            })
         }
         
-        guard let _ = self.me where self.selectionFulfilled == true else
-        {
-            return
-        }
-        
-        if self.avAsset == nil
-        {
-            self.state = .Finished
-        }
-        else
-        {
-            self.checkDailyQuota()
-        }
+        self.operationQueue.addOperation(operation)
     }
     
-    private func checkDailyQuota()
+    private func checkExactWeeklyQuota(url url: NSURL)
     {
-        let me = self.me!
-        
-        let operation = DailyQuotaOperation(user: me)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+        let me = self.me
+        let avUrlAsset = AVURLAsset(URL: url)
 
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.cancelled == true
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else if let result = operation.result where result == false
-                {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.CameraRollOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate daily quota."])
-                }
-                else
-                {
-                    strongSelf.checkApproximateWeeklyQuota()
-                }
-            })
+        let filesize: NSNumber?
+        do
+        {
+            filesize = try avUrlAsset.fileSize()
+        }
+        catch let error as NSError
+        {
+            self.error = error
+            
+            return
         }
         
-        self.operationQueue.addOperation(operation)
-    }
-
-   private func checkApproximateWeeklyQuota()
-    {
-        let me = self.me!
-        let avAsset = self.avAsset!
-        let filesize = avAsset.approximateFileSize()
+        guard let size = filesize else
+        {
+            self.error = NSError(domain: UploadErrorDomain.CompositeCloudExportOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Exact filesize calculation failed, filesize is nil."])
         
-        let operation = WeeklyQuotaOperation(user: me, filesize: filesize)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.cancelled == true
-                {
-                    return
-                }
-
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else if let result = operation.result where result == false
-                {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.CameraRollOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
-                }
-                else
-                {
-                    strongSelf.checkApproximateDiskSpace()
-                }
-            })
+            return
         }
         
-        self.operationQueue.addOperation(operation)
-    }
-
-    private func checkApproximateDiskSpace()
-    {
-        let filesize = self.avAsset!.approximateFileSize()
-        
-        let operation = DiskSpaceOperation(filesize: filesize)
+        let operation = WeeklyQuotaOperation(user: me, filesize: size.doubleValue)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -289,10 +214,11 @@ class CameraRollOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.CameraRollOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.CompositeCloudExportOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
                 }
                 else
                 {
+                    strongSelf.result = url
                     strongSelf.state = .Finished
                 }
             })

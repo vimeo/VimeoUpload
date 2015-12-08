@@ -25,6 +25,8 @@
 //
 
 import UIKit
+import AVFoundation
+import Photos
 
 class MyVideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, VideoCellDelegate
 {
@@ -131,24 +133,50 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     {
         UploadManager.sharedInstance.deleteUpload(videoUri: videoUri)
 
-        for (index, video) in self.items.enumerate()
+        if let indexPath = self.indexPathForVideoUri(videoUri)
         {
-            if video.uri == videoUri
-            {
-                self.items.removeAtIndex(index)
-                let indexPath = NSIndexPath(forRow: index, inSection: 0)
-                self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-                
-                break
-            }
+            self.items.removeAtIndex(indexPath.row)
+            self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         }
     }
     
     // TODO: review this doc https://github.vimeows.com/Vimeo/vimeo/wiki/Upload-Server-Response-Codes
     
-    func cellDidRetryVideoWithUri(cell cell: VideoCell, videoUri: String, error: NSError)
+    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: SimpleUploadDescriptor)
     {
+        let videoUri = descriptor.uploadTicket.video!.uri!
+
+        self.retryUploadDescriptor(descriptor, completion: { [weak self] (error) in
+         
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            if error != nil
+            {
+                return
+            }
+            
+            // Reload the cell so that it reflects the state of the newly retried upload
+            if let indexPath = strongSelf.indexPathForVideoUri(videoUri)
+            {
+                strongSelf.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+            }
+        })
+    }
+    
+    private func indexPathForVideoUri(videoUri: String) -> NSIndexPath?
+    {
+        for (index, video) in self.items.enumerate()
+        {
+            if video.uri == videoUri
+            {
+                return NSIndexPath(forRow: index, inSection: 0)
+            }
+        }
         
+        return nil
     }
     
     // MARK: Actions
@@ -173,7 +201,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
                     
                     if let error = error
                     {
-                        strongSelf.presentErrorAlert(error)
+                        strongSelf.presentRefreshErrorAlert(error)
                     }
                     else
                     {
@@ -187,7 +215,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         catch let error as NSError
         {
-            self.presentErrorAlert(error)
+            self.presentRefreshErrorAlert(error)
         }
     }
     
@@ -203,7 +231,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: Alerts
     
-    private func presentErrorAlert(error: NSError)
+    private func presentRefreshErrorAlert(error: NSError)
     {
         let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
@@ -213,5 +241,75 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    private func presentUploadRetryErrorAlert(error: NSError)
+    {
+        let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: Private API
+    
+    private func retryUploadDescriptor(descriptor: SimpleUploadDescriptor, completion: ErrorBlock)
+    {
+        // TODO: This should be cancellable
+        
+        let assetIdentifier = descriptor.assetIdentifier
+        
+        let options = PHFetchOptions()
+        options.predicate = NSPredicate(format: "localIdentifier = %@", assetIdentifier)
+
+        let result = PHAsset.fetchAssetsWithLocalIdentifiers([assetIdentifier], options: options)
+        
+        guard result.count == 1 else
+        {
+            // TODO: present asset not found error
+            
+            return
+        }
+        
+        let phAsset = result.firstObject as! PHAsset
+        
+        let operation = RetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
+        operation.downloadProgressBlock = { (progress: Double) -> Void in
+            print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
+        }
+        
+        operation.exportProgressBlock = { (progress: Double) -> Void in
+            print("Export progress (settings): \(progress)")
+        }
+        operation.completionBlock = { [weak self] () -> Void in
+            
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.presentUploadRetryErrorAlert(error)
+                }
+                else
+                {
+                    // Initiate the retry
+
+                    let url = operation.url!
+                    UploadManager.sharedInstance.retryUpload(descriptor: descriptor, url: url)
+                }
+                
+                completion(error: operation.error)
+            })
+        }
+        operation.start()
     }
 }

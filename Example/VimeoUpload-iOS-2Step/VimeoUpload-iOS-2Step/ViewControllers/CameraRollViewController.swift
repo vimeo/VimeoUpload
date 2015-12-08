@@ -28,7 +28,17 @@ import UIKit
 import Photos
 import AVFoundation
 
-typealias CameraRollViewControllerResult = (me: VIMUser, phAssetContainer: PHAssetContainer)
+typealias CameraRollViewControllerResult = (me: VIMUser, phAsset: PHAsset)
+
+/*
+    This viewController displays the device camera roll video contents. 
+
+    It starts an operation on load that requests a fresh version of the authenticated user, checks that user's daily quota, and if the user selects a non-iCloud asset it checks the weekly quota and available diskspace. 
+
+    Essentially, it performs all checks possible at this UX juncture to determine if we can proceed with the upload.
+
+    [AH] 12/03/2015
+*/
 
 class CameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
@@ -40,7 +50,9 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     private var assets: [PHAssetContainer] = []
     private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
-    private var operation: CameraRollOperation?
+    private var operation: CompositeMeQuotaOperation?
+    private var me: VIMUser? // We store this in a property instead of on the operation itself, so that we can refresh it independent of the operation [AH]
+    private var meOperation: MeOperation?
     
     private var selectedIndexPath: NSIndexPath?
     
@@ -48,6 +60,8 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     deinit
     {
+        self.removeObservers()
+        self.meOperation?.cancel()
         self.operation?.cancel()
     }
     
@@ -57,10 +71,10 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         
         self.assets = self.loadAssets()
 
+        self.addObservers()
         self.setupNavigationBar()
         self.setupCollectionView()
-        
-        self.setupOperation(nil)
+        self.setupAndStartOperation()
     }
     
     override func viewDidAppear(animated: Bool)
@@ -73,6 +87,58 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         }
     }
     
+    // MARK: Observers
+    
+    private func addObservers()
+    {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationWillEnterForeground:", name: UIApplicationWillEnterForegroundNotification, object: nil)
+    }
+    
+    private func removeObservers()
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    // Ensure that we refresh the me object on return from background
+    // In the event that a user modified their upload quota while the app was backgrounded [AH] 12/06/2015
+    
+    func applicationWillEnterForeground(notification: NSNotification)
+    {
+        if self.meOperation != nil
+        {
+            return
+        }
+        
+        let operation = MeOperation(sessionManager: ForegroundSessionManager.sharedInstance)
+        operation.completionBlock = { [weak self] () -> Void in
+            
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                strongSelf.meOperation = nil
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if operation.error != nil
+                {
+                    return
+                }
+
+                strongSelf.me = operation.result!
+            })
+        }
+
+        self.meOperation = operation
+        operation.start()
+    }
+
     // MARK: Setup
 
     private func setupNavigationBar()
@@ -81,9 +147,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
     }
-    
-    // TODO: What happens when this returns 1000 assets?
-    
+        
     private func loadAssets() -> [PHAssetContainer]
     {
         let options = PHFetchOptions()
@@ -113,21 +177,15 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         layout?.minimumLineSpacing = CameraRollViewController.CollectionViewSpacing
     }
     
-    private func setupOperation(me: VIMUser?)
+    private func setupAndStartOperation()
     {
         let sessionManager = ForegroundSessionManager.sharedInstance
-        let operation = CameraRollOperation(sessionManager: sessionManager, me: me)
-        self.setOperationBlocks(operation)
-        self.operation = operation
-        self.operation?.start()
-    }
-        
-    private func setOperationBlocks(operation: CameraRollOperation)
-    {
+     
+        let operation = CompositeMeQuotaOperation(sessionManager: sessionManager, me: self.me)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-              
+                
                 guard let strongSelf = self else
                 {
                     return
@@ -139,7 +197,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 }
                 
                 strongSelf.activityIndicatorView.stopAnimating()
-
+                
                 if let error = operation.error
                 {
                     if let indexPath = strongSelf.selectedIndexPath
@@ -152,13 +210,18 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 {
                     let indexPath = strongSelf.selectedIndexPath!
                     let phAssetContainer = strongSelf.assets[indexPath.item]
-
-                    strongSelf.finish(phAssetContainer)
+                    let phAsset = phAssetContainer.phAsset
+                    strongSelf.me = operation.me!
+   
+                    strongSelf.finish(phAsset: phAsset)
                 }
             })
         }
+
+        self.operation = operation
+        self.operation?.start()
     }
-     
+    
     // MARK: Actions
     
     func didTapCancel(sender: UIBarButtonItem)
@@ -316,7 +379,8 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 self.activityIndicatorView.startAnimating()
             }
             
-            self.operation?.fulfillSelection(avAsset: phAssetContainer.avAsset) // avAsset may or may not be nil, which is fine
+            // The avAsset may or may not be nil, which is fine. Becuase at the very least this operation needs to fetch "me"
+            self.operation?.fulfillSelection(avAsset: phAssetContainer.avAsset)
         }
     }
     
@@ -344,7 +408,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
             
             strongSelf.selectedIndexPath = nil
             strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
-            strongSelf.setupOperation(strongSelf.operation?.me)
+            strongSelf.setupAndStartOperation()
         }))
 
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
@@ -354,21 +418,22 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
                 return
             }
 
-            strongSelf.setupOperation(strongSelf.operation?.me)
+            strongSelf.setupAndStartOperation()
             strongSelf.didSelectIndexPath(indexPath)
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    private func finish(phAssetContainer: PHAssetContainer)
+    private func finish(phAsset phAsset: PHAsset)
     {
-        let me = self.operation!.me!
+        let me = self.me!
 
-        self.setupOperation(me) // Reset the operation
-        
+        // Reset the operation so we're prepared to retry upon cancellation from video settings [AH] 12/06/2015
+        self.setupAndStartOperation()
+                
         let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.input = CameraRollViewControllerResult(me: me, phAssetContainer: phAssetContainer)
+        viewController.input = CameraRollViewControllerResult(me: me, phAsset: phAsset)
         
         self.navigationController?.pushViewController(viewController, animated: true)
     }

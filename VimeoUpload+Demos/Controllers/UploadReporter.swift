@@ -116,7 +116,7 @@ class UploadReporter: DescriptorManagerDelegate
     
     // Private API
     
-    func sendMessage(message: String) // TODO: Mark as private
+    private func sendMessage(message: String)
     {
         print(message)
         

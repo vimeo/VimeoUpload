@@ -1,6 +1,6 @@
 //
 //  VideoSettingsViewController.swift
-//  VimeoUpload-iOS-Example
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/16/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
@@ -26,6 +26,16 @@
 
 import UIKit
 
+/*
+    This viewController provides an interface for the user to modify a video's settings (title, description, privacy) before upload.
+
+    Upon load it starts a composite operation that downloads the asset from iCloud if necessary, exports a copy of it to disk, and creates the video object / upload ticket. This occurs in the background without the user being aware that it's happening. So that we can get a jump start on uploading. When these steps complete we start the upload itself.
+
+    When the user taps the "upload" button we display progress/activity indicators if the above steps have not completed. And we then apply the video's settings set by the user. 
+
+    [AH] 12/03/2015
+*/
+
 class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
     static let UploadInitiatedNotification = "VideoSettingsViewControllerUploadInitiatedNotification"
@@ -45,7 +55,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     // MARK:
     
     private var operation: ConcurrentOperation?
-
+    private var task: NSURLSessionDataTask?
+    
     // MARK:
     
     private var url: NSURL?
@@ -64,6 +75,12 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: Lifecycle
     
+    deinit
+    {
+        self.operation?.cancel()
+        self.task?.cancel()
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -73,7 +90,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.edgesForExtendedLayout = .None
         
         self.setupNavigationBar()
-        self.startOperation()
+        self.setupAndStartOperation()
     }
     
     // MARK: Setup
@@ -87,28 +104,14 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.Done, target: self, action: "didTapUpload:")
     }
 
-    private func startOperation()
-    {
-        self.operation = self.buildOperation()
-        self.operation?.start()
-    }
-    
-    private func startUpload()
-    {
-        let url = self.url!
-        let uploadTicket = self.uploadTicket!
-        
-        UploadManager.sharedInstance.uploadVideo(url: url, uploadTicket: uploadTicket)
-    }
-    
-    private func buildOperation() -> ConcurrentOperation
+    private func setupAndStartOperation()
     {
         let me = self.input!.me
-        let phAssetContainer = self.input!.phAssetContainer
+        let phAsset = self.input!.phAsset
         let sessionManager = ForegroundSessionManager.sharedInstance
         let videoSettings = self.videoSettings
         
-        let operation = SimplePrepareUploadOperation(me: me, phAssetContainer: phAssetContainer, sessionManager: sessionManager, videoSettings: videoSettings)
+        let operation = CompositeCloudExportCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
@@ -138,7 +141,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     strongSelf.uploadTicket = operation.uploadTicket!
                     strongSelf.startUpload()
                 }
-
+                
                 if strongSelf.hasTappedUpload == true
                 {
                     if let error = operation.error
@@ -151,7 +154,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                         if let video = strongSelf.uploadTicket?.video, let viewPrivacy = video.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
                         {
                             NSNotificationCenter.defaultCenter().postNotificationName(VideoSettingsViewController.UploadInitiatedNotification, object: video)
-
+                            
                             strongSelf.activityIndicatorView.stopAnimating()
                             strongSelf.dismissViewControllerAnimated(true, completion: nil)
                         }
@@ -161,10 +164,19 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                         }
                     }
                 }
-            })
+                })
         }
         
-        return operation
+        self.operation = operation
+        self.operation?.start()
+    }
+    
+    private func startUpload()
+    {
+        let url = self.url!
+        let uploadTicket = self.uploadTicket!
+        let assetIdentifier = self.input!.phAsset.localIdentifier
+        UploadManager.sharedInstance.uploadVideo(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
     }
 
     // MARK: Actions
@@ -187,7 +199,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil)
      
-        let operation = self.operation as? SimplePrepareUploadOperation
+        let operation = self.operation as? CompositeCloudExportCreateOperation
 
         if operation?.state == .Executing
         {
@@ -236,7 +248,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
             self?.activityIndicatorView.startAnimating()
-            self?.startOperation()
+            self?.setupAndStartOperation()
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
@@ -266,9 +278,9 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         do
         {
-            // TODO: should this be cancelable?
-            
-            let task = try ForegroundSessionManager.sharedInstance.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+            self.task = try ForegroundSessionManager.sharedInstance.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+                
+                self?.task = nil
                 
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                     
@@ -286,7 +298,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     }
                 })            
             })
-            task.resume()
+            
+            self.task?.resume()
         }
         catch let error as NSError
         {
