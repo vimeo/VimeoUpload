@@ -75,7 +75,7 @@ class DescriptorManager
         self.sessionManager = sessionManager
         self.name = name
         self.delegate = delegate
-        self.archiver = DescriptorManager.setupArchiver(name: name)
+        self.archiver = self.dynamicType.setupArchiver(name: name)
         
         self.descriptors = self.loadDescriptors()
         self.saveDescriptors() // Save immediately in case descriptors failed to load
@@ -129,20 +129,12 @@ class DescriptorManager
             }
         }
         
-        // TODO: BUG - For descriptors that fail to load, 
-        // this notification is fired before UploadManager has had a chance to register as an observer
-        // Which means that the failure is never registered
-        // By dispatch_async'ing we ensure that UploadManager has registered itself as an observer before posting the notification
-        // But this is not ideal, ideally all activity related to initialization is synchronous [AH] 12/08/2015
-        
         for descriptor in failedDescriptors
         {
             descriptors.remove(descriptor)
 
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-                self?.delegate?.descriptorDidFail?(descriptor)
-                NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
-            })
+            self.delegate?.descriptorDidFail?(descriptor)
+            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
         }
         
         return descriptors

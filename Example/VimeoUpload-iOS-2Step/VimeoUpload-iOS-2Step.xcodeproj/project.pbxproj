@@ -54,6 +54,8 @@
 		505730631C17C22D000178DD /* PHAssetHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505730391C17C22D000178DD /* PHAssetHelper.swift */; };
 		505730641C17C22D000178DD /* UploadReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5057303A1C17C22D000178DD /* UploadReporter.swift */; };
 		505730651C17C22D000178DD /* PHAssetContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5057303C1C17C22D000178DD /* PHAssetContainer.swift */; };
+		505730671C18949D000178DD /* UploadFailureTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505730661C18949D000178DD /* UploadFailureTracker.swift */; };
+		505730691C1898B6000178DD /* ConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505730681C1898B6000178DD /* ConnectivityManager.swift */; };
 		50596E111BE2D57700D1F8EC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596E101BE2D57700D1F8EC /* AppDelegate.swift */; };
 		50596E181BE2D57700D1F8EC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50596E171BE2D57700D1F8EC /* Assets.xcassets */; };
 		50596E1B1BE2D57700D1F8EC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50596E191BE2D57700D1F8EC /* LaunchScreen.storyboard */; };
@@ -140,6 +142,8 @@
 		505730391C17C22D000178DD /* PHAssetHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetHelper.swift; sourceTree = "<group>"; };
 		5057303A1C17C22D000178DD /* UploadReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadReporter.swift; sourceTree = "<group>"; };
 		5057303C1C17C22D000178DD /* PHAssetContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetContainer.swift; sourceTree = "<group>"; };
+		505730661C18949D000178DD /* UploadFailureTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadFailureTracker.swift; sourceTree = "<group>"; };
+		505730681C1898B6000178DD /* ConnectivityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectivityManager.swift; sourceTree = "<group>"; };
 		50596E0D1BE2D57700D1F8EC /* VimeoUpload-iOS-2Step.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VimeoUpload-iOS-2Step.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		50596E101BE2D57700D1F8EC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		50596E171BE2D57700D1F8EC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -495,6 +499,8 @@
 			isa = PBXGroup;
 			children = (
 				AFF28EC41C03D52900258476 /* UploadManager.swift */,
+				505730661C18949D000178DD /* UploadFailureTracker.swift */,
+				505730681C1898B6000178DD /* ConnectivityManager.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -766,9 +772,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				505730691C1898B6000178DD /* ConnectivityManager.swift in Sources */,
 				505730431C17C22D000178DD /* UploadDescriptor.swift in Sources */,
 				505730561C17C22D000178DD /* CompositeCloudExportOperation.swift in Sources */,
 				5043A53D1BFFA00300D70725 /* CameraRollViewController.swift in Sources */,
+				505730671C18949D000178DD /* UploadFailureTracker.swift in Sources */,
 				505730481C17C22D000178DD /* NSError+Upload.swift in Sources */,
 				5043A53F1BFFA00300D70725 /* VideoSettingsViewController.swift in Sources */,
 				505730511C17C22D000178DD /* VimeoSessionManager+Upload.swift in Sources */,
