@@ -64,82 +64,42 @@ class SimpleUploadDescriptor: Descriptor
 
     // MARK: Overrides
     
-    override func resume(sessionManager sessionManager: AFURLSessionManager) throws
+    override func prepare(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        try super.resume(sessionManager: sessionManager)
-        
-        let state = self.state
-        self.state = .Executing
-        
-        if state == .Ready
+        do
         {
-            do
+            guard let uploadLinkSecure = self.uploadTicket.uploadLinkSecure else
             {
-                guard let uploadLinkSecure = self.uploadTicket.uploadLinkSecure else
-                {
-                    throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
-                }
-                
-                let sessionManager = sessionManager as! VimeoSessionManager
-                let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, progress: &self.progress, completionHandler: nil)
-                
-                self.currentTaskIdentifier = task.taskIdentifier
-                task.resume()
-            }
-            catch let error as NSError
-            {
-                self.error = error
-                
-                throw error // Propagate this out so that DescriptorManager can remove the descriptor from the set
-            }
-        }
-        else if state == .Suspended
-        {            
-            guard let identifier = self.currentTaskIdentifier, let task = sessionManager.taskForIdentifier(identifier) else
-            {
-                throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to resume a .Suspended descriptor that does not have a session task."])
+                throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
             
-            task.resume()
+            let sessionManager = sessionManager as! VimeoSessionManager
+            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, progress: &self.progress, completionHandler: nil)
+            
+            self.currentTaskIdentifier = task.taskIdentifier
         }
-        else
+        catch let error as NSError
         {
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Cannot start a descriptor that is not in the .Ready or .Suspended state"])
+            self.error = error
+            
+            throw error // Propagate this out so that DescriptorManager can remove the descriptor from the set
         }
     }
     
-    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    override func resume(sessionManager sessionManager: AFURLSessionManager)
     {
-        guard self.state != .Finished else
-        {
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Ready or .Finished"])
-        }
+        super.resume(sessionManager: sessionManager)
         
-        if self.state == .Ready
+        self.didLoadFromCache(sessionManager: sessionManager)
+    }
+    
+    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager)
+    {
+        if let identifier = self.currentTaskIdentifier,
+            let task = sessionManager.taskForIdentifier(identifier) as? NSURLSessionUploadTask,
+            let progress = sessionManager.uploadProgressForTask(task)
         {
-            try self.resume(sessionManager: sessionManager)
-        
-            return
-        }
-        
-        // .Executing || .Suspended
-        if let taskIdentifier = self.currentTaskIdentifier
-        {
-            let tasks = sessionManager.uploadTasks.filter( { ($0 as! NSURLSessionUploadTask).taskIdentifier == taskIdentifier } )
-            if tasks.count == 0
-            {
-                throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache that does not have an active NSURLSessionTask"])
-            }
-
-            if tasks.count == 1
-            {
-                let task  = tasks.first as! NSURLSessionUploadTask
-                self.progress = sessionManager.uploadProgressForTask(task)
-            }
-        }
-        else
-        {
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache that does not have a currentTaskIdentifier"])
+            self.progress = progress
         }
     }
     

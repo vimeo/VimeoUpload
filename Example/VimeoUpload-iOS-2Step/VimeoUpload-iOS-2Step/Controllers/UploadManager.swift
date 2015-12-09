@@ -54,7 +54,7 @@ typealias VideoUri = String
     
     // MARK: 
     
-    var allowsCellularUpload = false // TODO: load from suer defaults
+    var allowsCellularUpload = false // TODO: load from user defaults
     {
         didSet
         {

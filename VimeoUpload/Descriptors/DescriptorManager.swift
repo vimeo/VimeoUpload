@@ -77,8 +77,6 @@ class DescriptorManager
         self.delegate = delegate
         self.archiver = DescriptorManager.setupArchiver(name: name)
         
-        self.suspended = self.loadSuspendedState()
-        
         // We must load the descriptors before we set the sessionBlocks,
         // Otherwise the blocks will be called before we have a list of descriptors to reconcile with [AH] 10/28/ 2015
         
@@ -87,6 +85,14 @@ class DescriptorManager
         self.delegate?.didLoadDescriptors(count: self.descriptors.count)
 
         self.setupSessionBlocks()
+    
+        let suspended = self.loadSuspendedState()
+        if suspended == true
+        {
+            self.suspend() // Call suspend() before setting the property because suspend() checks the property value
+        }
+        
+        self.suspended = suspended
     }
 
     // MARK: Setup
@@ -109,33 +115,16 @@ class DescriptorManager
     
     private func loadDescriptors() -> Set<Descriptor>
     {
-        if var descriptors = self.archiver.loadObjectForKey(DescriptorManager.DescriptorsArchiveKey) as? Set<Descriptor>
+        let descriptors = self.archiver.loadObjectForKey(DescriptorManager.DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
+
+        for descriptor in descriptors
         {
-            var deletedDescriptors: [Descriptor] = []
-            for descriptor in descriptors
-            {
-                do
-                {
-                    try descriptor.didLoadFromCache(sessionManager: self.sessionManager)
-                }
-                catch let error as NSError
-                {
-                    deletedDescriptors.append(descriptor)
-                    self.delegate?.didFailToLoadDescriptor(error: error)
-                }
-            }
-            
-            for descriptor in deletedDescriptors
-            {
-                descriptors.remove(descriptor)
-            }
-            
-            return descriptors
+            descriptor.didLoadFromCache(sessionManager: self.sessionManager)
         }
         
-        return Set<Descriptor>()
+        return descriptors
     }
-    
+
     private func loadSuspendedState() -> Bool
     {
         return self.archiver.loadObjectForKey(DescriptorManager.SuspendedArchiveKey) as? Bool ?? false
@@ -325,30 +314,11 @@ class DescriptorManager
                 return
             }
             
-            var deletedDescriptors: [Descriptor] = []
             for descriptor in strongSelf.descriptors
             {
-                do
-                {
-                    try descriptor.resume(sessionManager: strongSelf.sessionManager)
-                }
-                catch _ as NSError
-                {
-                    deletedDescriptors.append(descriptor)
-                }
+                descriptor.resume(sessionManager: strongSelf.sessionManager)
             }
 
-            // Doing this after the loop rather than within, incrementally greater margin for error but faster
-            strongSelf.saveDescriptors()
-
-            for descriptor in deletedDescriptors
-            {
-                strongSelf.descriptors.remove(descriptor)
-                strongSelf.delegate?.descriptorDidFail(descriptor)
-                
-                NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
-            }
-            
             // Doing this after the loop rather than within, incrementally greater margin for error but faster
             strongSelf.saveDescriptors()
         })
@@ -369,17 +339,11 @@ class DescriptorManager
             strongSelf.saveDescriptors()
             
             strongSelf.delegate?.descriptorAdded(descriptor)
-
             NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorAdded.rawValue, object: descriptor)
-            
-            if strongSelf.suspended // If the manager is suspended, resume will be called on the descriptor when the manager is next resumed
-            {
-                return // TODO: make descriptor state == .Suspended
-            }
-            
+
             do
             {
-                try descriptor.resume(sessionManager: strongSelf.sessionManager)
+                try descriptor.prepare(sessionManager: strongSelf.sessionManager)
                 strongSelf.saveDescriptors()
             }
             catch
@@ -391,6 +355,17 @@ class DescriptorManager
                 
                 NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
             }
+
+            if strongSelf.suspended
+            {
+                descriptor.state = .Suspended // TODO: figure out how to not set this externally like this
+            }
+            else
+            {
+                descriptor.resume(sessionManager: strongSelf.sessionManager)
+            }
+
+            strongSelf.saveDescriptors()
         })
     }
     

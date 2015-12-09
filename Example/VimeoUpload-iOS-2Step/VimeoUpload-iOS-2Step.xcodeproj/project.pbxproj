@@ -47,7 +47,6 @@
 		AFA63CDB1BFFEC3F003B5821 /* VimeoRequestSerializer+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63CD81BFFEC3F003B5821 /* VimeoRequestSerializer+Upload.swift */; };
 		AFA63CDC1BFFEC3F003B5821 /* VimeoResponseSerializer+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63CD91BFFEC3F003B5821 /* VimeoResponseSerializer+Upload.swift */; };
 		AFA63CDD1BFFEC3F003B5821 /* VimeoSessionManager+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63CDA1BFFEC3F003B5821 /* VimeoSessionManager+Upload.swift */; };
-		AFA63CE31BFFEC52003B5821 /* UploadDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63CE01BFFEC52003B5821 /* UploadDescriptor.swift */; };
 		AFA63CE41BFFEC52003B5821 /* UploadRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63CE11BFFEC52003B5821 /* UploadRequest.swift */; };
 		AFA63CF21BFFECA0003B5821 /* AVAssetExportOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63CE61BFFECA0003B5821 /* AVAssetExportOperation.swift */; };
 		AFA63CF31BFFECA0003B5821 /* CompositeMeQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA63CE71BFFECA0003B5821 /* CompositeMeQuotaOperation.swift */; };
@@ -144,7 +143,6 @@
 		AFA63CD81BFFEC3F003B5821 /* VimeoRequestSerializer+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoRequestSerializer+Upload.swift"; sourceTree = "<group>"; };
 		AFA63CD91BFFEC3F003B5821 /* VimeoResponseSerializer+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoResponseSerializer+Upload.swift"; sourceTree = "<group>"; };
 		AFA63CDA1BFFEC3F003B5821 /* VimeoSessionManager+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoSessionManager+Upload.swift"; sourceTree = "<group>"; };
-		AFA63CE01BFFEC52003B5821 /* UploadDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadDescriptor.swift; sourceTree = "<group>"; };
 		AFA63CE11BFFEC52003B5821 /* UploadRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadRequest.swift; sourceTree = "<group>"; };
 		AFA63CE61BFFECA0003B5821 /* AVAssetExportOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAssetExportOperation.swift; sourceTree = "<group>"; };
 		AFA63CE71BFFECA0003B5821 /* CompositeMeQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositeMeQuotaOperation.swift; sourceTree = "<group>"; };
@@ -443,7 +441,6 @@
 		AFA63CDE1BFFEC52003B5821 /* Upload */ = {
 			isa = PBXGroup;
 			children = (
-				AFA63CE01BFFEC52003B5821 /* UploadDescriptor.swift */,
 				AFA63CE11BFFEC52003B5821 /* UploadRequest.swift */,
 			);
 			path = Upload;
@@ -769,7 +766,6 @@
 				5043A53D1BFFA00300D70725 /* CameraRollViewController.swift in Sources */,
 				5043A53F1BFFA00300D70725 /* VideoSettingsViewController.swift in Sources */,
 				50596E711BE2D70000D1F8EC /* NSFileManager+Extensions.swift in Sources */,
-				AFA63CE31BFFEC52003B5821 /* UploadDescriptor.swift in Sources */,
 				AFF28EC51C03D52900258476 /* VideoCell.swift in Sources */,
 				AFA63CFC1BFFECA0003B5821 /* WeeklyQuotaOperation.swift in Sources */,
 				50596E771BE2D70000D1F8EC /* Constants.swift in Sources */,
