@@ -113,7 +113,7 @@ class DescriptorManager
     
     private func loadDescriptors() -> Set<Descriptor>
     {
-        let descriptors = self.archiver.loadObjectForKey(DescriptorManager.DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
+        var descriptors = self.archiver.loadObjectForKey(DescriptorManager.DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
 
         var failedDescriptors: [Descriptor] = []
         for descriptor in descriptors
@@ -129,16 +129,20 @@ class DescriptorManager
             }
         }
         
-        // TODO: BUG - notification is fired before UploadManager has had a chance to register as an observer
+        // TODO: BUG - For descriptors that fail to load, 
+        // this notification is fired before UploadManager has had a chance to register as an observer
+        // Which means that the failure is never registered
+        // By dispatch_async'ing we ensure that UploadManager has registered itself as an observer before posting the notification
+        // But this is not ideal, ideally all activity related to initialization is synchronous [AH] 12/08/2015
         
         for descriptor in failedDescriptors
         {
-            self.descriptors.remove(descriptor)
-            self.saveDescriptors()
-            
-            self.delegate?.descriptorDidFail?(descriptor)
-            
-            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
+            descriptors.remove(descriptor)
+
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                self?.delegate?.descriptorDidFail?(descriptor)
+                NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
+            })
         }
         
         return descriptors

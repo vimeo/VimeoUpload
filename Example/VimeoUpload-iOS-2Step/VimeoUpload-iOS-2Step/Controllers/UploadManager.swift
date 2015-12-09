@@ -217,7 +217,7 @@ typealias VideoUri = String
     
     func descriptorDidFail(notification: NSNotification)
     {
-        dispatch_async(dispatch_get_main_queue()) { [weak self] () -> Void in
+        dispatch_async(dispatch_get_main_queue()) { [weak self] () -> Void in // TODO: can async cause failure to not be stored?
 
             guard let strongSelf = self else
             {
