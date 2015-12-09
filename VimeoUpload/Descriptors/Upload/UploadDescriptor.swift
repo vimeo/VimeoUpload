@@ -41,11 +41,7 @@ class UploadDescriptor: Descriptor
     
     // MARK:
     
-    private static let ProgressKeyPath = "fractionCompleted"
-    private var progressKVOContext = UInt8()
-    private var isObserving = false
-    private var uploadProgressObject: NSProgress?
-    private(set) dynamic var uploadProgress: Double = 0 // KVO on this property
+    private(set) var progress: NSProgress?
 
     // MARK:
     
@@ -63,7 +59,6 @@ class UploadDescriptor: Descriptor
         {
             if self.error != nil
             {
-                print(self.error!.localizedDescription)
                 self.currentTaskIdentifier = nil
                 self.state = .Finished
             }
@@ -71,87 +66,50 @@ class UploadDescriptor: Descriptor
     }
     
     // MARK:
-    
     // MARK: Initialization
-
-    deinit
-    {
-        self.removeObserverIfNecessary()
-    }
     
-    convenience init(url: NSURL)
-    {
-        self.init(url: url, videoSettings: nil)
-    }
-
-    init(url: NSURL, videoSettings: VideoSettings?)
+    init(url: NSURL, videoSettings: VideoSettings? = nil)
     {
         self.url = url
         self.videoSettings = videoSettings
-    
+        
         super.init()
     }
 
     // MARK: Overrides
     
-    override func resume(sessionManager sessionManager: AFURLSessionManager) throws
+    override func prepare(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        try super.resume(sessionManager: sessionManager)
-        
-        self.state = .Executing
+        let sessionManager = sessionManager as! VimeoSessionManager
 
         do
         {
-            let sessionManager = sessionManager as! VimeoSessionManager
             try self.transitionToState(request: .Create, sessionManager: sessionManager) // TODO: fix this
         }
         catch let error as NSError
         {
             self.error = error
-
+            
             throw error // Propagate this out so that DescriptorManager can remove the descriptor from the set
         }
+    }
+    
+    override func resume(sessionManager sessionManager: AFURLSessionManager)
+    {
+        super.resume(sessionManager: sessionManager)
+    
+        self.didLoadFromCache(sessionManager: sessionManager)
     }
 
     // If necessary, resume the current task and re-connect progress objects
 
-    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager)
     {
-        guard self.state != .Ready else
+        if let identifier = self.currentTaskIdentifier,
+            let task = sessionManager.taskForIdentifier(identifier) as? NSURLSessionUploadTask,
+            let progress = sessionManager.uploadProgressForTask(task)
         {
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Ready"])
-        }
-
-        guard self.state != .Finished else
-        {
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Finished"])
-        }
-        
-        // For all .Executing tasks...
-        
-        if let taskIdentifier = self.currentTaskIdentifier
-        {
-            let tasks = sessionManager.tasks.filter( { ($0 as! NSURLSessionTask).taskIdentifier == taskIdentifier } )
-            if tasks.count == 0
-            {
-                throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache that does not have an active NSURLSessionTask"])
-            }
-            
-            let uploadTasks = sessionManager.uploadTasks.filter( { ($0 as! NSURLSessionUploadTask).taskIdentifier == taskIdentifier } )
-            assert(tasks.count < 2, "Loading descriptor from cache, found 2 or more upload tasks with descriptor's current task identifier")
-            
-            if uploadTasks.count == 1
-            {
-                let task  = uploadTasks.first as! NSURLSessionUploadTask
-                self.uploadProgressObject = sessionManager.uploadProgressForTask(task)
-                self.addObserver()
-            }
-        }
-        else
-        {
-            // TODO: start next task? (But this should never be necessary)
-            
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache that does not have a currentTaskIdentifier"])
+            self.progress = progress
         }
     }
 
@@ -189,7 +147,7 @@ class UploadDescriptor: Descriptor
     {
         if self.currentRequest == .Upload
         {
-            self.cleanupAfterUpload()
+            NSFileManager.defaultManager().deleteFileAtURL(self.url)
         }
 
         if self.error == nil
@@ -219,10 +177,6 @@ class UploadDescriptor: Descriptor
         {
             let sessionManager = sessionManager as! VimeoSessionManager
             try self.transitionToState(request: nextRequest!, sessionManager: sessionManager)
-            if self.currentRequest == .Upload
-            {
-                self.addObserver()
-            }
         }
         catch let error as NSError
         {
@@ -253,7 +207,7 @@ class UploadDescriptor: Descriptor
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
 
-            return try sessionManager.uploadVideoTask(source: self.url, destination: uploadUri, progress: &self.uploadProgressObject, completionHandler: nil)
+            return try sessionManager.uploadVideoTask(source: self.url, destination: uploadUri, progress: &self.progress, completionHandler: nil)
             
         case .Activate:
             guard let activationUri = self.uploadTicket?.completeUri else
@@ -273,12 +227,6 @@ class UploadDescriptor: Descriptor
         }
     }
 
-    private func cleanupAfterUpload()
-    {
-        self.removeObserverIfNecessary()
-        NSFileManager.defaultManager().deleteFileAtURL(self.url)
-    }
-    
     private func errorDomainForRequest(request: UploadRequest) -> String
     {
         switch request
@@ -294,44 +242,6 @@ class UploadDescriptor: Descriptor
 
         case .Settings:
             return UploadErrorDomain.VideoSettings.rawValue
-        }
-    }
-    
-    // MARK: KVO
-    
-    private func addObserver()
-    {
-        self.uploadProgressObject?.addObserver(self, forKeyPath: UploadDescriptor.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
-        self.isObserving = true
-    }
-    
-    private func removeObserverIfNecessary()
-    {
-        if self.isObserving
-        {
-            self.uploadProgressObject?.removeObserver(self, forKeyPath: UploadDescriptor.ProgressKeyPath, context: &self.progressKVOContext)
-            self.isObserving = false
-        }
-    }
-    
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
-    {
-        if let keyPath = keyPath
-        {
-            switch (keyPath, context)
-            {
-            case(UploadDescriptor.ProgressKeyPath, &self.progressKVOContext):
-                let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
-                self.uploadProgress = progress
-                print("Inner Upload: \(progress)")
-                
-            default:
-                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-            }
-        }
-        else
-        {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
         }
     }
     
