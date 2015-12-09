@@ -52,7 +52,7 @@ class DailyQuotaOperation: NSOperation
     {
         if let sd = self.user.uploadQuota?.quantityQuota?.canUploadSd, let hd = self.user.uploadQuota?.quantityQuota?.canUploadHd
         {
-            self.result = (sd == true && hd == true)
+            self.result = (sd == true || hd == true)
         }
         else
         {

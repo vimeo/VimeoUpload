@@ -28,8 +28,6 @@ import Foundation
 
 class SimpleUploadDescriptor: Descriptor
 {
-    // MARK:
-    
     let url: NSURL
     let uploadTicket: VIMUploadTicket
     let assetIdentifier: String // Used to track the original ALAsset or PHAsset
@@ -46,7 +44,6 @@ class SimpleUploadDescriptor: Descriptor
         {
             if error != nil
             {
-                print(self.error!.localizedDescription)
                 self.currentTaskIdentifier = nil
                 self.state = .Finished
             }
@@ -67,12 +64,8 @@ class SimpleUploadDescriptor: Descriptor
 
     // MARK: Overrides
     
-    override func start(sessionManager sessionManager: AFURLSessionManager) throws
+    override func prepare(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        try super.start(sessionManager: sessionManager)
-        
-        self.state = .Executing
-        
         do
         {
             guard let uploadLinkSecure = self.uploadTicket.uploadLinkSecure else
@@ -82,9 +75,8 @@ class SimpleUploadDescriptor: Descriptor
             
             let sessionManager = sessionManager as! VimeoSessionManager
             let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, progress: &self.progress, completionHandler: nil)
-
+            
             self.currentTaskIdentifier = task.taskIdentifier
-            task.resume()            
         }
         catch let error as NSError
         {
@@ -94,38 +86,31 @@ class SimpleUploadDescriptor: Descriptor
         }
     }
     
+    override func resume(sessionManager sessionManager: AFURLSessionManager)
+    {
+        super.resume(sessionManager: sessionManager)
+        
+        if let identifier = self.currentTaskIdentifier,
+            let task = sessionManager.taskForIdentifier(identifier) as? NSURLSessionUploadTask,
+            let progress = sessionManager.uploadProgressForTask(task)
+        {
+            self.progress = progress
+        }
+    }
+    
     override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        guard self.state != .Ready else
+        guard let identifier = self.currentTaskIdentifier,
+            let task = sessionManager.taskForIdentifier(identifier) as? NSURLSessionUploadTask,
+            let progress = sessionManager.uploadProgressForTask(task) else
         {
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Ready"])
+            // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload
+            // Upon reopening the app, the descriptor is loaded but no longer has a task 
+            
+            throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
         }
-        
-        guard self.state != .Finished else
-        {
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache whose state is .Finished"])
-        }
-        
-        // For all .Executing tasks...
-        
-        if let taskIdentifier = self.currentTaskIdentifier
-        {
-            let tasks = sessionManager.uploadTasks.filter( { ($0 as! NSURLSessionUploadTask).taskIdentifier == taskIdentifier } )
-            if tasks.count == 0
-            {
-                throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache that does not have an active NSURLSessionTask"])
-            }
 
-            if tasks.count == 1
-            {
-                let task  = tasks.first as! NSURLSessionUploadTask
-                self.progress = sessionManager.uploadProgressForTask(task)
-            }
-        }
-        else
-        {
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded a descriptor from cache that does not have a currentTaskIdentifier"])
-        }
+        self.progress = progress
     }
     
     override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)

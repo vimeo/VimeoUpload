@@ -74,7 +74,7 @@ class VideoCell: UITableViewCell
             {
                 self.updateState(state)
             }
-            
+
             self.descriptor?.addObserver(self, forKeyPath: VideoCell.StateKeyPath, options: NSKeyValueObservingOptions.New, context: &self.stateKVOContext)
             self.descriptor?.progress?.addObserver(self, forKeyPath: VideoCell.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
         }
@@ -176,9 +176,12 @@ class VideoCell: UITableViewCell
         case .Ready, .Executing:
             self.deleteButton.setTitle("Cancel", forState: .Normal)
             
-            self.errorLabel.text = ""
+            self.errorLabel.text = "Ready or Executing"
             self.retryButton.hidden = true
 
+        case .Suspended:
+            self.errorLabel.text = "Suspended"
+            
         case .Finished:
             self.updateProgress(0) // Reset the progress bar to 0
             self.progressView.hidden = true
@@ -191,7 +194,7 @@ class VideoCell: UITableViewCell
             }
             else
             {
-                self.errorLabel.text = ""
+                self.errorLabel.text = "Finished"
                 self.retryButton.hidden = true
             }
         }

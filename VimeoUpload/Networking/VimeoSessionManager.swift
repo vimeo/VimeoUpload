@@ -72,7 +72,7 @@ class VimeoSessionManager: AFHTTPSessionManager
     }
     
     init(sessionConfiguration: NSURLSessionConfiguration, authTokenBlock: AuthTokenBlock)
-    {
+    {        
         super.init(baseURL: VimeoBaseURLString, sessionConfiguration: sessionConfiguration)
         
         self.requestSerializer = VimeoRequestSerializer(authTokenBlock: authTokenBlock)
@@ -85,7 +85,7 @@ class VimeoSessionManager: AFHTTPSessionManager
     {
         fatalError("init(coder:) has not been implemented")
     }
-    
+        
     // MARK: Private API
     
     private static func backgroundSessionConfiguration(identifier identifier: String) -> NSURLSessionConfiguration

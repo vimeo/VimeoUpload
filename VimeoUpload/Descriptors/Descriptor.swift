@@ -28,7 +28,9 @@ import Foundation
 
 @objc protocol DescriptorProtocol
 {
-    func start(sessionManager sessionManager: AFURLSessionManager) throws
+    func prepare(sessionManager sessionManager: AFURLSessionManager) throws
+    func resume(sessionManager sessionManager: AFURLSessionManager)
+    func suspend(sessionManager sessionManager: AFURLSessionManager)
     func cancel(sessionManager sessionManager: AFURLSessionManager)
     func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     optional func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
@@ -39,6 +41,7 @@ enum State: String
 {
     case Ready = "Ready"
     case Executing = "Executing"
+    case Suspended = "Suspended"
     case Finished = "Finished"
 }
 
@@ -73,28 +76,36 @@ class Descriptor: NSObject, DescriptorProtocol
     
     // MARK: Subclass Overrides
 
-    func start(sessionManager sessionManager: AFURLSessionManager) throws
+    func prepare(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        if self.state != .Ready
-        {
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Cannot start a descriptor that is note in the .Ready state"])
-        }
+        fatalError("prepare(sessionManager:) has not been implemented")
+    }
+
+    func resume(sessionManager sessionManager: AFURLSessionManager)
+    {
+        self.state = .Executing
         
-        if let _ = self.error
+        if let identifier = self.currentTaskIdentifier, let task = sessionManager.taskForIdentifier(identifier)
         {
-            throw NSError(domain: Descriptor.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Cannot start a descriptor that has a pre-existing error"])
-        }        
+            task.resume()
+        }
+    }
+    
+    func suspend(sessionManager sessionManager: AFURLSessionManager)
+    {
+        self.state = .Suspended
+
+        if let identifier = self.currentTaskIdentifier, let task = sessionManager.taskForIdentifier(identifier)
+        {
+            task.suspend()
+        }
     }
 
     func cancel(sessionManager sessionManager: AFURLSessionManager)
     {
-        for task in sessionManager.tasks
+        if let identifier = self.currentTaskIdentifier, let task = sessionManager.taskForIdentifier(identifier)
         {
-            if task.taskIdentifier == self.currentTaskIdentifier
-            {
-                task.cancel()
-                break
-            }
+            task.cancel()
         }
     }
 
