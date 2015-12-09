@@ -77,11 +77,9 @@ class DescriptorManager
         self.delegate = delegate
         self.archiver = DescriptorManager.setupArchiver(name: name)
         
-        // We must load the descriptors before we set the sessionBlocks,
-        // Otherwise the blocks will be called before we have a list of descriptors to reconcile with [AH] 10/28/ 2015
-        
         self.descriptors = self.loadDescriptors()
-
+        self.saveDescriptors() // Save immediately in case descriptors failed to load
+        
         self.delegate?.didLoadDescriptors(count: self.descriptors.count)
 
         self.setupSessionBlocks()
@@ -117,9 +115,28 @@ class DescriptorManager
     {
         let descriptors = self.archiver.loadObjectForKey(DescriptorManager.DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
 
+        var failedDescriptors: [Descriptor] = []
         for descriptor in descriptors
         {
-            descriptor.didLoadFromCache(sessionManager: self.sessionManager)
+            do
+            {
+                try descriptor.didLoadFromCache(sessionManager: self.sessionManager)
+            }
+            catch let error as NSError
+            {
+                descriptor.error = error
+                failedDescriptors.append(descriptor)
+            }
+        }
+        
+        for descriptor in failedDescriptors
+        {
+            self.descriptors.remove(descriptor)
+            self.saveDescriptors()
+            
+            self.delegate?.descriptorDidFail(descriptor)
+            
+            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
         }
         
         return descriptors
@@ -354,6 +371,8 @@ class DescriptorManager
                 strongSelf.delegate?.descriptorDidFail(descriptor)
                 
                 NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
+                
+                return
             }
 
             if strongSelf.suspended

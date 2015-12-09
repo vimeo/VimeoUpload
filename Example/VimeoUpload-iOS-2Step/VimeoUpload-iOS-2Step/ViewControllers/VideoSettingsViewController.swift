@@ -242,6 +242,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func presentOperationErrorAlert(error: NSError)
     {
         // TODO: check error.code == AVError.DiskFull.rawValue and message appropriately
+        // TODO: check error.code == AVError.OperationInterrupted.rawValue (app backgrounded during export)
         
         let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in

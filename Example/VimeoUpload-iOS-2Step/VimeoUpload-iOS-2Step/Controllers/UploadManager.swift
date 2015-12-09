@@ -83,7 +83,7 @@ typealias VideoUri = String
         super.init()
 
         self.failedDescriptors = self.loadFailedDescriptors()
-        
+
         self.addObservers()
     }
     

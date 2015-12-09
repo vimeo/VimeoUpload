@@ -98,12 +98,12 @@ class UploadDescriptor: Descriptor
     {
         super.resume(sessionManager: sessionManager)
     
-        self.didLoadFromCache(sessionManager: sessionManager)
+        let _ = try? self.didLoadFromCache(sessionManager: sessionManager)
     }
 
     // If necessary, resume the current task and re-connect progress objects
 
-    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager)
+    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
         if let identifier = self.currentTaskIdentifier,
             let task = sessionManager.taskForIdentifier(identifier) as? NSURLSessionUploadTask,

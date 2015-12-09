@@ -90,17 +90,27 @@ class SimpleUploadDescriptor: Descriptor
     {
         super.resume(sessionManager: sessionManager)
         
-        self.didLoadFromCache(sessionManager: sessionManager)
-    }
-    
-    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager)
-    {
         if let identifier = self.currentTaskIdentifier,
             let task = sessionManager.taskForIdentifier(identifier) as? NSURLSessionUploadTask,
             let progress = sessionManager.uploadProgressForTask(task)
         {
             self.progress = progress
         }
+    }
+    
+    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    {
+        guard let identifier = self.currentTaskIdentifier,
+            let task = sessionManager.taskForIdentifier(identifier) as? NSURLSessionUploadTask,
+            let progress = sessionManager.uploadProgressForTask(task) else
+        {
+            // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload
+            // Upon reopening the app, the descriptor is loaded but no longer has a task 
+            
+            throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
+        }
+
+        self.progress = progress
     }
     
     override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)

@@ -149,7 +149,7 @@ class AVAssetExportOperation: ConcurrentOperation
                 }
                 else
                 {
-                    strongSelf.error = error
+                    strongSelf.error = error 
                 }
             }
             else if let outputURL = strongSelf.exportSession.outputURL, let path = outputURL.path where NSFileManager.defaultManager().fileExistsAtPath(path)

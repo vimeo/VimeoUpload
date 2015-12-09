@@ -32,7 +32,7 @@ import Foundation
     func resume(sessionManager sessionManager: AFURLSessionManager)
     func suspend(sessionManager sessionManager: AFURLSessionManager)
     func cancel(sessionManager sessionManager: AFURLSessionManager)
-    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager)
+    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     optional func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
     func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
 }
@@ -109,7 +109,7 @@ class Descriptor: NSObject, DescriptorProtocol
         }
     }
 
-    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager)
+    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
         fatalError("didLoadFromCache(sessionManager:) has not been implemented")
     }
