@@ -12,14 +12,6 @@ extension AFURLSessionManager
 {
     func taskForIdentifier(identifier: Int) -> NSURLSessionTask?
     {
-        for task in self.tasks
-        {
-            if task.taskIdentifier == identifier
-            {
-                return task as? NSURLSessionTask
-            }
-        }
-        
-        return nil
+        return self.tasks.filter{ $0.taskIdentifier == identifier }.first as? NSURLSessionTask
     }
 }
