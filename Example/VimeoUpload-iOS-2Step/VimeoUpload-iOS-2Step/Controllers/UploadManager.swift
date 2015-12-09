@@ -77,6 +77,11 @@ import Foundation
     
     // MARK: Public API - Uploads
 
+    func allowsCellularUpload(allows: Bool)
+    {
+        self.connectivityManager.allowsCellularUpload = allows
+    }
+    
     // We need a reference (via the assetIdentifier) to the original asset so that we can retry failed uploads
     func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket, assetIdentifier: String)
     {

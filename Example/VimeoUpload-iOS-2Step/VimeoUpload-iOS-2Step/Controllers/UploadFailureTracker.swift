@@ -28,7 +28,7 @@ import Foundation
 
 typealias VideoUri = String
 
-class UploadFailureTracker
+@objc class UploadFailureTracker: NSObject
 {
     private let FailedDescriptorsArchiveKey = "failed_descriptors"
 
@@ -49,6 +49,8 @@ class UploadFailureTracker
     {
         self.archiver = self.dynamicType.setupArchiver(name: name)
 
+        super.init()
+        
         self.failedDescriptors = self.loadFailedDescriptors()
 
         self.addObservers()

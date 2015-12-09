@@ -93,7 +93,7 @@ class DescriptorManager
         self.suspended = suspended
     }
 
-    // MARK: Setup
+    // MARK: Setup - Archiving
     
     private static func setupArchiver(name name: String) -> KeyedArchiver
     {
@@ -113,7 +113,7 @@ class DescriptorManager
     
     private func loadDescriptors() -> Set<Descriptor>
     {
-        var descriptors = self.archiver.loadObjectForKey(DescriptorManager.DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
+        var descriptors = self.archiver.loadObjectForKey(self.dynamicType.DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
 
         var failedDescriptors: [Descriptor] = []
         for descriptor in descriptors
@@ -139,12 +139,25 @@ class DescriptorManager
         
         return descriptors
     }
+    
+    private func saveDescriptors()
+    {
+        self.archiver.saveObject(self.descriptors, key: self.dynamicType.DescriptorsArchiveKey)
+        self.delegate?.didSaveDescriptors?(count: self.descriptors.count)
+    }
 
     private func loadSuspendedState() -> Bool
     {
-        return self.archiver.loadObjectForKey(DescriptorManager.SuspendedArchiveKey) as? Bool ?? false
+        return self.archiver.loadObjectForKey(self.dynamicType.SuspendedArchiveKey) as? Bool ?? false
     }
     
+    private func saveSuspendedState()
+    {
+        self.archiver.saveObject(self.suspended, key: self.dynamicType.SuspendedArchiveKey)
+    }
+
+    // MARK: Setup - Session
+
     private func setupSessionBlocks()
     {
         // Because we're using a background session we never have cause to invalidate the session,
@@ -435,16 +448,5 @@ class DescriptorManager
         }
         
         return result
-    }
-
-    private func saveSuspendedState()
-    {
-        self.archiver.saveObject(self.suspended, key: DescriptorManager.SuspendedArchiveKey)
-    }
-
-    private func saveDescriptors()
-    {
-        self.archiver.saveObject(self.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
-        self.delegate?.didSaveDescriptors?(count: self.descriptors.count)
     }
 }

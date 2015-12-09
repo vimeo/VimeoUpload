@@ -26,7 +26,7 @@
 
 import Foundation
 
-class ConnectivityManager
+@objc class ConnectivityManager: NSObject
 {
     private let descriptorManager: DescriptorManager
 
@@ -54,6 +54,8 @@ class ConnectivityManager
     init(descriptorManager: DescriptorManager)
     {
         self.descriptorManager = descriptorManager
+        
+        super.init()
         
         self.addObservers()
     }
