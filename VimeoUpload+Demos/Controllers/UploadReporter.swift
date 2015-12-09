@@ -32,37 +32,37 @@ class UploadReporter: DescriptorManagerDelegate
 {
     // MARK: DescriptorManagerDelegate
     
-    func didLoadDescriptors(count count: Int)
+    @objc func didLoadDescriptors(count count: Int)
     {
         self.sendMessage("Loaded \(count) descriptors")
     }
 
-    func didSaveDescriptors(count count: Int)
+    @objc func didSaveDescriptors(count count: Int)
     {
         self.sendMessage("Did save \(count) descriptors")
     }
 
-    func didFailToLoadDescriptor(error error: NSError)
+    @objc func didFailToLoadDescriptor(error error: NSError)
     {
         self.sendMessage("Did fail to load descriptor \(error.localizedDescription)")
     }
     
-    func sessionDidBecomeInvalid(error error: NSError)
+    @objc func sessionDidBecomeInvalid(error error: NSError)
     {
         self.sendMessage("Session invalid \(error.localizedDescription)")
     }
     
-    func willHandleEventsForBackgroundSession()
+    @objc func willHandleEventsForBackgroundSession()
     {
         self.sendMessage("Will handle background events")
     }
     
-    func didFinishEventsForBackgroundSession()
+    @objc func didFinishEventsForBackgroundSession()
     {
         self.sendMessage("Did handle background events")
     }
     
-    func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
+    @objc func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -70,7 +70,7 @@ class UploadReporter: DescriptorManagerDelegate
         }
     }
     
-    func taskDidComplete(task task: NSURLSessionTask, descriptor: Descriptor, error: NSError?)
+    @objc func taskDidComplete(task task: NSURLSessionTask, descriptor: Descriptor, error: NSError?)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -85,7 +85,7 @@ class UploadReporter: DescriptorManagerDelegate
         }
     }
     
-    func descriptorAdded(descriptor: Descriptor)
+    @objc func descriptorAdded(descriptor: Descriptor)
     {
         if let identifier = descriptor.identifier
         {
@@ -93,7 +93,7 @@ class UploadReporter: DescriptorManagerDelegate
         }
     }
 
-    func descriptorDidSucceed(descriptor: Descriptor)
+    @objc func descriptorDidSucceed(descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -101,7 +101,7 @@ class UploadReporter: DescriptorManagerDelegate
         }
     }
     
-    func descriptorDidFail(descriptor: Descriptor)
+    @objc func descriptorDidFail(descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -109,7 +109,7 @@ class UploadReporter: DescriptorManagerDelegate
         }
     }
     
-    func descriptorForTaskNotFound(task: NSURLSessionTask)
+    @objc func descriptorForTaskNotFound(task: NSURLSessionTask)
     {
         self.sendMessage("Descriptor not found (task) \(task.description)")
     }

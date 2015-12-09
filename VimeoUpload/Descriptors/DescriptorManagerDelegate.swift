@@ -28,22 +28,22 @@ import Foundation
 
 // Append the "class" keyword to allow weak references to objects that implement this protocol [AH] 10/28/2015
 
-protocol DescriptorManagerDelegate: class
+@objc protocol DescriptorManagerDelegate: class
 {
-    func didLoadDescriptors(count count: Int)
-    func didSaveDescriptors(count count: Int)
-    func didFailToLoadDescriptor(error error: NSError)
+    optional func didLoadDescriptors(count count: Int)
+    optional func didSaveDescriptors(count count: Int)
+    optional func didFailToLoadDescriptor(error error: NSError)
     
-    func sessionDidBecomeInvalid(error error: NSError)
-    func willHandleEventsForBackgroundSession()
-    func didFinishEventsForBackgroundSession()
+    optional func sessionDidBecomeInvalid(error error: NSError)
+    optional func willHandleEventsForBackgroundSession()
+    optional func didFinishEventsForBackgroundSession()
     
-    func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
-    func taskDidComplete(task task: NSURLSessionTask, descriptor: Descriptor, error: NSError?)
+    optional func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
+    optional func taskDidComplete(task task: NSURLSessionTask, descriptor: Descriptor, error: NSError?)
 
-    func descriptorAdded(descriptor: Descriptor)
-    func descriptorDidSucceed(descriptor: Descriptor)
-    func descriptorDidFail(descriptor: Descriptor)
+    optional func descriptorAdded(descriptor: Descriptor)
+    optional func descriptorDidSucceed(descriptor: Descriptor)
+    optional func descriptorDidFail(descriptor: Descriptor)
     
-    func descriptorForTaskNotFound(task: NSURLSessionTask)
+    optional func descriptorForTaskNotFound(task: NSURLSessionTask)
 }
