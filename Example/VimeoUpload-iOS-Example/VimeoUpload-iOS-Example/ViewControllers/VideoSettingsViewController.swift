@@ -51,7 +51,16 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private var videoSettings: VideoSettings?
 
     // MARK:
-
+    
+    private var hasTappedUpload: Bool
+    {
+        get
+        {
+            return self.videoSettings != nil
+        }
+    }
+    
+    // MARK:
     // MARK: Lifecycle
     
     override func viewDidLoad()
@@ -63,7 +72,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.edgesForExtendedLayout = .None
         
         self.setupNavigationBar()
-        self.startOperation()
+        self.setupAndStartOperation()
     }
     
     // MARK: Setup
@@ -77,23 +86,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.Done, target: self, action: "didTapUpload:")
     }
 
-    private func startOperation()
-    {
-        self.operation = self.buildOperation()
-        self.operation?.start()
-    }
-    
-    private func startUpload()
-    {
-        self.descriptor = self.buildDescriptor()
-        UploadManager.sharedInstance.descriptorManager.addDescriptor(self.descriptor!)
-    }
-    
-    private func buildOperation() -> ConcurrentOperation
+    private func setupAndStartOperation()
     {
         let me = self.input!.me
-        let phAssetContainer = self.input!.phAssetContainer
-        let operation = CompositeCloudExportOperation(me: me, phAssetContainer: phAssetContainer)
+        let phAsset = self.input!.phAsset        
+        let operation = CompositeCloudExportOperation(me: me, phAsset: phAsset)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
@@ -122,7 +119,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     strongSelf.url = operation.result!
                 }
                 
-                if strongSelf.hasTappedUpload() == true
+                if strongSelf.hasTappedUpload == true
                 {
                     if let error = operation.error
                     {
@@ -132,23 +129,24 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     else
                     {
                         strongSelf.startUpload()
-                        
                         strongSelf.activityIndicatorView.stopAnimating()
-                        strongSelf.dismissViewControllerAnimated(true, completion: nil)
+                        strongSelf.navigationController?.popViewControllerAnimated(true)
                     }
                 }
             })
         }
         
-        return operation
+        self.operation = operation
+        self.operation?.start()
     }
     
-    private func buildDescriptor() -> Descriptor
+    private func startUpload()
     {
-        let descriptor = UploadDescriptor(url: self.url!, videoSettings: self.videoSettings)
-        descriptor.identifier = "\(self.url!.absoluteString.hash)"
+        let url = self.url!
+        let phAsset = self.input!.phAsset
+        let assetIdentifier = phAsset.localIdentifier
         
-        return descriptor
+        UploadManager.sharedInstance.uploadVideo(url: url, assetIdentifier: assetIdentifier, videoSettings: self.videoSettings)
     }
 
     // MARK: Actions
@@ -179,7 +177,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         else
         {
             self.startUpload()
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.navigationController?.popViewControllerAnimated(true)
         }
     }
     
@@ -199,11 +197,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+            self?.navigationController?.popViewControllerAnimated(true)
         }))
         
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.startOperation()
+            self?.setupAndStartOperation()
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
@@ -213,23 +211,16 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let alert = UIAlertController(title: "Descriptor Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+            self?.navigationController?.popViewControllerAnimated(true)
         }))
         
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
             // We start from the beginning (with the operation instead of the descriptor), 
             // Because the exported file was deleted when the upload descriptor failed,
             // We delete it because leaving it up to the API consumer to delete seems a little risky
-            self?.startOperation()
+            self?.setupAndStartOperation()
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
-    }
-    
-    // MARK: Private API
-    
-    private func hasTappedUpload() -> Bool
-    {
-        return self.videoSettings != nil
     }
 }
