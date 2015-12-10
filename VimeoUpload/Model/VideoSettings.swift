@@ -26,7 +26,7 @@
 
 import Foundation
 
-class VideoSettings
+class VideoSettings: NSObject
 {
     var title: String?
     var desc: String?

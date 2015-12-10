@@ -26,100 +26,44 @@
 
 import Foundation
 
-typealias VideoUri = String
-
 @objc class UploadManager: NSObject
 {
     static let sharedInstance = UploadManager()
 
     // MARK:
     
-    private static let BackgroundSessionIdentifier = "com.vimeo.upload"
-    private static let DescriptorManagerName = "uploader"
-    private static let BasicUserToken = "3e9dae312853936216aba3ce56cf5066"
-    private static let ProUserToken = "caf4648129ec56e580175c4b45cce7fc"
-    private static let FailedDescriptorsArchiveKey = "failed_descriptors"
+    private let BackgroundSessionIdentifier = "com.vimeo.upload"
+    private let DescriptorManagerName = "uploader"
+    private let BasicUserToken = "3e9dae312853936216aba3ce56cf5066"
+    private let ProUserToken = "caf4648129ec56e580175c4b45cce7fc"
     
     // MARK: 
     
     private let sessionManager: VimeoSessionManager
+    private let uploadFailureTracker: UploadFailureTracker
     private let descriptorManager: DescriptorManager
+    private let connectivityManager: ConnectivityManager
     private let deletionManager: VideoDeletionManager
-    private let archiver: KeyedArchiver
-    
-    // MARK:
-
-    private let reporter: UploadReporter = UploadReporter()
-    private var failedDescriptors: [VideoUri: SimpleUploadDescriptor] = [:]
     
     // MARK: 
     
-    var allowsCellularUpload = false // TODO: load from user defaults
-    {
-        didSet
-        {
-            if oldValue != allowsCellularUpload
-            {
-                self.updateDescriptorManagerState()
-            }
-        }
-    }
+    private let reporter = UploadReporter()
     
     // MARK:
     // MARK: Initialization
     
-    deinit
-    {
-        self.removeObservers()
-    }
-    
     override init()
     {
-        self.sessionManager = VimeoSessionManager.backgroundSessionManager(identifier: UploadManager.BackgroundSessionIdentifier, authToken: UploadManager.BasicUserToken)
-        self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: UploadManager.DescriptorManagerName, delegate: self.reporter)
+        self.sessionManager = VimeoSessionManager.backgroundSessionManager(identifier: BackgroundSessionIdentifier, authToken: BasicUserToken)
+        self.uploadFailureTracker = UploadFailureTracker(name: DescriptorManagerName)
+        self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: DescriptorManagerName, delegate: self.reporter)
+        self.connectivityManager = ConnectivityManager(descriptorManager: self.descriptorManager)
         self.deletionManager = VideoDeletionManager(sessionManager: ForegroundSessionManager.sharedInstance, retryCount: 2)
-        self.archiver = UploadManager.setupArchiver(name: UploadManager.DescriptorManagerName)
 
         super.init()
-
-        self.failedDescriptors = self.loadFailedDescriptors()
-
-        self.addObservers()
     }
     
-    // MARK: Setup
-    
-    private static func setupArchiver(name name: String) -> KeyedArchiver
-    {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        
-        var documentsURL = NSURL(string: documentsPath)!
-        documentsURL = documentsURL.URLByAppendingPathComponent(name)
-        
-        if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
-        {
-            try! NSFileManager.defaultManager().createDirectoryAtPath(documentsURL.path!, withIntermediateDirectories: true, attributes: nil)
-        }
-        
-        return KeyedArchiver(basePath: documentsURL.path!)
-    }
-    
-    private func loadFailedDescriptors() -> [String: SimpleUploadDescriptor]
-    {
-        if let object = self.archiver.loadObjectForKey(UploadManager.FailedDescriptorsArchiveKey) as? [String: SimpleUploadDescriptor]
-        {
-            return object
-        }
-        
-        return [:]
-    }
-
-    private func saveFailedDescriptors()
-    {
-        self.archiver.saveObject(self.failedDescriptors, key: UploadManager.FailedDescriptorsArchiveKey)
-    }
-
-    // MARK: Public API
+    // MARK: Public API - Background Session
     
     func applicationDidFinishLaunching()
     {
@@ -129,6 +73,13 @@ typealias VideoUri = String
     func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidBlock) -> Bool
     {
         return self.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler)
+    }
+    
+    // MARK: Public API - Uploads
+
+    func allowsCellularUpload(allows: Bool)
+    {
+        self.connectivityManager.allowsCellularUpload = allows
     }
     
     // We need a reference (via the assetIdentifier) to the original asset so that we can retry failed uploads
@@ -151,10 +102,7 @@ typealias VideoUri = String
         let newDescriptor = SimpleUploadDescriptor(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
         newDescriptor.identifier = videoUri
         
-        if let _ = self.failedDescriptors.removeValueForKey(videoUri)
-        {
-            self.saveFailedDescriptors()
-        }
+        self.uploadFailureTracker.removeFailedDescriptorForVideoUri(videoUri)
 
         self.descriptorManager.addDescriptor(newDescriptor)
     }
@@ -170,10 +118,9 @@ typealias VideoUri = String
             NSFileManager.defaultManager().deleteFileAtURL(descriptor.url)
         }
         
-        if let descriptor = self.failedDescriptors.removeValueForKey(videoUri)
+        if let descriptor = self.uploadFailureTracker.removeFailedDescriptorForVideoUri(videoUri) as? SimpleUploadDescriptor
         {
             NSFileManager.defaultManager().deleteFileAtURL(descriptor.url)
-            self.saveFailedDescriptors()
         }
         
         self.deletionManager.deleteVideoWithUri(videoUri)
@@ -195,76 +142,9 @@ typealias VideoUri = String
         // Then check failed descriptors
         if descriptor == nil
         {
-            descriptor = self.failedDescriptors[videoUri]
+            descriptor = self.uploadFailureTracker.failedDescriptorForVideoUri(videoUri)
         }
         
         return descriptor as? SimpleUploadDescriptor
-    }
-    
-    // MARK: Notifications
-    
-    private func addObservers()
-    {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "descriptorDidFail:", name: DescriptorManagerNotification.DescriptorDidFail.rawValue, object: nil)
-    
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityDidChange:", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
-    }
-    
-    private func removeObservers()
-    {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
-    
-    func descriptorDidFail(notification: NSNotification)
-    {
-        dispatch_async(dispatch_get_main_queue()) { [weak self] () -> Void in // TODO: can async cause failure to not be stored?
-
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if let descriptor = notification.object as? SimpleUploadDescriptor, let videoUri = descriptor.uploadTicket.video?.uri, let error = descriptor.error
-            {
-                if error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled // No need to store failures that occurred due to cancellation
-                {
-                    return
-                }
-                
-                strongSelf.failedDescriptors[videoUri] = descriptor
-                strongSelf.saveFailedDescriptors()
-            }
-        }
-    }
-    
-    func reachabilityDidChange(notification: NSNotification)
-    {
-        self.updateDescriptorManagerState()
-    }
-    
-    private func updateDescriptorManagerState()
-    {
-        if AFNetworkReachabilityManager.sharedManager().reachable == true
-        {
-            if AFNetworkReachabilityManager.sharedManager().reachableViaWiFi
-            {
-                self.descriptorManager.resume()
-            }
-            else
-            {
-                if self.allowsCellularUpload
-                {
-                    self.descriptorManager.resume()
-                }
-                else
-                {
-                    self.descriptorManager.suspend()
-                }
-            }
-        }
-        else
-        {
-            self.descriptorManager.suspend()
-        }
-    }
+    }    
 }

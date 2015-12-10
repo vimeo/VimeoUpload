@@ -38,22 +38,18 @@ typealias TestBlock = (descriptor: Descriptor) -> Bool
 
 class DescriptorManager
 {
-    private static let DescriptorsArchiveKey = "descriptors"
-    private static let SuspendedArchiveKey = "suspended"
     private static let QueueName = "descriptor_manager.synchronization_queue"
     
     // MARK:
     
     private var sessionManager: AFURLSessionManager
     private let name: String
-
+    private weak var delegate: DescriptorManagerDelegate?
+    
     // MARK:
     
-    private var descriptors = Set<Descriptor>()
-    private let archiver: KeyedArchiver
-    private weak var delegate: DescriptorManagerDelegate?
+    private let descriptorTracker: DescriptorManagerTracker
     private let synchronizationQueue = dispatch_queue_create(DescriptorManager.QueueName, DISPATCH_QUEUE_SERIAL)
-    private var suspended = false
 
     // MARK:
     
@@ -62,61 +58,27 @@ class DescriptorManager
     // MARK:
     // MARK: Initialization
     
-    convenience init(sessionManager: AFURLSessionManager, name: String)
-    {
-        self.init(sessionManager: sessionManager, name: name, delegate: nil)
-    }
-    
-    // By passing the delegate into the constructor (as opposed to using a public property) 
+    // By passing the delegate into the constructor (as opposed to using a public property)
     // We ensure that early events like "load" can be reported [AH] 11/25/2015
     
-    init(sessionManager: AFURLSessionManager, name: String, delegate: DescriptorManagerDelegate?)
+    init(sessionManager: AFURLSessionManager, name: String, delegate: DescriptorManagerDelegate? = nil)
     {
         self.sessionManager = sessionManager
         self.name = name
         self.delegate = delegate
-        self.archiver = DescriptorManager.setupArchiver(name: name)
+        self.descriptorTracker = DescriptorManagerTracker(name: name)
         
-        self.descriptors = self.loadDescriptors()
-        self.saveDescriptors() // Save immediately in case descriptors failed to load
-        
-        self.delegate?.didLoadDescriptors?(count: self.descriptors.count)
-
+        self.setupDescriptors()
         self.setupSessionBlocks()
-    
-        let suspended = self.loadSuspendedState()
-        if suspended == true
-        {
-            self.suspend() // Call suspend() before setting the property because suspend() checks the property value
-        }
-        
-        self.suspended = suspended
+        self.setupSuspendedState()
     }
 
-    // MARK: Setup
+    // MARK: Setup - State
     
-    private static func setupArchiver(name name: String) -> KeyedArchiver
+    private func setupDescriptors()
     {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        var documentsURL = NSURL(string: documentsPath)!
-        
-        documentsURL = documentsURL.URLByAppendingPathComponent(name)
-        documentsURL = documentsURL.URLByAppendingPathComponent(DescriptorManager.DescriptorsArchiveKey)
-        
-        if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
-        {
-            try! NSFileManager.defaultManager().createDirectoryAtPath(documentsURL.path!, withIntermediateDirectories: true, attributes: nil)
-        }
-        
-        return KeyedArchiver(basePath: documentsURL.path!)
-    }
-    
-    private func loadDescriptors() -> Set<Descriptor>
-    {
-        var descriptors = self.archiver.loadObjectForKey(DescriptorManager.DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
-
         var failedDescriptors: [Descriptor] = []
-        for descriptor in descriptors
+        for descriptor in self.descriptorTracker.descriptors
         {
             do
             {
@@ -129,30 +91,28 @@ class DescriptorManager
             }
         }
         
-        // TODO: BUG - For descriptors that fail to load, 
-        // this notification is fired before UploadManager has had a chance to register as an observer
-        // Which means that the failure is never registered
-        // By dispatch_async'ing we ensure that UploadManager has registered itself as an observer before posting the notification
-        // But this is not ideal, ideally all activity related to initialization is synchronous [AH] 12/08/2015
-        
         for descriptor in failedDescriptors
         {
-            descriptors.remove(descriptor)
-
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-                self?.delegate?.descriptorDidFail?(descriptor)
-                NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
-            })
+            self.descriptorTracker.remove(descriptor)
+            
+            self.delegate?.descriptorDidFail?(descriptor)
+            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
         }
         
-        return descriptors
-    }
-
-    private func loadSuspendedState() -> Bool
-    {
-        return self.archiver.loadObjectForKey(DescriptorManager.SuspendedArchiveKey) as? Bool ?? false
+        self.descriptorTracker.save()
+        self.delegate?.didLoadDescriptors?(count: self.descriptorTracker.descriptors.count)
     }
     
+    private func setupSuspendedState()
+    {
+        if self.descriptorTracker.suspended == true
+        {
+            self._suspend() // Call _suspend() because suspend() checks the property value
+        }
+    }
+    
+    // MARK: Setup - Session
+
     private func setupSessionBlocks()
     {
         // Because we're using a background session we never have cause to invalidate the session,
@@ -173,8 +133,7 @@ class DescriptorManager
                     return
                 }
 
-                strongSelf.descriptors.removeAll()
-                strongSelf.saveDescriptors()
+                strongSelf.descriptorTracker.removeAll()
 
                 strongSelf.delegate?.sessionDidBecomeInvalid?(error: error)
                 
@@ -207,7 +166,8 @@ class DescriptorManager
                     destination = url
                 }
                 
-                strongSelf.saveDescriptors()
+                strongSelf.descriptorTracker.save()
+                strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.descriptorTracker.descriptors.count)
             })
             
             return destination
@@ -233,26 +193,23 @@ class DescriptorManager
                 }
 
                 strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error)
-
                 descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error)
 
-                strongSelf.saveDescriptors()
-                
+                strongSelf.descriptorTracker.save()
+                strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.descriptorTracker.descriptors.count)
+
                 if descriptor.state == .Finished
                 {
-                    strongSelf.descriptors.remove(descriptor)
-                    strongSelf.saveDescriptors()
+                    strongSelf.descriptorTracker.remove(descriptor)
                     
                     if descriptor.error != nil
                     {
                         strongSelf.delegate?.descriptorDidFail?(descriptor)
-                        
                         NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
                     }
                     else
                     {
                         strongSelf.delegate?.descriptorDidSucceed?(descriptor)
-
                         NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidSucceed.rawValue, object: descriptor)
                     }
                 }
@@ -295,56 +252,22 @@ class DescriptorManager
     
     func suspend()
     {
-        if self.suspended == true
+        if self.descriptorTracker.suspended == true
         {
             return
         }
 
-        self.suspended = true
-        self.saveSuspendedState()
-
-        dispatch_sync(self.synchronizationQueue, { [weak self] () -> Void in
-            
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            for descriptor in strongSelf.descriptors
-            {
-                descriptor.suspend(sessionManager: strongSelf.sessionManager)
-            }
-            
-            // Doing this after the loop rather than within, incrementally greater margin for error but faster
-            strongSelf.saveDescriptors()
-        })
+        self._suspend()
     }
     
     func resume()
     {
-        if self.suspended == false
+        if self.descriptorTracker.suspended == false
         {
             return
         }
         
-        self.suspended = false
-        self.saveSuspendedState()
-        
-        dispatch_sync(self.synchronizationQueue, { [weak self] () -> Void in
-            
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            for descriptor in strongSelf.descriptors
-            {
-                descriptor.resume(sessionManager: strongSelf.sessionManager)
-            }
-
-            // Doing this after the loop rather than within, incrementally greater margin for error but faster
-            strongSelf.saveDescriptors()
-        })
+        self._resume()
     }
     
     func addDescriptor(descriptor: Descriptor)
@@ -358,30 +281,26 @@ class DescriptorManager
                 return
             }
 
-            strongSelf.descriptors.insert(descriptor)
-            strongSelf.saveDescriptors()
-            
+            strongSelf.descriptorTracker.insert(descriptor)
             strongSelf.delegate?.descriptorAdded?(descriptor)
             NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorAdded.rawValue, object: descriptor)
 
             do
             {
                 try descriptor.prepare(sessionManager: strongSelf.sessionManager)
-                strongSelf.saveDescriptors()
+                strongSelf.descriptorTracker.save()
+                strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.descriptorTracker.descriptors.count)
             }
             catch
             {
-                strongSelf.descriptors.remove(descriptor)
-                strongSelf.saveDescriptors()
-                
+                strongSelf.descriptorTracker.remove(descriptor)
                 strongSelf.delegate?.descriptorDidFail?(descriptor)
-                
                 NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
                 
                 return
             }
 
-            if strongSelf.suspended
+            if strongSelf.descriptorTracker.suspended
             {
                 descriptor.state = .Suspended // TODO: figure out how to not set this externally like this
             }
@@ -390,7 +309,8 @@ class DescriptorManager
                 descriptor.resume(sessionManager: strongSelf.sessionManager)
             }
 
-            strongSelf.saveDescriptors()
+            strongSelf.descriptorTracker.save()
+            strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.descriptorTracker.descriptors.count)
         })
     }
     
@@ -405,54 +325,72 @@ class DescriptorManager
                 return
             }
 
-            for currentDescriptor in strongSelf.descriptors
-            {
-                let didPass = test(descriptor: currentDescriptor)
-                if didPass == true
-                {
-                    descriptor = currentDescriptor
-                    break
-                }
-            }
+            descriptor = strongSelf.descriptorTracker.descriptorPassingTest(test)
         })
         
         return descriptor
     }
     
     // MARK: Private API
+    
+    func _suspend()
+    {
+        self.descriptorTracker.suspended = true
         
+        dispatch_sync(self.synchronizationQueue, { [weak self] () -> Void in
+            
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            for descriptor in strongSelf.descriptorTracker.descriptors
+            {
+                descriptor.suspend(sessionManager: strongSelf.sessionManager)
+            }
+            
+            // Doing this after the loop rather than within, incrementally greater margin for error but faster
+            strongSelf.descriptorTracker.save()
+            strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.descriptorTracker.descriptors.count)
+        })
+    }
+    
+    func _resume()
+    {
+        self.descriptorTracker.suspended = false
+        
+        dispatch_sync(self.synchronizationQueue, { [weak self] () -> Void in
+            
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            for descriptor in strongSelf.descriptorTracker.descriptors
+            {
+                descriptor.resume(sessionManager: strongSelf.sessionManager)
+            }
+            
+            // Doing this after the loop rather than within, incrementally greater margin for error but faster
+            strongSelf.descriptorTracker.save()
+            strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.descriptorTracker.descriptors.count)
+        })
+    }
+
     private func descriptorForTask(task: NSURLSessionTask) -> Descriptor?
     {
-        var result: Descriptor?
-                
-        for currentDescriptor in self.descriptors
-        {
-            if currentDescriptor.currentTaskIdentifier == task.taskIdentifier
-            {
-                result = currentDescriptor
-                break
-            }
+        let descriptor = self.descriptorTracker.descriptorPassingTest { (descriptor) -> Bool in
+            return descriptor.currentTaskIdentifier == task.taskIdentifier
         }
         
         // If the descriptor is not found then the session.tasks and self.descriptors are out of sync (his is a major problem)
         // Or we're using the background session for a standalone task, independent of a descriptor
         
-        if result == nil
+        if descriptor == nil
         {
             self.delegate?.descriptorForTaskNotFound?(task)
         }
         
-        return result
-    }
-
-    private func saveSuspendedState()
-    {
-        self.archiver.saveObject(self.suspended, key: DescriptorManager.SuspendedArchiveKey)
-    }
-
-    private func saveDescriptors()
-    {
-        self.archiver.saveObject(self.descriptors, key: DescriptorManager.DescriptorsArchiveKey)
-        self.delegate?.didSaveDescriptors?(count: self.descriptors.count)
-    }
+        return descriptor
+    }    
 }
