@@ -96,7 +96,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     private func removeObservers()
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
     
     // Ensure that we refresh the me object on return from background

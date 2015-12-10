@@ -33,7 +33,7 @@ import Foundation
     // MARK: 
     
     var allowsCellularUpload = false // TODO: load from user defaults
-        {
+    {
         didSet
         {
             if oldValue != allowsCellularUpload
@@ -69,7 +69,7 @@ import Foundation
     
     private func removeObservers()
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: AFNetworkingReachabilityDidChangeNotification, object: nil)
     }
     
     func reachabilityDidChange(notification: NSNotification)

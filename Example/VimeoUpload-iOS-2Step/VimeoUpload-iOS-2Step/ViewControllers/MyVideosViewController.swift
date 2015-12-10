@@ -83,7 +83,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func removeObservers()
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: VideoSettingsViewController.UploadInitiatedNotification, object: nil)
     }
     
     func uploadInitiated(notification: NSNotification)

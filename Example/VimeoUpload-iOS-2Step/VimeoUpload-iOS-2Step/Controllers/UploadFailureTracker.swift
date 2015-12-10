@@ -111,17 +111,17 @@ typealias VideoUri = String
     
     private func removeObservers()
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: DescriptorManagerNotification.DescriptorDidFail.rawValue, object: nil)
     }
     
     func descriptorDidFail(notification: NSNotification)
     {
-        dispatch_async(dispatch_get_main_queue()) { [weak self] () -> Void in // TODO: can async cause failure to not be stored?
-            
-            guard let strongSelf = self else
-            {
-                return
-            }
+        // TODO: Should we do this:
+        
+        // Intentionally holding a strong reference to self here to ensure that this block executes,
+        // Otherwise we potentially lose access to failures
+        
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in // TODO: can async cause failure to not be stored?
             
             if let descriptor = notification.object as? SimpleUploadDescriptor, let videoUri = descriptor.uploadTicket.video?.uri, let error = descriptor.error
             {
@@ -130,8 +130,8 @@ typealias VideoUri = String
                     return
                 }
                 
-                strongSelf.failedDescriptors[videoUri] = descriptor
-                strongSelf.saveFailedDescriptors()
+                self.failedDescriptors[videoUri] = descriptor
+                self.saveFailedDescriptors()
             }
         }
     }
