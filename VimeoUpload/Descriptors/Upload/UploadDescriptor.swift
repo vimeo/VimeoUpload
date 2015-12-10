@@ -31,8 +31,9 @@ class UploadDescriptor: Descriptor
     // MARK:
     
     let url: NSURL
+    let assetIdentifier: String // Used to track the original ALAsset or PHAsset
     let videoSettings: VideoSettings?
-    
+
     // MARK:
     
     private(set) var uploadTicket: VIMUploadTicket? // Create response
@@ -68,9 +69,10 @@ class UploadDescriptor: Descriptor
     // MARK:
     // MARK: Initialization
     
-    init(url: NSURL, videoSettings: VideoSettings? = nil)
+    init(url: NSURL, assetIdentifier: String, videoSettings: VideoSettings? = nil)
     {
         self.url = url
+        self.assetIdentifier = assetIdentifier
         self.videoSettings = videoSettings
         
         super.init()
@@ -250,6 +252,7 @@ class UploadDescriptor: Descriptor
     required init(coder aDecoder: NSCoder)
     {
         self.url = aDecoder.decodeObjectForKey("url") as! NSURL // If force unwrap fails we have a big problem
+        self.assetIdentifier = aDecoder.decodeObjectForKey("assetIdentifier") as! String
         self.videoSettings = aDecoder.decodeObjectForKey("videoSettings") as? VideoSettings
         self.uploadTicket = aDecoder.decodeObjectForKey("uploadTicket") as? VIMUploadTicket
         self.videoUri = aDecoder.decodeObjectForKey("videoUri") as? String
@@ -261,6 +264,7 @@ class UploadDescriptor: Descriptor
     override func encodeWithCoder(aCoder: NSCoder)
     {
         aCoder.encodeObject(self.url, forKey: "url")
+        aCoder.encodeObject(self.assetIdentifier, forKey: "assetIdentifier")
         aCoder.encodeObject(self.videoSettings, forKey: "videoSettings")
         aCoder.encodeObject(self.uploadTicket, forKey: "uploadTicket")
         aCoder.encodeObject(self.videoUri, forKey: "videoUri")
