@@ -1,5 +1,5 @@
 //
-//  CameraRollViewController.swift
+//  BaseCameraRollViewController.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/16/15.
@@ -40,20 +40,23 @@ typealias CameraRollViewControllerResult = (me: VIMUser, phAsset: PHAsset)
     [AH] 12/03/2015
 */
 
-class CameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
+class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
-    static let NibName = "CameraRollViewController"
+    static let NibName = "BaseCameraRollViewController"
     private static let CollectionViewSpacing: CGFloat = 2
+    
+    // MARK: 
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
+
+    // MARK: 
     
     private var assets: [PHAssetContainer] = []
     private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
     private var operation: CompositeMeQuotaOperation?
     private var me: VIMUser? // We store this in a property instead of on the operation itself, so that we can refresh it independent of the operation [AH]
     private var meOperation: MeOperation?
-    
     private var selectedIndexPath: NSIndexPath?
     
     // MARK: Lifecycle
@@ -140,14 +143,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     }
 
     // MARK: Setup
-
-    private func setupNavigationBar()
-    {
-        self.title = "Camera Roll"
-        
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
-    }
-        
+    
     private func loadAssets() -> [PHAssetContainer]
     {
         let options = PHFetchOptions()
@@ -173,8 +169,8 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.collectionView.registerNib(nib, forCellWithReuseIdentifier: CameraRollCell.CellIdentifier)
         
         let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout
-        layout?.minimumInteritemSpacing = CameraRollViewController.CollectionViewSpacing
-        layout?.minimumLineSpacing = CameraRollViewController.CollectionViewSpacing
+        layout?.minimumInteritemSpacing = BaseCameraRollViewController.CollectionViewSpacing
+        layout?.minimumLineSpacing = BaseCameraRollViewController.CollectionViewSpacing
     }
     
     private func setupAndStartOperation()
@@ -222,15 +218,6 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
         self.operation?.start()
     }
     
-    // MARK: Actions
-    
-    func didTapCancel(sender: UIBarButtonItem)
-    {
-        self.operation?.cancel()
-        
-        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
-    }
-
     // MARK: UICollectionViewDataSource
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
@@ -264,7 +251,7 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize
     {
-        let dimension = (collectionView.bounds.size.width - CameraRollViewController.CollectionViewSpacing) / 2
+        let dimension = (collectionView.bounds.size.width - BaseCameraRollViewController.CollectionViewSpacing) / 2
 
         return CGSizeMake(dimension, dimension)
     }
@@ -431,10 +418,20 @@ class CameraRollViewController: UIViewController, UICollectionViewDataSource, UI
 
         // Reset the operation so we're prepared to retry upon cancellation from video settings [AH] 12/06/2015
         self.setupAndStartOperation()
-                
-        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.input = CameraRollViewControllerResult(me: me, phAsset: phAsset)
         
-        self.navigationController?.pushViewController(viewController, animated: true)
+        let result = CameraRollViewControllerResult(me: me, phAsset: phAsset)
+        self.didFinishWithResult(result)        
+    }
+    
+    // MARK: Overrides
+    
+    func setupNavigationBar()
+    {
+        self.title = "Camera Roll"
+    }
+
+    func didFinishWithResult(result: CameraRollViewControllerResult)
+    {
+        assertionFailure("Subclasses must override")
     }
 }

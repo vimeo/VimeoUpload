@@ -254,7 +254,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     @IBAction func didTapUpload(sender: UIButton)
     {
-        let viewController = CameraRollViewController(nibName: CameraRollViewController.NibName, bundle:NSBundle.mainBundle())
+        let viewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:NSBundle.mainBundle())
 
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.view.backgroundColor = UIColor.whiteColor()

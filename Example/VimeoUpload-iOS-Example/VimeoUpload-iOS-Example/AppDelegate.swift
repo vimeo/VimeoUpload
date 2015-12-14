@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
         application.registerUserNotificationSettings(settings)
         
-        let viewController = CameraRollViewController(nibName: CameraRollViewController.NibName, bundle:NSBundle.mainBundle())            
+        let viewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:NSBundle.mainBundle())
         self.navigationController = UINavigationController(rootViewController: viewController)
         
         let frame = UIScreen.mainScreen().bounds
