@@ -209,6 +209,8 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         
         do
         {
+            self.videoRefreshManager?.cancelAll()
+            
             self.task = try sessionManager.myVideosDataTask(completionHandler: { [weak self] (videos, error) -> Void in
                 
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -229,6 +231,15 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
                     {
                         strongSelf.items = videos!
                         strongSelf.tableView.reloadData()
+                        
+                        // Schedule video refreshes
+                        for video in strongSelf.items
+                        {
+                            if video.videoStatus == .Uploading || video.videoStatus == .Transcoding
+                            {
+                                strongSelf.videoRefreshManager?.refreshVideo(video)
+                            }
+                        }
                     }
                 })
             })
