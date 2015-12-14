@@ -29,8 +29,8 @@ import UIKit
 class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
     static let NibName = "VideoSettingsViewController"
-    
-    // MARK: 
+
+    // MARK:
     
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var descriptionTextView: UITextView!

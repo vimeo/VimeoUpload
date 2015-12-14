@@ -30,7 +30,6 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate
 {
     var window: UIWindow?
-    var navigationController: UINavigationController?
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
     {
@@ -39,12 +38,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
         application.registerUserNotificationSettings(settings)
         
-        let viewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:NSBundle.mainBundle())
-        self.navigationController = UINavigationController(rootViewController: viewController)
+        let cameraRollViewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:NSBundle.mainBundle())
+        let uploadsViewController = UploadsViewController(nibName: UploadsViewController.NibName, bundle:NSBundle.mainBundle())
+        
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [cameraRollViewController, uploadsViewController]
+        tabBarController.selectedIndex = 1
         
         let frame = UIScreen.mainScreen().bounds
         self.window = UIWindow(frame: frame)
-        self.window?.rootViewController = navigationController
+        self.window?.rootViewController = tabBarController
         self.window?.makeKeyAndVisible()
         
         UploadManager.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch

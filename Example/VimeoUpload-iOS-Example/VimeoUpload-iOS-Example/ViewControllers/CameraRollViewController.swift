@@ -31,6 +31,13 @@ class CameraRollViewController: BaseCameraRollViewController
 {
     // MARK: Overrides
     
+    override func viewDidLoad()
+    {
+        super.viewDidLoad()
+    
+        self.tabBarItem.title = "Camera Roll"
+    }
+    
     override func didFinishWithResult(result: CameraRollViewControllerResult)
     {
         let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
@@ -39,6 +46,6 @@ class CameraRollViewController: BaseCameraRollViewController
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.view.backgroundColor = UIColor.whiteColor()
         
-        self.navigationController?.presentViewController(navigationController, animated: true, completion: nil)
+        self.tabBarController?.presentViewController(navigationController, animated: true, completion: nil)
     }
 }

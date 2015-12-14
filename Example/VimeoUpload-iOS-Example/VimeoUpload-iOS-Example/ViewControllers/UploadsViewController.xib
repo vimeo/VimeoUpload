@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UploadsViewController" customModule="VimeoUpload_iOS_Example" customModuleProvider="target">
+            <connections>
+                <outlet property="tableView" destination="pXT-jc-2Pl" id="3S6-ed-VSS"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="pXT-jc-2Pl">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="14e-Lg-iLr"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="pXT-jc-2Pl" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="I7o-Iy-94Z"/>
+                <constraint firstItem="pXT-jc-2Pl" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="WTh-pa-6Hp"/>
+                <constraint firstAttribute="trailing" secondItem="pXT-jc-2Pl" secondAttribute="trailing" id="icC-wz-rY3"/>
+                <constraint firstAttribute="bottom" secondItem="pXT-jc-2Pl" secondAttribute="bottom" id="iyJ-uy-Apo"/>
+            </constraints>
+        </view>
+    </objects>
+</document>

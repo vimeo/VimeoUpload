@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		01803ED79B253D745B824506 /* Pods_VimeoUpload_iOS_ExampleUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69D4DF0E990A7F93922E412A /* Pods_VimeoUpload_iOS_ExampleUITests.framework */; };
+		500982221C1F8029004351F8 /* UploadsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500982201C1F8029004351F8 /* UploadsViewController.swift */; };
+		500982231C1F8029004351F8 /* UploadsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 500982211C1F8029004351F8 /* UploadsViewController.xib */; };
+		5009822A1C1F84C4004351F8 /* UploadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500982281C1F84C4004351F8 /* UploadCell.swift */; };
+		5009822B1C1F84C4004351F8 /* UploadCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 500982291C1F84C4004351F8 /* UploadCell.xib */; };
 		5043A5371BFF6DE000D70725 /* VideoSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5043A5331BFF6DE000D70725 /* VideoSettingsViewController.swift */; };
 		5043A5381BFF6DE000D70725 /* VideoSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5043A5341BFF6DE000D70725 /* VideoSettingsViewController.xib */; };
 		50596D391BE296FA00D1F8EC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50596D381BE296FA00D1F8EC /* AppDelegate.swift */; };
@@ -88,6 +92,10 @@
 /* Begin PBXFileReference section */
 		2443C1FCFD115706753539D1 /* Pods-VimeoUpload-iOS-ExampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-ExampleTests.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-ExampleTests/Pods-VimeoUpload-iOS-ExampleTests.debug.xcconfig"; sourceTree = "<group>"; };
 		3DF9ADF361E9CF02BA40147C /* Pods-VimeoUpload-iOS-ExampleUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-ExampleUITests.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-ExampleUITests/Pods-VimeoUpload-iOS-ExampleUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		500982201C1F8029004351F8 /* UploadsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadsViewController.swift; sourceTree = "<group>"; };
+		500982211C1F8029004351F8 /* UploadsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadsViewController.xib; sourceTree = "<group>"; };
+		500982281C1F84C4004351F8 /* UploadCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadCell.swift; sourceTree = "<group>"; };
+		500982291C1F84C4004351F8 /* UploadCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadCell.xib; sourceTree = "<group>"; };
 		5043A5331BFF6DE000D70725 /* VideoSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoSettingsViewController.swift; sourceTree = "<group>"; };
 		5043A5341BFF6DE000D70725 /* VideoSettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoSettingsViewController.xib; sourceTree = "<group>"; };
 		50596D351BE296FA00D1F8EC /* VimeoUpload-iOS-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VimeoUpload-iOS-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -194,6 +202,8 @@
 				5043A5331BFF6DE000D70725 /* VideoSettingsViewController.swift */,
 				5043A5341BFF6DE000D70725 /* VideoSettingsViewController.xib */,
 				50B49D841C1F716900D8F1A2 /* CameraRollViewController.swift */,
+				500982201C1F8029004351F8 /* UploadsViewController.swift */,
+				500982211C1F8029004351F8 /* UploadsViewController.xib */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -224,6 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				50596D381BE296FA00D1F8EC /* AppDelegate.swift */,
+				50B49D9D1C1F7BFE00D8F1A2 /* Cells */,
 				AFF28EC81C03D59100258476 /* Controllers */,
 				5043A4AD1BFD22C500D70725 /* ViewControllers */,
 				50B49D161C1F6E4900D8F1A2 /* VimeoUpload */,
@@ -429,6 +440,15 @@
 			path = ViewControllers;
 			sourceTree = "<group>";
 		};
+		50B49D9D1C1F7BFE00D8F1A2 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				500982281C1F84C4004351F8 /* UploadCell.swift */,
+				500982291C1F84C4004351F8 /* UploadCell.xib */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		AFF28EC81C03D59100258476 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -576,6 +596,8 @@
 				50B49D831C1F6E4900D8F1A2 /* BaseCameraRollViewController.xib in Resources */,
 				50596D431BE296FA00D1F8EC /* LaunchScreen.storyboard in Resources */,
 				50B49D7D1C1F6E4900D8F1A2 /* CameraRollCell.xib in Resources */,
+				500982231C1F8029004351F8 /* UploadsViewController.xib in Resources */,
+				5009822B1C1F84C4004351F8 /* UploadCell.xib in Resources */,
 				5043A5381BFF6DE000D70725 /* VideoSettingsViewController.xib in Resources */,
 				50596D401BE296FA00D1F8EC /* Assets.xcassets in Resources */,
 			);
@@ -731,6 +753,7 @@
 				50B49D751C1F6E4900D8F1A2 /* MeOperation.swift in Sources */,
 				50B49D581C1F6E4900D8F1A2 /* ArchiverProtocol.swift in Sources */,
 				50B49D771C1F6E4900D8F1A2 /* PHAssetExportSessionOperation.swift in Sources */,
+				5009822A1C1F84C4004351F8 /* UploadCell.swift in Sources */,
 				50B49D5C1C1F6E4900D8F1A2 /* DescriptorManagerTracker.swift in Sources */,
 				50B49D7E1C1F6E4900D8F1A2 /* ForegroundSessionManager.swift in Sources */,
 				50B49D5B1C1F6E4900D8F1A2 /* DescriptorManagerDelegate.swift in Sources */,
@@ -758,6 +781,7 @@
 				50B49D621C1F6E4900D8F1A2 /* AVURLAsset+Extensions.swift in Sources */,
 				50B49D561C1F6E4900D8F1A2 /* VideoDeletionManager.swift in Sources */,
 				50B49D5D1C1F6E4900D8F1A2 /* KeyedArchiver.swift in Sources */,
+				500982221C1F8029004351F8 /* UploadsViewController.swift in Sources */,
 				50B49D711C1F6E4900D8F1A2 /* CompositeCloudExportOperation.swift in Sources */,
 				50B49D641C1F6E4900D8F1A2 /* NSFileManager+Extensions.swift in Sources */,
 				50B49D6A1C1F6E4900D8F1A2 /* VimeoRequestSerializer+Upload.swift in Sources */,
