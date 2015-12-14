@@ -53,9 +53,7 @@ import Foundation
         self.operationQueue.cancelAllOperations()
         self.removeObservers()
     }
-    
-    // TODO: support fetch of password protected videos
-    
+        
     init(sessionManager: VimeoSessionManager, delegate: VideoRefreshManagerDelegate)
     {
         self.sessionManager = sessionManager
