@@ -28,7 +28,7 @@ import UIKit
 import AVFoundation
 import Photos
 
-class MyVideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, VideoCellDelegate
+class MyVideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, VideoCellDelegate, VideoRefreshManagerDelegate
 {
     static let NibName = "MyVideosViewController"
     
@@ -37,9 +37,11 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private var items: [VIMVideo] = []
     private var task: NSURLSessionDataTask?
+    private var videoRefreshManager: VideoRefreshManager?
     
     deinit
     {
+        self.videoRefreshManager?.cancelAll()
         self.task?.cancel()
         self.removeObservers()
     }
@@ -53,6 +55,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         self.addObservers()
         self.setupTableView()
         self.setupRefreshControl()
+        self.setupVideoRefreshManager()
         
         self.refreshControl?.beginRefreshing()
         self.refresh()
@@ -72,6 +75,11 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         self.refreshControl!.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         
         self.tableView.addSubview(self.refreshControl!)
+    }
+    
+    private func setupVideoRefreshManager()
+    {
+        self.videoRefreshManager = VideoRefreshManager(sessionManager: ForegroundSessionManager.sharedInstance, delegate: self)
     }
     
     // MARK: Notifications
@@ -94,6 +102,8 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
             
             let indexPath = NSIndexPath(forRow: 0, inSection: 0)
             self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
+            
+            self.videoRefreshManager?.refreshVideo(video)
         }
     }
     
@@ -177,6 +187,13 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         
         return nil
+    }
+    
+    // MARK: VideoRefreshManagerDelegate
+    
+    func videoDidFinishUploading(video: VIMVideo)
+    {
+        print("BOOM!")
     }
     
     // MARK: Actions

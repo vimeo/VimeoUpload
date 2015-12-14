@@ -246,8 +246,8 @@
 			isa = PBXGroup;
 			children = (
 				505730071C17C22D000178DD /* VideoDeletionManager.swift */,
-				AFC32C831C19AE2000716D02 /* ConnectivityManager.swift */,
 				50FAB72E1C1F2C7900D6FBD1 /* VideoRefreshManager.swift */,
+				AFC32C831C19AE2000716D02 /* ConnectivityManager.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";

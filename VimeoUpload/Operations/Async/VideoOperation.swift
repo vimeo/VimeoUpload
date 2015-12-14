@@ -33,6 +33,7 @@ class VideoOperation: ConcurrentOperation
     
     private var task: NSURLSessionDataTask?
     
+    private(set) var video: VIMVideo?
     private(set) var error: NSError?
     
     // MARK: Initialization
@@ -61,7 +62,7 @@ class VideoOperation: ConcurrentOperation
         
         do
         {
-            self.task = try self.sessionManager.videoDataTask(videoUri: self.videoUri, completionHandler: { [weak self] (error) -> Void in
+            self.task = try self.sessionManager.videoDataTask(videoUri: self.videoUri, completionHandler: { [weak self] (video, error) -> Void in
                 
                 guard let strongSelf = self else
                 {
@@ -78,6 +79,10 @@ class VideoOperation: ConcurrentOperation
                 if let error = error
                 {
                     strongSelf.error = error
+                }
+                else
+                {
+                    strongSelf.video = video
                 }
                 
                 strongSelf.state = .Finished

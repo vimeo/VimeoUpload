@@ -222,7 +222,7 @@ extension VimeoSessionManager
         return task
     }
 
-    func videoDataTask(videoUri videoUri: String, completionHandler: ErrorBlock) throws -> NSURLSessionDataTask
+    func videoDataTask(videoUri videoUri: String, completionHandler: VideoCompletionHandler) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).videoRequestWithUri(videoUri)
         
@@ -235,12 +235,12 @@ extension VimeoSessionManager
             
             do
             {
-                try (strongSelf.responseSerializer as! VimeoResponseSerializer).processVideoResponse(response, responseObject: responseObject, error: error)
-                completionHandler(error: nil)
+                let video = try (strongSelf.responseSerializer as! VimeoResponseSerializer).processVideoResponse(response, responseObject: responseObject, error: error)
+                completionHandler(video: video, error: nil)
             }
             catch let error as NSError
             {
-                completionHandler(error: error)
+                completionHandler(video: nil, error: error)
             }
         })
         

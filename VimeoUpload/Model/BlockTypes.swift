@@ -35,3 +35,5 @@ typealias UserCompletionHandler = (user: VIMUser?, error: NSError?) -> Void
 typealias VideoCompletionHandler = (video: VIMVideo?, error: NSError?) -> Void
 typealias VideosCompletionHandler = (videos: [VIMVideo]?, error: NSError?) -> Void
 typealias UploadTicketCompletionHandler = (uploadTicket: VIMUploadTicket?, error: NSError?) -> Void
+
+typealias VideoUri = String

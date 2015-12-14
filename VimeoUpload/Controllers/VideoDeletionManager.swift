@@ -37,7 +37,7 @@ class VideoDeletionManager: NSObject
     
     // MARK:
     
-    private var deletions: [String: Int] = [:]
+    private var deletions: [VideoUri: Int] = [:]
     private let operationQueue: NSOperationQueue
     private let archiver: KeyedArchiver
     
@@ -46,6 +46,7 @@ class VideoDeletionManager: NSObject
     
     deinit
     {
+        self.operationQueue.cancelAllOperations()
         self.removeObservers()
     }
     
@@ -88,9 +89,9 @@ class VideoDeletionManager: NSObject
     
     // MARK: Archiving
     
-    private func loadDeletions() -> [String: Int]
+    private func loadDeletions() -> [VideoUri: Int]
     {
-        if let deletions = self.archiver.loadObjectForKey(VideoDeletionManager.DeletionsArchiveKey) as? [String: Int]
+        if let deletions = self.archiver.loadObjectForKey(VideoDeletionManager.DeletionsArchiveKey) as? [VideoUri: Int]
         {
             return deletions
         }
