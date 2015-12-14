@@ -64,6 +64,7 @@ class VideoDeletionManager: NSObject
         super.init()
         
         self.addObservers()
+        self.reachabilityDidChange(nil) // Set suspended state
         
         self.deletions = self.loadDeletions()
         self.startDeletions()
@@ -206,7 +207,7 @@ class VideoDeletionManager: NSObject
         self.operationQueue.cancelAllOperations()
     }
 
-    func reachabilityDidChange(notification: NSNotification)
+    func reachabilityDidChange(notification: NSNotification?)
     {
         let currentlyReachable = AFNetworkReachabilityManager.sharedManager().reachable
         

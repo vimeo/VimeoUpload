@@ -67,6 +67,7 @@ import Foundation
         super.init()
         
         self.addObservers()
+        self.reachabilityDidChange(nil) // Set suspended state
     }
     
     // MARK: Public API
@@ -207,7 +208,7 @@ import Foundation
     
     func applicationWillEnterForeground(notification: NSNotification)
     {
-        self.operationQueue.suspended = false
+        self.operationQueue.suspended = false // TODO: can we do this same thing in the VideoDeletionManager?
     }
     
     func applicationDidEnterBackground(notification: NSNotification)
@@ -215,7 +216,7 @@ import Foundation
         self.operationQueue.suspended = true
     }
     
-    func reachabilityDidChange(notification: NSNotification)
+    func reachabilityDidChange(notification: NSNotification?)
     {
         let currentlyReachable = AFNetworkReachabilityManager.sharedManager().reachable
         

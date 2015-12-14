@@ -193,7 +193,12 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func videoDidFinishUploading(video: VIMVideo)
     {
-        print("BOOM!")
+        if let uri = video.uri, let indexPath = self.indexPathForVideoUri(uri)
+        {
+            self.items.removeAtIndex(indexPath.row)
+            self.items.insert(video, atIndex: indexPath.row)
+            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+        }
     }
     
     // MARK: Actions
