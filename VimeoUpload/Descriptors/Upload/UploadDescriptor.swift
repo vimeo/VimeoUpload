@@ -103,6 +103,13 @@ class UploadDescriptor: Descriptor
         let _ = try? self.didLoadFromCache(sessionManager: sessionManager)
     }
 
+    override func cancel(sessionManager sessionManager: AFURLSessionManager)
+    {
+        super.cancel(sessionManager: sessionManager)
+        
+        NSFileManager.defaultManager().deleteFileAtURL(self.url) // TODO: is this working as expected
+    }
+    
     // If necessary, resume the current task and re-connect progress objects
 
     override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws

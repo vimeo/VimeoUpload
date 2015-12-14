@@ -109,18 +109,15 @@ import Foundation
 
     func deleteUpload(videoUri videoUri: String)
     {
-        // Upload failure does not delete the exported file, so that the file can be used for retry
-        // Therefore we must delete it here [AH] 11/29/2015
-        
         if let descriptor = self.uploadDescriptorForVideo(videoUri: videoUri)
         {
             descriptor.cancel(sessionManager: self.sessionManager)
-            NSFileManager.defaultManager().deleteFileAtURL(descriptor.url)
+            NSFileManager.defaultManager().deleteFileAtURL(descriptor.url) // TODO: do we need to do this? Think it's already cleaned up
         }
         
         if let descriptor = self.uploadFailureTracker.removeFailedDescriptorForVideoUri(videoUri) as? SimpleUploadDescriptor
         {
-            NSFileManager.defaultManager().deleteFileAtURL(descriptor.url)
+            NSFileManager.defaultManager().deleteFileAtURL(descriptor.url) // TODO: do we need to do this? Think it's already cleaned up
         }
         
         self.deletionManager.deleteVideoWithUri(videoUri)
