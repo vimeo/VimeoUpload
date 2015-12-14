@@ -113,12 +113,7 @@ import Foundation
         }
         
         self.videos[uri] = video
-        
-        if AFNetworkReachabilityManager.sharedManager().reachable == false
-        {
-            return
-        }
-        
+                
         let operation = VideoOperation(sessionManager: self.sessionManager, videoUri: uri)
         operation.completionBlock = { [weak self] () -> Void in
             
@@ -208,7 +203,7 @@ import Foundation
     
     func applicationWillEnterForeground(notification: NSNotification)
     {
-        self.operationQueue.suspended = false // TODO: can we do this same thing in the VideoDeletionManager?
+        self.operationQueue.suspended = false 
     }
     
     func applicationDidEnterBackground(notification: NSNotification)

@@ -127,11 +127,6 @@ class VideoDeletionManager: NSObject
         self.deletions[uri] = retryCount
         self.save()
         
-        if AFNetworkReachabilityManager.sharedManager().reachable == false
-        {
-            return
-        }
-        
         let operation = DeleteVideoOperation(sessionManager: self.sessionManager, videoUri: uri)
         operation.completionBlock = { [weak self] () -> Void in
             
@@ -199,12 +194,12 @@ class VideoDeletionManager: NSObject
     
     func applicationWillEnterForeground(notification: NSNotification)
     {
-        self.startDeletions()
+        self.operationQueue.suspended = false
     }
 
     func applicationDidEnterBackground(notification: NSNotification)
     {
-        self.operationQueue.cancelAllOperations()
+        self.operationQueue.suspended = true
     }
 
     func reachabilityDidChange(notification: NSNotification?)
