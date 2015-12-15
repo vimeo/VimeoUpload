@@ -28,6 +28,7 @@ import UIKit
 import Photos
 import AVFoundation
 
+@available(iOS 8.0, *)
 typealias CameraRollViewControllerResult = (me: VIMUser, phAsset: PHAsset)
 
 /*
@@ -40,6 +41,7 @@ typealias CameraRollViewControllerResult = (me: VIMUser, phAsset: PHAsset)
     [AH] 12/03/2015
 */
 
+@available(iOS 8.0, *)
 class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
     static let NibName = "BaseCameraRollViewController"

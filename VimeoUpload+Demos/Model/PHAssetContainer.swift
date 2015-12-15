@@ -28,6 +28,7 @@ import Foundation
 import AVFoundation
 import Photos
 
+@available(iOS 8.0, *)
 class PHAssetContainer
 {    
     let phAsset: PHAsset
