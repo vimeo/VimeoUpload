@@ -1,6 +1,6 @@
 //
 //  VideoSettingsViewController.swift
-//  VimeoUpload-iOS-Example
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/16/15.
 //  Copyright © 2015 Vimeo. All rights reserved.

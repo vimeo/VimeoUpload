@@ -1,6 +1,6 @@
 //
 //  UploadCell.swift
-//  VimeoUpload-iOS-Example
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 12/14/15.
 //  Copyright © 2015 Vimeo. All rights reserved.

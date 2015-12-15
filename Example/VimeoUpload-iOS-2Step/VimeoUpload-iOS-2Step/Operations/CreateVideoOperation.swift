@@ -1,6 +1,6 @@
 //
 //  CreateVideoOperation.swift
-//  VimeoUpload-iOS-Example
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/9/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
