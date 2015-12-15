@@ -60,7 +60,6 @@ class UploadDescriptor: Descriptor
         {
             if self.error != nil
             {
-                self.currentTaskIdentifier = nil
                 self.state = .Finished
             }
         }

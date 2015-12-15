@@ -37,8 +37,8 @@ class UploadCell: UITableViewCell
 
     @IBOutlet weak var descriptorStateLabel: UILabel!
     @IBOutlet weak var errorLabel: UILabel!
-    @IBOutlet weak var progressView: UIView!
-    @IBOutlet weak var progressConstraint: NSLayoutConstraint!
+//    @IBOutlet weak var progressView: UIView!
+//    @IBOutlet weak var progressConstraint: NSLayoutConstraint!
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var retryButton: UIButton!
 
@@ -90,13 +90,21 @@ class UploadCell: UITableViewCell
         // Initialization code
     }
     
+    override func prepareForReuse()
+    {
+        super.prepareForReuse()
+    
+        self.assetIdentifier = nil
+        self.descriptor = nil
+    }
+    
     // MARK: Descriptor Setup
     
     private func updateProgress(progress: Double)
     {
         let width = self.contentView.frame.size.width
         let constant = CGFloat(1 - progress) * width
-        self.progressConstraint.constant = constant
+//        self.progressConstraint.constant = constant
     }
     
     private func updateState(state: State)
@@ -106,17 +114,18 @@ class UploadCell: UITableViewCell
         case .Ready, .Executing:
             self.deleteButton.setTitle("Cancel", forState: .Normal)
             
-            self.errorLabel.text = "Ready or Executing"
+            self.descriptorStateLabel.text = "Ready or Executing"
             self.retryButton.hidden = true
             
         case .Suspended:
-            self.errorLabel.text = "Suspended"
+            self.descriptorStateLabel.text = "Suspended"
             
         case .Finished:
             self.updateProgress(0) // Reset the progress bar to 0
-            self.progressView.hidden = true
+//            self.progressView.hidden = true
             self.deleteButton.setTitle("Delete", forState: .Normal)
             
+            self.descriptorStateLabel.text = "Finished"
             if let error = self.descriptor?.error
             {
                 self.errorLabel.text = error.localizedDescription
@@ -124,7 +133,6 @@ class UploadCell: UITableViewCell
             }
             else
             {
-                self.errorLabel.text = "Finished"
                 self.retryButton.hidden = true
             }
         }
@@ -146,7 +154,7 @@ class UploadCell: UITableViewCell
                     // Set the progress view to visible here so that the view has already been laid out
                     // And therefore the initial state is calculated based on the laid out width of the cell
                     // Doing this in awakeFromNib is too early, the width is incorrect [AH] 11/25/2015
-                    self?.progressView.hidden = false
+//                    self?.progressView.hidden = false
                     self?.updateProgress(progress)
                 })
                 

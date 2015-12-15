@@ -28,7 +28,7 @@ import UIKit
 
 typealias AssetIdentifier = String
 
-class UploadsViewController: UIViewController, UITableViewDataSource
+class UploadsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate
 {
     static let NibName = "UploadsViewController"
 
@@ -77,7 +77,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource
         let cell = tableView.dequeueReusableCellWithIdentifier(UploadCell.CellIdentifier) as! UploadCell
         
         let assetIdentifier = self.items[indexPath.row]
-        cell.textLabel?.text = assetIdentifier
+        cell.assetIdentifier = assetIdentifier
         
         return cell
     }
@@ -101,13 +101,15 @@ class UploadsViewController: UIViewController, UITableViewDataSource
     
     func descriptorAdded(notification: NSNotification)
     {
-        // TODO: what thread?
-        
-        if let descriptor = notification.object as? UploadDescriptor
-        {
-            let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-            self.items.insert(descriptor.assetIdentifier, atIndex: indexPath.row)
-            self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        // TODO: should we move this dispatch to within the descriptor manager itself?
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            
+            if let descriptor = notification.object as? UploadDescriptor
+            {
+                let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+                self.items.insert(descriptor.assetIdentifier, atIndex: indexPath.row)
+                self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            }
         }
     }
 }
