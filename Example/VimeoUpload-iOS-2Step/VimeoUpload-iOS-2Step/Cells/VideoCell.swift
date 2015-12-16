@@ -29,7 +29,7 @@ import UIKit
 protocol VideoCellDelegate: class
 {
     func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
-    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: SimpleUploadDescriptor)
+    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: Upload2Descriptor)
 }
 
 class VideoCell: UITableViewCell
@@ -60,7 +60,7 @@ class VideoCell: UITableViewCell
     private var progressKVOContext = UInt8()
     private var stateKVOContext = UInt8()
     
-    private var descriptor: SimpleUploadDescriptor?
+    private var descriptor: Upload2Descriptor?
     {
         willSet
         {

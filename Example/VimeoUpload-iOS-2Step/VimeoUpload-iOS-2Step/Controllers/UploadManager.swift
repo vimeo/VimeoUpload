@@ -87,19 +87,19 @@ import Foundation
     {
         let videoUri = uploadTicket.video!.uri
         
-        let descriptor = SimpleUploadDescriptor(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
+        let descriptor = Upload2Descriptor(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
         descriptor.identifier = videoUri
         
         self.descriptorManager.addDescriptor(descriptor)
     }
 
-    func retryUpload(descriptor descriptor: SimpleUploadDescriptor, url: NSURL)
+    func retryUpload(descriptor descriptor: Upload2Descriptor, url: NSURL)
     {
         let uploadTicket = descriptor.uploadTicket
         let videoUri = descriptor.uploadTicket.video!.uri!
         let assetIdentifier = descriptor.assetIdentifier
         
-        let newDescriptor = SimpleUploadDescriptor(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
+        let newDescriptor = Upload2Descriptor(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
         newDescriptor.identifier = videoUri
         
         self.uploadFailureTracker.removeFailedDescriptorForVideoUri(videoUri)
@@ -115,7 +115,7 @@ import Foundation
             NSFileManager.defaultManager().deleteFileAtURL(descriptor.url) // TODO: do we need to do this? Think it's already cleaned up
         }
         
-        if let descriptor = self.uploadFailureTracker.removeFailedDescriptorForVideoUri(videoUri) as? SimpleUploadDescriptor
+        if let descriptor = self.uploadFailureTracker.removeFailedDescriptorForVideoUri(videoUri) as? Upload2Descriptor
         {
             NSFileManager.defaultManager().deleteFileAtURL(descriptor.url) // TODO: do we need to do this? Think it's already cleaned up
         }
@@ -123,12 +123,12 @@ import Foundation
         self.deletionManager.deleteVideoWithUri(videoUri)
     }
 
-    func uploadDescriptorForVideo(videoUri videoUri: String) -> SimpleUploadDescriptor?
+    func uploadDescriptorForVideo(videoUri videoUri: String) -> Upload2Descriptor?
     {
         // Check active descriptors
         var descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
             
-            if let descriptor = descriptor as? SimpleUploadDescriptor, let currentVideoUri = descriptor.uploadTicket.video?.uri
+            if let descriptor = descriptor as? Upload2Descriptor, let currentVideoUri = descriptor.uploadTicket.video?.uri
             {
                 return videoUri == currentVideoUri
             }
@@ -142,6 +142,6 @@ import Foundation
             descriptor = self.uploadFailureTracker.failedDescriptorForVideoUri(videoUri)
         }
         
-        return descriptor as? SimpleUploadDescriptor
+        return descriptor as? Upload2Descriptor
     }    
 }

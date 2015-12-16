@@ -1,8 +1,8 @@
 //
-//  VimeoRequestSerializer+SimpleUpload.swift
+//  UploadRequest.swift
 //  VimeoUpload
 //
-//  Created by Alfred Hanssen on 11/20/15.
+//  Created by Hanssen, Alfie on 11/11/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,23 +26,26 @@
 
 import Foundation
 
-extension VimeoRequestSerializer
+enum Upload1Request: String
 {
-    func createVideoRequestWithUrl(url url: NSURL, videoSettings: VideoSettings?) throws -> NSMutableURLRequest
+    case Create = "Create"
+    case Upload = "Upload"
+    case Activate = "Activate"
+    case Settings = "Settings"
+    
+    static func orderedRequests() -> [Upload1Request]
     {
-        var parameters = try self.createVideoRequestBaseParameters(url: url)
-        parameters["create_clip"] = "true"
-        
-        if let videoSettings = videoSettings
+        return [.Create, .Upload, .Activate, .Settings]
+    }
+    
+    static func nextRequest(currentRequest: Upload1Request) -> Upload1Request?
+    {
+        let orderedRequests = Upload1Request.orderedRequests()
+        if let index = orderedRequests.indexOf(currentRequest) where index + 1 < orderedRequests.count
         {
-            for (key, value) in videoSettings.parameterDictionary()
-            {
-                parameters[key] = value
-            }
+            return orderedRequests[index + 1]
         }
-
-        let url = NSURL(string: "/me/videos", relativeToURL: VimeoBaseURLString)!
         
-        return try self.createVideoRequestWithUrl(url, parameters: parameters)
+        return nil
     }
 }
