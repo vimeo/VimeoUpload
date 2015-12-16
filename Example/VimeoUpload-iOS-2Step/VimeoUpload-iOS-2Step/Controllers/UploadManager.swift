@@ -32,6 +32,8 @@ import Foundation
 
     // MARK:
     
+    // TODO: remove token from library
+
     private let BackgroundSessionIdentifier = "com.vimeo.upload"
     private let DescriptorManagerName = "uploader"
     private let BasicUserToken = "3e9dae312853936216aba3ce56cf5066"
