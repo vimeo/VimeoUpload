@@ -37,6 +37,7 @@ import Photos
 
 // 2. Create video record
 
+@available(iOS 8.0, *)
 class CompositeCloudExportCreateOperation: ConcurrentOperation
 {    
     let me: VIMUser
