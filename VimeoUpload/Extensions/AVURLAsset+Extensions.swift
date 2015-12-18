@@ -29,7 +29,7 @@ import AVFoundation
 
 extension AVURLAsset
 {
-    func fileSize() throws -> NSNumber?
+    func fileSize() throws -> NSNumber
     {
         var value: AnyObject?
     
@@ -37,7 +37,7 @@ extension AVURLAsset
     
         guard let number = value as? NSNumber else
         {
-            return nil
+            throw NSError(domain: "AVURLAsset+Extensions", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to calculate filesize of AVURLAsset"])
         }
         
         return number
