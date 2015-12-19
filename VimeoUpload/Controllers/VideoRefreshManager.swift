@@ -1,8 +1,8 @@
 //
-//  RetryManager.swift
+//  VideoRefreshManager.swift
 //  VimeoUpload
 //
-//  Created by Alfred Hanssen on 11/23/15.
+//  Created by Hanssen, Alfie on 12/14/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,20 +26,24 @@
 
 import Foundation
 
-class VideoDeletionManager: NSObject
+@objc protocol VideoRefreshManagerDelegate
 {
-    private static let DeletionsArchiveKey = "deletions"
+    func videoDidFinishUploading(video: VIMVideo)
+}
+
+@objc class VideoRefreshManager: NSObject
+{
+    private static let RetryDelay: Double = 3
     
     // MARK:
     
     private let sessionManager: VimeoSessionManager
-    private let retryCount: Int
+    private weak var delegate: VideoRefreshManagerDelegate?
     
     // MARK:
     
-    private var deletions: [VideoUri: Int] = [:]
+    private var videos: [VideoUri: VIMVideo] = [:]
     private let operationQueue: NSOperationQueue
-    private let archiver: KeyedArchiver
     
     // MARK:
     // MARK: Initialization
@@ -49,85 +53,66 @@ class VideoDeletionManager: NSObject
         self.operationQueue.cancelAllOperations()
         self.removeObservers()
     }
-    
-    // TODO: support deletion of password protected videos
-    
-    init(sessionManager: VimeoSessionManager, retryCount: Int)
+        
+    init(sessionManager: VimeoSessionManager, delegate: VideoRefreshManagerDelegate)
     {
         self.sessionManager = sessionManager
-        self.retryCount = retryCount
-     
+        self.delegate = delegate
+        
         self.operationQueue = NSOperationQueue()
-        self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
-        self.archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey)
+        self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount // TODO: is this ok?
         
         super.init()
         
         self.addObservers()
         self.reachabilityDidChange(nil) // Set suspended state
-        
-        self.deletions = self.loadDeletions()
-        self.startDeletions()
-    }
-    
-    // MARK: Setup
-    
-    private static func setupArchiver(name name: String) -> KeyedArchiver
-    {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        var documentsURL = NSURL(string: documentsPath)!
-        
-        documentsURL = documentsURL.URLByAppendingPathComponent(name)
-        documentsURL = documentsURL.URLByAppendingPathComponent(VideoDeletionManager.DeletionsArchiveKey)
-        
-        if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
-        {
-            try! NSFileManager.defaultManager().createDirectoryAtPath(documentsURL.path!, withIntermediateDirectories: true, attributes: nil)
-        }
-        
-        return KeyedArchiver(basePath: documentsURL.path!)
-    }
-    
-    // MARK: Archiving
-    
-    private func loadDeletions() -> [VideoUri: Int]
-    {
-        if let deletions = self.archiver.loadObjectForKey(VideoDeletionManager.DeletionsArchiveKey) as? [VideoUri: Int]
-        {
-            return deletions
-        }
-        
-        return [:]
-    }
-
-    private func startDeletions()
-    {
-        for (key, value) in self.deletions
-        {
-            self.deleteVideoWithUri(key, retryCount: value)
-        }
-    }
-    
-    private func save()
-    {
-        self.archiver.saveObject(self.deletions, key: VideoDeletionManager.DeletionsArchiveKey)
     }
     
     // MARK: Public API
     
-    func deleteVideoWithUri(uri: String)
+    func cancelAll()
     {
-        self.deleteVideoWithUri(uri, retryCount: self.retryCount)
+        self.videos.removeAll()
+        self.operationQueue.cancelAllOperations()
+    }
+    
+    func cancelRefreshForVideo(video: VIMVideo)
+    {
+        guard let uri = video.uri else
+        {
+            return
+        }
+
+        self.videos.removeValueForKey(uri)
+    }
+    
+    func refreshVideo(video: VIMVideo)
+    {
+        guard let uri = video.uri where self.videos[uri] == nil else
+        {
+            return // It's already scheduled for refresh
+        }
+
+        self.doRefreshVideo(video)
     }
     
     // MARK: Private API
-
-    private func deleteVideoWithUri(uri: String, retryCount: Int)
+    
+    private func doRefreshVideo(video: VIMVideo)
     {
-        self.deletions[uri] = retryCount
-        self.save()
+        guard let uri = video.uri else
+        {
+            return
+        }
         
-        let operation = DeleteVideoOperation(sessionManager: self.sessionManager, videoUri: uri)
+        if self.dynamicType.isVideoStatusFinal(video) == true // No need to refresh this video, it's already done
+        {
+            return
+        }
+        
+        self.videos[uri] = video
+                
+        let operation = VideoOperation(sessionManager: self.sessionManager, videoUri: uri)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -142,36 +127,58 @@ class VideoDeletionManager: NSObject
                     return
                 }
                 
+                guard let _ = strongSelf.videos[uri] else // The video refresh was cancelled
+                {
+                    return
+                }
+                
                 if let error = operation.error
                 {
                     if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? NSHTTPURLResponse where response.statusCode == 404
                     {
-                        strongSelf.deletions.removeValueForKey(uri) // The video has already been deleted
-                        strongSelf.save()
-
-                        return
-                    }
-                    
-                    if let retryCount = strongSelf.deletions[uri] where retryCount > 0
-                    {
-                        let newRetryCount = retryCount - 1
-                        strongSelf.deleteVideoWithUri(uri, retryCount: newRetryCount) // Decrement the retryCount and try again
+                        strongSelf.videos.removeValueForKey(uri) // The video was deleted, remove it from consideration
                     }
                     else
                     {
-                        strongSelf.deletions.removeValueForKey(uri) // We retried the required number of times, nothing more to do
-                        strongSelf.save()
+                        strongSelf.retryVideo(video)
                     }
                 }
-                else
+                else if let freshVideo = operation.video
                 {
-                    strongSelf.deletions.removeValueForKey(uri)
-                    strongSelf.save()
+                    if strongSelf.dynamicType.isVideoStatusFinal(freshVideo) == true // We're done!
+                    {
+                        strongSelf.videos.removeValueForKey(uri)
+                        strongSelf.delegate?.videoDidFinishUploading(freshVideo)
+                    }
+                    else
+                    {
+                        strongSelf.retryVideo(video)
+                    }
+                }
+                else // Execution should never reach this point
+                {
+                    strongSelf.videos.removeValueForKey(uri)
                 }
             })
         }
         
         self.operationQueue.addOperation(operation)
+    }
+
+    private func retryVideo(video: VIMVideo)
+    {
+        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(self.dynamicType.RetryDelay * Double(NSEC_PER_SEC)))
+        
+        dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] () -> Void in
+            self?.doRefreshVideo(video)
+        }
+    }
+    
+    private static func isVideoStatusFinal(video: VIMVideo) -> Bool
+    {
+        let status = video.videoStatus
+        
+        return status == .Available || status == .UploadingError || status == .TranscodingError
     }
     
     // MARK: Notifications
@@ -194,14 +201,14 @@ class VideoDeletionManager: NSObject
     
     func applicationWillEnterForeground(notification: NSNotification)
     {
-        self.operationQueue.suspended = false
+        self.operationQueue.suspended = false 
     }
-
+    
     func applicationDidEnterBackground(notification: NSNotification)
     {
         self.operationQueue.suspended = true
     }
-
+    
     func reachabilityDidChange(notification: NSNotification?)
     {
         let currentlyReachable = AFNetworkReachabilityManager.sharedManager().reachable

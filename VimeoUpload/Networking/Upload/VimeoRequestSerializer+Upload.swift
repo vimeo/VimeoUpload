@@ -195,4 +195,23 @@ extension VimeoRequestSerializer
         
         return request
     }
+
+    func videoRequestWithUri(videoUri: String) throws -> NSMutableURLRequest
+    {
+        guard videoUri.characters.count > 0 else
+        {
+            throw NSError(domain: UploadErrorDomain.Video.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "videoUri has length of 0."])
+        }
+        
+        let url = NSURL(string: videoUri, relativeToURL: VimeoBaseURLString)!
+        var error: NSError?
+        
+        let request = self.requestWithMethod("GET", URLString: url.absoluteString, parameters: nil, error: &error)
+        if let error = error
+        {
+            throw error.errorByAddingDomain(UploadErrorDomain.Video.rawValue)
+        }
+        
+        return request
+    }
 }

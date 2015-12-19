@@ -42,6 +42,7 @@ enum UploadErrorDomain: String
     case Activate = "ActivateVideoErrorDomain"
     case VideoSettings = "VideoSettingsErrorDomain"
     case Delete = "DeleteVideoErrorDomain"
+    case Video = "VideoErrorDomain"
 
     case CompositeMeQuotaOperation = "CompositeMeQuotaOperationErrorDomain"
     case CompositeCloudExportOperation = "CompositeCloudExportOperationErrorDomain"
