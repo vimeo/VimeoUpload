@@ -25,11 +25,9 @@
 //
 
 import UIKit
-import Photos
 import AVFoundation
 
-@available(iOS 8.0, *)
-typealias CameraRollViewControllerResult = (me: VIMUser, phAsset: PHAsset)
+typealias CameraRollViewControllerResult = (me: VIMUser, cameraRollAsset: CameraRollAssetProtocol)
 
 /*
     This viewController displays the device camera roll video contents. 
@@ -41,7 +39,6 @@ typealias CameraRollViewControllerResult = (me: VIMUser, phAsset: PHAsset)
     [AH] 12/03/2015
 */
 
-@available(iOS 8.0, *)
 class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
     static let NibName = "BaseCameraRollViewController"
@@ -54,8 +51,8 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     // MARK: 
     
-    private var assets: [PHAssetContainer] = []
-    private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
+    private var assets: [CameraRollAssetProtocol] = []
+    private var cameraRollAssetHelper: CameraRollAssetHelperProtocol?
     private var operation: CompositeMeQuotaOperation?
     private var me: VIMUser? // We store this in a property instead of on the operation itself, so that we can refresh it independent of the operation [AH]
     private var meOperation: MeOperation?
@@ -74,6 +71,15 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     {
         super.viewDidLoad()
         
+        if #available(iOS 8, *)
+        {
+            self.cameraRollAssetHelper = PHAssetHelper()
+        }
+        else
+        {
+            self.cameraRollAssetHelper = ALAssetHelper()
+        }
+
         self.assets = self.loadAssets()
 
         self.addObservers()
@@ -146,23 +152,18 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     // MARK: Setup
     
-    private func loadAssets() -> [PHAssetContainer]
+    private func loadAssets() -> [CameraRollAssetProtocol]
     {
         let options = PHFetchOptions()
         options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
-        let result = PHAsset.fetchAssetsWithMediaType(.Video, options: options)
+        let fetchResult = PHAsset.fetchAssetsWithMediaType(.Video, options: options)
         
-        var assets: [PHAssetContainer] = []
-        result.enumerateObjectsUsingBlock( { (phAsset, index, stop) -> Void in
-            
-            let phAsset = phAsset as! PHAsset
-            let phAssetContainer = PHAssetContainer(phAsset: phAsset)
-            assets.append(phAssetContainer)
+        let range = NSMakeRange(0, fetchResult.count)
+        let indexSet = NSIndexSet(indexesInRange: range)
+        let phAssets = fetchResult.objectsAtIndexes(indexSet) as! [CameraRollAssetProtocol]
         
-        })
-        
-        return assets
+        return phAssets
     }
 
     private func setupCollectionView()
@@ -207,11 +208,10 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
                 else
                 {
                     let indexPath = strongSelf.selectedIndexPath!
-                    let phAssetContainer = strongSelf.assets[indexPath.item]
-                    let phAsset = phAssetContainer.phAsset
+                    let cameraRollAsset = strongSelf.assets[indexPath.item]
                     strongSelf.me = operation.me!
    
-                    strongSelf.finish(phAsset: phAsset)
+                    strongSelf.finish(cameraRollAsset: cameraRollAsset)
                 }
             })
         }
@@ -231,22 +231,21 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(CameraRollCell.CellIdentifier, forIndexPath: indexPath) as! CameraRollCell
         
-        let phAssetContainer = self.assets[indexPath.item]
+        let cameraRollAsset = self.assets[indexPath.item]
         
-        cell.setDuration(phAssetContainer.phAsset.duration)
+//        cell.setDuration(cameraRollAsset.duration)
 
-        self.requestImageForCell(cell, phAssetContainer: phAssetContainer)
-        self.requestAssetForCell(cell, phAssetContainer: phAssetContainer)
+        self.cameraRollAssetHelper?.requestImage(cell: cell, cameraRollAsset: cameraRollAsset)
+        self.cameraRollAssetHelper?.requestAsset(cell: cell, cameraRollAsset: cameraRollAsset)
         
         return cell
     }
     
     func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath)
     {
-        let phAssetContainer = self.assets[indexPath.item]
-        let phAsset = phAssetContainer.phAsset
+        let cameraRollAsset = self.assets[indexPath.item] 
         
-        self.phAssetHelper.cancelRequestsForPHAsset(phAsset)
+        self.cameraRollAssetHelper?.cancelRequests(cameraRollAsset)
     }
     
     // MARK: UICollectionViewFlowLayoutDelegate
@@ -266,74 +265,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     }
     
     // MARK: Private API
-    
-    private func requestImageForCell(cell: CameraRollCell, phAssetContainer: PHAssetContainer)
-    {
-        let phAsset = phAssetContainer.phAsset
-        let size = cell.bounds.size
-        let scale = UIScreen.mainScreen().scale
-        let scaledSize = CGSizeMake(scale * size.width, scale * size.height)
         
-        self.phAssetHelper.requestImage(phAsset: phAsset, size: scaledSize) { [weak self, weak cell] (image, inCloud, error) -> Void in
-            
-            guard let _ = self, let strongCell = cell else
-            {
-                return
-            }
-            
-            // Cache the inCloud value for later use in didSelectItem
-            phAssetContainer.inCloud = inCloud
-            phAssetContainer.error = error
-
-            if let inCloud = inCloud where inCloud == true
-            {
-                strongCell.setError("iCloud Asset")
-            }
-
-            if let image = image
-            {
-                strongCell.setImage(image)
-            }
-            else if let error = error
-            {
-                strongCell.setError(error.localizedDescription)
-            }
-        }
-    }
-    
-    private func requestAssetForCell(cell: CameraRollCell, phAssetContainer: PHAssetContainer)
-    {
-        let phAsset = phAssetContainer.phAsset
-        
-        self.phAssetHelper.requestAsset(phAsset: phAsset, completion: { [weak self, weak cell] (asset, inCloud, error) -> Void in
-            
-            guard let _ = self, let strongCell = cell else
-            {
-                return
-            }
-            
-            // Cache the asset and inCloud values for later use in didSelectItem
-            phAssetContainer.avAsset = asset
-            phAssetContainer.inCloud = inCloud
-            phAssetContainer.error = error
-
-            if let inCloud = inCloud where inCloud == true
-            {
-                strongCell.setError("iCloud Asset")
-            }
-            
-            if let asset = asset
-            {
-                let megabytes = asset.approximateFileSizeInMegabytes()
-                strongCell.setFileSize(megabytes)
-            }
-            else if let error = error
-            {
-                strongCell.setError(error.localizedDescription)
-            }
-        })
-    }
-    
     private func didSelectIndexPath(indexPath: NSIndexPath)
     {
         let phAssetContainer = self.assets[indexPath.item]
@@ -414,14 +346,14 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    private func finish(phAsset phAsset: PHAsset)
+    private func finish(cameraRollAsset cameraRollAsset: CameraRollAssetProtocol)
     {
         let me = self.me!
 
         // Reset the operation so we're prepared to retry upon cancellation from video settings [AH] 12/06/2015
         self.setupAndStartOperation()
         
-        let result = CameraRollViewControllerResult(me: me, phAsset: phAsset)
+        let result = CameraRollViewControllerResult(me: me, cameraRollAsset: cameraRollAsset)
         self.didFinishWithResult(result)        
     }
     

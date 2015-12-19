@@ -9,23 +9,15 @@
 import Foundation
 import Photos
 
-typealias PHAssetHelperImageBlock = (image: UIImage?, inCloud: Bool?, error: NSError?) -> Void
-typealias PHAssetHelperAssetBlock = (asset: AVAsset?, inCloud: Bool?, error: NSError?) -> Void
-
 @available(iOS 8, *)
-class PHAssetHelper
+@objc class PHAssetHelper: NSObject, CameraRollAssetHelperProtocol
 {
     static let ErrorDomain = "PHAssetHelperErrorDomain"
     
-    private let imageManager: PHImageManager
+    private let imageManager = PHImageManager.defaultManager()
     private var activeImageRequests: [String: PHImageRequestID] = [:]
     private var activeAssetRequests: [String: PHImageRequestID] = [:]
 
-    init(imageManager: PHImageManager)
-    {
-        self.imageManager = imageManager
-    }
-    
     deinit
     {
         // Cancel any remaining active PHImageManager requests
@@ -43,19 +35,24 @@ class PHAssetHelper
         self.activeAssetRequests.removeAll()
     }
 
-    // MARK: Public API
+    // MARK: CameraRollAssetHelperProtocol
     
-    func requestImage(phAsset phAsset: PHAsset, size: CGSize, completion: PHAssetHelperImageBlock)
+    func requestImage(cell cell: CameraRollCell, cameraRollAsset: CameraRollAssetProtocol)
     {
-        self.cancelImageRequestForPHAsset(phAsset)
-        
+        let phAsset = cameraRollAsset as! PHAsset
+        let size = cell.bounds.size
+        let scale = UIScreen.mainScreen().scale
+        let scaledSize = CGSizeMake(scale * size.width, scale * size.height)
+     
+        self.cancelImageRequest(cameraRollAsset: cameraRollAsset)
+
         let options = PHImageRequestOptions()
         options.networkAccessAllowed = true // We do not check for inCloud in resultHandler because we allow network access
         options.deliveryMode = .Opportunistic
         options.version = .Current
         options.resizeMode = .Fast
         
-        let requestID = self.imageManager.requestImageForAsset(phAsset, targetSize: size, contentMode: .AspectFill, options: options, resultHandler: { [weak self] (image, info) -> Void in
+        let requestID = self.imageManager.requestImageForAsset(phAsset, targetSize: scaledSize, contentMode: .AspectFill, options: options, resultHandler: { [weak self] (image, info) -> Void in
             
             guard let strongSelf = self else
             {
@@ -63,33 +60,36 @@ class PHAssetHelper
             }
             
             // TODO: determine if we can use this here and below Phimageresultrequestidkey
-            
-            strongSelf.cancelImageRequestForPHAsset(phAsset)
+            // TODO: thread?
+            strongSelf.cancelImageRequest(cameraRollAsset: cameraRollAsset)
             
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
             {
                 return
             }
             
-            let error = info?[PHImageErrorKey] as? NSError
-
-            if let error = error
+            // Cache values for later use in didSelectItem
+            cameraRollAsset.inCloud = info?[PHImageResultIsInCloudKey] as? Bool ?? false
+            cameraRollAsset.error = info?[PHImageErrorKey] as? NSError
+            
+            if let image = image
             {
-                completion(image: nil, inCloud: nil, error: error)
+                cell.setImage(image)
             }
-            else if let image = image
+            else if let error = cameraRollAsset.error
             {
-                let inCloud = info?[PHImageResultIsInCloudKey] as? Bool
-                completion(image: image, inCloud: inCloud, error: nil)
+                cell.setError(error.localizedDescription)
             }
         })
         
         self.activeImageRequests[phAsset.localIdentifier] = requestID
     }
     
-    func requestAsset(phAsset phAsset: PHAsset, completion: PHAssetHelperAssetBlock)
+    func requestAsset(cell cell: CameraRollCell, cameraRollAsset: CameraRollAssetProtocol)
     {
-        self.cancelAssetRequestForPHAsset(phAsset)
+        let phAsset = cameraRollAsset as! PHAsset
+
+        self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
         
         let options = PHVideoRequestOptions()
         options.networkAccessAllowed = false
@@ -102,7 +102,7 @@ class PHAssetHelper
                 return
             }
 
-            strongSelf.cancelAssetRequestForPHAsset(phAsset)
+            strongSelf.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
 
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
             {
@@ -116,24 +116,19 @@ class PHAssetHelper
                     return
                 }
 
-                let inCloud = info?[PHImageResultIsInCloudKey] as? Bool
-                let error = info?[PHImageErrorKey] as? NSError
+                // Cache the asset and inCloud values for later use in didSelectItem
+                cameraRollAsset.avAsset = asset
+                cameraRollAsset.inCloud = info?[PHImageResultIsInCloudKey] as? Bool ?? false
+                cameraRollAsset.error = info?[PHImageErrorKey] as? NSError
 
-                if let inCloud = inCloud where inCloud == true
+                if let asset = asset
                 {
-                    completion(asset: nil, inCloud: true, error: nil)
+                    let megabytes = asset.approximateFileSizeInMegabytes()
+                    cell.setFileSize(megabytes)
                 }
-                else if let error = error
+                else if let error = cameraRollAsset.error
                 {
-                    completion(asset: nil, inCloud: nil, error: error)
-                }
-                else if let asset = asset
-                {
-                    completion(asset: asset, inCloud: false, error: nil)
-                }
-                else
-                {
-                    fatalError("Execution should never reach this point")
+                    cell.setError(error.localizedDescription)
                 }
             })
         }
@@ -141,16 +136,18 @@ class PHAssetHelper
         self.activeAssetRequests[phAsset.localIdentifier] = requestID
     }
     
-    func cancelRequestsForPHAsset(phAsset: PHAsset)
+    func cancelRequests(cameraRollAsset: CameraRollAssetProtocol)
     {
-        self.cancelImageRequestForPHAsset(phAsset)
-        self.cancelAssetRequestForPHAsset(phAsset)
+        self.cancelImageRequest(cameraRollAsset: cameraRollAsset)
+        self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
     }
 
     // MARK: Private API
 
-    private func cancelImageRequestForPHAsset(phAsset: PHAsset)
+    private func cancelImageRequest(cameraRollAsset cameraRollAsset: CameraRollAssetProtocol)
     {
+        let phAsset = cameraRollAsset as! PHAsset
+        
         if let requestID = self.activeImageRequests[phAsset.localIdentifier]
         {
             self.imageManager.cancelImageRequest(requestID)
@@ -158,8 +155,10 @@ class PHAssetHelper
         }
     }
     
-    private func cancelAssetRequestForPHAsset(phAsset: PHAsset)
+    private func cancelAssetRequest(cameraRollAsset cameraRollAsset: CameraRollAssetProtocol)
     {
+        let phAsset = cameraRollAsset as! PHAsset
+        
         if let requestID = self.activeAssetRequests[phAsset.localIdentifier]
         {
             self.imageManager.cancelImageRequest(requestID)
