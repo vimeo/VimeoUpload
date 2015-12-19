@@ -83,18 +83,18 @@ import Foundation
     // We need a reference (via the assetIdentifier) to the original asset so that we can retry failed uploads
     func uploadVideo(url url: NSURL, assetIdentifier: String, videoSettings: VideoSettings?)
     {
-        let descriptor = UploadDescriptor(url: url, assetIdentifier: assetIdentifier, videoSettings: videoSettings)
+        let descriptor = Upload1Descriptor(url: url, assetIdentifier: assetIdentifier, videoSettings: videoSettings)
         descriptor.identifier = assetIdentifier
         
         self.descriptorManager.addDescriptor(descriptor)
     }
     
-//    func retryUpload(descriptor descriptor: UploadDescriptor, url: NSURL)
+//    func retryUpload(descriptor descriptor: Upload1Descriptor, url: NSURL)
 //    {
 //        let videoSettings = descriptor.videoSettings
 //        let assetIdentifier = descriptor.assetIdentifier
 //        
-//        let newDescriptor = UploadDescriptor(url: url, assetIdentifier: assetIdentifier, videoSettings: videoSettings)
+//        let newDescriptor = Upload1Descriptor(url: url, assetIdentifier: assetIdentifier, videoSettings: videoSettings)
 //        newDescriptor.identifier = assetIdentifier
 //        
 //        self.descriptorManager.addDescriptor(newDescriptor)
@@ -113,12 +113,12 @@ import Foundation
         }
     }
     
-    func uploadDescriptorForAssetIdentifier(assetIdentifier: String) -> UploadDescriptor?
+    func uploadDescriptorForAssetIdentifier(assetIdentifier: String) -> Upload1Descriptor?
     {
         // Check active descriptors
         let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
             
-            if let descriptor = descriptor as? UploadDescriptor
+            if let descriptor = descriptor as? Upload1Descriptor
             {
                 return assetIdentifier == descriptor.assetIdentifier
             }
@@ -126,6 +126,6 @@ import Foundation
             return false
         })
         
-        return descriptor as? UploadDescriptor
+        return descriptor as? Upload1Descriptor
     }    
 }

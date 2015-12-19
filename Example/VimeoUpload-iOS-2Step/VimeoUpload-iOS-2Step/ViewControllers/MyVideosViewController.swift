@@ -152,7 +152,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
-    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: SimpleUploadDescriptor)
+    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: Upload2Descriptor)
     {
         let videoUri = descriptor.uploadTicket.video!.uri!
 
@@ -286,7 +286,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: Private API
     
-    private func retryUploadDescriptor(descriptor: SimpleUploadDescriptor, completion: ErrorBlock)
+    private func retryUploadDescriptor(descriptor: Upload2Descriptor, completion: ErrorBlock)
     {
         // TODO: This should be cancellable
         

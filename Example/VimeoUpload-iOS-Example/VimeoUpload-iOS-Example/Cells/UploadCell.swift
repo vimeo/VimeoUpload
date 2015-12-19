@@ -49,7 +49,7 @@ class UploadCell: UITableViewCell
     private var progressKVOContext = UInt8()
     private var stateKVOContext = UInt8()
 
-    private var descriptor: UploadDescriptor?
+    private var descriptor: Upload1Descriptor?
         {
         willSet
         {

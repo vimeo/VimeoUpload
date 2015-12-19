@@ -83,22 +83,17 @@ extension VimeoRequestSerializer
     {
         let asset = AVURLAsset(URL: url)
         
-        var fileLength: NSNumber?
+        let fileSize: NSNumber
         do
         {
-            fileLength = try asset.fileSize()
+            fileSize = try asset.fileSize()
         }
         catch let error as NSError
         {
             throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
         }
         
-        guard let aFileLength = fileLength else
-        {
-            throw NSError(domain: UploadErrorDomain.Create.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to calculate file length."])
-        }
-        
-        return ["type": "streaming", "size": aFileLength]
+        return ["type": "streaming", "size": fileSize]
     }
 
     func uploadVideoRequestWithSource(source: NSURL, destination: String) throws -> NSMutableURLRequest
@@ -117,22 +112,17 @@ extension VimeoRequestSerializer
         
         let asset = AVURLAsset(URL: source)
         
-        var fileLength: NSNumber?
+        let fileSize: NSNumber
         do
         {
-            fileLength = try asset.fileSize()
+            fileSize = try asset.fileSize()
         }
         catch let error as NSError
         {
             throw error.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
         }
         
-        guard let aFileLength = fileLength else
-        {
-            throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to calculate file length."])
-        }
-        
-        request.setValue("\(aFileLength)", forHTTPHeaderField: "Content-Length")
+        request.setValue("\(fileSize)", forHTTPHeaderField: "Content-Length")
         request.setValue("video/mp4", forHTTPHeaderField: "Content-Type")
         
         return request
