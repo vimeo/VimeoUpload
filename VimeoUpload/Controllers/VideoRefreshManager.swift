@@ -33,7 +33,7 @@ import Foundation
 
 @objc class VideoRefreshManager: NSObject
 {
-    private static let Delay: Double = 3
+    private static let RetryDelay: Double = 3
     
     // MARK:
     
@@ -93,12 +93,12 @@ import Foundation
             return // It's already scheduled for refresh
         }
 
-        self._refreshVideo(video)
+        self.doRefreshVideo(video)
     }
     
     // MARK: Private API
     
-    private func _refreshVideo(video: VIMVideo)
+    private func doRefreshVideo(video: VIMVideo)
     {
         guard let uri = video.uri else
         {
@@ -167,10 +167,10 @@ import Foundation
 
     private func retryVideo(video: VIMVideo)
     {
-        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(self.dynamicType.Delay * Double(NSEC_PER_SEC)))
+        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(self.dynamicType.RetryDelay * Double(NSEC_PER_SEC)))
         
         dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] () -> Void in
-            self?._refreshVideo(video)
+            self?.doRefreshVideo(video)
         }
     }
     
