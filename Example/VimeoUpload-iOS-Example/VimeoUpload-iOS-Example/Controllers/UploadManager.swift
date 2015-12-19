@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 //
 
-import UIKit
+import Foundation
 
 @objc class UploadManager: NSObject
 {
@@ -83,50 +83,49 @@ import UIKit
     // We need a reference (via the assetIdentifier) to the original asset so that we can retry failed uploads
     func uploadVideo(url url: NSURL, assetIdentifier: String, videoSettings: VideoSettings?)
     {
-        let descriptor = UploadDescriptor(url: url, assetIdentifier: assetIdentifier, videoSettings: videoSettings)
+        let descriptor = Upload1Descriptor(url: url, assetIdentifier: assetIdentifier, videoSettings: videoSettings)
         descriptor.identifier = assetIdentifier
         
         self.descriptorManager.addDescriptor(descriptor)
     }
     
-//    func retryUpload(descriptor descriptor: UploadDescriptor, url: NSURL)
+//    func retryUpload(descriptor descriptor: Upload1Descriptor, url: NSURL)
 //    {
 //        let videoSettings = descriptor.videoSettings
 //        let assetIdentifier = descriptor.assetIdentifier
 //        
-//        let newDescriptor = UploadDescriptor(url: url, assetIdentifier: assetIdentifier, videoSettings: videoSettings)
+//        let newDescriptor = Upload1Descriptor(url: url, assetIdentifier: assetIdentifier, videoSettings: videoSettings)
 //        newDescriptor.identifier = assetIdentifier
 //        
 //        self.descriptorManager.addDescriptor(newDescriptor)
 //    }
-//    
-//    func deleteUpload(videoUri videoUri: String)
-//    {
-//        // Upload failure does not delete the exported file, so that the file can be used for retry
-//        // Therefore we must delete it here [AH] 11/29/2015
-//        
-//        if let descriptor = self.uploadDescriptorForVideo(videoUri: videoUri)
-//        {
-//            descriptor.cancel(sessionManager: self.sessionManager)
-//            NSFileManager.defaultManager().deleteFileAtURL(descriptor.url)
-//        }
-//        
-//        self.deletionManager.deleteVideoWithUri(videoUri)
-//    }
-//    
-//    func uploadDescriptorForVideo(videoUri videoUri: String) -> UploadDescriptor?
-//    {
-//        // Check active descriptors
-//        var descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
-//            
-//            if let descriptor = descriptor as? UploadDescriptor, let currentVideoUri = descriptor.uploadTicket.video?.uri
-//            {
-//                return videoUri == currentVideoUri
-//            }
-//            
-//            return false
-//        })
-//        
-//        return descriptor as? UploadDescriptor
-//    }    
+    
+    func deleteUpload(assetIdentifier assetIdentifier: String)
+    {
+        if let descriptor = self.uploadDescriptorForAssetIdentifier(assetIdentifier)
+        {
+            descriptor.cancel(sessionManager: self.sessionManager)
+        
+            if let videoUri = descriptor.videoUri
+            {
+                self.deletionManager.deleteVideoWithUri(videoUri) // Delete the video from the server if upload completed
+            }
+        }
+    }
+    
+    func uploadDescriptorForAssetIdentifier(assetIdentifier: String) -> Upload1Descriptor?
+    {
+        // Check active descriptors
+        let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
+            
+            if let descriptor = descriptor as? Upload1Descriptor
+            {
+                return assetIdentifier == descriptor.assetIdentifier
+            }
+            
+            return false
+        })
+        
+        return descriptor as? Upload1Descriptor
+    }    
 }

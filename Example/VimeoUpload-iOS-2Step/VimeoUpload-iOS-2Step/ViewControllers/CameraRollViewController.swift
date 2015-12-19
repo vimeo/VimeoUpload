@@ -1,8 +1,8 @@
 //
-//  UploadRequest.swift
+//  CameraRollViewController.swift
 //  VimeoUpload
 //
-//  Created by Hanssen, Alfie on 11/11/15.
+//  Created by Hanssen, Alfie on 12/14/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,27 +25,31 @@
 //
 
 import Foundation
+import UIKit
 
-enum UploadRequest: String
+class CameraRollViewController: BaseCameraRollViewController
 {
-    case Create = "Create"
-    case Upload = "Upload"
-    case Activate = "Activate"
-    case Settings = "Settings"
+    // MARK: Overrides
     
-    static func orderedRequests() -> [UploadRequest]
+    override func setupNavigationBar()
     {
-        return [.Create, .Upload, .Activate, .Settings]
+        super.setupNavigationBar()
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
     }
     
-    static func nextRequest(currentRequest: UploadRequest) -> UploadRequest?
+    override func didFinishWithResult(result: CameraRollViewControllerResult)
     {
-        let orderedRequests = UploadRequest.orderedRequests()
-        if let index = orderedRequests.indexOf(currentRequest) where index + 1 < orderedRequests.count
-        {
-            return orderedRequests[index + 1]
-        }
+        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
+        viewController.input = result
         
-        return nil
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    // MARK: Actions
+    
+    func didTapCancel(sender: UIBarButtonItem)
+    {
+        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }
 }

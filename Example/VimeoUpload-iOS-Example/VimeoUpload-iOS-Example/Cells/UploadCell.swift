@@ -1,8 +1,8 @@
 //
-//  VideoCell.swift
+//  UploadCell.swift
 //  VimeoUpload
 //
-//  Created by Alfred Hanssen on 11/23/15.
+//  Created by Hanssen, Alfie on 12/14/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,46 +26,35 @@
 
 import UIKit
 
-protocol VideoCellDelegate: class
-{
-    func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
-    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: Upload2Descriptor)
-}
-
-class VideoCell: UITableViewCell
+class UploadCell: UITableViewCell
 {
     // MARK:
     
-    static let CellIdentifier = "VideoCellIdentifier"
-    static let NibName = "VideoCell"
-    
-    // MARK:
-
-    @IBOutlet weak var thumbnailImageView: UIImageView!
-    @IBOutlet weak var statusLabel: UILabel!
-    @IBOutlet weak var errorLabel: UILabel!
-    @IBOutlet weak var progressView: UIView!
-    @IBOutlet weak var progressConstraint: NSLayoutConstraint!
-    @IBOutlet weak var deleteButton: UIButton!
-    @IBOutlet weak var retryButton: UIButton!
-    
-    // MARK:
-
-    weak var delegate: VideoCellDelegate?
+    static let CellIdentifier = "UploadCellIdentifier"
+    static let NibName = "UploadCell"
 
     // MARK: 
+
+    @IBOutlet weak var descriptorStateLabel: UILabel!
+    @IBOutlet weak var errorLabel: UILabel!
+//    @IBOutlet weak var progressView: UIView!
+//    @IBOutlet weak var progressConstraint: NSLayoutConstraint!
+    @IBOutlet weak var deleteButton: UIButton!
+    @IBOutlet weak var retryButton: UIButton!
+
+    // MARK:
     
     private static let ProgressKeyPath = "fractionCompleted"
     private static let StateKeyPath = "stateObservable"
     private var progressKVOContext = UInt8()
     private var stateKVOContext = UInt8()
-    
-    private var descriptor: Upload2Descriptor?
-    {
+
+    private var descriptor: Upload1Descriptor?
+        {
         willSet
         {
-            self.descriptor?.removeObserver(self, forKeyPath: VideoCell.StateKeyPath, context: &self.stateKVOContext)
-            self.descriptor?.progress?.removeObserver(self, forKeyPath: VideoCell.ProgressKeyPath, context: &self.progressKVOContext)
+            self.descriptor?.removeObserver(self, forKeyPath: UploadCell.StateKeyPath, context: &self.stateKVOContext)
+            self.descriptor?.progress?.removeObserver(self, forKeyPath: UploadCell.ProgressKeyPath, context: &self.progressKVOContext)
         }
         
         didSet
@@ -74,101 +63,50 @@ class VideoCell: UITableViewCell
             {
                 self.updateState(state)
             }
-
-            self.descriptor?.addObserver(self, forKeyPath: VideoCell.StateKeyPath, options: NSKeyValueObservingOptions.New, context: &self.stateKVOContext)
-            self.descriptor?.progress?.addObserver(self, forKeyPath: VideoCell.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
+            
+            self.descriptor?.addObserver(self, forKeyPath: UploadCell.StateKeyPath, options: NSKeyValueObservingOptions.New, context: &self.stateKVOContext)
+            self.descriptor?.progress?.addObserver(self, forKeyPath: UploadCell.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
         }
     }
+
+    // MARK:
     
-    // MARK: 
-    
-    var video: VIMVideo?
+    var assetIdentifier: AssetIdentifier?
     {
         didSet
         {
-            if let video = self.video
+            if let assetIdentifier = self.assetIdentifier
             {
-                self.setupImageView(video: video)
-                self.setupStatusLabel(video: video)
-                self.descriptor = UploadManager.sharedInstance.uploadDescriptorForVideo(videoUri: video.uri!)
+                self.descriptor = UploadManager.sharedInstance.uploadDescriptorForAssetIdentifier(assetIdentifier)
             }
         }
     }
     
     // MARK:
-    // MARK: Initialization
-
-    deinit
-    {
-        self.descriptor = nil
-    }
-    
+        
     override func awakeFromNib()
     {
         super.awakeFromNib()
-        
-        self.updateState(.Finished)
+        // Initialization code
     }
-
+    
     override func prepareForReuse()
     {
         super.prepareForReuse()
     
+        self.assetIdentifier = nil
         self.descriptor = nil
-        self.video = nil
-        self.thumbnailImageView?.image = nil
-        self.statusLabel.text = ""
-        self.errorLabel.text = ""
-
-        self.updateState(.Finished)
     }
     
-    // MARK: Actions
-    
-    @IBAction func didTapDeleteButton(sender: UIButton)
-    {
-        if let videoUri = self.video?.uri
-        {
-            self.descriptor = nil
-            self.updateProgress(0)
-            
-            self.delegate?.cellDidDeleteVideoWithUri(cell: self, videoUri: videoUri)
-        }
-    }
-
-    @IBAction func didTapRetryButton(sender: UIButton)
-    {
-        if let descriptor = self.descriptor
-        {
-            self.delegate?.cellDidRetryUploadDescriptor(cell: self, descriptor: descriptor)
-        }
-    }
-
-    // MARK: Video Setup
-    
-    private func setupImageView(video video: VIMVideo)
-    {
-        let width = Float(self.thumbnailImageView.frame.size.width * UIScreen.mainScreen().scale)
-        if let picture = video.pictureCollection?.pictureForWidth(width), let link = picture.link, let url = NSURL(string: link)
-        {
-            self.thumbnailImageView.setImageWithURL(url)
-        }
-    }
-    
-    private func setupStatusLabel(video video: VIMVideo)
-    {
-        self.statusLabel.text = video.status
-    }
-
     // MARK: Descriptor Setup
-
+    
     private func updateProgress(progress: Double)
     {
         let width = self.contentView.frame.size.width
         let constant = CGFloat(1 - progress) * width
-        self.progressConstraint.constant = constant
+//        self.progressConstraint.constant = constant
     }
-
+    
     private func updateState(state: State)
     {
         switch state
@@ -176,17 +114,18 @@ class VideoCell: UITableViewCell
         case .Ready, .Executing:
             self.deleteButton.setTitle("Cancel", forState: .Normal)
             
-            self.errorLabel.text = "Ready or Executing"
+            self.descriptorStateLabel.text = "Ready or Executing"
             self.retryButton.hidden = true
-
+            
         case .Suspended:
-            self.errorLabel.text = "Suspended"
+            self.descriptorStateLabel.text = "Suspended"
             
         case .Finished:
             self.updateProgress(0) // Reset the progress bar to 0
-            self.progressView.hidden = true
+//            self.progressView.hidden = true
             self.deleteButton.setTitle("Delete", forState: .Normal)
-
+            
+            self.descriptorStateLabel.text = "Finished"
             if let error = self.descriptor?.error
             {
                 self.errorLabel.text = error.localizedDescription
@@ -194,12 +133,11 @@ class VideoCell: UITableViewCell
             }
             else
             {
-                self.errorLabel.text = "Finished"
                 self.retryButton.hidden = true
             }
         }
     }
-
+    
     // MARK: KVO
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
@@ -208,7 +146,7 @@ class VideoCell: UITableViewCell
         {
             switch (keyPath, context)
             {
-            case(VideoCell.ProgressKeyPath, &self.progressKVOContext):
+            case(UploadCell.ProgressKeyPath, &self.progressKVOContext):
                 
                 let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
                 
@@ -216,11 +154,11 @@ class VideoCell: UITableViewCell
                     // Set the progress view to visible here so that the view has already been laid out
                     // And therefore the initial state is calculated based on the laid out width of the cell
                     // Doing this in awakeFromNib is too early, the width is incorrect [AH] 11/25/2015
-                    self?.progressView.hidden = false
+//                    self?.progressView.hidden = false
                     self?.updateProgress(progress)
                 })
-
-            case(VideoCell.StateKeyPath, &self.stateKVOContext):
+                
+            case(UploadCell.StateKeyPath, &self.stateKVOContext):
                 
                 let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? State.Ready.rawValue;
                 let state = State(rawValue: stateRaw)!
@@ -228,7 +166,7 @@ class VideoCell: UITableViewCell
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                     self?.updateState(state)
                 })
-
+                
             default:
                 super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
             }

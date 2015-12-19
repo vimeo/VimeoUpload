@@ -1,6 +1,6 @@
 //
 //  VimeoSessionManager+SimpleUpload.swift
-//  VimeoUpload-iOS-2Step
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/21/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
@@ -30,7 +30,7 @@ extension VimeoSessionManager
 {
     func createVideoDataTask(url url: NSURL, videoSettings: VideoSettings?, completionHandler: UploadTicketCompletionHandler) throws -> NSURLSessionDataTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url: url, videoSettings: videoSettings)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url, videoSettings: videoSettings)
         
         let task = self.dataTaskWithRequest(request, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             

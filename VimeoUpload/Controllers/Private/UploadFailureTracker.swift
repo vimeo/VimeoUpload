@@ -1,6 +1,6 @@
 //
 //  UploadFailureTracker.swift
-//  VimeoUpload-iOS-2Step
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 12/9/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
@@ -33,7 +33,7 @@ import Foundation
     // MARK: 
     
     private let archiver: KeyedArchiver
-    private var failedDescriptors: [VideoUri: SimpleUploadDescriptor] = [:]
+    private var failedDescriptors: [VideoUri: Upload2Descriptor] = [:]
 
     // MARK:
     // MARK: Initialization
@@ -71,9 +71,9 @@ import Foundation
         return KeyedArchiver(basePath: documentsURL.path!)
     }
     
-    private func loadFailedDescriptors() -> [String: SimpleUploadDescriptor]
+    private func loadFailedDescriptors() -> [String: Upload2Descriptor]
     {
-        return self.archiver.loadObjectForKey(FailedDescriptorsArchiveKey) as? [String: SimpleUploadDescriptor] ?? [:]
+        return self.archiver.loadObjectForKey(FailedDescriptorsArchiveKey) as? [String: Upload2Descriptor] ?? [:]
     }
     
     private func saveFailedDescriptors()
@@ -121,7 +121,7 @@ import Foundation
         
         dispatch_async(dispatch_get_main_queue()) { () -> Void in // TODO: can async cause failure to not be stored?
             
-            if let descriptor = notification.object as? SimpleUploadDescriptor, let videoUri = descriptor.uploadTicket.video?.uri, let error = descriptor.error
+            if let descriptor = notification.object as? Upload2Descriptor, let videoUri = descriptor.uploadTicket.video?.uri, let error = descriptor.error
             {
                 if error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled // No need to store failures that occurred due to cancellation
                 {

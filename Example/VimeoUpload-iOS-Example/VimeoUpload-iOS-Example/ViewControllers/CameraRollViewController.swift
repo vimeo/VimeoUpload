@@ -1,8 +1,8 @@
 //
-//  VimeoRequestSerializer+SimpleUpload.swift
-//  VimeoUpload-iOS-2Step
+//  CameraRollViewController.swift
+//  VimeoUpload
 //
-//  Created by Alfred Hanssen on 11/20/15.
+//  Created by Hanssen, Alfie on 12/14/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,24 +25,27 @@
 //
 
 import Foundation
+import UIKit
 
-extension VimeoRequestSerializer
+class CameraRollViewController: BaseCameraRollViewController
 {
-    func createVideoRequestWithUrl(url url: NSURL, videoSettings: VideoSettings?) throws -> NSMutableURLRequest
+    // MARK: Overrides
+    
+    override func viewDidLoad()
     {
-        var parameters = try self.createVideoRequestBaseParameters(url: url)
-        parameters["create_clip"] = "true"
+        super.viewDidLoad()
+    
+        self.tabBarItem.title = "Camera Roll"
+    }
+    
+    override func didFinishWithResult(result: CameraRollViewControllerResult)
+    {
+        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
+        viewController.input = result
+     
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.view.backgroundColor = UIColor.whiteColor()
         
-        if let videoSettings = videoSettings
-        {
-            for (key, value) in videoSettings.parameterDictionary()
-            {
-                parameters[key] = value
-            }
-        }
-
-        let url = NSURL(string: "/me/videos", relativeToURL: VimeoBaseURLString)!
-        
-        return try self.createVideoRequestWithUrl(url, parameters: parameters)
+        self.tabBarController?.presentViewController(navigationController, animated: true, completion: nil)
     }
 }

@@ -511,7 +511,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "VimeoUpload-OSX-ExampleUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.vimeo.VimeoUpload-OSX-ExampleUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -524,7 +523,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "VimeoUpload-OSX-ExampleUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.vimeo.VimeoUpload-OSX-ExampleUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";

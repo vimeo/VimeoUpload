@@ -1,6 +1,6 @@
 //
-//  SimpleUploadDescriptor.swift
-//  VimeoUpload-iOS-2Step
+//  Upload2Descriptor.swift
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/21/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
@@ -26,7 +26,7 @@
 
 import Foundation
 
-class SimpleUploadDescriptor: Descriptor
+class Upload2Descriptor: Descriptor
 {
     let url: NSURL
     let uploadTicket: VIMUploadTicket

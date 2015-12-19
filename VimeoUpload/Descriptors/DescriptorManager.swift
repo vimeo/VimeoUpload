@@ -272,9 +272,9 @@ class DescriptorManager
     
     func addDescriptor(descriptor: Descriptor)
     {
-        // TODO: should this be async?
+        // TODO: should this be sync? Changed this to async due to deadlock
         
-        dispatch_sync(self.synchronizationQueue, { [weak self] () -> Void in
+        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
             
             guard let strongSelf = self else
             {

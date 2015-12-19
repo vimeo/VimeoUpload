@@ -1,6 +1,6 @@
 //
 //  Bridge.h
-//  VimeoUpload-iOS-2Step
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/14/15.
 //  Copyright © 2015 Vimeo. All rights reserved.

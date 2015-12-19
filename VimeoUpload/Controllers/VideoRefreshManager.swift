@@ -53,7 +53,7 @@ import Foundation
         self.operationQueue.cancelAllOperations()
         self.removeObservers()
     }
-        
+    
     init(sessionManager: VimeoSessionManager, delegate: VideoRefreshManagerDelegate)
     {
         self.sessionManager = sessionManager

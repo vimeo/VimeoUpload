@@ -1,6 +1,6 @@
 //
 //  VideoSettingsViewController.swift
-//  VimeoUpload-iOS-Example
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/16/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
@@ -29,8 +29,8 @@ import UIKit
 class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
     static let NibName = "VideoSettingsViewController"
-    
-    // MARK: 
+
+    // MARK:
     
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var descriptionTextView: UITextView!
@@ -130,7 +130,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     {
                         strongSelf.startUpload()
                         strongSelf.activityIndicatorView.stopAnimating()
-                        strongSelf.navigationController?.popViewControllerAnimated(true)
+                        strongSelf.navigationController?.dismissViewControllerAnimated(true, completion: nil)
                     }
                 }
             })
@@ -177,7 +177,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         else
         {
             self.startUpload()
-            self.navigationController?.popViewControllerAnimated(true)
+            self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
         }
     }
     
@@ -197,7 +197,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.popViewControllerAnimated(true)
+            self?.navigationController?.dismissViewControllerAnimated(true, completion: nil)
         }))
         
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
@@ -211,7 +211,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let alert = UIAlertController(title: "Descriptor Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.popViewControllerAnimated(true)
+            self?.navigationController?.dismissViewControllerAnimated(true, completion: nil)
         }))
         
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in

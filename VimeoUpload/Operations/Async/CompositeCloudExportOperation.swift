@@ -33,6 +33,7 @@ import Photos
 // 2. Export (check disk space within this step)
 // 3. Check weekly quota
 
+@available(iOS 8.0, *)
 class CompositeCloudExportOperation: ConcurrentOperation
 {    
     let me: VIMUser
@@ -174,10 +175,10 @@ class CompositeCloudExportOperation: ConcurrentOperation
         let me = self.me
         let avUrlAsset = AVURLAsset(URL: url)
 
-        let filesize: NSNumber?
+        let fileSize: NSNumber
         do
         {
-            filesize = try avUrlAsset.fileSize()
+            fileSize = try avUrlAsset.fileSize()
         }
         catch let error as NSError
         {
@@ -186,14 +187,7 @@ class CompositeCloudExportOperation: ConcurrentOperation
             return
         }
         
-        guard let size = filesize else
-        {
-            self.error = NSError(domain: UploadErrorDomain.CompositeCloudExportOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Exact filesize calculation failed, filesize is nil."])
-        
-            return
-        }
-        
-        let operation = WeeklyQuotaOperation(user: me, filesize: size.doubleValue)
+        let operation = WeeklyQuotaOperation(user: me, filesize: fileSize.doubleValue)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in

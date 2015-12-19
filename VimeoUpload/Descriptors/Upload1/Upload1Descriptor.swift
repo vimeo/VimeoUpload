@@ -26,7 +26,7 @@
 
 import Foundation
 
-class UploadDescriptor: Descriptor
+class Upload1Descriptor: Descriptor
 {
     // MARK:
     
@@ -46,7 +46,7 @@ class UploadDescriptor: Descriptor
 
     // MARK:
     
-    private(set) var currentRequest = UploadRequest.Create
+    private(set) var currentRequest = Upload1Request.Create
     {
         didSet
         {
@@ -60,7 +60,6 @@ class UploadDescriptor: Descriptor
         {
             if self.error != nil
             {
-                self.currentTaskIdentifier = nil
                 self.state = .Finished
             }
         }
@@ -103,6 +102,13 @@ class UploadDescriptor: Descriptor
         let _ = try? self.didLoadFromCache(sessionManager: sessionManager)
     }
 
+    override func cancel(sessionManager sessionManager: AFURLSessionManager)
+    {
+        super.cancel(sessionManager: sessionManager)
+        
+        NSFileManager.defaultManager().deleteFileAtURL(self.url) // TODO: is this working as expected
+    }
+    
     // If necessary, resume the current task and re-connect progress objects
 
     override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
@@ -166,7 +172,7 @@ class UploadDescriptor: Descriptor
             }
         }
         
-        let nextRequest = UploadRequest.nextRequest(self.currentRequest)
+        let nextRequest = Upload1Request.nextRequest(self.currentRequest)
         if self.error != nil || nextRequest == nil || (nextRequest == .Settings && self.videoSettings == nil)
         {
             self.currentTaskIdentifier = nil
@@ -188,7 +194,7 @@ class UploadDescriptor: Descriptor
     
     // MARK: Private API
     
-    private func transitionToState(request request: UploadRequest, sessionManager: VimeoSessionManager) throws
+    private func transitionToState(request request: Upload1Request, sessionManager: VimeoSessionManager) throws
     {
         self.currentRequest = request
         let task = try self.taskForRequest(request, sessionManager: sessionManager)
@@ -196,7 +202,7 @@ class UploadDescriptor: Descriptor
         task.resume()
     }
     
-    private func taskForRequest(request: UploadRequest, sessionManager: VimeoSessionManager) throws -> NSURLSessionTask
+    private func taskForRequest(request: Upload1Request, sessionManager: VimeoSessionManager) throws -> NSURLSessionTask
     {
         switch request
         {
@@ -229,7 +235,7 @@ class UploadDescriptor: Descriptor
         }
     }
 
-    private func errorDomainForRequest(request: UploadRequest) -> String
+    private func errorDomainForRequest(request: Upload1Request) -> String
     {
         switch request
         {
@@ -256,7 +262,7 @@ class UploadDescriptor: Descriptor
         self.videoSettings = aDecoder.decodeObjectForKey("videoSettings") as? VideoSettings
         self.uploadTicket = aDecoder.decodeObjectForKey("uploadTicket") as? VIMUploadTicket
         self.videoUri = aDecoder.decodeObjectForKey("videoUri") as? String
-        self.currentRequest = UploadRequest(rawValue: aDecoder.decodeObjectForKey("currentRequest") as! String)!
+        self.currentRequest = Upload1Request(rawValue: aDecoder.decodeObjectForKey("currentRequest") as! String)!
 
         super.init(coder: aDecoder)
     }
