@@ -113,7 +113,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let sessionManager = ForegroundSessionManager.sharedInstance
         let videoSettings = self.videoSettings
         
-        let operation: ConcurrentOperation
+        let operation: ExportQuotaCreateOperation
         
         if #available(iOS 8.0, *)
         {
@@ -212,17 +212,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil)
      
-        let operation: ConcurrentOperation
+        let operation = self.operation as! ExportQuotaCreateOperation
         
-        if #available(iOS 8.0, *)
-        {
-            operation = self.operation as! PHAssetCloudExportQuotaCreateOperation
-        }
-        else
-        {
-            operation = self.operation as! ALAssetExportQuotaCreateOperation
-        }
-
         if operation.state == .Executing
         {
             operation.videoSettings = self.videoSettings

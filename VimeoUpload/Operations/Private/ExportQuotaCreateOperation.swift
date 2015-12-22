@@ -1,8 +1,8 @@
 //
-//  PHAssetCloudExportQuotaCreateOperation.swift
+//  ExportQuotaCreateOperation.swift
 //  VimeoUpload
 //
-//  Created by Alfred Hanssen on 11/9/15.
+//  Created by Hanssen, Alfie on 12/22/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,42 +25,87 @@
 //
 
 import Foundation
-import AVFoundation
-import Photos
 
-// This flow encapsulates the following steps:
-
-// 1. Perorm a PHAssetCloudExportQuotaOperation
-// 2. Create video record
-
-@available(iOS 8.0, *)
-class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
-{    
-    let phAsset: PHAsset
-
+class ExportQuotaCreateOperation: ConcurrentOperation
+{
+    let me: VIMUser
+    let sessionManager: VimeoSessionManager
+    var videoSettings: VideoSettings?
+    let operationQueue: NSOperationQueue
+    
+    // MARK:
+    
+    var downloadProgressBlock: ProgressBlock?
+    var exportProgressBlock: ProgressBlock?
+    
+    // MARK:
+    
+    var url: NSURL?
+    var uploadTicket: VIMUploadTicket?
+    var error: NSError?
+    {
+        didSet
+        {
+            if self.error != nil
+            {
+                self.state = .Finished
+            }
+        }
+    }
+    
     // MARK: Initialization
     
-    init(me: VIMUser, phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    init(me: VIMUser, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {
-        self.phAsset = phAsset
-
-        super.init(me: me, sessionManager: sessionManager, videoSettings: videoSettings)
+        self.me = me
+        self.sessionManager = sessionManager
+        self.videoSettings = videoSettings
+        
+        self.operationQueue = NSOperationQueue()
+        self.operationQueue.maxConcurrentOperationCount = 1
+    }
+    
+    deinit
+    {
+        self.operationQueue.cancelAllOperations()
     }
     
     // MARK: Overrides
     
-    override func performExportQuotaOperation()
+    override func main()
     {
-        let operation = PHAssetCloudExportQuotaOperation(me: self.me, phAsset: self.phAsset)
-        
-        operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
-            self?.downloadProgressBlock?(progress: progress)
+        if self.cancelled
+        {
+            return
         }
         
-        operation.exportProgressBlock = { [weak self] (progress: Double) -> Void in
-            self?.exportProgressBlock?(progress: progress)
-        }
+        self.performExportQuotaOperation()
+    }
+    
+    override func cancel()
+    {
+        super.cancel()
         
+        self.operationQueue.cancelAllOperations()
+        
+        if let url = self.url
+        {
+            NSFileManager.defaultManager().deleteFileAtURL(url)
+        }
+    }
+    
+    // MARK: Public API
+
+    func performExportQuotaOperation()
+    {
+        assertionFailure("Subclasses must override")
+    }
+    
+    func createVideo(url url: NSURL)
+    {
+        let videoSettings = self.videoSettings
+        
+        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -81,12 +126,13 @@ class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
                 }
                 else
                 {
-                    let url = operation.result!
-                    strongSelf.createVideo(url: url)
+                    strongSelf.url = url
+                    strongSelf.uploadTicket = operation.result!
+                    strongSelf.state = .Finished
                 }
-            })
+                })
         }
-
+        
         self.operationQueue.addOperation(operation)
     }
 }

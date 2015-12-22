@@ -24,8 +24,6 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
-import AVFoundation
 import Photos
 
 // This flow encapsulates the following steps:
@@ -34,71 +32,23 @@ import Photos
 // 3. Check weekly quota
 
 @available(iOS 8.0, *)
-class PHAssetCloudExportQuotaOperation: ConcurrentOperation
+class PHAssetCloudExportQuotaOperation: ExportQuotaOperation
 {    
-    let me: VIMUser
     let phAsset: PHAsset
-    private let operationQueue: NSOperationQueue
-
-    var downloadProgressBlock: ProgressBlock?
-    var exportProgressBlock: ProgressBlock?
-    
-    private(set) var error: NSError?
-    {
-        didSet
-        {
-            if self.error != nil
-            {
-                self.state = .Finished
-            }
-        }
-    }
-    private(set) var result: NSURL?
 
     init(me: VIMUser, phAsset: PHAsset)
     {
-        self.me = me
         self.phAsset = phAsset
-        
-        self.operationQueue = NSOperationQueue()
-        self.operationQueue.maxConcurrentOperationCount = 1
-    }
-    
-    deinit
-    {
-        self.operationQueue.cancelAllOperations()
-    }
-    
-    // MARK: Overrides
-    
-    override func main()
-    {
-        if self.cancelled
-        {
-            return
-        }
 
-        self.requestExportSession()
+        super.init(me: me)
     }
     
-    override func cancel()
-    {
-        super.cancel()
-        
-        self.operationQueue.cancelAllOperations()
-        
-        if let url = self.result
-        {
-            NSFileManager.defaultManager().deleteFileAtURL(url)
-        }
-    }
+    // MARK: Subclass Overrides
     
-    // MARK: Private API
-    
-    private func requestExportSession()
+    override func requestExportSession()
     {
         let operation = PHAssetExportSessionOperation(phAsset: self.phAsset)
-        operation.progressBlock = self.downloadProgressBlock
+        operation.progressBlock = super.downloadProgressBlock
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -120,100 +70,8 @@ class PHAssetCloudExportQuotaOperation: ConcurrentOperation
                 else
                 {
                     let exportSession = operation.result!
-                    strongSelf.performExport(exportSession: exportSession)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
-    }
-    
-    private func performExport(exportSession exportSession: AVAssetExportSession)
-    {
-        let operation = ExportOperation(exportSession: exportSession)
-        operation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
-            
-            if let progressBlock = self?.exportProgressBlock
-            {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    progressBlock(progress: progress)
-                })
-            }
-        }
-
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.cancelled == true
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else
-                {
-                    let url = operation.outputURL!
-                    strongSelf.checkExactWeeklyQuota(url: url)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
-    }
-    
-    private func checkExactWeeklyQuota(url url: NSURL)
-    {
-        let me = self.me
-        let avUrlAsset = AVURLAsset(URL: url)
-
-        let fileSize: NSNumber
-        do
-        {
-            fileSize = try avUrlAsset.fileSize()
-        }
-        catch let error as NSError
-        {
-            self.error = error
-            
-            return
-        }
-        
-        let operation = WeeklyQuotaOperation(user: me, filesize: fileSize.doubleValue)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.cancelled == true
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else if let result = operation.result where result == false
-                {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
-                }
-                else
-                {
-                    strongSelf.result = url
-                    strongSelf.state = .Finished
+                    let exportOperation = ExportOperation(exportSession: exportSession)
+                    strongSelf.performExport(exportOperation: exportOperation)
                 }
             })
         }
