@@ -6,8 +6,8 @@
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 
-import UIKit
 import AssetsLibrary
+import AVFoundation
 
 class VIMALAsset: ALAsset, CameraRollAssetProtocol
 {

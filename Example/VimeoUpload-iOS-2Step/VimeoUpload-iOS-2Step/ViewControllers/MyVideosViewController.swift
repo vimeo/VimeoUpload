@@ -266,22 +266,36 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func presentRefreshErrorAlert(error: NSError)
     {
-        let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.refreshControl?.beginRefreshing()
-            self?.refresh()
-        }))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
+        if #available(iOS 8.0, *)
+        {
+            let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+            alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+                self?.refreshControl?.beginRefreshing()
+                self?.refresh()
+                }))
+            
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        else
+        {
+            // TODO: iOS7
+        }
     }
     
     private func presentUploadRetryErrorAlert(error: NSError)
     {
-        let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
+        if #available(iOS 8.0, *)
+        {
+            let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+            
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        else
+        {
+            // TODO: iOS7
+        }
     }
     
     // MARK: Private API

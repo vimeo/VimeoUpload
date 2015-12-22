@@ -35,8 +35,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     {
         AFNetworkReachabilityManager.sharedManager().startMonitoring()
         
-        let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
-        application.registerUserNotificationSettings(settings)
+        if #available(iOS 8.0, *)
+        {
+            let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
+            application.registerUserNotificationSettings(settings)
+        }
+        else
+        {
+            // TODO: Fallback on earlier versions
+        }
         
         let viewController = MyVideosViewController(nibName: MyVideosViewController.NibName, bundle:NSBundle.mainBundle())
         let navigationController = UINavigationController(rootViewController: viewController)

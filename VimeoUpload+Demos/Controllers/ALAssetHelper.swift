@@ -8,6 +8,7 @@
 
 import Foundation
 import AssetsLibrary
+import AVFoundation
 
 @objc class ALAssetHelper: NSObject, CameraRollAssetHelperProtocol
 {

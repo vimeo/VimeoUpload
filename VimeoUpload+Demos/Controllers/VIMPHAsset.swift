@@ -6,8 +6,8 @@
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 
-import UIKit
 import Photos
+import AVFoundation
 
 @available(iOS 8.0, *)
 class VIMPHAsset: PHAsset, CameraRollAssetProtocol

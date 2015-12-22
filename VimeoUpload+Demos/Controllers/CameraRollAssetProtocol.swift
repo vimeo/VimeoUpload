@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 @objc protocol CameraRollAssetProtocol
 {
