@@ -117,7 +117,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         if #available(iOS 8.0, *)
         {
-            let phAsset = cameraRollAsset as! PHAsset
+            let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
             operation = PHAssetCloudExportQuotaCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
         }
         else

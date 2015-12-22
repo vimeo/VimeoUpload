@@ -39,7 +39,7 @@ import Photos
     
     func requestImage(cell cell: CameraRollCell, cameraRollAsset: CameraRollAssetProtocol)
     {
-        let phAsset = cameraRollAsset as! PHAsset
+        let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
         let size = cell.bounds.size
         let scale = UIScreen.mainScreen().scale
         let scaledSize = CGSizeMake(scale * size.width, scale * size.height)
@@ -72,6 +72,11 @@ import Photos
             cameraRollAsset.inCloud = info?[PHImageResultIsInCloudKey] as? Bool ?? false
             cameraRollAsset.error = info?[PHImageErrorKey] as? NSError
             
+            if cameraRollAsset.inCloud == true
+            {
+                cell.setError("iCloud")
+            }
+            
             if let image = image
             {
                 cell.setImage(image)
@@ -87,7 +92,9 @@ import Photos
     
     func requestAsset(cell cell: CameraRollCell, cameraRollAsset: CameraRollAssetProtocol)
     {
-        let phAsset = cameraRollAsset as! PHAsset
+        let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
+
+        cell.setDuration(phAsset.duration)
 
         self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
         
@@ -121,6 +128,11 @@ import Photos
                 cameraRollAsset.inCloud = info?[PHImageResultIsInCloudKey] as? Bool ?? false
                 cameraRollAsset.error = info?[PHImageErrorKey] as? NSError
 
+                if cameraRollAsset.inCloud == true
+                {
+                    cell.setError("iCloud")
+                }
+
                 if let asset = asset
                 {
                     let megabytes = asset.approximateFileSizeInMegabytes()
@@ -146,7 +158,7 @@ import Photos
 
     private func cancelImageRequest(cameraRollAsset cameraRollAsset: CameraRollAssetProtocol)
     {
-        let phAsset = cameraRollAsset as! PHAsset
+        let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
         
         if let requestID = self.activeImageRequests[phAsset.localIdentifier]
         {
@@ -157,7 +169,7 @@ import Photos
     
     private func cancelAssetRequest(cameraRollAsset cameraRollAsset: CameraRollAssetProtocol)
     {
-        let phAsset = cameraRollAsset as! PHAsset
+        let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
         
         if let requestID = self.activeAssetRequests[phAsset.localIdentifier]
         {

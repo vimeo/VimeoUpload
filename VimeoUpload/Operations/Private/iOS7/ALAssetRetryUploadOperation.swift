@@ -1,8 +1,8 @@
 //
-//  PHAssetRetryUploadOperation.swift
+//  ALAssetRetryUploadOperation.swift
 //  VimeoUpload
 //
-//  Created by Hanssen, Alfie on 12/2/15.
+//  Created by Hanssen, Alfie on 12/22/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,23 +25,22 @@
 //
 
 import Foundation
-import Photos
+import AssetsLibrary
 
 // This flow encapsulates the following steps:
 
 // 1. Perorm a MeQuotaOperation
-// 2. Perform a PHAssetCloudExportQuotaOperation
+// 2. Perform a ALAssetExportQuotaOperation
 
-@available(iOS 8.0, *)
-class PHAssetRetryUploadOperation: RetryUploadOperation
+class ALAssetRetryUploadOperation: RetryUploadOperation
 {
-    private let phAsset: PHAsset
+    private let alAsset: ALAsset
     
     // MARK: Initialization
     
-    init(sessionManager: VimeoSessionManager, phAsset: PHAsset)
+    init(sessionManager: VimeoSessionManager, alAsset: ALAsset)
     {
-        self.phAsset = phAsset
+        self.alAsset = alAsset
         
         super.init(sessionManager: sessionManager)
     }
@@ -50,6 +49,6 @@ class PHAssetRetryUploadOperation: RetryUploadOperation
     
     override func makeExportQuotaOperation(user user: VIMUser) -> ExportQuotaOperation?
     {
-        return PHAssetCloudExportQuotaOperation(me: user, phAsset: self.phAsset)
+        return ALAssetExportQuotaOperation(me: user, alAsset: self.alAsset)
     }
 }

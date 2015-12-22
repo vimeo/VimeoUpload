@@ -10,13 +10,20 @@ import Photos
 import AVFoundation
 
 @available(iOS 8.0, *)
-class VIMPHAsset: PHAsset, CameraRollAssetProtocol
+@objc class VIMPHAsset: NSObject, CameraRollAssetProtocol
 {
+    let phAsset: PHAsset
+    
+    init(phAsset: PHAsset)
+    {
+        self.phAsset = phAsset
+    }
+
     var identifier: String
     {
         get
         {
-            return self.localIdentifier
+            return self.phAsset.localIdentifier
         }
     }
     

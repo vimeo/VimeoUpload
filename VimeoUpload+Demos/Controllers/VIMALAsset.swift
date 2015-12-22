@@ -9,13 +9,20 @@
 import AssetsLibrary
 import AVFoundation
 
-class VIMALAsset: ALAsset, CameraRollAssetProtocol
+@objc class VIMALAsset: NSObject, CameraRollAssetProtocol
 {
+    let alAsset: ALAsset
+
+    init(alAsset: ALAsset)
+    {
+        self.alAsset = alAsset
+    }
+
     var identifier: String
-        {
+    {
         get
         {
-            return self.defaultRepresentation().url().absoluteString
+            return self.alAsset.defaultRepresentation().url().absoluteString
         }
     }
     

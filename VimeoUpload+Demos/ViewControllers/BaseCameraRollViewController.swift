@@ -163,10 +163,15 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
             options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
             
             let fetchResult = PHAsset.fetchAssetsWithMediaType(.Video, options: options)
-            
-            let range = NSMakeRange(0, fetchResult.count)
-            let indexSet = NSIndexSet(indexesInRange: range)
-            assets = fetchResult.objectsAtIndexes(indexSet) as! [CameraRollAssetProtocol]
+
+            fetchResult.enumerateObjectsUsingBlock{ (object: AnyObject?, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+
+                if let phAsset = object as? PHAsset
+                {
+                    let vimPHAsset = VIMPHAsset(phAsset: phAsset)
+                    assets.append(vimPHAsset)
+                }
+            }        
         }
         else
         {

@@ -78,6 +78,8 @@
 		50DCCB1A1C29D69E0054880D /* ALAssetExportQuotaCreateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB191C29D69E0054880D /* ALAssetExportQuotaCreateOperation.swift */; };
 		50DCCB1E1C29F2030054880D /* ExportQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB1D1C29F2030054880D /* ExportQuotaOperation.swift */; };
 		50DCCB201C29F54E0054880D /* ExportQuotaCreateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB1F1C29F54E0054880D /* ExportQuotaCreateOperation.swift */; };
+		50DCCB221C29F9270054880D /* RetryUploadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB211C29F9270054880D /* RetryUploadOperation.swift */; };
+		50DCCB241C29FA480054880D /* ALAssetRetryUploadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB231C29FA480054880D /* ALAssetRetryUploadOperation.swift */; };
 		A450CB02D3CD2E0F7881DB7A /* libPods-VimeoUpload-iOS-2Step.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6749230E8FEF6355D8B6BD94 /* libPods-VimeoUpload-iOS-2Step.a */; };
 		AF34DB701BE721150094D1F8 /* MyVideosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF34DB681BE721150094D1F8 /* MyVideosViewController.swift */; };
 		AF34DB711BE721150094D1F8 /* MyVideosViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AF34DB691BE721150094D1F8 /* MyVideosViewController.xib */; };
@@ -186,6 +188,8 @@
 		50DCCB191C29D69E0054880D /* ALAssetExportQuotaCreateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAssetExportQuotaCreateOperation.swift; sourceTree = "<group>"; };
 		50DCCB1D1C29F2030054880D /* ExportQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportQuotaOperation.swift; sourceTree = "<group>"; };
 		50DCCB1F1C29F54E0054880D /* ExportQuotaCreateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportQuotaCreateOperation.swift; sourceTree = "<group>"; };
+		50DCCB211C29F9270054880D /* RetryUploadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryUploadOperation.swift; sourceTree = "<group>"; };
+		50DCCB231C29FA480054880D /* ALAssetRetryUploadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAssetRetryUploadOperation.swift; sourceTree = "<group>"; };
 		6749230E8FEF6355D8B6BD94 /* libPods-VimeoUpload-iOS-2Step.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VimeoUpload-iOS-2Step.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B6EC39DD3463B97A35F9BA9 /* Pods-VimeoUpload-iOS-2StepTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-2StepTests.release.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-2StepTests/Pods-VimeoUpload-iOS-2StepTests.release.xcconfig"; sourceTree = "<group>"; };
 		9E662F4DDBB2BB74BAD10498 /* Pods-VimeoUpload-iOS-2StepTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-2StepTests.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-2StepTests/Pods-VimeoUpload-iOS-2StepTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -527,6 +531,7 @@
 			children = (
 				50DCCB061C29D26D0054880D /* CreateVideoOperation.swift */,
 				50DCCB1F1C29F54E0054880D /* ExportQuotaCreateOperation.swift */,
+				50DCCB211C29F9270054880D /* RetryUploadOperation.swift */,
 				50DCCB071C29D26D0054880D /* iOS7 */,
 				50DCCB081C29D26D0054880D /* iOS8 */,
 			);
@@ -537,6 +542,7 @@
 			isa = PBXGroup;
 			children = (
 				50DCCB191C29D69E0054880D /* ALAssetExportQuotaCreateOperation.swift */,
+				50DCCB231C29FA480054880D /* ALAssetRetryUploadOperation.swift */,
 			);
 			path = iOS7;
 			sourceTree = "<group>";
@@ -879,6 +885,7 @@
 				AF34DB701BE721150094D1F8 /* MyVideosViewController.swift in Sources */,
 				50DCCB161C29D26D0054880D /* PHAssetRetryUploadOperation.swift in Sources */,
 				50DCCAC41C29CE090054880D /* DescriptorManager.swift in Sources */,
+				50DCCB241C29FA480054880D /* ALAssetRetryUploadOperation.swift in Sources */,
 				50DCCACD1C29CE090054880D /* AVURLAsset+Extensions.swift in Sources */,
 				50DCCAD01C29CE090054880D /* NSURL+Upload.swift in Sources */,
 				50DCCB151C29D26D0054880D /* PHAssetCloudExportQuotaCreateOperation.swift in Sources */,
@@ -892,6 +899,7 @@
 				50DCCB181C29D3190054880D /* ALAssetExportQuotaOperation.swift in Sources */,
 				50DCCAF01C29CE090054880D /* CameraRollAssetProtocol.swift in Sources */,
 				AFF28EC71C03D52900258476 /* UploadManager.swift in Sources */,
+				50DCCB221C29F9270054880D /* RetryUploadOperation.swift in Sources */,
 				50DCCAD11C29CE090054880D /* String+Extensions.swift in Sources */,
 				50DCCABF1C29CE090054880D /* UploadFailureTracker.swift in Sources */,
 				50DCCADC1C29CE090054880D /* VimeoSessionManager.swift in Sources */,
@@ -1008,7 +1016,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1046,7 +1054,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

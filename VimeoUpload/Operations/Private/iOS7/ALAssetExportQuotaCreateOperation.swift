@@ -26,7 +26,6 @@
 
 import Foundation
 import AssetsLibrary
-import AVFoundation
 
 // This flow encapsulates the following steps:
 
@@ -48,44 +47,8 @@ class ALAssetExportQuotaCreateOperation: ExportQuotaCreateOperation
     
     // MARK: Overrides
 
-    override func performExportQuotaOperation()
+    override func makeExportQuotaOperation(me: VIMUser) -> ExportQuotaOperation?
     {
-        let operation = ALAssetExportQuotaOperation(me: self.me, alAsset: self.alAsset)
-        
-        operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
-            self?.downloadProgressBlock?(progress: progress)
-        }
-        
-        operation.exportProgressBlock = { [weak self] (progress: Double) -> Void in
-            self?.exportProgressBlock?(progress: progress)
-        }
-        
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.cancelled == true
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else
-                {
-                    let url = operation.result!
-                    strongSelf.createVideo(url: url)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
+        return ALAssetExportQuotaOperation(me: me, alAsset: self.alAsset)
     }
 }
