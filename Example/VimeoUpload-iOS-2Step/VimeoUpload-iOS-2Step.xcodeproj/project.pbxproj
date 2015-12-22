@@ -46,18 +46,6 @@
 		50DCCADA1C29CE090054880D /* VimeoRequestSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCA961C29CE090054880D /* VimeoRequestSerializer.swift */; };
 		50DCCADB1C29CE090054880D /* VimeoResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCA971C29CE090054880D /* VimeoResponseSerializer.swift */; };
 		50DCCADC1C29CE090054880D /* VimeoSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCA981C29CE090054880D /* VimeoSessionManager.swift */; };
-		50DCCADD1C29CE090054880D /* AVAssetExportOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCA9B1C29CE090054880D /* AVAssetExportOperation.swift */; };
-		50DCCADE1C29CE090054880D /* CompositeCloudExportOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCA9C1C29CE090054880D /* CompositeCloudExportOperation.swift */; };
-		50DCCADF1C29CE090054880D /* CompositeMeQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCA9D1C29CE090054880D /* CompositeMeQuotaOperation.swift */; };
-		50DCCAE01C29CE090054880D /* ConcurrentOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCA9E1C29CE090054880D /* ConcurrentOperation.swift */; };
-		50DCCAE11C29CE090054880D /* DeleteVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCA9F1C29CE090054880D /* DeleteVideoOperation.swift */; };
-		50DCCAE21C29CE090054880D /* MeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAA01C29CE090054880D /* MeOperation.swift */; };
-		50DCCAE31C29CE090054880D /* PHAssetDownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAA11C29CE090054880D /* PHAssetDownloadOperation.swift */; };
-		50DCCAE41C29CE090054880D /* PHAssetExportSessionOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAA21C29CE090054880D /* PHAssetExportSessionOperation.swift */; };
-		50DCCAE51C29CE090054880D /* VideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAA31C29CE090054880D /* VideoOperation.swift */; };
-		50DCCAE61C29CE090054880D /* CompositeCloudExportCreateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAA51C29CE090054880D /* CompositeCloudExportCreateOperation.swift */; };
-		50DCCAE71C29CE090054880D /* CreateVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAA61C29CE090054880D /* CreateVideoOperation.swift */; };
-		50DCCAE81C29CE090054880D /* RetryUploadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAA71C29CE090054880D /* RetryUploadOperation.swift */; };
 		50DCCAE91C29CE090054880D /* DailyQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAA91C29CE090054880D /* DailyQuotaOperation.swift */; };
 		50DCCAEA1C29CE090054880D /* DiskSpaceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAAA1C29CE090054880D /* DiskSpaceOperation.swift */; };
 		50DCCAEB1C29CE090054880D /* WeeklyQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAAB1C29CE090054880D /* WeeklyQuotaOperation.swift */; };
@@ -74,6 +62,20 @@
 		50DCCAF61C29CE090054880D /* PHAssetContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCABA1C29CE090054880D /* PHAssetContainer.swift */; };
 		50DCCAF71C29CE090054880D /* BaseCameraRollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCABC1C29CE090054880D /* BaseCameraRollViewController.swift */; };
 		50DCCAF81C29CE090054880D /* BaseCameraRollViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50DCCABD1C29CE090054880D /* BaseCameraRollViewController.xib */; };
+		50DCCB0B1C29D26D0054880D /* ExportOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAFA1C29D26D0054880D /* ExportOperation.swift */; };
+		50DCCB0C1C29D26D0054880D /* MeQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAFB1C29D26D0054880D /* MeQuotaOperation.swift */; };
+		50DCCB0D1C29D26D0054880D /* ConcurrentOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAFC1C29D26D0054880D /* ConcurrentOperation.swift */; };
+		50DCCB0E1C29D26D0054880D /* DeleteVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAFD1C29D26D0054880D /* DeleteVideoOperation.swift */; };
+		50DCCB0F1C29D26D0054880D /* PHAssetCloudExportQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB001C29D26D0054880D /* PHAssetCloudExportQuotaOperation.swift */; };
+		50DCCB101C29D26D0054880D /* PHAssetDownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB011C29D26D0054880D /* PHAssetDownloadOperation.swift */; };
+		50DCCB111C29D26D0054880D /* PHAssetExportSessionOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB021C29D26D0054880D /* PHAssetExportSessionOperation.swift */; };
+		50DCCB121C29D26D0054880D /* MeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB031C29D26D0054880D /* MeOperation.swift */; };
+		50DCCB131C29D26D0054880D /* VideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB041C29D26D0054880D /* VideoOperation.swift */; };
+		50DCCB141C29D26D0054880D /* CreateVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB061C29D26D0054880D /* CreateVideoOperation.swift */; };
+		50DCCB151C29D26D0054880D /* PHAssetCloudExportQuotaCreateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB091C29D26D0054880D /* PHAssetCloudExportQuotaCreateOperation.swift */; };
+		50DCCB161C29D26D0054880D /* PHAssetRetryUploadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB0A1C29D26D0054880D /* PHAssetRetryUploadOperation.swift */; };
+		50DCCB181C29D3190054880D /* ALAssetExportQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB171C29D3190054880D /* ALAssetExportQuotaOperation.swift */; };
+		50DCCB1A1C29D69E0054880D /* ALAssetExportQuotaCreateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCB191C29D69E0054880D /* ALAssetExportQuotaCreateOperation.swift */; };
 		A450CB02D3CD2E0F7881DB7A /* libPods-VimeoUpload-iOS-2Step.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6749230E8FEF6355D8B6BD94 /* libPods-VimeoUpload-iOS-2Step.a */; };
 		AF34DB701BE721150094D1F8 /* MyVideosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF34DB681BE721150094D1F8 /* MyVideosViewController.swift */; };
 		AF34DB711BE721150094D1F8 /* MyVideosViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AF34DB691BE721150094D1F8 /* MyVideosViewController.xib */; };
@@ -150,18 +152,6 @@
 		50DCCA961C29CE090054880D /* VimeoRequestSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoRequestSerializer.swift; sourceTree = "<group>"; };
 		50DCCA971C29CE090054880D /* VimeoResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoResponseSerializer.swift; sourceTree = "<group>"; };
 		50DCCA981C29CE090054880D /* VimeoSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoSessionManager.swift; sourceTree = "<group>"; };
-		50DCCA9B1C29CE090054880D /* AVAssetExportOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAssetExportOperation.swift; sourceTree = "<group>"; };
-		50DCCA9C1C29CE090054880D /* CompositeCloudExportOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositeCloudExportOperation.swift; sourceTree = "<group>"; };
-		50DCCA9D1C29CE090054880D /* CompositeMeQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositeMeQuotaOperation.swift; sourceTree = "<group>"; };
-		50DCCA9E1C29CE090054880D /* ConcurrentOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentOperation.swift; sourceTree = "<group>"; };
-		50DCCA9F1C29CE090054880D /* DeleteVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteVideoOperation.swift; sourceTree = "<group>"; };
-		50DCCAA01C29CE090054880D /* MeOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeOperation.swift; sourceTree = "<group>"; };
-		50DCCAA11C29CE090054880D /* PHAssetDownloadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetDownloadOperation.swift; sourceTree = "<group>"; };
-		50DCCAA21C29CE090054880D /* PHAssetExportSessionOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetExportSessionOperation.swift; sourceTree = "<group>"; };
-		50DCCAA31C29CE090054880D /* VideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoOperation.swift; sourceTree = "<group>"; };
-		50DCCAA51C29CE090054880D /* CompositeCloudExportCreateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositeCloudExportCreateOperation.swift; sourceTree = "<group>"; };
-		50DCCAA61C29CE090054880D /* CreateVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateVideoOperation.swift; sourceTree = "<group>"; };
-		50DCCAA71C29CE090054880D /* RetryUploadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryUploadOperation.swift; sourceTree = "<group>"; };
 		50DCCAA91C29CE090054880D /* DailyQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyQuotaOperation.swift; sourceTree = "<group>"; };
 		50DCCAAA1C29CE090054880D /* DiskSpaceOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskSpaceOperation.swift; sourceTree = "<group>"; };
 		50DCCAAB1C29CE090054880D /* WeeklyQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeeklyQuotaOperation.swift; sourceTree = "<group>"; };
@@ -178,6 +168,20 @@
 		50DCCABA1C29CE090054880D /* PHAssetContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetContainer.swift; sourceTree = "<group>"; };
 		50DCCABC1C29CE090054880D /* BaseCameraRollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCameraRollViewController.swift; sourceTree = "<group>"; };
 		50DCCABD1C29CE090054880D /* BaseCameraRollViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BaseCameraRollViewController.xib; sourceTree = "<group>"; };
+		50DCCAFA1C29D26D0054880D /* ExportOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportOperation.swift; sourceTree = "<group>"; };
+		50DCCAFB1C29D26D0054880D /* MeQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeQuotaOperation.swift; sourceTree = "<group>"; };
+		50DCCAFC1C29D26D0054880D /* ConcurrentOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentOperation.swift; sourceTree = "<group>"; };
+		50DCCAFD1C29D26D0054880D /* DeleteVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteVideoOperation.swift; sourceTree = "<group>"; };
+		50DCCB001C29D26D0054880D /* PHAssetCloudExportQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetCloudExportQuotaOperation.swift; sourceTree = "<group>"; };
+		50DCCB011C29D26D0054880D /* PHAssetDownloadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetDownloadOperation.swift; sourceTree = "<group>"; };
+		50DCCB021C29D26D0054880D /* PHAssetExportSessionOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetExportSessionOperation.swift; sourceTree = "<group>"; };
+		50DCCB031C29D26D0054880D /* MeOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeOperation.swift; sourceTree = "<group>"; };
+		50DCCB041C29D26D0054880D /* VideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoOperation.swift; sourceTree = "<group>"; };
+		50DCCB061C29D26D0054880D /* CreateVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateVideoOperation.swift; sourceTree = "<group>"; };
+		50DCCB091C29D26D0054880D /* PHAssetCloudExportQuotaCreateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetCloudExportQuotaCreateOperation.swift; sourceTree = "<group>"; };
+		50DCCB0A1C29D26D0054880D /* PHAssetRetryUploadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetRetryUploadOperation.swift; sourceTree = "<group>"; };
+		50DCCB171C29D3190054880D /* ALAssetExportQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAssetExportQuotaOperation.swift; sourceTree = "<group>"; };
+		50DCCB191C29D69E0054880D /* ALAssetExportQuotaCreateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAssetExportQuotaCreateOperation.swift; sourceTree = "<group>"; };
 		6749230E8FEF6355D8B6BD94 /* libPods-VimeoUpload-iOS-2Step.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VimeoUpload-iOS-2Step.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B6EC39DD3463B97A35F9BA9 /* Pods-VimeoUpload-iOS-2StepTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-2StepTests.release.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-2StepTests/Pods-VimeoUpload-iOS-2StepTests.release.xcconfig"; sourceTree = "<group>"; };
 		9E662F4DDBB2BB74BAD10498 /* Pods-VimeoUpload-iOS-2StepTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-2StepTests.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-2StepTests/Pods-VimeoUpload-iOS-2StepTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -410,37 +414,11 @@
 		50DCCA991C29CE090054880D /* Operations */ = {
 			isa = PBXGroup;
 			children = (
-				50DCCA9A1C29CE090054880D /* Async */,
-				50DCCAA41C29CE090054880D /* Private */,
+				50DCCAF91C29D26D0054880D /* Async */,
+				50DCCB051C29D26D0054880D /* Private */,
 				50DCCAA81C29CE090054880D /* Sync */,
 			);
 			path = Operations;
-			sourceTree = "<group>";
-		};
-		50DCCA9A1C29CE090054880D /* Async */ = {
-			isa = PBXGroup;
-			children = (
-				50DCCA9B1C29CE090054880D /* AVAssetExportOperation.swift */,
-				50DCCA9D1C29CE090054880D /* CompositeMeQuotaOperation.swift */,
-				50DCCA9E1C29CE090054880D /* ConcurrentOperation.swift */,
-				50DCCA9F1C29CE090054880D /* DeleteVideoOperation.swift */,
-				50DCCAA01C29CE090054880D /* MeOperation.swift */,
-				50DCCAA31C29CE090054880D /* VideoOperation.swift */,
-				50DCCA9C1C29CE090054880D /* CompositeCloudExportOperation.swift */,
-				50DCCAA11C29CE090054880D /* PHAssetDownloadOperation.swift */,
-				50DCCAA21C29CE090054880D /* PHAssetExportSessionOperation.swift */,
-			);
-			path = Async;
-			sourceTree = "<group>";
-		};
-		50DCCAA41C29CE090054880D /* Private */ = {
-			isa = PBXGroup;
-			children = (
-				50DCCAA51C29CE090054880D /* CompositeCloudExportCreateOperation.swift */,
-				50DCCAA61C29CE090054880D /* CreateVideoOperation.swift */,
-				50DCCAA71C29CE090054880D /* RetryUploadOperation.swift */,
-			);
-			path = Private;
 			sourceTree = "<group>";
 		};
 		50DCCAA81C29CE090054880D /* Sync */ = {
@@ -504,6 +482,66 @@
 				50DCCABD1C29CE090054880D /* BaseCameraRollViewController.xib */,
 			);
 			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		50DCCAF91C29D26D0054880D /* Async */ = {
+			isa = PBXGroup;
+			children = (
+				50DCCAFC1C29D26D0054880D /* ConcurrentOperation.swift */,
+				50DCCAFA1C29D26D0054880D /* ExportOperation.swift */,
+				50DCCAFB1C29D26D0054880D /* MeQuotaOperation.swift */,
+				50DCCAFD1C29D26D0054880D /* DeleteVideoOperation.swift */,
+				50DCCB031C29D26D0054880D /* MeOperation.swift */,
+				50DCCB041C29D26D0054880D /* VideoOperation.swift */,
+				50DCCAFE1C29D26D0054880D /* iOS7 */,
+				50DCCAFF1C29D26D0054880D /* iOS8 */,
+			);
+			path = Async;
+			sourceTree = "<group>";
+		};
+		50DCCAFE1C29D26D0054880D /* iOS7 */ = {
+			isa = PBXGroup;
+			children = (
+				50DCCB171C29D3190054880D /* ALAssetExportQuotaOperation.swift */,
+			);
+			path = iOS7;
+			sourceTree = "<group>";
+		};
+		50DCCAFF1C29D26D0054880D /* iOS8 */ = {
+			isa = PBXGroup;
+			children = (
+				50DCCB001C29D26D0054880D /* PHAssetCloudExportQuotaOperation.swift */,
+				50DCCB011C29D26D0054880D /* PHAssetDownloadOperation.swift */,
+				50DCCB021C29D26D0054880D /* PHAssetExportSessionOperation.swift */,
+			);
+			path = iOS8;
+			sourceTree = "<group>";
+		};
+		50DCCB051C29D26D0054880D /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				50DCCB061C29D26D0054880D /* CreateVideoOperation.swift */,
+				50DCCB071C29D26D0054880D /* iOS7 */,
+				50DCCB081C29D26D0054880D /* iOS8 */,
+			);
+			path = Private;
+			sourceTree = "<group>";
+		};
+		50DCCB071C29D26D0054880D /* iOS7 */ = {
+			isa = PBXGroup;
+			children = (
+				50DCCB191C29D69E0054880D /* ALAssetExportQuotaCreateOperation.swift */,
+			);
+			path = iOS7;
+			sourceTree = "<group>";
+		};
+		50DCCB081C29D26D0054880D /* iOS8 */ = {
+			isa = PBXGroup;
+			children = (
+				50DCCB091C29D26D0054880D /* PHAssetCloudExportQuotaCreateOperation.swift */,
+				50DCCB0A1C29D26D0054880D /* PHAssetRetryUploadOperation.swift */,
+			);
+			path = iOS8;
 			sourceTree = "<group>";
 		};
 		6F1728DAD558F90CF4F176AE /* Pods */ = {
@@ -816,47 +854,52 @@
 			buildActionMask = 2147483647;
 			files = (
 				50DCCAF41C29CE090054880D /* VIMALAsset.swift in Sources */,
+				50DCCB111C29D26D0054880D /* PHAssetExportSessionOperation.swift in Sources */,
 				50DCCAE91C29CE090054880D /* DailyQuotaOperation.swift in Sources */,
+				50DCCB131C29D26D0054880D /* VideoOperation.swift in Sources */,
 				50DCCACF1C29CE090054880D /* NSFileManager+Extensions.swift in Sources */,
 				50DCCAEF1C29CE090054880D /* CameraRollAssetHelperProtocol.swift in Sources */,
 				50DCCAC21C29CE090054880D /* ArchiverProtocol.swift in Sources */,
 				5043A53F1BFFA00300D70725 /* VideoSettingsViewController.swift in Sources */,
+				50DCCB141C29D26D0054880D /* CreateVideoOperation.swift in Sources */,
 				50DCCACE1C29CE090054880D /* NSError+Upload.swift in Sources */,
 				50DCCAC31C29CE090054880D /* Descriptor.swift in Sources */,
 				50DCCAD41C29CE090054880D /* Constants.swift in Sources */,
 				AFF28EC51C03D52900258476 /* VideoCell.swift in Sources */,
 				50DCCAF11C29CE090054880D /* ForegroundSessionManager.swift in Sources */,
 				50DCCAC71C29CE090054880D /* KeyedArchiver.swift in Sources */,
+				50DCCB0E1C29D26D0054880D /* DeleteVideoOperation.swift in Sources */,
 				50DCCAF71C29CE090054880D /* BaseCameraRollViewController.swift in Sources */,
 				AF34DB701BE721150094D1F8 /* MyVideosViewController.swift in Sources */,
-				50DCCADD1C29CE090054880D /* AVAssetExportOperation.swift in Sources */,
-				50DCCAE31C29CE090054880D /* PHAssetDownloadOperation.swift in Sources */,
+				50DCCB161C29D26D0054880D /* PHAssetRetryUploadOperation.swift in Sources */,
 				50DCCAC41C29CE090054880D /* DescriptorManager.swift in Sources */,
 				50DCCACD1C29CE090054880D /* AVURLAsset+Extensions.swift in Sources */,
 				50DCCAD01C29CE090054880D /* NSURL+Upload.swift in Sources */,
+				50DCCB151C29D26D0054880D /* PHAssetCloudExportQuotaCreateOperation.swift in Sources */,
 				50DCCAEC1C29CE090054880D /* CameraRollCell.swift in Sources */,
 				50596E111BE2D57700D1F8EC /* AppDelegate.swift in Sources */,
 				50B49D871C1F727200D8F1A2 /* CameraRollViewController.swift in Sources */,
 				50DCCAD21C29CE090054880D /* BlockTypes.swift in Sources */,
+				50DCCB0B1C29D26D0054880D /* ExportOperation.swift in Sources */,
+				50DCCB0D1C29D26D0054880D /* ConcurrentOperation.swift in Sources */,
 				50DCCAF61C29CE090054880D /* PHAssetContainer.swift in Sources */,
+				50DCCB181C29D3190054880D /* ALAssetExportQuotaOperation.swift in Sources */,
 				50DCCAF01C29CE090054880D /* CameraRollAssetProtocol.swift in Sources */,
-				50DCCAE71C29CE090054880D /* CreateVideoOperation.swift in Sources */,
-				50DCCAE81C29CE090054880D /* RetryUploadOperation.swift in Sources */,
-				50DCCAE11C29CE090054880D /* DeleteVideoOperation.swift in Sources */,
 				AFF28EC71C03D52900258476 /* UploadManager.swift in Sources */,
-				50DCCAE41C29CE090054880D /* PHAssetExportSessionOperation.swift in Sources */,
 				50DCCAD11C29CE090054880D /* String+Extensions.swift in Sources */,
 				50DCCABF1C29CE090054880D /* UploadFailureTracker.swift in Sources */,
 				50DCCADC1C29CE090054880D /* VimeoSessionManager.swift in Sources */,
+				50DCCB0C1C29D26D0054880D /* MeQuotaOperation.swift in Sources */,
 				50DCCAC11C29CE090054880D /* VideoRefreshManager.swift in Sources */,
 				50DCCADA1C29CE090054880D /* VimeoRequestSerializer.swift in Sources */,
+				50DCCB1A1C29D69E0054880D /* ALAssetExportQuotaCreateOperation.swift in Sources */,
 				50DCCAD31C29CE090054880D /* VideoSettings.swift in Sources */,
 				50DCCADB1C29CE090054880D /* VimeoResponseSerializer.swift in Sources */,
+				50DCCB0F1C29D26D0054880D /* PHAssetCloudExportQuotaOperation.swift in Sources */,
 				50DCCAD51C29CE090054880D /* VimeoRequestSerializer+Upload2.swift in Sources */,
 				50DCCAD61C29CE090054880D /* VimeoSessionManager+Upload2.swift in Sources */,
 				50DCCAF21C29CE090054880D /* PHAssetHelper.swift in Sources */,
 				50DCCAEE1C29CE090054880D /* ALAssetHelper.swift in Sources */,
-				50DCCADF1C29CE090054880D /* CompositeMeQuotaOperation.swift in Sources */,
 				50DCCAC51C29CE090054880D /* DescriptorManagerDelegate.swift in Sources */,
 				50DCCAC91C29CE090054880D /* Upload1Descriptor.swift in Sources */,
 				50DCCAF31C29CE090054880D /* UploadReporter.swift in Sources */,
@@ -865,17 +908,14 @@
 				50DCCAD71C29CE090054880D /* VimeoRequestSerializer+Upload.swift in Sources */,
 				50DCCAEB1C29CE090054880D /* WeeklyQuotaOperation.swift in Sources */,
 				50DCCAC01C29CE090054880D /* VideoDeletionManager.swift in Sources */,
-				50DCCADE1C29CE090054880D /* CompositeCloudExportOperation.swift in Sources */,
 				50DCCACA1C29CE090054880D /* Upload1Request.swift in Sources */,
-				50DCCAE51C29CE090054880D /* VideoOperation.swift in Sources */,
 				50DCCAD91C29CE090054880D /* VimeoSessionManager+Upload.swift in Sources */,
 				50DCCABE1C29CE090054880D /* ConnectivityManager.swift in Sources */,
-				50DCCAE01C29CE090054880D /* ConcurrentOperation.swift in Sources */,
 				50DCCAC61C29CE090054880D /* DescriptorManagerTracker.swift in Sources */,
-				50DCCAE21C29CE090054880D /* MeOperation.swift in Sources */,
 				50DCCACB1C29CE090054880D /* AFURLSessionManager+Extensions.swift in Sources */,
-				50DCCAE61C29CE090054880D /* CompositeCloudExportCreateOperation.swift in Sources */,
+				50DCCB121C29D26D0054880D /* MeOperation.swift in Sources */,
 				50DCCAD81C29CE090054880D /* VimeoResponseSerializer+Upload.swift in Sources */,
+				50DCCB101C29D26D0054880D /* PHAssetDownloadOperation.swift in Sources */,
 				50DCCAEA1C29CE090054880D /* DiskSpaceOperation.swift in Sources */,
 				50DCCACC1C29CE090054880D /* AVAsset+Extensions.swift in Sources */,
 			);

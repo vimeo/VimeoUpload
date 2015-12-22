@@ -1,62 +1,42 @@
 //
-//  CompositeCloudExportCreateOperation.swift
-//  VimeoUpload
+//  ALAssetExportQuotaCreateOperation.swift
+//  VimeoUpload-iOS-2Step
 //
-//  Created by Alfred Hanssen on 11/9/15.
+//  Created by Hanssen, Alfie on 12/22/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
-//
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included in
-//  all copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-//  THE SOFTWARE.
 //
 
 import Foundation
+import AssetsLibrary
 import AVFoundation
-import Photos
 
 // This flow encapsulates the following steps:
 
-// 1. Perorm a CompositeCloudExportOperation
-//// 1. If inCloud, download
-//// 2. Export (check disk space within this step)
-//// 3. Check weekly quota
+// 1. Perorm a ALAssetExportQuotaOperation
+//// 1. Export (check disk space within this step)
+//// 2. Check weekly quota
 
 // 2. Create video record
 
-@available(iOS 8.0, *)
-class CompositeCloudExportCreateOperation: ConcurrentOperation
-{    
+class ALAssetExportQuotaCreateOperation: ConcurrentOperation
+{
     let me: VIMUser
-    let phAsset: PHAsset
+    let alAsset: ALAsset
     let sessionManager: VimeoSessionManager
     var videoSettings: VideoSettings?
     private let operationQueue: NSOperationQueue
-
+    
     // MARK:
     
     var downloadProgressBlock: ProgressBlock?
     var exportProgressBlock: ProgressBlock?
-
-    // MARK: 
+    
+    // MARK:
     
     private(set) var url: NSURL?
     private(set) var uploadTicket: VIMUploadTicket?
     private(set) var error: NSError?
-    {
+        {
         didSet
         {
             if self.error != nil
@@ -65,13 +45,13 @@ class CompositeCloudExportCreateOperation: ConcurrentOperation
             }
         }
     }
-
+    
     // MARK: Initialization
     
-    init(me: VIMUser, phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    init(me: VIMUser, alAsset: ALAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {
         self.me = me
-        self.phAsset = phAsset
+        self.alAsset = alAsset
         self.sessionManager = sessionManager
         self.videoSettings = videoSettings
         
@@ -93,7 +73,7 @@ class CompositeCloudExportCreateOperation: ConcurrentOperation
             return
         }
         
-        self.performCloudExportOperation()
+        self.performExportQuotaOperation()
     }
     
     override func cancel()
@@ -109,10 +89,10 @@ class CompositeCloudExportCreateOperation: ConcurrentOperation
     }
     
     // MARK: Private API
-    
-    private func performCloudExportOperation()
+
+    private func performExportQuotaOperation()
     {
-        let operation = CompositeCloudExportOperation(me: self.me, phAsset: self.phAsset)
+        let operation = ALAssetExportQuotaOperation(me: self.me, alAsset: self.alAsset)
         
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
             self?.downloadProgressBlock?(progress: progress)
@@ -147,14 +127,14 @@ class CompositeCloudExportCreateOperation: ConcurrentOperation
                 }
             })
         }
-
+        
         self.operationQueue.addOperation(operation)
     }
     
     private func createVideo(url url: NSURL)
     {
         let videoSettings = self.videoSettings
-
+        
         let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
         operation.completionBlock = { [weak self] () -> Void in
             

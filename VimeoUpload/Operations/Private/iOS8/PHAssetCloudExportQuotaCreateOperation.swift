@@ -1,8 +1,8 @@
 //
-//  RetryUploadOperation.swift
+//  PHAssetCloudExportQuotaCreateOperation.swift
 //  VimeoUpload
 //
-//  Created by Hanssen, Alfie on 12/2/15.
+//  Created by Alfred Hanssen on 11/9/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,32 +30,31 @@ import Photos
 
 // This flow encapsulates the following steps:
 
-// 1. Perorm a CompositeMeQuotaOperation
-//// 1. Request me
-//// 2. Check daily quota
-//// 3. If non iCloud asset, check approximate weekly quota
-//// 4. If non iCloud asset, check approximate disk space
-
-// 2. Perform a CompositeCloudExportOperation
+// 1. Perorm a PHAssetCloudExportQuotaOperation
 //// 1. If inCloud, download
 //// 2. Export (check disk space within this step)
 //// 3. Check weekly quota
 
+// 2. Create video record
+
 @available(iOS 8.0, *)
-class RetryUploadOperation: ConcurrentOperation
-{
-    private let sessionManager: VimeoSessionManager
-    private let phAsset: PHAsset
+class PHAssetCloudExportQuotaCreateOperation: ConcurrentOperation
+{    
+    let me: VIMUser
+    let phAsset: PHAsset
+    let sessionManager: VimeoSessionManager
+    var videoSettings: VideoSettings?
     private let operationQueue: NSOperationQueue
-    
-    // MARK: 
+
+    // MARK:
     
     var downloadProgressBlock: ProgressBlock?
     var exportProgressBlock: ProgressBlock?
 
-    // MARK:
+    // MARK: 
     
     private(set) var url: NSURL?
+    private(set) var uploadTicket: VIMUploadTicket?
     private(set) var error: NSError?
     {
         didSet
@@ -66,13 +65,15 @@ class RetryUploadOperation: ConcurrentOperation
             }
         }
     }
-    
+
     // MARK: Initialization
     
-    init(sessionManager: VimeoSessionManager, phAsset: PHAsset)
+    init(me: VIMUser, phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {
-        self.sessionManager = sessionManager
+        self.me = me
         self.phAsset = phAsset
+        self.sessionManager = sessionManager
+        self.videoSettings = videoSettings
         
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
@@ -92,7 +93,7 @@ class RetryUploadOperation: ConcurrentOperation
             return
         }
         
-        self.performCompositeMeQuotaOperation()
+        self.performCloudExportOperation()
     }
     
     override func cancel()
@@ -100,47 +101,18 @@ class RetryUploadOperation: ConcurrentOperation
         super.cancel()
         
         self.operationQueue.cancelAllOperations()
+        
+        if let url = self.url
+        {
+            NSFileManager.defaultManager().deleteFileAtURL(url)
+        }
     }
     
     // MARK: Private API
     
-    private func performCompositeMeQuotaOperation()
+    private func performCloudExportOperation()
     {
-        let operation = CompositeMeQuotaOperation(sessionManager: ForegroundSessionManager.sharedInstance)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if strongSelf.cancelled
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else
-                {
-                    let user = operation.me!
-                    strongSelf.performCompositeCloudExportOperation(user: user)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
-
-        operation.fulfillSelection(avAsset: nil) 
-    }
-    
-    private func performCompositeCloudExportOperation(user user: VIMUser)
-    {
-        let operation = CompositeCloudExportOperation(me: user, phAsset: self.phAsset)
+        let operation = PHAssetCloudExportQuotaOperation(me: self.me, phAsset: self.phAsset)
         
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
             self?.downloadProgressBlock?(progress: progress)
@@ -170,7 +142,42 @@ class RetryUploadOperation: ConcurrentOperation
                 }
                 else
                 {
-                    strongSelf.url = operation.result!
+                    let url = operation.result!
+                    strongSelf.createVideo(url: url)
+                }
+            })
+        }
+
+        self.operationQueue.addOperation(operation)
+    }
+    
+    private func createVideo(url url: NSURL)
+    {
+        let videoSettings = self.videoSettings
+
+        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
+        operation.completionBlock = { [weak self] () -> Void in
+            
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.cancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else
+                {
+                    strongSelf.url = url
+                    strongSelf.uploadTicket = operation.result!
                     strongSelf.state = .Finished
                 }
             })

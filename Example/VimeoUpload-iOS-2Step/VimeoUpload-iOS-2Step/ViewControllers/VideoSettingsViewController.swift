@@ -25,6 +25,8 @@
 //
 
 import UIKit
+import Photos
+import AssetsLibrary
 
 /*
     This viewController provides an interface for the user to modify a video's settings (title, description, privacy) before upload.
@@ -111,7 +113,18 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let sessionManager = ForegroundSessionManager.sharedInstance
         let videoSettings = self.videoSettings
         
-        let operation = CompositeCloudExportCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
+        let operation: ConcurrentOperation
+        
+        if #available(iOS 8.0, *)
+        {
+            let phAsset = cameraRollAsset as! PHAsset
+            operation = PHAssetCloudExportQuotaCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
+        }
+        else
+        {
+            let alAsset = cameraRollAsset as! ALAsset
+            operation = ALAssetExportQuotaCreateOperation(me: me, alAsset: alAsset, sessionManager: sessionManager, videoSettings: videoSettings)
+        }
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
@@ -199,15 +212,24 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil)
      
-        let operation = self.operation as? CompositeCloudExportCreateOperation
-
-        if operation?.state == .Executing
+        let operation: ConcurrentOperation
+        
+        if #available(iOS 8.0, *)
         {
-            operation?.videoSettings = self.videoSettings
+            operation = self.operation as! PHAssetCloudExportQuotaCreateOperation
+        }
+        else
+        {
+            operation = self.operation as! ALAssetExportQuotaCreateOperation
+        }
+
+        if operation.state == .Executing
+        {
+            operation.videoSettings = self.videoSettings
 
             self.activityIndicatorView.startAnimating() // Listen for operation completion, dismiss
         }
-        else if let error = operation?.error
+        else if let error = operation.error
         {
             self.presentOperationErrorAlert(error)
         }

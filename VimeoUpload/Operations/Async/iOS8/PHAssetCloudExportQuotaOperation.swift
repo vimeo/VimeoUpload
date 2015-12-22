@@ -1,5 +1,5 @@
 //
-//  CompositeCloudExportOperation.swift
+//  PHAssetCloudExportQuotaOperation.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/9/15.
@@ -34,7 +34,7 @@ import Photos
 // 3. Check weekly quota
 
 @available(iOS 8.0, *)
-class CompositeCloudExportOperation: ConcurrentOperation
+class PHAssetCloudExportQuotaOperation: ConcurrentOperation
 {    
     let me: VIMUser
     let phAsset: PHAsset
@@ -120,7 +120,7 @@ class CompositeCloudExportOperation: ConcurrentOperation
                 else
                 {
                     let exportSession = operation.result!
-                    strongSelf.export(exportSession: exportSession)
+                    strongSelf.performExport(exportSession: exportSession)
                 }
             })
         }
@@ -128,9 +128,9 @@ class CompositeCloudExportOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    private func export(exportSession exportSession: AVAssetExportSession)
+    private func performExport(exportSession exportSession: AVAssetExportSession)
     {
-        let operation = AVAssetExportOperation(exportSession: exportSession)
+        let operation = ExportOperation(exportSession: exportSession)
         operation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
             
             if let progressBlock = self?.exportProgressBlock
@@ -208,7 +208,7 @@ class CompositeCloudExportOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.CompositeCloudExportOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
                 }
                 else
                 {

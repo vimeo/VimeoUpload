@@ -320,7 +320,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         
         let phAsset = result.firstObject as! PHAsset
         
-        let operation = RetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
+        let operation = PHAssetRetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
         }

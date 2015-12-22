@@ -54,7 +54,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     private var assets: [CameraRollAssetProtocol] = []
     private var cameraRollAssetHelper: CameraRollAssetHelperProtocol?
-    private var operation: CompositeMeQuotaOperation?
+    private var operation: MeQuotaOperation?
     private var me: VIMUser? // We store this in a property instead of on the operation itself, so that we can refresh it independent of the operation [AH]
     private var meOperation: MeOperation?
     private var selectedIndexPath: NSIndexPath?
@@ -190,7 +190,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     {
         let sessionManager = ForegroundSessionManager.sharedInstance
      
-        let operation = CompositeMeQuotaOperation(sessionManager: sessionManager, me: self.me)
+        let operation = MeQuotaOperation(sessionManager: sessionManager, me: self.me)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
