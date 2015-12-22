@@ -1,22 +1,21 @@
 //
-//  VIMPHAsset.swift
+//  VIMALAsset.swift
 //  Smokescreen
 //
-//  Created by Hanssen, Alfie on 12/18/15.
+//  Created by Hanssen, Alfie on 12/22/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 
 import UIKit
-import Photos
+import AssetsLibrary
 
-@available(iOS 8.0, *)
-class VIMPHAsset: PHAsset, CameraRollAssetProtocol
+class VIMALAsset: ALAsset, CameraRollAssetProtocol
 {
     var identifier: String
-    {
+        {
         get
         {
-            return self.localIdentifier
+            return self.defaultRepresentation().url().absoluteString
         }
     }
     
