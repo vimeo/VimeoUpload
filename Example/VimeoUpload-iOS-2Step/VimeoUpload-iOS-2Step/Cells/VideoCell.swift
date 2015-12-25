@@ -175,7 +175,6 @@ class VideoCell: UITableViewCell
         {
         case .Ready, .Executing:
             self.deleteButton.setTitle("Cancel", forState: .Normal)
-            
             self.errorLabel.text = "Ready or Executing"
             self.retryButton.hidden = true
 
@@ -225,7 +224,7 @@ class VideoCell: UITableViewCell
                 
                 let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? State.Ready.rawValue;
                 let state = State(rawValue: stateRaw)!
-                
+
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                     self?.updateState(state)
                 })

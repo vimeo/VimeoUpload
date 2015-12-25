@@ -278,7 +278,7 @@ class DescriptorManager
     
     func addDescriptor(descriptor: Descriptor)
     {
-        // TODO: should this be sync? Changed this to async due to deadlock
+        // TODO: should this be sync? Changed this to async due to deadlock related to notifications
         
         dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
             

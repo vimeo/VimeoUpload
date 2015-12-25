@@ -121,7 +121,7 @@ class Upload2Descriptor: Descriptor
             
             return
         }
-        
+                
         NSFileManager.defaultManager().deleteFileAtURL(self.url)
         
         if self.error == nil
