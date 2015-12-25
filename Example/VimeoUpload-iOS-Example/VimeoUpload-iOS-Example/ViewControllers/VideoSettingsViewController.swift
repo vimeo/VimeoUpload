@@ -90,7 +90,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let me = self.input!.me
         let phAsset = self.input!.phAsset        
-        let operation = CompositeCloudExportOperation(me: me, phAsset: phAsset)
+        let operation = PHAssetCloudExportQuotaOperation(me: me, phAsset: phAsset)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
@@ -160,7 +160,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     func didTapUpload(sender: UIBarButtonItem)
     {
-        let operation = self.operation as? CompositeCloudExportOperation
+        let operation = self.operation as? PHAssetCloudExportQuotaOperation
         
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text

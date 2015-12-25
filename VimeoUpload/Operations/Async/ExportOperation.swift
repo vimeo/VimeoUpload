@@ -1,5 +1,5 @@
 //
-//  AVAssetExportOperation.swift
+//  ExportOperation.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/13/15.
@@ -33,7 +33,7 @@ import AVFoundation
     import CoreServices
 #endif
 
-class AVAssetExportOperation: ConcurrentOperation
+class ExportOperation: ConcurrentOperation
 {
     private static let ErrorDomain = "AVAssetExportOperationErrorDomain"
     
@@ -74,13 +74,13 @@ class AVAssetExportOperation: ConcurrentOperation
         assert(CMTIME_IS_POSITIVEINFINITY(exportSession.timeRange.duration) == false, "exportSession.timeRange.duration is infinite")
         
         exportSession.shouldOptimizeForNetworkUse = true
-        exportSession.outputFileType = AVAssetExportOperation.FileType
+        exportSession.outputFileType = ExportOperation.FileType
 
         do
         {
-            var url = AVAssetExportOperation.DocumentsURL.URLByAppendingPathComponent("uploader")
+            var url = ExportOperation.DocumentsURL.URLByAppendingPathComponent("uploader")
             url = url.URLByAppendingPathComponent("video_files")
-            exportSession.outputURL = try url.vimeoUploadExportURL(fileType: AVAssetExportOperation.FileType)
+            exportSession.outputURL = try url.vimeoUploadExportURL(fileType: ExportOperation.FileType)
         }
         catch let error as NSError
         {
@@ -112,7 +112,7 @@ class AVAssetExportOperation: ConcurrentOperation
         
         if self.exportSession.asset.exportable == false
         {
-            self.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Asset is not exportable"])
+            self.error = NSError(domain: ExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Asset is not exportable"])
             self.state = .Finished
             
             return
@@ -123,7 +123,7 @@ class AVAssetExportOperation: ConcurrentOperation
         let availableDiskSpace = try? NSFileManager.defaultManager().availableDiskSpace() // Double optional
         if let diskSpace = availableDiskSpace, let space = diskSpace where space.longLongValue < self.exportSession.estimatedOutputFileLength
         {
-            self.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: AVError.DiskFull.rawValue, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
+            self.error = NSError(domain: ExportOperation.ErrorDomain, code: AVError.DiskFull.rawValue, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
             self.state = .Finished
             
             return
@@ -145,7 +145,7 @@ class AVAssetExportOperation: ConcurrentOperation
             {
                 if error.domain == AVFoundationErrorDomain && error.code == AVError.DiskFull.rawValue
                 {
-                    strongSelf.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: AVError.DiskFull.rawValue, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
+                    strongSelf.error = NSError(domain: ExportOperation.ErrorDomain, code: AVError.DiskFull.rawValue, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
                 }
                 else
                 {
@@ -158,7 +158,7 @@ class AVAssetExportOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.error = NSError(domain: AVAssetExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Export session finished with no error and no output URL."])
+                strongSelf.error = NSError(domain: ExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Export session finished with no error and no output URL."])
             }
 
             strongSelf.state = .Finished
@@ -187,12 +187,12 @@ class AVAssetExportOperation: ConcurrentOperation
     
     private func addObservers()
     {
-        self.addObserver(self, forKeyPath: AVAssetExportOperation.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.exportProgressKVOContext)
+        self.addObserver(self, forKeyPath: ExportOperation.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.exportProgressKVOContext)
     }
     
     private func removeObservers()
     {
-        self.removeObserver(self, forKeyPath: AVAssetExportOperation.ProgressKeyPath, context: &self.exportProgressKVOContext)
+        self.removeObserver(self, forKeyPath: ExportOperation.ProgressKeyPath, context: &self.exportProgressKVOContext)
     }
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
@@ -201,7 +201,7 @@ class AVAssetExportOperation: ConcurrentOperation
         {
             switch (keyPath, context)
             {
-                case(AVAssetExportOperation.ProgressKeyPath, &self.exportProgressKVOContext):
+                case(ExportOperation.ProgressKeyPath, &self.exportProgressKVOContext):
                     let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
                     self.progressBlock?(progress: progress)
                 

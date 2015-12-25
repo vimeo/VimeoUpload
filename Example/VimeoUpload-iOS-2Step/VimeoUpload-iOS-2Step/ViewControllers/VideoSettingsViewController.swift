@@ -25,6 +25,8 @@
 //
 
 import UIKit
+import Photos
+import AssetsLibrary
 
 /*
     This viewController provides an interface for the user to modify a video's settings (title, description, privacy) before upload.
@@ -107,11 +109,22 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func setupAndStartOperation()
     {
         let me = self.input!.me
-        let phAsset = self.input!.phAsset
+        let cameraRollAsset = self.input!.cameraRollAsset
         let sessionManager = ForegroundSessionManager.sharedInstance
         let videoSettings = self.videoSettings
         
-        let operation = CompositeCloudExportCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
+        let operation: ExportQuotaCreateOperation
+        
+        if #available(iOS 8.0, *)
+        {
+            let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
+            operation = PHAssetCloudExportQuotaCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
+        }
+        else
+        {
+            let alAsset = cameraRollAsset as! ALAsset
+            operation = ALAssetExportQuotaCreateOperation(me: me, alAsset: alAsset, sessionManager: sessionManager, videoSettings: videoSettings)
+        }
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
@@ -175,7 +188,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let url = self.url!
         let uploadTicket = self.uploadTicket!
-        let assetIdentifier = self.input!.phAsset.localIdentifier
+        let assetIdentifier = self.input!.cameraRollAsset.identifier
         UploadManager.sharedInstance.uploadVideo(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
     }
 
@@ -199,15 +212,15 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil)
      
-        let operation = self.operation as? CompositeCloudExportCreateOperation
-
-        if operation?.state == .Executing
+        let operation = self.operation as! ExportQuotaCreateOperation
+        
+        if operation.state == .Executing
         {
-            operation?.videoSettings = self.videoSettings
+            operation.videoSettings = self.videoSettings
 
             self.activityIndicatorView.startAnimating() // Listen for operation completion, dismiss
         }
-        else if let error = operation?.error
+        else if let error = operation.error
         {
             self.presentOperationErrorAlert(error)
         }
@@ -244,32 +257,46 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         // TODO: check error.code == AVError.DiskFull.rawValue and message appropriately
         // TODO: check error.code == AVError.OperationInterrupted.rawValue (app backgrounded during export)
         
-        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.popViewControllerAnimated(true)
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.activityIndicatorView.startAnimating()
-            self?.setupAndStartOperation()
-        }))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
+        if #available(iOS 8.0, *)
+        {
+            let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+                self?.navigationController?.popViewControllerAnimated(true)
+                }))
+            
+            alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+                self?.activityIndicatorView.startAnimating()
+                self?.setupAndStartOperation()
+                }))
+            
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        else
+        {
+            // TODO: iOS7
+        }
     }
     
     private func presentVideoSettingsErrorAlert(error: NSError)
     {
-        let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.popViewControllerAnimated(true)
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.activityIndicatorView.startAnimating()
-            self?.applyVideoSettings()
-        }))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
+        if #available(iOS 8.0, *)
+        {
+            let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+                self?.navigationController?.popViewControllerAnimated(true)
+                }))
+            
+            alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+                self?.activityIndicatorView.startAnimating()
+                self?.applyVideoSettings()
+                }))
+            
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        else
+        {
+            // TODO: iOS7
+        }
     }
 
     // MARK: Private API

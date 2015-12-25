@@ -1,8 +1,8 @@
 //
-//  CompositeCloudExportOperation.swift
+//  ExportQuotaCreateOperation.swift
 //  VimeoUpload
 //
-//  Created by Alfred Hanssen on 11/9/15.
+//  Created by Hanssen, Alfie on 12/22/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,25 +25,24 @@
 //
 
 import Foundation
-import AVFoundation
-import Photos
 
-// This flow encapsulates the following steps:
-// 1. If inCloud, download
-// 2. Export (check disk space within this step)
-// 3. Check weekly quota
-
-@available(iOS 8.0, *)
-class CompositeCloudExportOperation: ConcurrentOperation
-{    
+class ExportQuotaCreateOperation: ConcurrentOperation
+{
     let me: VIMUser
-    let phAsset: PHAsset
-    private let operationQueue: NSOperationQueue
-
+    let sessionManager: VimeoSessionManager
+    var videoSettings: VideoSettings?
+    let operationQueue: NSOperationQueue
+    
+    // MARK:
+    
     var downloadProgressBlock: ProgressBlock?
     var exportProgressBlock: ProgressBlock?
     
-    private(set) var error: NSError?
+    // MARK:
+    
+    var url: NSURL?
+    var uploadTicket: VIMUploadTicket?
+    var error: NSError?
     {
         didSet
         {
@@ -53,12 +52,14 @@ class CompositeCloudExportOperation: ConcurrentOperation
             }
         }
     }
-    private(set) var result: NSURL?
-
-    init(me: VIMUser, phAsset: PHAsset)
+    
+    // MARK: Initialization
+    
+    init(me: VIMUser, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {
         self.me = me
-        self.phAsset = phAsset
+        self.sessionManager = sessionManager
+        self.videoSettings = videoSettings
         
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
@@ -77,8 +78,9 @@ class CompositeCloudExportOperation: ConcurrentOperation
         {
             return
         }
-
-        self.requestExportSession()
+        
+        let operation = self.makeExportQuotaOperation(self.me)!
+        self.performExportQuotaOperation(operation)
     }
     
     override func cancel()
@@ -87,22 +89,37 @@ class CompositeCloudExportOperation: ConcurrentOperation
         
         self.operationQueue.cancelAllOperations()
         
-        if let url = self.result
+        if let url = self.url
         {
             NSFileManager.defaultManager().deleteFileAtURL(url)
         }
     }
     
+    // MARK: Public API
+    
+    func makeExportQuotaOperation(me: VIMUser) -> ExportQuotaOperation?
+    {
+        assertionFailure("Subclasses must override")
+        
+        return nil
+    }
+    
     // MARK: Private API
-    
-    private func requestExportSession()
+
+    private func performExportQuotaOperation(operation: ExportQuotaOperation)
     {
-        let operation = PHAssetExportSessionOperation(phAsset: self.phAsset)
-        operation.progressBlock = self.downloadProgressBlock
+        operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
+            self?.downloadProgressBlock?(progress: progress)
+        }
+        
+        operation.exportProgressBlock = { [weak self] (progress: Double) -> Void in
+            self?.exportProgressBlock?(progress: progress)
+        }
+        
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-            
+                
                 guard let strongSelf = self else
                 {
                     return
@@ -112,15 +129,15 @@ class CompositeCloudExportOperation: ConcurrentOperation
                 {
                     return
                 }
-
+                
                 if let error = operation.error
                 {
                     strongSelf.error = error
                 }
                 else
                 {
-                    let exportSession = operation.result!
-                    strongSelf.export(exportSession: exportSession)
+                    let url = operation.result!
+                    strongSelf.createVideo(url: url)
                 }
             })
         }
@@ -128,23 +145,15 @@ class CompositeCloudExportOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    private func export(exportSession exportSession: AVAssetExportSession)
+    private func createVideo(url url: NSURL)
     {
-        let operation = AVAssetExportOperation(exportSession: exportSession)
-        operation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
-            
-            if let progressBlock = self?.exportProgressBlock
-            {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    progressBlock(progress: progress)
-                })
-            }
-        }
-
+        let videoSettings = self.videoSettings
+        
+        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-
+                
                 guard let strongSelf = self else
                 {
                     return
@@ -161,61 +170,11 @@ class CompositeCloudExportOperation: ConcurrentOperation
                 }
                 else
                 {
-                    let url = operation.outputURL!
-                    strongSelf.checkExactWeeklyQuota(url: url)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
-    }
-    
-    private func checkExactWeeklyQuota(url url: NSURL)
-    {
-        let me = self.me
-        let avUrlAsset = AVURLAsset(URL: url)
-
-        let fileSize: NSNumber
-        do
-        {
-            fileSize = try avUrlAsset.fileSize()
-        }
-        catch let error as NSError
-        {
-            self.error = error
-            
-            return
-        }
-        
-        let operation = WeeklyQuotaOperation(user: me, filesize: fileSize.doubleValue)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.cancelled == true
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else if let result = operation.result where result == false
-                {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.CompositeCloudExportOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
-                }
-                else
-                {
-                    strongSelf.result = url
+                    strongSelf.url = url
+                    strongSelf.uploadTicket = operation.result!
                     strongSelf.state = .Finished
                 }
-            })
+                })
         }
         
         self.operationQueue.addOperation(operation)

@@ -25,11 +25,10 @@
 //
 
 import UIKit
-import Photos
 import AVFoundation
+import Photos
 
-@available(iOS 8.0, *)
-typealias CameraRollViewControllerResult = (me: VIMUser, phAsset: PHAsset)
+typealias CameraRollViewControllerResult = (me: VIMUser, cameraRollAsset: CameraRollAsset)
 
 /*
     This viewController displays the device camera roll video contents. 
@@ -41,7 +40,6 @@ typealias CameraRollViewControllerResult = (me: VIMUser, phAsset: PHAsset)
     [AH] 12/03/2015
 */
 
-@available(iOS 8.0, *)
 class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
     static let NibName = "BaseCameraRollViewController"
@@ -54,9 +52,9 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     // MARK: 
     
-    private var assets: [PHAssetContainer] = []
-    private var phAssetHelper = PHAssetHelper(imageManager: PHImageManager.defaultManager())
-    private var operation: CompositeMeQuotaOperation?
+    private var assets: [CameraRollAsset] = []
+    private var cameraRollAssetHelper: CameraRollAssetHelper?
+    private var operation: MeQuotaOperation?
     private var me: VIMUser? // We store this in a property instead of on the operation itself, so that we can refresh it independent of the operation [AH]
     private var meOperation: MeOperation?
     private var selectedIndexPath: NSIndexPath?
@@ -74,6 +72,15 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     {
         super.viewDidLoad()
         
+        if #available(iOS 8, *)
+        {
+            self.cameraRollAssetHelper = PHAssetHelper()
+        }
+        else
+        {
+            self.cameraRollAssetHelper = ALAssetHelper()
+        }
+
         self.assets = self.loadAssets()
 
         self.addObservers()
@@ -146,21 +153,30 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     // MARK: Setup
     
-    private func loadAssets() -> [PHAssetContainer]
+    private func loadAssets() -> [CameraRollAsset]
     {
-        let options = PHFetchOptions()
-        options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        
-        let result = PHAsset.fetchAssetsWithMediaType(.Video, options: options)
-        
-        var assets: [PHAssetContainer] = []
-        result.enumerateObjectsUsingBlock( { (phAsset, index, stop) -> Void in
+        var assets = [CameraRollAsset]()
+
+        if #available(iOS 8, *)
+        {
+            let options = PHFetchOptions()
+            options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
             
-            let phAsset = phAsset as! PHAsset
-            let phAssetContainer = PHAssetContainer(phAsset: phAsset)
-            assets.append(phAssetContainer)
-        
-        })
+            let fetchResult = PHAsset.fetchAssetsWithMediaType(.Video, options: options)
+
+            fetchResult.enumerateObjectsUsingBlock{ (object: AnyObject?, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+
+                if let phAsset = object as? PHAsset
+                {
+                    let vimPHAsset = VIMPHAsset(phAsset: phAsset)
+                    assets.append(vimPHAsset)
+                }
+            }        
+        }
+        else
+        {
+            // TODO: iOS7
+        }
         
         return assets
     }
@@ -179,7 +195,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     {
         let sessionManager = ForegroundSessionManager.sharedInstance
      
-        let operation = CompositeMeQuotaOperation(sessionManager: sessionManager, me: self.me)
+        let operation = MeQuotaOperation(sessionManager: sessionManager, me: self.me)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -207,11 +223,10 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
                 else
                 {
                     let indexPath = strongSelf.selectedIndexPath!
-                    let phAssetContainer = strongSelf.assets[indexPath.item]
-                    let phAsset = phAssetContainer.phAsset
+                    let cameraRollAsset = strongSelf.assets[indexPath.item]
                     strongSelf.me = operation.me!
    
-                    strongSelf.finish(phAsset: phAsset)
+                    strongSelf.finish(cameraRollAsset: cameraRollAsset)
                 }
             })
         }
@@ -231,22 +246,19 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(CameraRollCell.CellIdentifier, forIndexPath: indexPath) as! CameraRollCell
         
-        let phAssetContainer = self.assets[indexPath.item]
+        let cameraRollAsset = self.assets[indexPath.item]
         
-        cell.setDuration(phAssetContainer.phAsset.duration)
-
-        self.requestImageForCell(cell, phAssetContainer: phAssetContainer)
-        self.requestAssetForCell(cell, phAssetContainer: phAssetContainer)
+        self.cameraRollAssetHelper?.requestImage(cell: cell, cameraRollAsset: cameraRollAsset)
+        self.cameraRollAssetHelper?.requestAsset(cell: cell, cameraRollAsset: cameraRollAsset)
         
         return cell
     }
     
     func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath)
     {
-        let phAssetContainer = self.assets[indexPath.item]
-        let phAsset = phAssetContainer.phAsset
+        let cameraRollAsset = self.assets[indexPath.item] 
         
-        self.phAssetHelper.cancelRequestsForPHAsset(phAsset)
+        self.cameraRollAssetHelper?.cancelRequests?(cameraRollAsset)
     }
     
     // MARK: UICollectionViewFlowLayoutDelegate
@@ -266,80 +278,13 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     }
     
     // MARK: Private API
-    
-    private func requestImageForCell(cell: CameraRollCell, phAssetContainer: PHAssetContainer)
-    {
-        let phAsset = phAssetContainer.phAsset
-        let size = cell.bounds.size
-        let scale = UIScreen.mainScreen().scale
-        let scaledSize = CGSizeMake(scale * size.width, scale * size.height)
         
-        self.phAssetHelper.requestImage(phAsset: phAsset, size: scaledSize) { [weak self, weak cell] (image, inCloud, error) -> Void in
-            
-            guard let _ = self, let strongCell = cell else
-            {
-                return
-            }
-            
-            // Cache the inCloud value for later use in didSelectItem
-            phAssetContainer.inCloud = inCloud
-            phAssetContainer.error = error
-
-            if let inCloud = inCloud where inCloud == true
-            {
-                strongCell.setError("iCloud Asset")
-            }
-
-            if let image = image
-            {
-                strongCell.setImage(image)
-            }
-            else if let error = error
-            {
-                strongCell.setError(error.localizedDescription)
-            }
-        }
-    }
-    
-    private func requestAssetForCell(cell: CameraRollCell, phAssetContainer: PHAssetContainer)
-    {
-        let phAsset = phAssetContainer.phAsset
-        
-        self.phAssetHelper.requestAsset(phAsset: phAsset, completion: { [weak self, weak cell] (asset, inCloud, error) -> Void in
-            
-            guard let _ = self, let strongCell = cell else
-            {
-                return
-            }
-            
-            // Cache the asset and inCloud values for later use in didSelectItem
-            phAssetContainer.avAsset = asset
-            phAssetContainer.inCloud = inCloud
-            phAssetContainer.error = error
-
-            if let inCloud = inCloud where inCloud == true
-            {
-                strongCell.setError("iCloud Asset")
-            }
-            
-            if let asset = asset
-            {
-                let megabytes = asset.approximateFileSizeInMegabytes()
-                strongCell.setFileSize(megabytes)
-            }
-            else if let error = error
-            {
-                strongCell.setError(error.localizedDescription)
-            }
-        })
-    }
-    
     private func didSelectIndexPath(indexPath: NSIndexPath)
     {
-        let phAssetContainer = self.assets[indexPath.item]
+        let cameraRollAsset = self.assets[indexPath.item]
         
         // Check if an error occurred when attempting to retrieve the asset
-        if let error = phAssetContainer.error
+        if let error = cameraRollAsset.error
         {
             self.presentAssetErrorAlert(indexPath, error: error)
             
@@ -369,7 +314,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
             }
             
             // The avAsset may or may not be nil, which is fine. Becuase at the very least this operation needs to fetch "me"
-            self.operation?.fulfillSelection(avAsset: phAssetContainer.avAsset)
+            self.operation?.fulfillSelection(avAsset: cameraRollAsset.avAsset)
         }
     }
     
@@ -377,51 +322,59 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     private func presentAssetErrorAlert(indexPath: NSIndexPath, error: NSError)
     {
-        let alert = UIAlertController(title: "Asset Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.collectionView.reloadItemsAtIndexPaths([indexPath]) // Let the user manually reselect the cell since reload is async
-        }))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
+        if #available(iOS 8, *)
+        {
+            let alert = UIAlertController(title: "Asset Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+                self?.collectionView.reloadItemsAtIndexPaths([indexPath]) // Let the user manually reselect the cell since reload is async
+            }))
+            
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        // TODO: iOS7
     }
-
+    
     private func presentErrorAlert(indexPath: NSIndexPath, error: NSError)
     {
-        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            strongSelf.selectedIndexPath = nil
-            strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
-            strongSelf.setupAndStartOperation()
-        }))
+        if #available(iOS 8, *)
+        {
+            let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                strongSelf.selectedIndexPath = nil
+                strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+                strongSelf.setupAndStartOperation()
+            }))
 
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-        
-            guard let strongSelf = self else
-            {
-                return
-            }
+            alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            
+                guard let strongSelf = self else
+                {
+                    return
+                }
 
-            strongSelf.setupAndStartOperation()
-            strongSelf.didSelectIndexPath(indexPath)
-        }))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
+                strongSelf.setupAndStartOperation()
+                strongSelf.didSelectIndexPath(indexPath)
+            }))
+            
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        // TODO: iOS7
     }
 
-    private func finish(phAsset phAsset: PHAsset)
+    private func finish(cameraRollAsset cameraRollAsset: CameraRollAsset)
     {
         let me = self.me!
 
         // Reset the operation so we're prepared to retry upon cancellation from video settings [AH] 12/06/2015
         self.setupAndStartOperation()
         
-        let result = CameraRollViewControllerResult(me: me, phAsset: phAsset)
+        let result = CameraRollViewControllerResult(me: me, cameraRollAsset: cameraRollAsset)
         self.didFinishWithResult(result)        
     }
     

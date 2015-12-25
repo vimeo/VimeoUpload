@@ -1,5 +1,5 @@
 //
-//  CompositeMeQuotaOperation.swift
+//  MeQuotaOperation.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/9/15.
@@ -34,7 +34,7 @@ import AVFoundation
 // 4. If non iCloud asset, check approximate weekly quota
 // 5. If non iCloud asset, check approximate disk space
 
-class CompositeMeQuotaOperation: ConcurrentOperation
+class MeQuotaOperation: ConcurrentOperation
 {    
     let sessionManager: VimeoSessionManager
     
@@ -200,7 +200,7 @@ class CompositeMeQuotaOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.CompositeMeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate daily quota."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.MeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate daily quota."])
                 }
                 else
                 {
@@ -246,7 +246,7 @@ class CompositeMeQuotaOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.CompositeMeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.MeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
                 }
                 else
                 {
@@ -283,7 +283,7 @@ class CompositeMeQuotaOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.CompositeMeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
+                    strongSelf.error = NSError(domain: UploadErrorDomain.MeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
                 }
                 else
                 {

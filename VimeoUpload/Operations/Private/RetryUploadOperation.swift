@@ -2,61 +2,26 @@
 //  RetryUploadOperation.swift
 //  VimeoUpload
 //
-//  Created by Hanssen, Alfie on 12/2/15.
+//  Created by Hanssen, Alfie on 12/22/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
-//
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included in
-//  all copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-//  THE SOFTWARE.
 //
 
 import Foundation
-import AVFoundation
-import Photos
 
-// This flow encapsulates the following steps:
-
-// 1. Perorm a CompositeMeQuotaOperation
-//// 1. Request me
-//// 2. Check daily quota
-//// 3. If non iCloud asset, check approximate weekly quota
-//// 4. If non iCloud asset, check approximate disk space
-
-// 2. Perform a CompositeCloudExportOperation
-//// 1. If inCloud, download
-//// 2. Export (check disk space within this step)
-//// 3. Check weekly quota
-
-@available(iOS 8.0, *)
 class RetryUploadOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
-    private let phAsset: PHAsset
-    private let operationQueue: NSOperationQueue
+    let operationQueue: NSOperationQueue
     
-    // MARK: 
+    // MARK:
     
     var downloadProgressBlock: ProgressBlock?
     var exportProgressBlock: ProgressBlock?
-
+    
     // MARK:
     
-    private(set) var url: NSURL?
-    private(set) var error: NSError?
+    var url: NSURL?
+    var error: NSError?
     {
         didSet
         {
@@ -69,11 +34,9 @@ class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Initialization
     
-    init(sessionManager: VimeoSessionManager, phAsset: PHAsset)
+    init(sessionManager: VimeoSessionManager)
     {
         self.sessionManager = sessionManager
-        self.phAsset = phAsset
-        
         self.operationQueue = NSOperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
     }
@@ -92,7 +55,7 @@ class RetryUploadOperation: ConcurrentOperation
             return
         }
         
-        self.performCompositeMeQuotaOperation()
+        self.performMeQuotaOperation()
     }
     
     override func cancel()
@@ -104,9 +67,9 @@ class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    private func performCompositeMeQuotaOperation()
+    private func performMeQuotaOperation()
     {
-        let operation = CompositeMeQuotaOperation(sessionManager: ForegroundSessionManager.sharedInstance)
+        let operation = MeQuotaOperation(sessionManager: ForegroundSessionManager.sharedInstance)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -128,20 +91,19 @@ class RetryUploadOperation: ConcurrentOperation
                 else
                 {
                     let user = operation.me!
-                    strongSelf.performCompositeCloudExportOperation(user: user)
+                    let exportQuotaOperation = strongSelf.makeExportQuotaOperation(user: user)!
+                    strongSelf.performExportQuotaOperation(exportQuotaOperation)
                 }
             })
         }
         
         self.operationQueue.addOperation(operation)
-
-        operation.fulfillSelection(avAsset: nil) 
+        
+        operation.fulfillSelection(avAsset: nil)
     }
     
-    private func performCompositeCloudExportOperation(user user: VIMUser)
+    private func performExportQuotaOperation(operation: ExportQuotaOperation)
     {
-        let operation = CompositeCloudExportOperation(me: user, phAsset: self.phAsset)
-        
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
             self?.downloadProgressBlock?(progress: progress)
         }
@@ -177,5 +139,14 @@ class RetryUploadOperation: ConcurrentOperation
         }
         
         self.operationQueue.addOperation(operation)
+    }
+
+    // MARK: Public API
+    
+    func makeExportQuotaOperation(user user: VIMUser) -> ExportQuotaOperation?
+    {
+        assertionFailure("Subclasses must override")
+        
+        return nil
     }
 }

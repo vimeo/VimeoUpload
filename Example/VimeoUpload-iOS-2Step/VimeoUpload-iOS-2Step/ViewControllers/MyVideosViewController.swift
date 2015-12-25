@@ -27,6 +27,7 @@
 import UIKit
 import AVFoundation
 import Photos
+import AssetsLibrary
 
 class MyVideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, VideoCellDelegate, VideoRefreshManagerDelegate
 {
@@ -57,7 +58,6 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         self.setupRefreshControl()
         self.setupVideoRefreshManager()
         
-        self.refreshControl?.beginRefreshing()
         self.refresh()
     }
     
@@ -205,6 +205,8 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func refresh()
     {
+        self.refreshControl?.beginRefreshing()
+
         let sessionManager = ForegroundSessionManager.sharedInstance
         
         do
@@ -266,22 +268,35 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func presentRefreshErrorAlert(error: NSError)
     {
-        let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.refreshControl?.beginRefreshing()
-            self?.refresh()
-        }))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
+        if #available(iOS 8.0, *)
+        {
+            let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+            alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+                self?.refresh()
+            }))
+            
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        else
+        {
+            // TODO: iOS7
+        }
     }
     
     private func presentUploadRetryErrorAlert(error: NSError)
     {
-        let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
-        
-        self.presentViewController(alert, animated: true, completion: nil)
+        if #available(iOS 8.0, *)
+        {
+            let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+            
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        else
+        {
+            // TODO: iOS7
+        }
     }
     
     // MARK: Private API
@@ -289,24 +304,19 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     private func retryUploadDescriptor(descriptor: Upload2Descriptor, completion: ErrorBlock)
     {
         // TODO: This should be cancellable
-        
-        let assetIdentifier = descriptor.assetIdentifier
-        
-        let options = PHFetchOptions()
-        options.predicate = NSPredicate(format: "localIdentifier = %@", assetIdentifier)
 
-        let result = PHAsset.fetchAssetsWithLocalIdentifiers([assetIdentifier], options: options)
-        
-        guard result.count == 1 else
+        let operation: RetryUploadOperation
+        if #available(iOS 8.0, *)
         {
-            // TODO: present asset not found error
-            
-            return
+            let phAsset = try! self.phAssetForRetry(descriptor: descriptor) // TODO: do not force unwrap
+            operation = PHAssetRetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
         }
-        
-        let phAsset = result.firstObject as! PHAsset
-        
-        let operation = RetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
+        else
+        {
+            let alAsset = ALAsset()//self.alAssetForRetry(descriptor: descriptor)!
+            operation = ALAssetRetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, alAsset: alAsset)
+        }
+
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
         }
@@ -344,5 +354,38 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
             })
         }
         operation.start()
+    }
+    
+    @available(iOS 8.0, *)
+    private func phAssetForRetry(descriptor descriptor: Upload2Descriptor) throws -> PHAsset
+    {
+        let assetIdentifier = descriptor.assetIdentifier
+        
+        let options = PHFetchOptions()
+        options.predicate = NSPredicate(format: "localIdentifier = %@", assetIdentifier)
+        
+        let result = PHAsset.fetchAssetsWithLocalIdentifiers([assetIdentifier], options: options)
+        
+        guard result.count == 1 else
+        {
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to find PHAsset"])
+        }
+        
+        return result.firstObject as! PHAsset
+    }
+    
+    private func alAssetForRetry(descriptor descriptor: Upload2Descriptor)
+    {
+        let identifier = descriptor.assetIdentifier
+        let url = NSURL(string: identifier)
+        
+        let library = ALAssetsLibrary()
+        library.assetForURL(url, resultBlock: { (asset) -> Void in
+            
+            // TODO: return asset
+            
+        }) { (error) -> Void in
+            // TODO: handle error
+        }
     }
 }
