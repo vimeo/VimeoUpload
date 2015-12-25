@@ -125,6 +125,9 @@ extension VimeoRequestSerializer
         request.setValue("\(fileSize)", forHTTPHeaderField: "Content-Length")
         request.setValue("video/mp4", forHTTPHeaderField: "Content-Type")
         
+        // For resumed uploads on a single upload ticket we must include this header per @naren (undocumented) [AH] 12/25/2015
+        request.setValue("bytes 0-\(fileSize)/\(fileSize)", forHTTPHeaderField: "Content-Range")
+        
         return request
     }
     

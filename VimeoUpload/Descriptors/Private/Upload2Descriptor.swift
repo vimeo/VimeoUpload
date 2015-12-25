@@ -115,6 +115,13 @@ class Upload2Descriptor: Descriptor
     
     override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
+        if let error = error where self.state == .Suspended && error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled
+        {
+            try! self.prepare(sessionManager: sessionManager) // TODO: remove !
+            
+            return
+        }
+        
         NSFileManager.defaultManager().deleteFileAtURL(self.url)
         
         if self.error == nil
