@@ -97,11 +97,10 @@ class Descriptor: NSObject, DescriptorProtocol
         
         if let identifier = self.currentTaskIdentifier, let task = sessionManager.taskForIdentifier(identifier)
         {
-            // Would be nice to suspend, but the upload will start over from 0 (if you suspend it for long enough?),
+            // Would be nice to call task.suspend(), but the upload will start over from 0 (if you suspend it for long enough?),
             // but the server thinks that we're resuming from the last byte, no good. Instead we need to cancel and start over.
 
             task.cancel()
-//            task.suspend()
         }
     }
 

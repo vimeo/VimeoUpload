@@ -180,8 +180,9 @@ class VideoCell: UITableViewCell
             self.retryButton.hidden = true
 
         case .Suspended:
+            self.updateProgress(0) // Reset the progress bar to 0
             self.errorLabel.text = "Suspended"
-            
+
         case .Finished:
             self.updateProgress(0) // Reset the progress bar to 0
             self.progressView.hidden = true

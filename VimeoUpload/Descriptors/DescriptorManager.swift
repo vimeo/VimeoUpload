@@ -198,6 +198,12 @@ class DescriptorManager
                 strongSelf.descriptorTracker.save()
                 strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.descriptorTracker.descriptors.count)
 
+                // If the descriptor is suspended, it means we've cancelled the task so we can start over from byte 0
+                if descriptor.state == .Suspended
+                {
+                    return
+                }
+                
                 if descriptor.state == .Finished
                 {
                     strongSelf.descriptorTracker.remove(descriptor)

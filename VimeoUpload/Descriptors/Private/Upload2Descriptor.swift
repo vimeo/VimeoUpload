@@ -117,7 +117,7 @@ class Upload2Descriptor: Descriptor
     {
         if let error = error where self.state == .Suspended && error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled
         {
-            try! self.prepare(sessionManager: sessionManager) // TODO: remove !
+            let _ = try? self.prepare(sessionManager: sessionManager) // An error can be set within prepare
             
             return
         }

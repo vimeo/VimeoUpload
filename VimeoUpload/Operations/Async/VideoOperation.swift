@@ -102,6 +102,5 @@ class VideoOperation: ConcurrentOperation
         super.cancel()
         
         self.task?.cancel()
-        self.task = nil
     }
 }
