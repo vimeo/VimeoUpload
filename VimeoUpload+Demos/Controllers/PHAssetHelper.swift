@@ -10,7 +10,7 @@ import Foundation
 import Photos
 
 @available(iOS 8, *)
-@objc class PHAssetHelper: NSObject, CameraRollAssetHelperProtocol
+@objc class PHAssetHelper: NSObject, CameraRollAssetHelper
 {
     static let ErrorDomain = "PHAssetHelperErrorDomain"
     
@@ -35,9 +35,9 @@ import Photos
         self.activeAssetRequests.removeAll()
     }
 
-    // MARK: CameraRollAssetHelperProtocol
+    // MARK: CameraRollAssetHelper
     
-    func requestImage(cell cell: CameraRollCell, cameraRollAsset: CameraRollAssetProtocol)
+    func requestImage(cell cell: CameraRollCell, cameraRollAsset: CameraRollAsset)
     {
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
         let size = cell.bounds.size
@@ -90,7 +90,7 @@ import Photos
         self.activeImageRequests[phAsset.localIdentifier] = requestID
     }
     
-    func requestAsset(cell cell: CameraRollCell, cameraRollAsset: CameraRollAssetProtocol)
+    func requestAsset(cell cell: CameraRollCell, cameraRollAsset: CameraRollAsset)
     {
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
 
@@ -148,7 +148,7 @@ import Photos
         self.activeAssetRequests[phAsset.localIdentifier] = requestID
     }
     
-    func cancelRequests(cameraRollAsset: CameraRollAssetProtocol)
+    func cancelRequests(cameraRollAsset: CameraRollAsset)
     {
         self.cancelImageRequest(cameraRollAsset: cameraRollAsset)
         self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
@@ -156,7 +156,7 @@ import Photos
 
     // MARK: Private API
 
-    private func cancelImageRequest(cameraRollAsset cameraRollAsset: CameraRollAssetProtocol)
+    private func cancelImageRequest(cameraRollAsset cameraRollAsset: CameraRollAsset)
     {
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
         
@@ -167,7 +167,7 @@ import Photos
         }
     }
     
-    private func cancelAssetRequest(cameraRollAsset cameraRollAsset: CameraRollAssetProtocol)
+    private func cancelAssetRequest(cameraRollAsset cameraRollAsset: CameraRollAsset)
     {
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
         

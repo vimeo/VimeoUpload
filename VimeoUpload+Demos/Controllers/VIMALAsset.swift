@@ -9,7 +9,7 @@
 import AssetsLibrary
 import AVFoundation
 
-@objc class VIMALAsset: NSObject, CameraRollAssetProtocol
+@objc class VIMALAsset: NSObject, CameraRollAsset
 {
     let alAsset: ALAsset
 

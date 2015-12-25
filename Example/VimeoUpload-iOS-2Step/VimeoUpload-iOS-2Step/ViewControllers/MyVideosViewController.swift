@@ -58,7 +58,6 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         self.setupRefreshControl()
         self.setupVideoRefreshManager()
         
-        self.refreshControl?.beginRefreshing()
         self.refresh()
     }
     
@@ -206,6 +205,8 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func refresh()
     {
+        self.refreshControl?.beginRefreshing()
+
         let sessionManager = ForegroundSessionManager.sharedInstance
         
         do
@@ -272,9 +273,8 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
             let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
             alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-                self?.refreshControl?.beginRefreshing()
                 self?.refresh()
-                }))
+            }))
             
             self.presentViewController(alert, animated: true, completion: nil)
         }
@@ -308,7 +308,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         let operation: RetryUploadOperation
         if #available(iOS 8.0, *)
         {
-            let phAsset = self.phAssetForRetry(descriptor: descriptor)! // TODO: do not force unwrap
+            let phAsset = try! self.phAssetForRetry(descriptor: descriptor) // TODO: do not force unwrap
             operation = PHAssetRetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
         }
         else
@@ -357,7 +357,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     @available(iOS 8.0, *)
-    private func phAssetForRetry(descriptor descriptor: Upload2Descriptor) -> PHAsset?
+    private func phAssetForRetry(descriptor descriptor: Upload2Descriptor) throws -> PHAsset
     {
         let assetIdentifier = descriptor.assetIdentifier
         
@@ -368,12 +368,10 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         
         guard result.count == 1 else
         {
-            // TODO: present asset not found error
-            
-            return nil
+            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to find PHAsset"])
         }
         
-        return result.firstObject as? PHAsset
+        return result.firstObject as! PHAsset
     }
     
     private func alAssetForRetry(descriptor descriptor: Upload2Descriptor)

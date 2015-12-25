@@ -1,5 +1,5 @@
 //
-//  CameraRollAssetProtocol.swift
+//  CameraRollAsset.swift
 //  Smokescreen
 //
 //  Created by Hanssen, Alfie on 12/17/15.
@@ -9,7 +9,7 @@
 import Foundation
 import AVFoundation
 
-@objc protocol CameraRollAssetProtocol
+@objc protocol CameraRollAsset
 {
     var identifier: String { get }
     var inCloud: Bool { get set }

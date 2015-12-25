@@ -28,7 +28,7 @@ import UIKit
 import AVFoundation
 import Photos
 
-typealias CameraRollViewControllerResult = (me: VIMUser, cameraRollAsset: CameraRollAssetProtocol)
+typealias CameraRollViewControllerResult = (me: VIMUser, cameraRollAsset: CameraRollAsset)
 
 /*
     This viewController displays the device camera roll video contents. 
@@ -52,8 +52,8 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     // MARK: 
     
-    private var assets: [CameraRollAssetProtocol] = []
-    private var cameraRollAssetHelper: CameraRollAssetHelperProtocol?
+    private var assets: [CameraRollAsset] = []
+    private var cameraRollAssetHelper: CameraRollAssetHelper?
     private var operation: MeQuotaOperation?
     private var me: VIMUser? // We store this in a property instead of on the operation itself, so that we can refresh it independent of the operation [AH]
     private var meOperation: MeOperation?
@@ -153,9 +153,9 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     // MARK: Setup
     
-    private func loadAssets() -> [CameraRollAssetProtocol]
+    private func loadAssets() -> [CameraRollAsset]
     {
-        var assets = [CameraRollAssetProtocol]()
+        var assets = [CameraRollAsset]()
 
         if #available(iOS 8, *)
         {
@@ -367,7 +367,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         // TODO: iOS7
     }
 
-    private func finish(cameraRollAsset cameraRollAsset: CameraRollAssetProtocol)
+    private func finish(cameraRollAsset cameraRollAsset: CameraRollAsset)
     {
         let me = self.me!
 
