@@ -223,46 +223,50 @@ class MeQuotaOperation: ConcurrentOperation
     {
         let me = self.me!
         let avAsset = self.avAsset!
-        let filesize = avAsset.approximateFileSize()
-        
-        let operation = WeeklyQuotaOperation(user: me, filesize: filesize)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+        avAsset.approximateFileSize { [weak self] (value) -> Void in
 
-                guard let strongSelf = self else
-                {
-                    return
-                }
+            guard let strongSelf = self else
+            {
+                return
+            }
+
+            let operation = WeeklyQuotaOperation(user: me, filesize: value)
+            operation.completionBlock = { [weak self] () -> Void in
                 
-                if operation.cancelled == true
-                {
-                    return
-                }
-
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else if let result = operation.result where result == false
-                {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.MeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
-                }
-                else
-                {
-                    strongSelf.checkApproximateDiskSpace()
-                }
-            })
+                dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                    
+                    guard let strongSelf = self else
+                    {
+                        return
+                    }
+                    
+                    if operation.cancelled == true
+                    {
+                        return
+                    }
+                    
+                    if let error = operation.error
+                    {
+                        strongSelf.error = error
+                    }
+                    else if let result = operation.result where result == false
+                    {
+                        strongSelf.error = NSError(domain: UploadErrorDomain.MeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
+                    }
+                    else
+                    {
+                        strongSelf.checkApproximateDiskSpace(fileSize: value)
+                    }
+                })
+            }
+            
+            strongSelf.operationQueue.addOperation(operation)
         }
-        
-        self.operationQueue.addOperation(operation)
     }
 
-    private func checkApproximateDiskSpace()
+    private func checkApproximateDiskSpace(fileSize fileSize: Float64)
     {
-        let filesize = self.avAsset!.approximateFileSize()
-        
-        let operation = DiskSpaceOperation(filesize: filesize)
+        let operation = DiskSpaceOperation(fileSize: fileSize)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in

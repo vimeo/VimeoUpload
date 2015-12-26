@@ -30,6 +30,7 @@ typealias VoidBlock = () -> Void
 typealias ProgressBlock = (progress: Double) -> Void
 typealias ErrorBlock = (error: NSError?) -> Void
 typealias StringErrorBlock = (value: String?, error: NSError?) -> Void
+typealias FloatBlock = (value: Float64) -> Void
 
 typealias UserCompletionHandler = (user: VIMUser?, error: NSError?) -> Void
 typealias VideoCompletionHandler = (video: VIMVideo?, error: NSError?) -> Void

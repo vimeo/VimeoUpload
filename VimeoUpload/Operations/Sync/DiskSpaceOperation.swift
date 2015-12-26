@@ -31,14 +31,14 @@ class DiskSpaceOperation: NSOperation
 {
     private static let ErrorDomain = "DiskSpaceOperationErrorDomain"
     
-    private let filesize: Float64
+    private let fileSize: Float64
     
     private(set) var result: Bool?
     private(set) var error: NSError?
 
-    init(filesize: Float64)
+    init(fileSize: Float64)
     {
-        self.filesize = filesize
+        self.fileSize = fileSize
     
         super.init()
     }
@@ -53,7 +53,7 @@ class DiskSpaceOperation: NSOperation
         {
             if let availableDiskSpace = try NSFileManager.defaultManager().availableDiskSpace()
             {
-                self.result = availableDiskSpace.doubleValue > self.filesize
+                self.result = availableDiskSpace.doubleValue > self.fileSize
             }
             else
             {
