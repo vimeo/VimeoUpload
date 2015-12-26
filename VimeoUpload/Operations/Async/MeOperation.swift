@@ -35,7 +35,7 @@ class MeOperation: ConcurrentOperation
     private(set) var result: VIMUser?
     private(set) var error: NSError?
     
-    // MARK: Initialization
+    // MARK: - Initialization
 
     init(sessionManager: VimeoSessionManager)
     {

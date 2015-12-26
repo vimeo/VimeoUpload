@@ -35,8 +35,7 @@ import Foundation
     private let archiver: KeyedArchiver
     private var failedDescriptors: [VideoUri: Upload2Descriptor] = [:]
 
-    // MARK:
-    // MARK: Initialization
+    // MARK: - Initialization
     
     deinit
     {

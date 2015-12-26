@@ -37,7 +37,7 @@ class PHAssetRetryUploadOperation: RetryUploadOperation
 {
     private let phAsset: PHAsset
     
-    // MARK: Initialization
+    // MARK: - Initialization
     
     init(sessionManager: VimeoSessionManager, phAsset: PHAsset)
     {

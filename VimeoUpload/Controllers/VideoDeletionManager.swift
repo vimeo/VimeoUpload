@@ -41,8 +41,7 @@ class VideoDeletionManager: NSObject
     private let operationQueue: NSOperationQueue
     private let archiver: KeyedArchiver
     
-    // MARK:
-    // MARK: Initialization
+    // MARK: - Initialization
     
     deinit
     {
@@ -92,7 +91,7 @@ class VideoDeletionManager: NSObject
     
     private func loadDeletions() -> [VideoUri: Int]
     {
-        if let deletions = self.archiver.loadObjectForKey(VideoDeletionManager.DeletionsArchiveKey) as? [VideoUri: Int]
+        if let deletions = self.archiver.loadObjectForKey(self.dynamicType.DeletionsArchiveKey) as? [VideoUri: Int]
         {
             return deletions
         }
@@ -110,7 +109,7 @@ class VideoDeletionManager: NSObject
     
     private func save()
     {
-        self.archiver.saveObject(self.deletions, key: VideoDeletionManager.DeletionsArchiveKey)
+        self.archiver.saveObject(self.deletions, key: self.dynamicType.DeletionsArchiveKey)
     }
     
     // MARK: Public API

@@ -65,8 +65,7 @@ class Upload1Descriptor: Descriptor
         }
     }
     
-    // MARK:
-    // MARK: Initialization
+    // MARK: - Initialization
     
     init(url: NSURL, assetIdentifier: String, videoSettings: VideoSettings? = nil)
     {

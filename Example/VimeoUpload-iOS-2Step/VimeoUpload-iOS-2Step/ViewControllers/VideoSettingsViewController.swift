@@ -164,7 +164,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     }
                     else
                     {
-                        if let video = strongSelf.uploadTicket?.video, let viewPrivacy = video.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
+                        if let video = strongSelf.uploadTicket?.video, let viewPrivacy = video.privacy?.view where viewPrivacy != strongSelf.dynamicType.PreUploadViewPrivacy
                         {
                             NSNotificationCenter.defaultCenter().postNotificationName(VideoSettingsViewController.UploadInitiatedNotification, object: video)
                             
@@ -228,7 +228,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         {
             if let video = self.uploadTicket?.video, let viewPrivacy = video.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
             {
-                NSNotificationCenter.defaultCenter().postNotificationName(VideoSettingsViewController.UploadInitiatedNotification, object: video)
+                NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.UploadInitiatedNotification, object: video)
                 
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
@@ -262,12 +262,12 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
             let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
                 self?.navigationController?.popViewControllerAnimated(true)
-                }))
+            }))
             
             alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
                 self?.activityIndicatorView.startAnimating()
                 self?.setupAndStartOperation()
-                }))
+            }))
             
             self.presentViewController(alert, animated: true, completion: nil)
         }
@@ -284,12 +284,12 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
             let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
                 self?.navigationController?.popViewControllerAnimated(true)
-                }))
+            }))
             
             alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
                 self?.activityIndicatorView.startAnimating()
                 self?.applyVideoSettings()
-                }))
+            }))
             
             self.presentViewController(alert, animated: true, completion: nil)
         }

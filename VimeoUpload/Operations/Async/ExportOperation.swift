@@ -36,7 +36,6 @@ import AVFoundation
 class ExportOperation: ConcurrentOperation
 {
     private static let ErrorDomain = "AVAssetExportOperationErrorDomain"
-    
     private static let ProgressKeyPath = "progress"
     private static let FileType = AVFileTypeMPEG4
     private static let DocumentsURL = NSURL(string: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])!
@@ -51,7 +50,7 @@ class ExportOperation: ConcurrentOperation
     private(set) var outputURL: NSURL?
     private(set) var error: NSError?
     
-    // MARK: Initialization
+    // MARK: - Initialization
     
     convenience init(asset: AVAsset)
     {
@@ -78,9 +77,9 @@ class ExportOperation: ConcurrentOperation
 
         do
         {
-            var url = ExportOperation.DocumentsURL.URLByAppendingPathComponent("uploader")
+            var url = self.dynamicType.DocumentsURL.URLByAppendingPathComponent("uploader")
             url = url.URLByAppendingPathComponent("video_files")
-            exportSession.outputURL = try url.vimeoUploadExportURL(fileType: ExportOperation.FileType)
+            exportSession.outputURL = try url.vimeoUploadExportURL(fileType: self.dynamicType.FileType)
         }
         catch let error as NSError
         {
@@ -112,7 +111,7 @@ class ExportOperation: ConcurrentOperation
         
         if self.exportSession.asset.exportable == false
         {
-            self.error = NSError(domain: ExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Asset is not exportable"])
+            self.error = NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Asset is not exportable"])
             self.state = .Finished
             
             return
@@ -123,7 +122,7 @@ class ExportOperation: ConcurrentOperation
         let availableDiskSpace = try? NSFileManager.defaultManager().availableDiskSpace() // Double optional
         if let diskSpace = availableDiskSpace, let space = diskSpace where space.longLongValue < self.exportSession.estimatedOutputFileLength
         {
-            self.error = NSError(domain: ExportOperation.ErrorDomain, code: AVError.DiskFull.rawValue, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
+            self.error = NSError(domain: self.dynamicType.ErrorDomain, code: AVError.DiskFull.rawValue, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
             self.state = .Finished
             
             return
@@ -145,7 +144,7 @@ class ExportOperation: ConcurrentOperation
             {
                 if error.domain == AVFoundationErrorDomain && error.code == AVError.DiskFull.rawValue
                 {
-                    strongSelf.error = NSError(domain: ExportOperation.ErrorDomain, code: AVError.DiskFull.rawValue, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
+                    strongSelf.error = NSError(domain: strongSelf.dynamicType.ErrorDomain, code: AVError.DiskFull.rawValue, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
                 }
                 else
                 {
@@ -158,7 +157,7 @@ class ExportOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.error = NSError(domain: ExportOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Export session finished with no error and no output URL."])
+                strongSelf.error = NSError(domain: strongSelf.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Export session finished with no error and no output URL."])
             }
 
             strongSelf.state = .Finished
@@ -187,12 +186,12 @@ class ExportOperation: ConcurrentOperation
     
     private func addObservers()
     {
-        self.addObserver(self, forKeyPath: ExportOperation.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.exportProgressKVOContext)
+        self.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.exportProgressKVOContext)
     }
     
     private func removeObservers()
     {
-        self.removeObserver(self, forKeyPath: ExportOperation.ProgressKeyPath, context: &self.exportProgressKVOContext)
+        self.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.exportProgressKVOContext)
     }
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
@@ -201,7 +200,7 @@ class ExportOperation: ConcurrentOperation
         {
             switch (keyPath, context)
             {
-                case(ExportOperation.ProgressKeyPath, &self.exportProgressKVOContext):
+                case(self.dynamicType.ProgressKeyPath, &self.exportProgressKVOContext):
                     let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
                     self.progressBlock?(progress: progress)
                 

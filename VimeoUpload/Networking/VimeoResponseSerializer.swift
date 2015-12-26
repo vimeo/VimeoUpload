@@ -83,7 +83,7 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(VimeoResponseSerializer.ErrorDomain, userInfo: errorInfo)
+            throw error.errorByAddingDomain(self.dynamicType.ErrorDomain, userInfo: errorInfo)
         }
     }
 
@@ -93,7 +93,7 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
         {
             let userInfo = [NSLocalizedDescriptionKey: "Invalid http status code for download task"]
             
-            throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: userInfo)
+            throw NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: userInfo)
         }
     }
     
@@ -101,12 +101,12 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
     {
         guard let url = url else
         {
-            throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Url for completed download task is nil."])
+            throw NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Url for completed download task is nil."])
         }
         
         guard let data = NSData(contentsOfURL: url) else
         {
-            throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Data at url for completed download task is nil."])
+            throw NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Data at url for completed download task is nil."])
         }
         
         var dictionary: [String: AnyObject]? = [:]
@@ -124,7 +124,7 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
         
         if dictionary == nil
         {
-            throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Download task response dictionary is nil."])
+            throw NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Download task response dictionary is nil."])
         }
         
         return dictionary!

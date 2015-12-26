@@ -55,7 +55,7 @@ class VideoCell: UITableViewCell
 
     // MARK: 
     
-    private static let ProgressKeyPath = "fractionCompleted"
+    private static let ProgressKeyPath = "progressObservable"
     private static let StateKeyPath = "stateObservable"
     private var progressKVOContext = UInt8()
     private var stateKVOContext = UInt8()
@@ -64,8 +64,8 @@ class VideoCell: UITableViewCell
     {
         willSet
         {
-            self.descriptor?.removeObserver(self, forKeyPath: VideoCell.StateKeyPath, context: &self.stateKVOContext)
-            self.descriptor?.progress?.removeObserver(self, forKeyPath: VideoCell.ProgressKeyPath, context: &self.progressKVOContext)
+            self.descriptor?.removeObserver(self, forKeyPath: self.dynamicType.StateKeyPath, context: &self.stateKVOContext)
+            self.descriptor?.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
         }
         
         didSet
@@ -75,8 +75,8 @@ class VideoCell: UITableViewCell
                 self.updateState(state)
             }
 
-            self.descriptor?.addObserver(self, forKeyPath: VideoCell.StateKeyPath, options: NSKeyValueObservingOptions.New, context: &self.stateKVOContext)
-            self.descriptor?.progress?.addObserver(self, forKeyPath: VideoCell.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
+            self.descriptor?.addObserver(self, forKeyPath: self.dynamicType.StateKeyPath, options: NSKeyValueObservingOptions.New, context: &self.stateKVOContext)
+            self.descriptor?.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
         }
     }
     
@@ -95,8 +95,7 @@ class VideoCell: UITableViewCell
         }
     }
     
-    // MARK:
-    // MARK: Initialization
+    // MARK: - Initialization
 
     deinit
     {
@@ -208,7 +207,7 @@ class VideoCell: UITableViewCell
         {
             switch (keyPath, context)
             {
-            case(VideoCell.ProgressKeyPath, &self.progressKVOContext):
+            case(self.dynamicType.ProgressKeyPath, &self.progressKVOContext):
                 
                 let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
                 
@@ -220,7 +219,7 @@ class VideoCell: UITableViewCell
                     self?.updateProgress(progress)
                 })
 
-            case(VideoCell.StateKeyPath, &self.stateKVOContext):
+            case(self.dynamicType.StateKeyPath, &self.stateKVOContext):
                 
                 let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? State.Ready.rawValue;
                 let state = State(rawValue: stateRaw)!

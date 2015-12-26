@@ -131,7 +131,7 @@ extension VimeoResponseSerializer
             throw error.errorByAddingDomain(UploadErrorDomain.Activate.rawValue)
         }
 
-        guard let HTTPResponse = response as? NSHTTPURLResponse, let location = HTTPResponse.allHeaderFields[VimeoResponseSerializer.LocationKey] as? String else
+        guard let HTTPResponse = response as? NSHTTPURLResponse, let location = HTTPResponse.allHeaderFields[self.dynamicType.LocationKey] as? String else
         {
             throw NSError(domain: UploadErrorDomain.Activate.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Activate response did not contain the required value."])
         }

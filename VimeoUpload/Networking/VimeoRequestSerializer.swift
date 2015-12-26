@@ -30,7 +30,7 @@ class VimeoRequestSerializer: AFJSONRequestSerializer
 {
     private var authTokenBlock: AuthTokenBlock
     
-    // MARK: Initialization 
+    // MARK: - Initialization
     
     init(authTokenBlock: AuthTokenBlock, version: String = "3.2")
     {

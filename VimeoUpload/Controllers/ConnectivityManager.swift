@@ -43,8 +43,7 @@ import Foundation
         }
     }
     
-    // MARK:
-    // MARK: Initialization
+    // MARK: - Initialization
 
     deinit
     {

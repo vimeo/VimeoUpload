@@ -36,7 +36,7 @@ class ALAssetExportQuotaCreateOperation: ExportQuotaCreateOperation
 {
     let alAsset: ALAsset
     
-    // MARK: Initialization
+    // MARK: - Initialization
     
     init(me: VIMUser, alAsset: ALAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {

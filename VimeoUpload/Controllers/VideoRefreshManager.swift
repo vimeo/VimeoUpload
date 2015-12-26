@@ -45,8 +45,7 @@ import Foundation
     private var videos: [VideoUri: VIMVideo] = [:]
     private let operationQueue: NSOperationQueue
     
-    // MARK:
-    // MARK: Initialization
+    // MARK: - Initialization
     
     deinit
     {

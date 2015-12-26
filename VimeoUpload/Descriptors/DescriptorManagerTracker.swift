@@ -25,8 +25,7 @@ class DescriptorManagerTracker
         }
     }
 
-    // MARK: 
-    // MARK: Initialization
+    // MARK: - Initialization
     
     init(name: String)
     {

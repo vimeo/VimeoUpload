@@ -55,8 +55,7 @@ class DescriptorManager
     
     var backgroundEventsCompletionHandler: VoidBlock?
 
-    // MARK:
-    // MARK: Initialization
+    // MARK: - Initialization
     
     // By passing the delegate into the constructor (as opposed to using a public property)
     // We ensure that early events like "load" can be reported [AH] 11/25/2015

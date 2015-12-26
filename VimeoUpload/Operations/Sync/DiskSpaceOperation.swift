@@ -57,12 +57,12 @@ class DiskSpaceOperation: NSOperation
             }
             else
             {
-                self.error = NSError(domain: DiskSpaceOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "File system information did not contain NSFileSystemFreeSize key:value pair"])
+                self.error = NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "File system information did not contain NSFileSystemFreeSize key:value pair"])
             }
         }
         catch
         {
-            self.error = NSError(domain: DiskSpaceOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to calculate available disk space"])
+            self.error = NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to calculate available disk space"])
         }
     }
 }
