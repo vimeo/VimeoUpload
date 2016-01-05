@@ -37,7 +37,7 @@ class CreateVideoOperation: ConcurrentOperation
     private(set) var result: VIMUploadTicket?
     private(set) var error: NSError?
     
-    // MARK: Initialization
+    // MARK: - Initialization
 
     init(sessionManager: VimeoSessionManager, url: NSURL, videoSettings: VideoSettings?)
     {

@@ -34,7 +34,25 @@ class Upload2Descriptor: Descriptor
     
     // MARK:
     
+    // We observe progress here via progressObservable because the descriptor is the only object that knows about the progress object's lifecycle
+    // If we allow views to observe the progress they wont know exactly when to remove and add observers when the descriptor is 
+    // suspended and resumed [AH] 12/25/2015
+    
+    private static let ProgressKeyPath = "fractionCompleted"
+    private var progressKVOContext = UInt8()
+    dynamic private(set) var progressObservable: Double = 0
     private(set) var progress: NSProgress?
+    {
+        willSet
+        {
+            self.progress?.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
+        }
+        
+        didSet
+        {
+            self.progress?.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
+        }
+    }
     
     // MARK:
     
@@ -50,8 +68,12 @@ class Upload2Descriptor: Descriptor
         }
     }
     
-    // MARK:
-    // MARK: Initialization
+    // MARK: - Initialization
+    
+    deinit
+    {
+        self.progress = nil
+    }
     
     init(url: NSURL, uploadTicket: VIMUploadTicket, assetIdentifier: String)
     {
@@ -115,6 +137,13 @@ class Upload2Descriptor: Descriptor
     
     override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
+        if let error = error where self.state == .Suspended && error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled
+        {
+            let _ = try? self.prepare(sessionManager: sessionManager) // An error can be set within prepare
+            
+            return
+        }
+                
         NSFileManager.defaultManager().deleteFileAtURL(self.url)
         
         if self.error == nil
@@ -136,6 +165,28 @@ class Upload2Descriptor: Descriptor
         
         self.currentTaskIdentifier = nil
         self.state = .Finished
+    }
+    
+    // MARK: KVO
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+    {
+        if let keyPath = keyPath
+        {
+            switch (keyPath, context)
+            {
+            case(self.dynamicType.ProgressKeyPath, &self.progressKVOContext):
+                self.progressObservable = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
+                print(self.progressObservable)
+                
+            default:
+                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            }
+        }
+        else
+        {
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+        }
     }
 
     // MARK: NSCoding

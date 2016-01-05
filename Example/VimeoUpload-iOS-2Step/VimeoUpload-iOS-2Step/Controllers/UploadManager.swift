@@ -51,8 +51,7 @@ import Foundation
     
     private let reporter = UploadReporter()
     
-    // MARK:
-    // MARK: Initialization
+    // MARK: - Initialization
     
     override init()
     {

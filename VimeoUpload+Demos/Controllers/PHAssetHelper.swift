@@ -60,7 +60,6 @@ import Photos
             }
             
             // TODO: determine if we can use this here and below Phimageresultrequestidkey
-            // TODO: thread?
             strongSelf.cancelImageRequest(cameraRollAsset: cameraRollAsset)
             
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
@@ -74,7 +73,7 @@ import Photos
             
             if cameraRollAsset.inCloud == true
             {
-                cell.setError("iCloud")
+                cell.setError(message: "iCloud")
             }
             
             if let image = image
@@ -83,7 +82,7 @@ import Photos
             }
             else if let error = cameraRollAsset.error
             {
-                cell.setError(error.localizedDescription)
+                cell.setError(message: error.localizedDescription)
             }
         })
         
@@ -94,7 +93,7 @@ import Photos
     {
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
 
-        cell.setDuration(phAsset.duration)
+        cell.setDuration(seconds: phAsset.duration)
 
         self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
         
@@ -104,13 +103,6 @@ import Photos
         
         let requestID = self.imageManager.requestAVAssetForVideo(phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
             
-            guard let strongSelf = self else
-            {
-                return
-            }
-
-            strongSelf.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
-
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
             {
                 return
@@ -118,10 +110,12 @@ import Photos
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                 
-                guard let _ = self else
+                guard let strongSelf = self else
                 {
                     return
                 }
+
+                strongSelf.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
 
                 // Cache the asset and inCloud values for later use in didSelectItem
                 cameraRollAsset.avAsset = asset
@@ -130,17 +124,18 @@ import Photos
 
                 if cameraRollAsset.inCloud == true
                 {
-                    cell.setError("iCloud")
+                    cell.setError(message: "iCloud")
                 }
 
                 if let asset = asset
                 {
-                    let megabytes = asset.approximateFileSizeInMegabytes()
-                    cell.setFileSize(megabytes)
+                    asset.approximateFileSizeInMegabytes({ (value) -> Void in
+                        cell.setFileSize(megabytes: value)
+                    })
                 }
                 else if let error = cameraRollAsset.error
                 {
-                    cell.setError(error.localizedDescription)
+                    cell.setError(message: error.localizedDescription)
                 }
             })
         }

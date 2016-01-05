@@ -84,17 +84,17 @@ class CameraRollCell: UICollectionViewCell
         self.imageView.image = image
     }
     
-    func setDuration(seconds: Float64)
+    func setDuration(seconds seconds: Float64)
     {
         self.durationlabel?.text = String.stringFromDurationInSeconds(seconds)
     }
     
-    func setFileSize(megabytes: Float64)
+    func setFileSize(megabytes megabytes: Float64)
     {
         self.fileSizeLabel.text = String(format: "%.2f MB", megabytes)
     }
     
-    func setError(message: String)
+    func setError(message message: String)
     {
         self.errorLabel.text = message
     }

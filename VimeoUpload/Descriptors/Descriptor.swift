@@ -47,8 +47,6 @@ enum State: String
 
 class Descriptor: NSObject, DescriptorProtocol
 {
-    static let ErrorDomain = "DescriptorErrorDomain"
-    
     // MARK: 
     
     dynamic private(set) var stateObservable: String = State.Ready.rawValue
@@ -66,8 +64,7 @@ class Descriptor: NSObject, DescriptorProtocol
     var error: NSError?
     var currentTaskIdentifier: Int?
 
-    // MARK:
-    // MARK: Initialization
+    // MARK: - Initialization
 
     override init()
     {
@@ -94,10 +91,14 @@ class Descriptor: NSObject, DescriptorProtocol
     func suspend(sessionManager sessionManager: AFURLSessionManager)
     {
         self.state = .Suspended
-
+        
         if let identifier = self.currentTaskIdentifier, let task = sessionManager.taskForIdentifier(identifier)
         {
-            task.suspend()
+            // Would be nice to call task.suspend(), but the upload will start over from 0 (if you suspend it for long enough?),
+            // but the server thinks that we're resuming from the last byte, no good. Instead we need to cancel and start over,
+            // appending the Content-Range header [AH] 12/25/2015
+
+            task.cancel()
         }
     }
 

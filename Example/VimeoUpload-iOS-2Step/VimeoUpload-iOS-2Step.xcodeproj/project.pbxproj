@@ -53,13 +53,9 @@
 		50DCCAED1C29CE090054880D /* CameraRollCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50DCCAAF1C29CE090054880D /* CameraRollCell.xib */; };
 		50DCCAEE1C29CE090054880D /* ALAssetHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAB11C29CE090054880D /* ALAssetHelper.swift */; };
 		50DCCAEF1C29CE090054880D /* CameraRollAssetHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAB21C29CE090054880D /* CameraRollAssetHelper.swift */; };
-		50DCCAF01C29CE090054880D /* CameraRollAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAB31C29CE090054880D /* CameraRollAsset.swift */; };
 		50DCCAF11C29CE090054880D /* ForegroundSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAB41C29CE090054880D /* ForegroundSessionManager.swift */; };
 		50DCCAF21C29CE090054880D /* PHAssetHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAB51C29CE090054880D /* PHAssetHelper.swift */; };
 		50DCCAF31C29CE090054880D /* UploadReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAB61C29CE090054880D /* UploadReporter.swift */; };
-		50DCCAF41C29CE090054880D /* VIMALAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAB71C29CE090054880D /* VIMALAsset.swift */; };
-		50DCCAF51C29CE090054880D /* VIMPHAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAB81C29CE090054880D /* VIMPHAsset.swift */; };
-		50DCCAF61C29CE090054880D /* PHAssetContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCABA1C29CE090054880D /* PHAssetContainer.swift */; };
 		50DCCAF71C29CE090054880D /* BaseCameraRollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCABC1C29CE090054880D /* BaseCameraRollViewController.swift */; };
 		50DCCAF81C29CE090054880D /* BaseCameraRollViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50DCCABD1C29CE090054880D /* BaseCameraRollViewController.xib */; };
 		50DCCB0B1C29D26D0054880D /* ExportOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DCCAFA1C29D26D0054880D /* ExportOperation.swift */; };
@@ -83,6 +79,9 @@
 		A450CB02D3CD2E0F7881DB7A /* libPods-VimeoUpload-iOS-2Step.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6749230E8FEF6355D8B6BD94 /* libPods-VimeoUpload-iOS-2Step.a */; };
 		AF34DB701BE721150094D1F8 /* MyVideosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF34DB681BE721150094D1F8 /* MyVideosViewController.swift */; };
 		AF34DB711BE721150094D1F8 /* MyVideosViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AF34DB691BE721150094D1F8 /* MyVideosViewController.xib */; };
+		AF69495C1C31BF6A002071FC /* CameraRollAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF6949591C31BF6A002071FC /* CameraRollAsset.swift */; };
+		AF69495D1C31BF6A002071FC /* VIMALAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF69495A1C31BF6A002071FC /* VIMALAsset.swift */; };
+		AF69495E1C31BF6A002071FC /* VIMPHAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF69495B1C31BF6A002071FC /* VIMPHAsset.swift */; };
 		AFF28EC51C03D52900258476 /* VideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF28EC11C03D52900258476 /* VideoCell.swift */; };
 		AFF28EC61C03D52900258476 /* VideoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFF28EC21C03D52900258476 /* VideoCell.xib */; };
 		AFF28EC71C03D52900258476 /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF28EC41C03D52900258476 /* UploadManager.swift */; };
@@ -163,13 +162,9 @@
 		50DCCAAF1C29CE090054880D /* CameraRollCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CameraRollCell.xib; sourceTree = "<group>"; };
 		50DCCAB11C29CE090054880D /* ALAssetHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAssetHelper.swift; sourceTree = "<group>"; };
 		50DCCAB21C29CE090054880D /* CameraRollAssetHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollAssetHelper.swift; sourceTree = "<group>"; };
-		50DCCAB31C29CE090054880D /* CameraRollAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollAsset.swift; sourceTree = "<group>"; };
 		50DCCAB41C29CE090054880D /* ForegroundSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForegroundSessionManager.swift; sourceTree = "<group>"; };
 		50DCCAB51C29CE090054880D /* PHAssetHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetHelper.swift; sourceTree = "<group>"; };
 		50DCCAB61C29CE090054880D /* UploadReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadReporter.swift; sourceTree = "<group>"; };
-		50DCCAB71C29CE090054880D /* VIMALAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VIMALAsset.swift; sourceTree = "<group>"; };
-		50DCCAB81C29CE090054880D /* VIMPHAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VIMPHAsset.swift; sourceTree = "<group>"; };
-		50DCCABA1C29CE090054880D /* PHAssetContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetContainer.swift; sourceTree = "<group>"; };
 		50DCCABC1C29CE090054880D /* BaseCameraRollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCameraRollViewController.swift; sourceTree = "<group>"; };
 		50DCCABD1C29CE090054880D /* BaseCameraRollViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BaseCameraRollViewController.xib; sourceTree = "<group>"; };
 		50DCCAFA1C29D26D0054880D /* ExportOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportOperation.swift; sourceTree = "<group>"; };
@@ -197,6 +192,9 @@
 		AD9B966673E730435A54B685 /* Pods-VimeoUpload-iOS-2Step.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-2Step.release.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-2Step/Pods-VimeoUpload-iOS-2Step.release.xcconfig"; sourceTree = "<group>"; };
 		AF34DB681BE721150094D1F8 /* MyVideosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyVideosViewController.swift; sourceTree = "<group>"; };
 		AF34DB691BE721150094D1F8 /* MyVideosViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyVideosViewController.xib; sourceTree = "<group>"; };
+		AF6949591C31BF6A002071FC /* CameraRollAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollAsset.swift; sourceTree = "<group>"; };
+		AF69495A1C31BF6A002071FC /* VIMALAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VIMALAsset.swift; sourceTree = "<group>"; };
+		AF69495B1C31BF6A002071FC /* VIMPHAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VIMPHAsset.swift; sourceTree = "<group>"; };
 		AFF28EC11C03D52900258476 /* VideoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCell.swift; sourceTree = "<group>"; };
 		AFF28EC21C03D52900258476 /* VideoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoCell.xib; sourceTree = "<group>"; };
 		AFF28EC41C03D52900258476 /* UploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
@@ -468,9 +466,6 @@
 				50DCCAB21C29CE090054880D /* CameraRollAssetHelper.swift */,
 				50DCCAB11C29CE090054880D /* ALAssetHelper.swift */,
 				50DCCAB51C29CE090054880D /* PHAssetHelper.swift */,
-				50DCCAB31C29CE090054880D /* CameraRollAsset.swift */,
-				50DCCAB71C29CE090054880D /* VIMALAsset.swift */,
-				50DCCAB81C29CE090054880D /* VIMPHAsset.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -478,7 +473,9 @@
 		50DCCAB91C29CE090054880D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				50DCCABA1C29CE090054880D /* PHAssetContainer.swift */,
+				AF6949591C31BF6A002071FC /* CameraRollAsset.swift */,
+				AF69495A1C31BF6A002071FC /* VIMALAsset.swift */,
+				AF69495B1C31BF6A002071FC /* VIMPHAsset.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -865,7 +862,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50DCCAF41C29CE090054880D /* VIMALAsset.swift in Sources */,
 				50DCCB111C29D26D0054880D /* PHAssetExportSessionOperation.swift in Sources */,
 				50DCCAE91C29CE090054880D /* DailyQuotaOperation.swift in Sources */,
 				50DCCB131C29D26D0054880D /* VideoOperation.swift in Sources */,
@@ -881,6 +877,7 @@
 				50DCCAF11C29CE090054880D /* ForegroundSessionManager.swift in Sources */,
 				50DCCAC71C29CE090054880D /* KeyedArchiver.swift in Sources */,
 				50DCCB0E1C29D26D0054880D /* DeleteVideoOperation.swift in Sources */,
+				AF69495E1C31BF6A002071FC /* VIMPHAsset.swift in Sources */,
 				50DCCAF71C29CE090054880D /* BaseCameraRollViewController.swift in Sources */,
 				AF34DB701BE721150094D1F8 /* MyVideosViewController.swift in Sources */,
 				50DCCB161C29D26D0054880D /* PHAssetRetryUploadOperation.swift in Sources */,
@@ -895,9 +892,7 @@
 				50DCCAD21C29CE090054880D /* BlockTypes.swift in Sources */,
 				50DCCB0B1C29D26D0054880D /* ExportOperation.swift in Sources */,
 				50DCCB0D1C29D26D0054880D /* ConcurrentOperation.swift in Sources */,
-				50DCCAF61C29CE090054880D /* PHAssetContainer.swift in Sources */,
 				50DCCB181C29D3190054880D /* ALAssetExportQuotaOperation.swift in Sources */,
-				50DCCAF01C29CE090054880D /* CameraRollAsset.swift in Sources */,
 				AFF28EC71C03D52900258476 /* UploadManager.swift in Sources */,
 				50DCCB221C29F9270054880D /* RetryUploadOperation.swift in Sources */,
 				50DCCAD11C29CE090054880D /* String+Extensions.swift in Sources */,
@@ -907,8 +902,10 @@
 				50DCCB0C1C29D26D0054880D /* MeQuotaOperation.swift in Sources */,
 				50DCCAC11C29CE090054880D /* VideoRefreshManager.swift in Sources */,
 				50DCCADA1C29CE090054880D /* VimeoRequestSerializer.swift in Sources */,
+				AF69495D1C31BF6A002071FC /* VIMALAsset.swift in Sources */,
 				50DCCB1A1C29D69E0054880D /* ALAssetExportQuotaCreateOperation.swift in Sources */,
 				50DCCAD31C29CE090054880D /* VideoSettings.swift in Sources */,
+				AF69495C1C31BF6A002071FC /* CameraRollAsset.swift in Sources */,
 				50DCCADB1C29CE090054880D /* VimeoResponseSerializer.swift in Sources */,
 				50DCCB0F1C29D26D0054880D /* PHAssetCloudExportQuotaOperation.swift in Sources */,
 				50DCCAD51C29CE090054880D /* VimeoRequestSerializer+Upload2.swift in Sources */,
@@ -919,7 +916,6 @@
 				50DCCAC91C29CE090054880D /* Upload1Descriptor.swift in Sources */,
 				50DCCAF31C29CE090054880D /* UploadReporter.swift in Sources */,
 				50DCCAC81C29CE090054880D /* Upload2Descriptor.swift in Sources */,
-				50DCCAF51C29CE090054880D /* VIMPHAsset.swift in Sources */,
 				50DCCAD71C29CE090054880D /* VimeoRequestSerializer+Upload.swift in Sources */,
 				50DCCAEB1C29CE090054880D /* WeeklyQuotaOperation.swift in Sources */,
 				50DCCAC01C29CE090054880D /* VideoDeletionManager.swift in Sources */,

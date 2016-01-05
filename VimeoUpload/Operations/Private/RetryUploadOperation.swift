@@ -32,7 +32,7 @@ class RetryUploadOperation: ConcurrentOperation
         }
     }
     
-    // MARK: Initialization
+    // MARK: - Initialization
     
     init(sessionManager: VimeoSessionManager)
     {

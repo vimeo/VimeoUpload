@@ -57,7 +57,7 @@ class WeeklyQuotaOperation: NSOperation
         }
         else
         {
-            self.error = NSError(domain: WeeklyQuotaOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.space information"])
+            self.error = NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.space information"])
         }
     }
 }

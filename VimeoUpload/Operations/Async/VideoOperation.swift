@@ -36,7 +36,7 @@ class VideoOperation: ConcurrentOperation
     private(set) var video: VIMVideo?
     private(set) var error: NSError?
     
-    // MARK: Initialization
+    // MARK: - Initialization
     
     init(sessionManager: VimeoSessionManager, videoUri: String)
     {
@@ -102,6 +102,5 @@ class VideoOperation: ConcurrentOperation
         super.cancel()
         
         self.task?.cancel()
-        self.task = nil
     }
 }

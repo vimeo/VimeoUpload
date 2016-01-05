@@ -36,7 +36,7 @@ class ALAssetRetryUploadOperation: RetryUploadOperation
 {
     private let alAsset: ALAsset
     
-    // MARK: Initialization
+    // MARK: - Initialization
     
     init(sessionManager: VimeoSessionManager, alAsset: ALAsset)
     {

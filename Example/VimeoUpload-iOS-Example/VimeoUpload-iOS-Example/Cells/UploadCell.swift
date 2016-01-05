@@ -53,8 +53,8 @@ class UploadCell: UITableViewCell
         {
         willSet
         {
-            self.descriptor?.removeObserver(self, forKeyPath: UploadCell.StateKeyPath, context: &self.stateKVOContext)
-            self.descriptor?.progress?.removeObserver(self, forKeyPath: UploadCell.ProgressKeyPath, context: &self.progressKVOContext)
+            self.descriptor?.removeObserver(self, forKeyPath: self.dynamicType.StateKeyPath, context: &self.stateKVOContext)
+            self.descriptor?.progress?.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
         }
         
         didSet
@@ -64,8 +64,8 @@ class UploadCell: UITableViewCell
                 self.updateState(state)
             }
             
-            self.descriptor?.addObserver(self, forKeyPath: UploadCell.StateKeyPath, options: NSKeyValueObservingOptions.New, context: &self.stateKVOContext)
-            self.descriptor?.progress?.addObserver(self, forKeyPath: UploadCell.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
+            self.descriptor?.addObserver(self, forKeyPath: self.dynamicType.StateKeyPath, options: NSKeyValueObservingOptions.New, context: &self.stateKVOContext)
+            self.descriptor?.progress?.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
         }
     }
 
@@ -82,8 +82,8 @@ class UploadCell: UITableViewCell
         }
     }
     
-    // MARK:
-        
+    // MARK: - Initialization
+    
     override func awakeFromNib()
     {
         super.awakeFromNib()
@@ -146,7 +146,7 @@ class UploadCell: UITableViewCell
         {
             switch (keyPath, context)
             {
-            case(UploadCell.ProgressKeyPath, &self.progressKVOContext):
+            case(self.dynamicType.ProgressKeyPath, &self.progressKVOContext):
                 
                 let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
                 
@@ -158,7 +158,7 @@ class UploadCell: UITableViewCell
                     self?.updateProgress(progress)
                 })
                 
-            case(UploadCell.StateKeyPath, &self.stateKVOContext):
+            case(self.dynamicType.StateKeyPath, &self.stateKVOContext):
                 
                 let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? State.Ready.rawValue;
                 let state = State(rawValue: stateRaw)!

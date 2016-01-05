@@ -37,7 +37,7 @@ class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
 {    
     let phAsset: PHAsset
 
-    // MARK: Initialization
+    // MARK: - Initialization
     
     init(me: VIMUser, phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {

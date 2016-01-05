@@ -60,7 +60,7 @@ class KeyedArchiver: ArchiverProtocol
         var URL = NSURL(string: self.basePath)!
         
         URL = URL.URLByAppendingPathComponent(key)
-        URL = URL.URLByAppendingPathExtension(KeyedArchiver.ArchiveExtension)
+        URL = URL.URLByAppendingPathExtension(self.dynamicType.ArchiveExtension)
         
         return URL.absoluteString as String
     }

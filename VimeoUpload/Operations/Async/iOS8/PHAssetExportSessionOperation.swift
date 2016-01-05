@@ -41,7 +41,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
     private(set) var result: AVAssetExportSession?
     private(set) var error: NSError?
     
-    // MARK: Initialization
+    // MARK: - Initialization
     
     deinit
     {
@@ -131,7 +131,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.error = NSError(domain: PHAssetExportSessionOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Request for export session returned no error and no export session"])
+                strongSelf.error = NSError(domain: strongSelf.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Request for export session returned no error and no export session"])
             }
             
             strongSelf.state = .Finished

@@ -55,8 +55,7 @@ class DescriptorManager
     
     var backgroundEventsCompletionHandler: VoidBlock?
 
-    // MARK:
-    // MARK: Initialization
+    // MARK: - Initialization
     
     // By passing the delegate into the constructor (as opposed to using a public property)
     // We ensure that early events like "load" can be reported [AH] 11/25/2015
@@ -198,6 +197,12 @@ class DescriptorManager
                 strongSelf.descriptorTracker.save()
                 strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.descriptorTracker.descriptors.count)
 
+                // If the descriptor is suspended, it means we've cancelled the task so we can start over from byte 0
+                if descriptor.state == .Suspended
+                {
+                    return
+                }
+                
                 if descriptor.state == .Finished
                 {
                     strongSelf.descriptorTracker.remove(descriptor)
@@ -272,7 +277,7 @@ class DescriptorManager
     
     func addDescriptor(descriptor: Descriptor)
     {
-        // TODO: should this be sync? Changed this to async due to deadlock
+        // TODO: should this be sync? Changed this to async due to deadlock related to notifications
         
         dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
             

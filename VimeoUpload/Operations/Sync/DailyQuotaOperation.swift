@@ -56,7 +56,7 @@ class DailyQuotaOperation: NSOperation
         }
         else
         {
-            self.error = NSError(domain: DailyQuotaOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.quota information"])
+            self.error = NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.quota information"])
         }
     }
 }

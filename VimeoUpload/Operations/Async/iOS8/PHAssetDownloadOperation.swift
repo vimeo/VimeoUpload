@@ -40,7 +40,7 @@ class PHAssetDownloadOperation: ConcurrentOperation
     private(set) var result: AVAsset?
     private(set) var error: NSError?
 
-    // MARK: Initialization
+    // MARK: - Initialization
 
     deinit
     {
@@ -142,7 +142,7 @@ class PHAssetDownloadOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.error = NSError(domain: PHAssetDownloadOperation.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Request for AVAsset returned no error and no asset."])
+                strongSelf.error = NSError(domain: strongSelf.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Request for AVAsset returned no error and no asset."])
             }
             
             strongSelf.state = .Finished
