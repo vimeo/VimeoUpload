@@ -73,7 +73,7 @@ import Photos
             
             if cameraRollAsset.inCloud == true
             {
-                cell.setError("iCloud")
+                cell.setError(message: "iCloud")
             }
             
             if let image = image
@@ -82,7 +82,7 @@ import Photos
             }
             else if let error = cameraRollAsset.error
             {
-                cell.setError(error.localizedDescription)
+                cell.setError(message: error.localizedDescription)
             }
         })
         
@@ -93,7 +93,7 @@ import Photos
     {
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
 
-        cell.setDuration(phAsset.duration)
+        cell.setDuration(seconds: phAsset.duration)
 
         self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
         
@@ -124,18 +124,18 @@ import Photos
 
                 if cameraRollAsset.inCloud == true
                 {
-                    cell.setError("iCloud")
+                    cell.setError(message: "iCloud")
                 }
 
                 if let asset = asset
                 {
                     asset.approximateFileSizeInMegabytes({ (value) -> Void in
-                        cell.setFileSize(value)
+                        cell.setFileSize(megabytes: value)
                     })
                 }
                 else if let error = cameraRollAsset.error
                 {
-                    cell.setError(error.localizedDescription)
+                    cell.setError(message: error.localizedDescription)
                 }
             })
         }
