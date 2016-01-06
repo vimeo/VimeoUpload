@@ -34,7 +34,7 @@ class CameraRollCell: UICollectionViewCell
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var fileSizeLabel: UILabel!
     @IBOutlet weak var durationlabel: UILabel!
-    @IBOutlet weak var errorLabel: UILabel!
+    @IBOutlet weak var gradientView: VIMGradientView!
     
     override var selected: Bool
     {
@@ -58,6 +58,8 @@ class CameraRollCell: UICollectionViewCell
         super.awakeFromNib()
     
         self.clear()
+        
+        self.gradientView.setColors(topColor: UIColor.clearColor(), bottomColor: UIColor.blackColor().colorWithAlphaComponent(0.5))
     }
 
     override func prepareForReuse()
@@ -74,7 +76,6 @@ class CameraRollCell: UICollectionViewCell
         self.imageView.image = nil
         self.fileSizeLabel.text = ""
         self.durationlabel.text = ""
-        self.errorLabel.text = ""
     }
     
     // MARK: Public API
@@ -86,16 +87,17 @@ class CameraRollCell: UICollectionViewCell
     
     func setDuration(seconds seconds: Float64)
     {
-        self.durationlabel?.text = String.stringFromDurationInSeconds(seconds)
+        self.durationlabel?.text = String.stringFromDurationInSeconds(seconds) as String
     }
     
-    func setFileSize(megabytes megabytes: Float64)
+    func setFileSize(bytes bytes: Float64)
     {
-        self.fileSizeLabel.text = String(format: "%.2f MB", megabytes)
+        let string = NSString.stringFromFileSize(bytes: bytes)
+        self.fileSizeLabel.text = string as String
     }
-    
-    func setError(message message: String)
+
+    func setInCloud()
     {
-        self.errorLabel.text = message
+        self.fileSizeLabel.text = NSLocalizedString("iCloud", comment: "")
     }
 }

@@ -28,15 +28,7 @@ import Foundation
 import AVFoundation
 
 extension AVAsset
-{
-    func approximateFileSizeInMegabytes(completion: FloatBlock)
-    {
-        self.approximateFileSize { (value) -> Void in
-            let megabytes = value / Float64(1024 * 1024)
-            completion(value: megabytes)
-        }
-    }
-    
+{    
     func approximateFileSize(completion: FloatBlock)
     {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in

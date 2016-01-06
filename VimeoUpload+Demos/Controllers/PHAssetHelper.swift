@@ -73,7 +73,7 @@ import Photos
             
             if cameraRollAsset.inCloud == true
             {
-                cell.setError(message: "iCloud")
+                cell.setInCloud()
             }
             
             if let image = image
@@ -82,7 +82,7 @@ import Photos
             }
             else if let error = cameraRollAsset.error
             {
-                cell.setError(message: error.localizedDescription)
+//                cell.setError(message: error.localizedDescription)
             }
         })
         
@@ -124,18 +124,18 @@ import Photos
 
                 if cameraRollAsset.inCloud == true
                 {
-                    cell.setError(message: "iCloud")
+                    cell.setInCloud()
                 }
 
                 if let asset = asset
                 {
-                    asset.approximateFileSizeInMegabytes({ (value) -> Void in
-                        cell.setFileSize(megabytes: value)
+                    asset.approximateFileSize({ (value) -> Void in
+                        cell.setFileSize(bytes: value)
                     })
                 }
                 else if let error = cameraRollAsset.error
                 {
-                    cell.setError(message: error.localizedDescription)
+//                    cell.setError(message: error.localizedDescription)
                 }
             })
         }
