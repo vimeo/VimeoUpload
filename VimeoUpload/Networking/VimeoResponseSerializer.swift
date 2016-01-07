@@ -27,9 +27,7 @@
 import Foundation
 
 class VimeoResponseSerializer: AFJSONResponseSerializer
-{
-    static let ErrorDomain = "VimeoResponseSerializerErrorDomain"
-    
+{    
     override init()
     {
         super.init()
@@ -74,26 +72,17 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
         
         if let error = error
         {
-            throw error.errorByAddingDomain(nil, code: nil, userInfo: errorInfo)
+            throw error.errorByAddingDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, userInfo: errorInfo)
         }
-        
-        do
-        {
-            try self.checkStatusCodeValidity(response: response)
-        }
-        catch let error as NSError
-        {
-            throw error.errorByAddingDomain(self.dynamicType.ErrorDomain, code: nil, userInfo: errorInfo)
-        }
+
+        try self.checkStatusCodeValidity(response: response)
     }
 
     func checkStatusCodeValidity(response response: NSURLResponse?) throws
     {
         if let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode < 200 || httpResponse.statusCode > 299
         {
-            let userInfo = [NSLocalizedDescriptionKey: "Invalid http status code for download task"]
-            
-            throw NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: userInfo)
+            throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Invalid http status code for download task")
         }
     }
     
@@ -101,12 +90,12 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
     {
         guard let url = url else
         {
-            throw NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Url for completed download task is nil."])
+            throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Url for completed download task is nil.")
         }
         
         guard let data = NSData(contentsOfURL: url) else
         {
-            throw NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Data at url for completed download task is nil."])
+            throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Data at url for completed download task is nil.")
         }
         
         var dictionary: [String: AnyObject]? = [:]
@@ -118,13 +107,13 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
             }
             catch let error as NSError
             {
-                throw error
+                throw error.errorByAddingDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue)
             }
         }
         
         if dictionary == nil
         {
-            throw NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Download task response dictionary is nil."])
+            throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Download task response dictionary is nil.")
         }
         
         return dictionary!

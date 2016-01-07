@@ -58,6 +58,8 @@ enum UploadErrorDomain: String
     case PHAssetDownloadOperation = "PHAssetDownloadOperationErrorDomain"
     case ExportOperation = "ExportOperationErrorDomain"
     case DeleteVideoOperation = "DeleteVideoOperationErrorDomain"
+    
+    case VimeoResponseSerializer = "VimeoResponseSerializerErrorDomain"
 }
 
 enum UploadErrorCode: Int
