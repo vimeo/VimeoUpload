@@ -223,7 +223,7 @@ extension VimeoResponseSerializer
             }
         }
         
-        throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to parse videos array from responseObject failed"])
+        throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse videos array from responseObject failed")
     }
 
     private func videoFromResponseObject(responseObject: AnyObject?) throws -> VIMVideo
@@ -239,7 +239,7 @@ extension VimeoResponseSerializer
             }
         }
         
-        throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to parse video object from responseObject failed"])
+        throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse video object from responseObject failed")
     }
 
     private func userFromResponseObject(responseObject: AnyObject?) throws -> VIMUser
@@ -255,7 +255,7 @@ extension VimeoResponseSerializer
             }
         }
         
-        throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to parse user object from responseObject failed"])
+        throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse user object from responseObject failed")
     }
 
     private func uploadTicketFromResponseObject(responseObject: AnyObject?) throws -> VIMUploadTicket
@@ -271,6 +271,6 @@ extension VimeoResponseSerializer
             }
         }
         
-        throw NSError(domain: VimeoResponseSerializer.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to parse uploadTicket object from responseObject failed"])
+        throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse uploadTicket object from responseObject failed")
     }
 }
