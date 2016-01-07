@@ -85,14 +85,27 @@ class CameraRollCell: UICollectionViewCell
         self.imageView.image = image
     }
     
-    func setDuration(seconds seconds: Float64)
+    func setDuration(seconds seconds: Float64?)
     {
-        self.durationlabel?.text = String.stringFromDurationInSeconds(seconds) as String
+        var string: NSString = ""
+
+        if let seconds = seconds
+        {
+            string = String.stringFromDurationInSeconds(seconds) as String
+        }
+
+        self.durationlabel?.text = string as String
     }
     
-    func setFileSize(bytes bytes: Float64)
+    func setFileSize(bytes bytes: Float64?)
     {
-        let string = NSString.stringFromFileSize(bytes: bytes)
+        var string: NSString = ""
+        
+        if let bytes = bytes
+        {
+            string = NSString.stringFromFileSize(bytes: bytes)
+        }
+
         self.fileSizeLabel.text = string as String
     }
 

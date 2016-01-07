@@ -171,14 +171,14 @@ class ExportQuotaOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed weekly quota."])
+                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: UploadErrorCode.WeeklyQuotaException.rawValue, description: "Upload would exceed weekly quota.")
                 }
                 else
                 {
                     strongSelf.result = url
                     strongSelf.state = .Finished
                 }
-                })
+            })
         }
         
         self.operationQueue.addOperation(operation)

@@ -174,7 +174,7 @@ class ExportQuotaCreateOperation: ConcurrentOperation
                     strongSelf.uploadTicket = operation.result!
                     strongSelf.state = .Finished
                 }
-                })
+            })
         }
         
         self.operationQueue.addOperation(operation)

@@ -29,9 +29,7 @@ import Photos
 
 @available(iOS 8, *)
 class PHAssetDownloadOperation: ConcurrentOperation
-{
-    private static let ErrorDomain = "PHAssetDownloadOperationErrorDomain"
-    
+{    
     private let phAsset: PHAsset
     
     private var requestID: PHImageRequestID?
@@ -93,7 +91,7 @@ class PHAssetDownloadOperation: ConcurrentOperation
             if let error = error
             {
                 strongSelf.progressBlock = nil
-                strongSelf.error = error
+                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue)
                 strongSelf.state = .Finished
             }
             else if let info = info, let error = info[PHImageErrorKey] as? NSError
@@ -134,7 +132,7 @@ class PHAssetDownloadOperation: ConcurrentOperation
 
             if let info = info, let error = info[PHImageErrorKey] as? NSError
             {
-                strongSelf.error = error
+                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue)
             }
             else if let asset = asset
             {
@@ -142,7 +140,7 @@ class PHAssetDownloadOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.error = NSError(domain: strongSelf.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Request for AVAsset returned no error and no asset."])
+                strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue, code: nil, description: "Request for AVAsset returned no error and no asset.")
             }
             
             strongSelf.state = .Finished
@@ -152,8 +150,6 @@ class PHAssetDownloadOperation: ConcurrentOperation
     override func cancel()
     {
         super.cancel()
-
-        print("PHAssetDownloadOperation cancelled")
 
         self.cleanup()
     }

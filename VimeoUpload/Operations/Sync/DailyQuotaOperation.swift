@@ -28,9 +28,7 @@ import Foundation
 import AVFoundation
 
 class DailyQuotaOperation: NSOperation
-{
-    private static let ErrorDomain = "DailyQuotaOperationErrorDomain"
-    
+{    
     private let user: VIMUser
     
     private(set) var result: Bool?
@@ -45,9 +43,6 @@ class DailyQuotaOperation: NSOperation
     
     // MARK: Overrides
 
-    // Because we haven't yet exported the asset we check against approximate filesize
-    // If we can't calculate the available disk space we eval to true beacuse we'll catch any real error later during export
-
     override func main()
     {
         if let sd = self.user.uploadQuota?.quantityQuota?.canUploadSd, let hd = self.user.uploadQuota?.quantityQuota?.canUploadHd
@@ -56,7 +51,7 @@ class DailyQuotaOperation: NSOperation
         }
         else
         {
-            self.error = NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.quota information"])
+            self.error = NSError.errorWithDomain(UploadErrorDomain.DailyQuotaOperation.rawValue, code: UploadErrorCode.CannotEvaluateDailyQuota.rawValue, description: "User object did not contain uploadQuota.quota information")
         }
     }
 }

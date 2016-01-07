@@ -80,9 +80,9 @@ import Photos
             {
                 cell.setImage(image)
             }
-            else if let error = cameraRollAsset.error
+            else if let _ = cameraRollAsset.error
             {
-//                cell.setError(message: error.localizedDescription)
+                // Do nothing, placeholder image that's embedded in the cell's nib will remain visible
             }
         })
         
@@ -133,9 +133,11 @@ import Photos
                         cell.setFileSize(bytes: value)
                     })
                 }
-                else if let error = cameraRollAsset.error
+                else if let _ = cameraRollAsset.error
                 {
-//                    cell.setError(message: error.localizedDescription)
+                     // Set empty strings when asset is not available
+                    cell.setFileSize(bytes: nil)
+                    cell.setDuration(seconds: nil)
                 }
             })
         }

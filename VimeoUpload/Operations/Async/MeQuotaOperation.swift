@@ -200,7 +200,7 @@ class MeQuotaOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.MeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate daily quota."])
+                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadErrorCode.DailyQuotaException.rawValue, description: "Upload would exceed daily quota.")
                 }
                 else
                 {
@@ -251,7 +251,7 @@ class MeQuotaOperation: ConcurrentOperation
                     }
                     else if let result = operation.result where result == false
                     {
-                        strongSelf.error = NSError(domain: UploadErrorDomain.MeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
+                        strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadErrorCode.ApproximateWeeklyQuotaException.rawValue, description: "Upload would exceed approximate weekly quota.")
                     }
                     else
                     {
@@ -287,7 +287,7 @@ class MeQuotaOperation: ConcurrentOperation
                 }
                 else if let result = operation.result where result == false
                 {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.MeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
+                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadErrorCode.ApproximateDiskSpaceException.rawValue, description: "Not enough approximate disk space to export asset.")
                 }
                 else
                 {

@@ -74,7 +74,7 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
         
         if let error = error
         {
-            throw error.errorByAddingDomain(nil, userInfo: errorInfo)
+            throw error.errorByAddingDomain(nil, code: nil, userInfo: errorInfo)
         }
         
         do
@@ -83,7 +83,7 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(self.dynamicType.ErrorDomain, userInfo: errorInfo)
+            throw error.errorByAddingDomain(self.dynamicType.ErrorDomain, code: nil, userInfo: errorInfo)
         }
     }
 
