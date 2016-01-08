@@ -75,6 +75,12 @@ enum UploadErrorCode: Int
     case AssetIsNotExportable = 8
 }
 
+enum UploadErrorKey: String
+{
+    case VimeoErrorCode = "vimeo code"
+    case VimeoErrorDomain = "vimeo domain"
+}
+
 extension NSError
 {    
     class func errorWithDomain(domain: String?, code: Int?, description: String?) -> NSError
@@ -115,12 +121,12 @@ extension NSError
         
         if let domain = domain
         {
-            augmentedInfo["vimeo domain"] = domain
+            augmentedInfo[UploadErrorKey.VimeoErrorDomain.rawValue] = domain
         }
 
         if let code = code
         {
-            augmentedInfo["vimeo code"] = code
+            augmentedInfo[UploadErrorKey.VimeoErrorCode.rawValue] = code
         }
 
         if let userInfo = userInfo
