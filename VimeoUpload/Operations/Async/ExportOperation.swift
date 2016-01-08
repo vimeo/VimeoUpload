@@ -108,9 +108,9 @@ class ExportOperation: ConcurrentOperation
             return
         }
         
-        if self.exportSession.asset.exportable == false
+        if self.exportSession.asset.exportable == false // DRM protected
         {
-            self.error = NSError.errorWithDomain(UploadErrorDomain.ExportOperation.rawValue, code: UploadErrorCode.AssetIsNotExportable.rawValue, description: "Asset is not exportable")
+            self.error = NSError.errorWithDomain(UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.AssetIsNotExportable.rawValue, description: "Asset is not exportable")
             self.state = .Finished
             
             return
@@ -121,7 +121,7 @@ class ExportOperation: ConcurrentOperation
         let availableDiskSpace = try? NSFileManager.defaultManager().availableDiskSpace() // Double optional
         if let diskSpace = availableDiskSpace, let space = diskSpace where space.longLongValue < self.exportSession.estimatedOutputFileLength
         {
-            self.error = NSError.errorWithDomain(UploadErrorDomain.ExportOperation.rawValue, code: UploadErrorCode.DiskSpaceException.rawValue, description: "Not enough disk space to copy asset")
+            self.error = NSError.errorWithDomain(UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.DiskSpaceException.rawValue, description: "Not enough disk space to copy asset")
             self.state = .Finished
             
             return
@@ -145,7 +145,7 @@ class ExportOperation: ConcurrentOperation
 
                 if error.domain == AVFoundationErrorDomain && error.code == AVError.DiskFull.rawValue
                 {
-                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue).errorByAddingCode(UploadErrorCode.DiskSpaceException.rawValue)
+                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue).errorByAddingCode(UploadLocalErrorCode.DiskSpaceException.rawValue)
                 }
                 else
                 {

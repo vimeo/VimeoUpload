@@ -62,27 +62,28 @@ enum UploadErrorDomain: String
     case VimeoResponseSerializer = "VimeoResponseSerializerErrorDomain"
 }
 
-enum UploadErrorCode: Int
+@objc enum UploadLocalErrorCode: Int
 {
     case CannotEvaluateDailyQuota = 0 // "User object did not contain uploadQuota.quota information"
     case CannotCalculateDiskSpace = 1 // "File system information did not contain NSFileSystemFreeSize key:value pair"
     case CannotEvaluateWeeklyQuota = 2 // "User object did not contain uploadQuota.space information"
-    case DailyQuotaException = 3
-    case WeeklyQuotaException = 4
-    case DiskSpaceException = 5
-    case ApproximateWeeklyQuotaException = 6
-    case ApproximateDiskSpaceException = 7
-    case AssetIsNotExportable = 8
+    
+    case DiskSpaceException = 3
+    case AssetIsNotExportable = 4    
+    case DailyQuotaException = 5
+    case WeeklyQuotaException = 6
 }
 
 enum UploadErrorKey: String
 {
-    case VimeoErrorCode = "vimeo code"
-    case VimeoErrorDomain = "vimeo domain"
+    case VimeoErrorCode = "VimeoLocalErrorCode"
+    case VimeoErrorDomain = "VimeoDomain"
 }
 
 extension NSError
-{    
+{
+    // MARK: Creation / Augmentation
+    
     class func errorWithDomain(domain: String?, code: Int?, description: String?) -> NSError
     {
         var error = NSError(domain: UploadErrorDomain.VimeoUpload.rawValue, code: 0, userInfo: nil)

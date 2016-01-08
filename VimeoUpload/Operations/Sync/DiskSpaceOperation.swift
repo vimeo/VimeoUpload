@@ -55,12 +55,12 @@ class DiskSpaceOperation: NSOperation
             }
             else
             {
-                self.error = NSError.errorWithDomain(UploadErrorDomain.DiskSpaceOperation.rawValue, code: UploadErrorCode.CannotCalculateDiskSpace.rawValue, description: "File system information did not contain NSFileSystemFreeSize key:value pair")
+                self.error = NSError.errorWithDomain(UploadErrorDomain.DiskSpaceOperation.rawValue, code: UploadLocalErrorCode.CannotCalculateDiskSpace.rawValue, description: "File system information did not contain NSFileSystemFreeSize key:value pair")
             }
         }
         catch
         {
-            self.error = NSError.errorWithDomain(UploadErrorDomain.DiskSpaceOperation.rawValue, code: UploadErrorCode.CannotCalculateDiskSpace.rawValue, description: "Unable to calculate available disk space")
+            self.error = NSError.errorWithDomain(UploadErrorDomain.DiskSpaceOperation.rawValue, code: UploadLocalErrorCode.CannotCalculateDiskSpace.rawValue, description: "Unable to calculate available disk space")
         }
     }
 }

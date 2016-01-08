@@ -51,7 +51,7 @@ class DailyQuotaOperation: NSOperation
         }
         else
         {
-            self.error = NSError.errorWithDomain(UploadErrorDomain.DailyQuotaOperation.rawValue, code: UploadErrorCode.CannotEvaluateDailyQuota.rawValue, description: "User object did not contain uploadQuota.quota information")
+            self.error = NSError.errorWithDomain(UploadErrorDomain.DailyQuotaOperation.rawValue, code: UploadLocalErrorCode.CannotEvaluateDailyQuota.rawValue, description: "User object did not contain uploadQuota.quota information")
         }
     }
 }
