@@ -26,7 +26,7 @@
 
 import UIKit
 
-class CameraRollCell: UICollectionViewCell
+class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
 {
     static let CellIdentifier = "CameraRollCellIdentifier"
     static let NibName = "CameraRollCell"
@@ -34,7 +34,6 @@ class CameraRollCell: UICollectionViewCell
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var fileSizeLabel: UILabel!
     @IBOutlet weak var durationlabel: UILabel!
-    @IBOutlet weak var gradientView: VIMGradientView!
     
     override var selected: Bool
     {
@@ -58,8 +57,6 @@ class CameraRollCell: UICollectionViewCell
         super.awakeFromNib()
     
         self.clear()
-        
-        self.gradientView.setColors(topColor: UIColor.clearColor(), bottomColor: UIColor.blackColor().colorWithAlphaComponent(0.5))
     }
 
     override func prepareForReuse()
@@ -78,18 +75,18 @@ class CameraRollCell: UICollectionViewCell
         self.durationlabel.text = ""
     }
     
-    // MARK: Public API
+    // MARK: CameraRollAssetCell Protocol
     
-    func setImage(image: UIImage)
+    @objc func setImage(image: UIImage)
     {
         self.imageView.image = image
     }
     
-    func setDuration(seconds seconds: Float64?)
+    @objc func setDuration(seconds seconds: Float64)
     {
         var string: NSString = ""
 
-        if let seconds = seconds
+        if seconds > 0
         {
             string = String.stringFromDurationInSeconds(seconds) as String
         }
@@ -97,11 +94,11 @@ class CameraRollCell: UICollectionViewCell
         self.durationlabel?.text = string as String
     }
     
-    func setFileSize(bytes bytes: Float64?)
+    @objc func setFileSize(bytes bytes: Float64)
     {
         var string: NSString = ""
         
-        if let bytes = bytes
+        if bytes > 0
         {
             string = NSString.stringFromFileSize(bytes: bytes)
         }
@@ -109,7 +106,7 @@ class CameraRollCell: UICollectionViewCell
         self.fileSizeLabel.text = string as String
     }
 
-    func setInCloud()
+    @objc func setInCloud()
     {
         self.fileSizeLabel.text = NSLocalizedString("iCloud", comment: "")
     }

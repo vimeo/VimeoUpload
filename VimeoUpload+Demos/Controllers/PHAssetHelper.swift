@@ -37,7 +37,7 @@ import Photos
 
     // MARK: CameraRollAssetHelper
     
-    func requestImage(cell cell: CameraRollCell, cameraRollAsset: CameraRollAsset)
+    func requestImage(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
     {
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
         let size = cell.bounds.size
@@ -89,7 +89,7 @@ import Photos
         self.activeImageRequests[phAsset.localIdentifier] = requestID
     }
     
-    func requestAsset(cell cell: CameraRollCell, cameraRollAsset: CameraRollAsset)
+    func requestAsset(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
     {
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
 
@@ -136,8 +136,8 @@ import Photos
                 else if let _ = cameraRollAsset.error
                 {
                      // Set empty strings when asset is not available
-                    cell.setFileSize(bytes: nil)
-                    cell.setDuration(seconds: nil)
+                    cell.setFileSize(bytes: 0)
+                    cell.setDuration(seconds: 0)
                 }
             })
         }

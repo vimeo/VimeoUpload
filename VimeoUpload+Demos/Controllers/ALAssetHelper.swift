@@ -12,7 +12,7 @@ import AVFoundation
 
 @objc class ALAssetHelper: NSObject, CameraRollAssetHelper
 {
-    func requestImage(cell cell: CameraRollCell, cameraRollAsset: CameraRollAsset)
+    func requestImage(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
     {
         let alAsset = cameraRollAsset as! ALAsset
 
@@ -22,7 +22,7 @@ import AVFoundation
         // TODO: configure cell
     }
     
-    func requestAsset(cell cell: CameraRollCell, cameraRollAsset: CameraRollAsset)
+    func requestAsset(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
     {
         let alAsset = cameraRollAsset as! ALAsset
         
