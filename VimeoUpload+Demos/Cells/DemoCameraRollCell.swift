@@ -77,12 +77,12 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
     
     // MARK: CameraRollAssetCell Protocol
     
-    @objc func setImage(image: UIImage)
+    func setImage(image: UIImage)
     {
         self.imageView.image = image
     }
     
-    @objc func setDuration(seconds seconds: Float64)
+    func setDuration(seconds seconds: Float64)
     {
         var string: NSString = ""
 
@@ -94,7 +94,7 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
         self.durationlabel?.text = string as String
     }
     
-    @objc func setFileSize(bytes bytes: Float64)
+    func setFileSize(bytes bytes: Float64)
     {
         var string: NSString = ""
         
@@ -106,7 +106,7 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
         self.fileSizeLabel.text = string as String
     }
 
-    @objc func setInCloud()
+    func setInCloud()
     {
         self.fileSizeLabel.text = NSLocalizedString("iCloud", comment: "")
     }
