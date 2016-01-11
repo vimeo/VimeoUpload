@@ -48,9 +48,7 @@ class VideoDeletionManager: NSObject
         self.operationQueue.cancelAllOperations()
         self.removeObservers()
     }
-    
-    // TODO: support deletion of password protected videos
-    
+        
     init(sessionManager: VimeoSessionManager, retryCount: Int)
     {
         self.sessionManager = sessionManager

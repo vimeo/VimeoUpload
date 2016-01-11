@@ -35,7 +35,6 @@ import AVFoundation
 
 class ExportOperation: ConcurrentOperation
 {
-    private static let ErrorDomain = "AVAssetExportOperationErrorDomain"
     private static let ProgressKeyPath = "progress"
     private static let FileType = AVFileTypeMPEG4
     private static let DocumentsURL = NSURL(string: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])!
@@ -109,9 +108,9 @@ class ExportOperation: ConcurrentOperation
             return
         }
         
-        if self.exportSession.asset.exportable == false
+        if self.exportSession.asset.exportable == false // DRM protected
         {
-            self.error = NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Asset is not exportable"])
+            self.error = NSError.errorWithDomain(UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.AssetIsNotExportable.rawValue, description: "Asset is not exportable")
             self.state = .Finished
             
             return
@@ -122,7 +121,7 @@ class ExportOperation: ConcurrentOperation
         let availableDiskSpace = try? NSFileManager.defaultManager().availableDiskSpace() // Double optional
         if let diskSpace = availableDiskSpace, let space = diskSpace where space.longLongValue < self.exportSession.estimatedOutputFileLength
         {
-            self.error = NSError(domain: self.dynamicType.ErrorDomain, code: AVError.DiskFull.rawValue, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
+            self.error = NSError.errorWithDomain(UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.DiskSpaceException.rawValue, description: "Not enough disk space to copy asset")
             self.state = .Finished
             
             return
@@ -142,13 +141,15 @@ class ExportOperation: ConcurrentOperation
             
             if let error = strongSelf.exportSession.error
             {
+                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue)
+
                 if error.domain == AVFoundationErrorDomain && error.code == AVError.DiskFull.rawValue
                 {
-                    strongSelf.error = NSError(domain: strongSelf.dynamicType.ErrorDomain, code: AVError.DiskFull.rawValue, userInfo: [NSLocalizedDescriptionKey: "Not enough disk space to copy asset"])
+                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue).errorByAddingCode(UploadLocalErrorCode.DiskSpaceException.rawValue)
                 }
                 else
                 {
-                    strongSelf.error = error 
+                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue)
                 }
             }
             else if let outputURL = strongSelf.exportSession.outputURL, let path = outputURL.path where NSFileManager.defaultManager().fileExistsAtPath(path)
@@ -157,7 +158,7 @@ class ExportOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.error = NSError(domain: strongSelf.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Export session finished with no error and no output URL."])
+                strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.ExportOperation.rawValue, code: nil, description: "Export session finished with no error and no output URL.")
             }
 
             strongSelf.state = .Finished

@@ -30,8 +30,6 @@ import Photos
 @available(iOS 8, *)
 class PHAssetExportSessionOperation: ConcurrentOperation
 {
-    private static let ErrorDomain = "PHAssetExportSessionOperationErrorDomain"
-
     private let phAsset: PHAsset
     private let exportPreset: String
     
@@ -123,7 +121,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             
             if let info = info, let error = info[PHImageErrorKey] as? NSError
             {
-                strongSelf.error = error
+                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAssetExportSessionOperation.rawValue)
             }
             else if let exportSession = exportSession
             {
@@ -131,7 +129,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.error = NSError(domain: strongSelf.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Request for export session returned no error and no export session"])
+                strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetExportSessionOperation.rawValue, code: nil, description: "Request for export session returned no error and no export session")
             }
             
             strongSelf.state = .Finished

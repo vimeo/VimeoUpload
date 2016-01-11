@@ -26,7 +26,7 @@
 
 import UIKit
 
-class CameraRollCell: UICollectionViewCell
+class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
 {
     static let CellIdentifier = "CameraRollCellIdentifier"
     static let NibName = "CameraRollCell"
@@ -34,7 +34,6 @@ class CameraRollCell: UICollectionViewCell
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var fileSizeLabel: UILabel!
     @IBOutlet weak var durationlabel: UILabel!
-    @IBOutlet weak var errorLabel: UILabel!
     
     override var selected: Bool
     {
@@ -74,28 +73,41 @@ class CameraRollCell: UICollectionViewCell
         self.imageView.image = nil
         self.fileSizeLabel.text = ""
         self.durationlabel.text = ""
-        self.errorLabel.text = ""
     }
     
-    // MARK: Public API
+    // MARK: CameraRollAssetCell Protocol
     
-    func setImage(image: UIImage)
+    @objc func setImage(image: UIImage)
     {
         self.imageView.image = image
     }
     
-    func setDuration(seconds seconds: Float64)
+    @objc func setDuration(seconds seconds: Float64)
     {
-        self.durationlabel?.text = String.stringFromDurationInSeconds(seconds)
+        var string: NSString = ""
+
+        if seconds > 0
+        {
+            string = String.stringFromDurationInSeconds(seconds) as String
+        }
+
+        self.durationlabel?.text = string as String
     }
     
-    func setFileSize(megabytes megabytes: Float64)
+    @objc func setFileSize(bytes bytes: Float64)
     {
-        self.fileSizeLabel.text = String(format: "%.2f MB", megabytes)
+        var string: NSString = ""
+        
+        if bytes > 0
+        {
+            string = NSString.stringFromFileSize(bytes: bytes)
+        }
+
+        self.fileSizeLabel.text = string as String
     }
-    
-    func setError(message message: String)
+
+    @objc func setInCloud()
     {
-        self.errorLabel.text = message
+        self.fileSizeLabel.text = NSLocalizedString("iCloud", comment: "")
     }
 }

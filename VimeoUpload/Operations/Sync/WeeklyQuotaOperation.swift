@@ -28,9 +28,7 @@ import Foundation
 import AVFoundation
 
 class WeeklyQuotaOperation: NSOperation
-{
-    private static let ErrorDomain = "WeeklyQuotaOperationErrorDomain"
-    
+{    
     private let user: VIMUser
     private let filesize: Float64
     
@@ -47,8 +45,6 @@ class WeeklyQuotaOperation: NSOperation
     
     // MARK: Overrides
 
-    // If we can't calculate the available disk space we eval to true beacuse we'll catch any real error later during export
-
     override func main()
     {
         if let free = self.user.uploadQuota?.sizeQuota?.free?.doubleValue
@@ -57,7 +53,7 @@ class WeeklyQuotaOperation: NSOperation
         }
         else
         {
-            self.error = NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "User object did not contain uploadQuota.space information"])
+            self.error = NSError.errorWithDomain(UploadErrorDomain.WeeklyQuotaOperation.rawValue, code: UploadLocalErrorCode.CannotEvaluateWeeklyQuota.rawValue, description: "User object did not contain uploadQuota.space information")
         }
     }
 }

@@ -37,7 +37,7 @@ import Photos
 
     // MARK: CameraRollAssetHelper
     
-    func requestImage(cell cell: CameraRollCell, cameraRollAsset: CameraRollAsset)
+    func requestImage(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
     {
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
         let size = cell.bounds.size
@@ -73,23 +73,23 @@ import Photos
             
             if cameraRollAsset.inCloud == true
             {
-                cell.setError(message: "iCloud")
+                cell.setInCloud()
             }
             
             if let image = image
             {
                 cell.setImage(image)
             }
-            else if let error = cameraRollAsset.error
+            else if let _ = cameraRollAsset.error
             {
-                cell.setError(message: error.localizedDescription)
+                // Do nothing, placeholder image that's embedded in the cell's nib will remain visible
             }
         })
         
         self.activeImageRequests[phAsset.localIdentifier] = requestID
     }
     
-    func requestAsset(cell cell: CameraRollCell, cameraRollAsset: CameraRollAsset)
+    func requestAsset(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
     {
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
 
@@ -124,18 +124,20 @@ import Photos
 
                 if cameraRollAsset.inCloud == true
                 {
-                    cell.setError(message: "iCloud")
+                    cell.setInCloud()
                 }
 
                 if let asset = asset
                 {
-                    asset.approximateFileSizeInMegabytes({ (value) -> Void in
-                        cell.setFileSize(megabytes: value)
+                    asset.approximateFileSize({ (value) -> Void in
+                        cell.setFileSize(bytes: value)
                     })
                 }
-                else if let error = cameraRollAsset.error
+                else if let _ = cameraRollAsset.error
                 {
-                    cell.setError(message: error.localizedDescription)
+                     // Set empty strings when asset is not available
+                    cell.setFileSize(bytes: 0)
+                    cell.setDuration(seconds: 0)
                 }
             })
         }

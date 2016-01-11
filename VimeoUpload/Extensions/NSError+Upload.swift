@@ -28,7 +28,7 @@ import Foundation
 
 enum UploadErrorDomain: String
 {
-    case PHAssetDownload = "PHAssetDownloadErrorDomain"
+    case VimeoUpload = "VimeoUploadErrorDomain"
     case PHAssetExportSession = "PHAssetExportSessionErrorDomain"
     case DailyQuota = "DailyQuotaErrorDomain"
     case WeeklyQuota = "WeeklyQuotaErrorDomain"
@@ -44,31 +44,92 @@ enum UploadErrorDomain: String
     case Delete = "DeleteVideoErrorDomain"
     case Video = "VideoErrorDomain"
 
+    case DiskSpaceOperation = "DiskSpaceOperationErrorDomain"
+    case WeeklyQuotaOperation = "WeeklyQuotaOperationErrorDomain"
+    case DailyQuotaOperation = "DailyQuotaOperationErrorDomain"
+    case RetryUploadOperation = "RetryUploadOperationErrorDomain"
+    case ExportQuotaCreateOperation = "ExportQuotaCreateOperationErrorDomain"
+    case CreateVideoOperation = "CreateVideoOperationErrorDomain"
+    case VideoOperation = "VideoOperationErrorDomain"
     case MeQuotaOperation = "MeQuotaOperationErrorDomain"
+    case MeOperation = "MeOperationErrorDomain"
     case PHAssetCloudExportQuotaOperation = "PHAssetCloudExportQuotaOperationErrorDomain"
+    case PHAssetExportSessionOperation = "PHAssetExportSessionOperationErrorDomain"
+    case PHAssetDownloadOperation = "PHAssetDownloadOperationErrorDomain"
+    case ExportOperation = "ExportOperationErrorDomain"
+    case DeleteVideoOperation = "DeleteVideoOperationErrorDomain"
+    
+    case VimeoResponseSerializer = "VimeoResponseSerializerErrorDomain"
+}
+
+@objc enum UploadLocalErrorCode: Int
+{
+    case CannotEvaluateDailyQuota = 0 // "User object did not contain uploadQuota.quota information"
+    case CannotCalculateDiskSpace = 1 // "File system information did not contain NSFileSystemFreeSize key:value pair"
+    case CannotEvaluateWeeklyQuota = 2 // "User object did not contain uploadQuota.space information"
+    
+    case DiskSpaceException = 3
+    case AssetIsNotExportable = 4    
+    case DailyQuotaException = 5
+    case WeeklyQuotaException = 6
+}
+
+enum UploadErrorKey: String
+{
+    case VimeoErrorCode = "VimeoLocalErrorCode"
+    case VimeoErrorDomain = "VimeoDomain"
 }
 
 extension NSError
-{    
+{
+    // MARK: Creation / Augmentation
+    
+    class func errorWithDomain(domain: String?, code: Int?, description: String?) -> NSError
+    {
+        var error = NSError(domain: UploadErrorDomain.VimeoUpload.rawValue, code: 0, userInfo: nil)
+
+        if let description = description
+        {
+            let userInfo = [NSLocalizedDescriptionKey: description]
+            error = error.errorByAddingDomain(domain, code: code, userInfo: userInfo)
+        }
+        else
+        {
+            error = error.errorByAddingDomain(domain, code: code, userInfo: nil)
+        }
+        
+        return error
+    }
+    
     func errorByAddingDomain(domain: String) -> NSError
     {
-        return self.errorByAddingDomain(domain, userInfo: nil)
+        return self.errorByAddingDomain(domain, code: nil, userInfo: nil)
     }
 
     func errorByAddingUserInfo(userInfo: [String: AnyObject]) -> NSError
     {
-        return self.errorByAddingDomain(nil, userInfo: userInfo)
+        return self.errorByAddingDomain(nil, code: nil, userInfo: userInfo)
+    }
+    
+    func errorByAddingCode(code: Int) -> NSError
+    {
+        return self.errorByAddingDomain(nil, code: code, userInfo: nil)
     }
 
-    func errorByAddingDomain(domain: String?, userInfo: [String: AnyObject]?) -> NSError
+    func errorByAddingDomain(domain: String?, code: Int?, userInfo: [String: AnyObject]?) -> NSError
     {
         let augmentedInfo = NSMutableDictionary(dictionary: self.userInfo)
         
         if let domain = domain
         {
-            augmentedInfo["vimeo domain"] = domain
+            augmentedInfo[UploadErrorKey.VimeoErrorDomain.rawValue] = domain
         }
-        
+
+        if let code = code
+        {
+            augmentedInfo[UploadErrorKey.VimeoErrorCode.rawValue] = code
+        }
+
         if let userInfo = userInfo
         {
             augmentedInfo.addEntriesFromDictionary(userInfo)

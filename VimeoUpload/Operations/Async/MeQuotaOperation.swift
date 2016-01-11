@@ -194,13 +194,11 @@ class MeQuotaOperation: ConcurrentOperation
                     return
                 }
                 
-                if let error = operation.error
+                // Do not check error, allow to pass [AH]
+
+                if let result = operation.result where result == false
                 {
-                    strongSelf.error = error
-                }
-                else if let result = operation.result where result == false
-                {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.MeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate daily quota."])
+                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.DailyQuotaException.rawValue, description: "Upload would exceed daily quota.")
                 }
                 else
                 {
@@ -245,13 +243,11 @@ class MeQuotaOperation: ConcurrentOperation
                         return
                     }
                     
-                    if let error = operation.error
+                    // Do not check error, allow to pass [AH]
+
+                    if let result = operation.result where result == false
                     {
-                        strongSelf.error = error
-                    }
-                    else if let result = operation.result where result == false
-                    {
-                        strongSelf.error = NSError(domain: UploadErrorDomain.MeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Upload would exceed approximate weekly quota."])
+                        strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.WeeklyQuotaException.rawValue, description: "Upload would exceed approximate weekly quota.")
                     }
                     else
                     {
@@ -281,13 +277,11 @@ class MeQuotaOperation: ConcurrentOperation
                     return
                 }
                 
-                if let error = operation.error
+                // Do not check error, allow to pass [AH]
+
+                if let result = operation.result where result == false
                 {
-                    strongSelf.error = error
-                }
-                else if let result = operation.result where result == false
-                {
-                    strongSelf.error = NSError(domain: UploadErrorDomain.MeQuotaOperation.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Not enough approximate disk space to export asset."])
+                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.DiskSpaceException.rawValue, description: "Not enough approximate disk space to export asset.")
                 }
                 else
                 {

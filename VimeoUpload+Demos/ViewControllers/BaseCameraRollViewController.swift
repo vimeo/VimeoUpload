@@ -183,8 +183,8 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     private func setupCollectionView()
     {
-        let nib = UINib(nibName: CameraRollCell.NibName, bundle: nil)
-        self.collectionView.registerNib(nib, forCellWithReuseIdentifier: CameraRollCell.CellIdentifier)
+        let nib = UINib(nibName: DemoCameraRollCell.NibName, bundle: nil)
+        self.collectionView.registerNib(nib, forCellWithReuseIdentifier: DemoCameraRollCell.CellIdentifier)
         
         let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout
         layout?.minimumInteritemSpacing = BaseCameraRollViewController.CollectionViewSpacing
@@ -244,7 +244,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
     {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(CameraRollCell.CellIdentifier, forIndexPath: indexPath) as! CameraRollCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(DemoCameraRollCell.CellIdentifier, forIndexPath: indexPath) as! DemoCameraRollCell
         
         let cameraRollAsset = self.assets[indexPath.item]
         
