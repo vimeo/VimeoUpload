@@ -28,7 +28,7 @@ import UIKit
 import AVFoundation
 import Photos
 
-typealias CameraRollViewControllerResult = (me: VIMUser, cameraRollAsset: CameraRollAsset)
+typealias UploadUserAndCameraRollAsset = (user: VIMUser, cameraRollAsset: CameraRollAsset)
 
 /*
     This viewController displays the device camera roll video contents. 
@@ -374,7 +374,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         // Reset the operation so we're prepared to retry upon cancellation from video settings [AH] 12/06/2015
         self.setupAndStartOperation()
         
-        let result = CameraRollViewControllerResult(me: me, cameraRollAsset: cameraRollAsset)
+        let result = UploadUserAndCameraRollAsset(user: me, cameraRollAsset: cameraRollAsset)
         self.didFinishWithResult(result)        
     }
     
@@ -385,7 +385,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         self.title = "Camera Roll"
     }
 
-    func didFinishWithResult(result: CameraRollViewControllerResult)
+    func didFinishWithResult(result: UploadUserAndCameraRollAsset)
     {
         assertionFailure("Subclasses must override")
     }
