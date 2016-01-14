@@ -33,5 +33,5 @@ class ForegroundSessionManager: VimeoSessionManager
     private static let BasicUserToken = "3e9dae312853936216aba3ce56cf5066"
     private static let ProUserToken = "caf4648129ec56e580175c4b45cce7fc"
     
-    static let sharedInstance = VimeoSessionManager.defaultSessionManager(authToken: ForegroundSessionManager.BasicUserToken)
+    static let sharedInstance = VimeoSessionManager.defaultSessionManager(authToken: ForegroundSessionManager.ProUserToken)
 }
