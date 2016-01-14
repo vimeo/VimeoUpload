@@ -52,7 +52,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK:
     
-    var input: CameraRollViewControllerResult?
+    var input: UploadUserAndCameraRollAsset?
     
     // MARK:
     
@@ -108,7 +108,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     private func setupAndStartOperation()
     {
-        let me = self.input!.me
+        let me = self.input!.user
         let cameraRollAsset = self.input!.cameraRollAsset
         let sessionManager = ForegroundSessionManager.sharedInstance
         let videoSettings = self.videoSettings
