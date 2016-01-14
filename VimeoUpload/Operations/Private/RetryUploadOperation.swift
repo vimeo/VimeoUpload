@@ -69,7 +69,7 @@ class RetryUploadOperation: ConcurrentOperation
     
     private func performMeQuotaOperation()
     {
-        let operation = MeQuotaOperation(sessionManager: ForegroundSessionManager.sharedInstance)
+        let operation = MeQuotaOperation(sessionManager: self.sessionManager)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in

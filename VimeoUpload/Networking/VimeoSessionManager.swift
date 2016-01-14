@@ -26,7 +26,7 @@
 
 import Foundation
 
-typealias AuthTokenBlock = () -> String
+typealias AuthTokenBlock = () -> String?
 
 class VimeoSessionManager: AFHTTPSessionManager
 {    

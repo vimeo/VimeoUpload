@@ -84,8 +84,11 @@ class VimeoRequestSerializer: AFJSONRequestSerializer
 
     private func setAuthorizationHeader(request request: NSMutableURLRequest) -> NSMutableURLRequest
     {
-        let authHeaderValue = self.authTokenBlock()
-        request.setValue(authHeaderValue, forHTTPHeaderField: "Authorization")
+        if let token = self.authTokenBlock()
+        {
+            let value = "Bearer \(token)"
+            request.setValue(value, forHTTPHeaderField: "Authorization")
+        }
         
         return request
     }
