@@ -139,9 +139,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
     override func cancel()
     {
         super.cancel()
-        
-        print("PHAssetExportSessionOperation cancelled")
-        
+                
         self.cleanup()
     }
     
