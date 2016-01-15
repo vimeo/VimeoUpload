@@ -66,7 +66,7 @@ class VideoSettings: NSObject
         
         if let users = self.users
         {
-            parameters["users"] = users
+            parameters["users"] = users.map { ["uri": $0] }
         }
         
         if let password = self.password
