@@ -151,7 +151,7 @@ import Foundation
                     }
                     else
                     {
-                        strongSelf.retryVideo(video)
+                        strongSelf.retryVideo(video) // TODO: do not fetch video when it's actively uploading (we know locally when it's uploading)
                     }
                 }
                 else // Execution should never reach this point
