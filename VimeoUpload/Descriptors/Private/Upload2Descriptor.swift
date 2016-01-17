@@ -176,8 +176,7 @@ class Upload2Descriptor: Descriptor
             switch (keyPath, context)
             {
             case(self.dynamicType.ProgressKeyPath, &self.progressKVOContext):
-                self.progressObservable = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
-                
+                self.progressObservable = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0
             default:
                 super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
             }
@@ -193,7 +192,7 @@ class Upload2Descriptor: Descriptor
     required init(coder aDecoder: NSCoder)
     {
         let fileName = aDecoder.decodeObjectForKey("fileName") as! String // If force unwrap fails we have a big problem
-        let fileExtension = aDecoder.decodeObjectForKey("fileExtension") as! String // If force unwrap fails we have a big problem
+        let fileExtension = aDecoder.decodeObjectForKey("fileExtension") as! String 
         let path = NSURL.uploadDirectory().URLByAppendingPathComponent(fileName).URLByAppendingPathExtension(fileExtension).absoluteString
         
         self.url = NSURL.fileURLWithPath(path)
