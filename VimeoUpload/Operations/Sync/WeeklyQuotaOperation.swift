@@ -30,15 +30,15 @@ import AVFoundation
 class WeeklyQuotaOperation: NSOperation
 {    
     private let user: VIMUser
-    private let filesize: Float64
+    private let fileSize: Float64
     
-    private(set) var result: Bool?
+    private(set) var result: FileSizeCheckResult?
     private(set) var error: NSError?
 
-    init(user: VIMUser, filesize: Float64)
+    init(user: VIMUser, fileSize: Float64)
     {
         self.user = user
-        self.filesize = filesize
+        self.fileSize = fileSize
     
         super.init()
     }
@@ -49,7 +49,8 @@ class WeeklyQuotaOperation: NSOperation
     {
         if let free = self.user.uploadQuota?.sizeQuota?.free?.doubleValue
         {
-            self.result = free > self.filesize
+            let success = free > self.fileSize
+            self.result = FileSizeCheckResult(fileSize: self.fileSize, availableSpace: free, success: success)
         }
         else
         {
