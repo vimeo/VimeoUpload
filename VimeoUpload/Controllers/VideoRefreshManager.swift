@@ -42,7 +42,7 @@ import Foundation
     
     // MARK:
     
-    private var videos: [VideoUri: VIMVideo] = [:]
+    private var videos: [VideoUri: VideoUri] = [:]
     private let operationQueue: NSOperationQueue
     
     // MARK: - Initialization
@@ -75,16 +75,21 @@ import Foundation
         self.operationQueue.cancelAllOperations()
     }
     
-    func cancelRefreshForVideo(video: VIMVideo)
+    func cancelRefreshForVideoWithUri(uri: VideoUri)
     {
-        guard let uri = video.uri else
-        {
-            return
-        }
-
         self.videos.removeValueForKey(uri)
     }
-    
+
+    func refreshVideoWithUri(uri: VideoUri)
+    {
+        guard self.videos[uri] == nil else
+        {
+            return // It's already scheduled for refresh
+        }
+        
+        self.doRefreshVideoWithUri(uri)
+    }
+
     func refreshVideo(video: VIMVideo)
     {
         guard let uri = video.uri where self.videos[uri] == nil else
@@ -92,24 +97,19 @@ import Foundation
             return // It's already scheduled for refresh
         }
 
-        self.doRefreshVideo(video)
-    }
-    
-    // MARK: Private API
-    
-    private func doRefreshVideo(video: VIMVideo)
-    {
-        guard let uri = video.uri else
-        {
-            return
-        }
-        
         if self.dynamicType.isVideoStatusFinal(video) == true // No need to refresh this video, it's already done
         {
             return
         }
-        
-        self.videos[uri] = video
+
+        self.doRefreshVideoWithUri(uri)
+    }
+    
+    // MARK: Private API
+
+    private func doRefreshVideoWithUri(uri: VideoUri)
+    {
+        self.videos[uri] = uri
                 
         let operation = VideoOperation(sessionManager: self.sessionManager, videoUri: uri)
         operation.completionBlock = { [weak self] () -> Void in
@@ -139,7 +139,7 @@ import Foundation
                     }
                     else
                     {
-                        strongSelf.retryVideo(video)
+                        strongSelf.retryVideoWithUri(uri)
                     }
                 }
                 else if let freshVideo = operation.video
@@ -151,7 +151,7 @@ import Foundation
                     }
                     else
                     {
-                        strongSelf.retryVideo(video) // TODO: do not fetch video when it's actively uploading (we know locally when it's uploading)
+                        strongSelf.retryVideoWithUri(uri)
                     }
                 }
                 else // Execution should never reach this point
@@ -164,12 +164,12 @@ import Foundation
         self.operationQueue.addOperation(operation)
     }
 
-    private func retryVideo(video: VIMVideo)
+    private func retryVideoWithUri(uri: VideoUri)
     {
         let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(self.dynamicType.RetryDelay * Double(NSEC_PER_SEC)))
         
         dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] () -> Void in
-            self?.doRefreshVideo(video)
+            self?.doRefreshVideoWithUri(uri)
         }
     }
     
