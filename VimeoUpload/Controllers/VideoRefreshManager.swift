@@ -42,7 +42,7 @@ import Foundation
     
     // MARK:
     
-    private var videos: [VideoUri: VideoUri] = [:]
+    private var videos: [VideoUri: Bool] = [:]
     private let operationQueue: NSOperationQueue
     
     // MARK: - Initialization
@@ -109,7 +109,7 @@ import Foundation
 
     private func doRefreshVideoWithUri(uri: VideoUri)
     {
-        self.videos[uri] = uri
+        self.videos[uri] = true
                 
         let operation = VideoOperation(sessionManager: self.sessionManager, videoUri: uri)
         operation.completionBlock = { [weak self] () -> Void in
