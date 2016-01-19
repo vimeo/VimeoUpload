@@ -53,6 +53,16 @@ class DescriptorManager
 
     // MARK:
     
+    var suspended: Bool
+    {
+        get
+        {
+            return self.descriptorTracker.suspended
+        }
+    }
+    
+    // MARK:
+    
     var backgroundEventsCompletionHandler: VoidBlock?
 
     // MARK: - Initialization

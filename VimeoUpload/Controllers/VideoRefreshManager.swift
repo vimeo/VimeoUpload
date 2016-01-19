@@ -33,7 +33,7 @@ import Foundation
 
 @objc class VideoRefreshManager: NSObject
 {
-    private static let RetryDelay: Double = 3
+    private static let RetryDelay: Double = 5
     
     // MARK:
     

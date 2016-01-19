@@ -177,7 +177,6 @@ class Upload2Descriptor: Descriptor
             {
             case(self.dynamicType.ProgressKeyPath, &self.progressKVOContext):
                 self.progressObservable = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
-                print(self.progressObservable)
                 
             default:
                 super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
