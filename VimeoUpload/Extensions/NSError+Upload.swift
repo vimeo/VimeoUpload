@@ -78,6 +78,8 @@ enum UploadErrorKey: String
 {
     case VimeoErrorCode = "VimeoLocalErrorCode"
     case VimeoErrorDomain = "VimeoDomain"
+    case AvailableSpace = "AvailableSpace"
+    case FileSize = "FileSize"
 }
 
 extension NSError

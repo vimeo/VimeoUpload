@@ -37,7 +37,6 @@ class ExportOperation: ConcurrentOperation
 {
     private static let ProgressKeyPath = "progress"
     private static let FileType = AVFileTypeMPEG4
-    private static let DocumentsURL = NSURL(string: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])!
 
     private var exportSession: AVAssetExportSession
     
@@ -76,9 +75,8 @@ class ExportOperation: ConcurrentOperation
 
         do
         {
-            var url = self.dynamicType.DocumentsURL.URLByAppendingPathComponent("uploader")
-            url = url.URLByAppendingPathComponent("video_files")
-            exportSession.outputURL = try url.vimeoUploadExportURL(fileType: self.dynamicType.FileType)
+            let filename = NSProcessInfo.processInfo().globallyUniqueString
+            exportSession.outputURL = try NSURL.uploadURLWithFilename(filename, fileType: self.dynamicType.FileType)
         }
         catch let error as NSError
         {
