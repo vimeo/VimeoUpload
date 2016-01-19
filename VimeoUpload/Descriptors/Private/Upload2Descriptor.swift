@@ -192,7 +192,11 @@ class Upload2Descriptor: Descriptor
     
     required init(coder aDecoder: NSCoder)
     {
-        self.url = aDecoder.decodeObjectForKey("url") as! NSURL // If force unwrap fails we have a big problem
+        let fileName = aDecoder.decodeObjectForKey("fileName") as! String // If force unwrap fails we have a big problem
+        let fileExtension = aDecoder.decodeObjectForKey("fileExtension") as! String // If force unwrap fails we have a big problem
+        let path = NSURL.uploadDirectory().URLByAppendingPathComponent(fileName).URLByAppendingPathExtension(fileExtension).absoluteString
+        
+        self.url = NSURL.fileURLWithPath(path)
         self.uploadTicket = aDecoder.decodeObjectForKey("uploadTicket") as! VIMUploadTicket
         self.assetIdentifier = aDecoder.decodeObjectForKey("assetIdentifier") as! String
 
@@ -201,7 +205,11 @@ class Upload2Descriptor: Descriptor
     
     override func encodeWithCoder(aCoder: NSCoder)
     {
-        aCoder.encodeObject(self.url, forKey: "url")
+        let fileName = self.url.URLByDeletingPathExtension!.lastPathComponent
+        let ext = self.url.pathExtension
+
+        aCoder.encodeObject(fileName, forKey: "fileName")
+        aCoder.encodeObject(ext, forKey: "fileExtension")
         aCoder.encodeObject(self.uploadTicket, forKey: "uploadTicket")
         aCoder.encodeObject(self.assetIdentifier, forKey: "assetIdentifier")
         

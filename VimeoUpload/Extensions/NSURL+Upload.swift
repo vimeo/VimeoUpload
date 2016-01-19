@@ -34,37 +34,51 @@ import Foundation
 
 extension NSURL
 {
-    func vimeoUploadExportURL(fileType fileType: String) throws -> NSURL
+    static func uploadURLWithFilename(filename: String, fileType: String) throws -> NSURL
     {
-        let unmanagedTag = UTTypeCopyPreferredTagWithClass(fileType, kUTTagClassFilenameExtension)!
-        let ext = unmanagedTag.takeRetainedValue() as String
-
-        let url = try self.prepareURL(ext: ext)
+        let url = NSURL.uploadDirectory()
         
-        return NSURL.fileURLWithPath(url.absoluteString)
-    }
-
-    func vimeoDownloadDataURL() throws -> NSURL
-    {
-        var url = self.URLByAppendingPathComponent("vimeo_download_data")
-        
-        url = try self.prepareURL(ext: "data")
-        
-        return NSURL.fileURLWithPath(url.absoluteString)
-    }
-    
-    private func prepareURL(ext ext: String) throws -> NSURL
-    {
-        if NSFileManager.defaultManager().fileExistsAtPath(self.absoluteString) == false
+        if NSFileManager.defaultManager().fileExistsAtPath(url.absoluteString) == false
         {
-            try NSFileManager.defaultManager().createDirectoryAtPath(self.absoluteString, withIntermediateDirectories: true, attributes: nil)
+            try NSFileManager.defaultManager().createDirectoryAtPath(url.absoluteString, withIntermediateDirectories: true, attributes: nil)
         }
         
-        let filename = NSProcessInfo.processInfo().globallyUniqueString
-        var url = self.URLByAppendingPathComponent(filename)
+        let unmanagedTag = UTTypeCopyPreferredTagWithClass(fileType, kUTTagClassFilenameExtension)!
+        let ext = unmanagedTag.takeRetainedValue() as String
+        let path = url.URLByAppendingPathComponent(filename).URLByAppendingPathExtension(ext).absoluteString
         
-        url = url.URLByAppendingPathExtension(ext)
+        return NSURL.fileURLWithPath(path)
+    }
+    
+    // TODO: remove this
+//    static func vimeoDownloadDataURL() throws -> NSURL
+//    {
+//        let url = NSURL.downloadDataDirectory()
+//        
+//        if NSFileManager.defaultManager().fileExistsAtPath(url.absoluteString) == false
+//        {
+//            try NSFileManager.defaultManager().createDirectoryAtPath(url.absoluteString, withIntermediateDirectories: true, attributes: nil)
+//        }
+//        
+//        let filename = NSProcessInfo.processInfo().globallyUniqueString
+//        let ext = "data"
+//        let path = url.URLByAppendingPathComponent(filename).URLByAppendingPathExtension(ext).absoluteString
+//
+//        return NSURL.fileURLWithPath(path)
+//    }
+    
+    static func uploadDirectory() -> NSURL
+    {
+        let documentsURL = NSURL(string: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])!
+        
+        return documentsURL.URLByAppendingPathComponent("uploader").URLByAppendingPathComponent("video_files")
+    }
 
-        return url
-    }    
+    // TODO: remove this
+//    static func downloadDataDirectory() -> NSURL
+//    {
+//        let documentsURL = NSURL(string: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])!
+//
+//        return documentsURL.URLByAppendingPathComponent("vimeo_download_data")
+//    }
 }
