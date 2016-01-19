@@ -30,15 +30,17 @@ class VideoSettings: NSObject
 {
     var title: String?
     var desc: String?
-    var privacy: String
+    var privacy: String?
     var users: [String]? // List of uris of users who can view this video
+    var password: String?
 
-    init(title: String?, description: String?, privacy: String, users: [String]?)
+    init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
     {
         self.title = title
         self.desc = description
         self.privacy = privacy
         self.users = users
+        self.password = password
     }
     
     // MARK: Public API
@@ -57,9 +59,19 @@ class VideoSettings: NSObject
             parameters["description"] = description
         }
         
-        if self.privacy.characters.count > 0
+        if let privacy = self.privacy where privacy.characters.count > 0
         {
-            parameters["privacy"] = ["view": self.privacy]
+            parameters["privacy"] = ["view": privacy]
+        }
+        
+        if let users = self.users
+        {
+            parameters["users"] = users.map { ["uri": $0] }
+        }
+        
+        if let password = self.password
+        {
+            parameters["password"] = password
         }
 
         return parameters
@@ -71,8 +83,9 @@ class VideoSettings: NSObject
     {
         self.title = aDecoder.decodeObjectForKey("title") as? String
         self.desc = aDecoder.decodeObjectForKey("desc") as? String
-        self.privacy = aDecoder.decodeObjectForKey("privacy") as! String
+        self.privacy = aDecoder.decodeObjectForKey("privacy") as? String
         self.users = aDecoder.decodeObjectForKey("users") as? [String]
+        self.password = aDecoder.decodeObjectForKey("password") as? String
     }
     
     func encodeWithCoder(aCoder: NSCoder)
@@ -81,5 +94,6 @@ class VideoSettings: NSObject
         aCoder.encodeObject(self.desc, forKey: "desc")
         aCoder.encodeObject(self.privacy, forKey: "privacy")
         aCoder.encodeObject(self.users, forKey: "users")
+        aCoder.encodeObject(self.password, forKey: "password")
     }
 }
