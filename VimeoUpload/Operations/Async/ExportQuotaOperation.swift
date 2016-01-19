@@ -150,7 +150,7 @@ class ExportQuotaOperation: ConcurrentOperation
             return
         }
         
-        let operation = WeeklyQuotaOperation(user: me, filesize: fileSize.doubleValue)
+        let operation = WeeklyQuotaOperation(user: me, fileSize: fileSize.doubleValue)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -167,9 +167,10 @@ class ExportQuotaOperation: ConcurrentOperation
                 
                 // Do not check error, allow to pass [AH]
 
-                if let result = operation.result where result == false
+                if let result = operation.result where result.success == false
                 {
-                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: UploadLocalErrorCode.WeeklyQuotaException.rawValue, description: "Upload would exceed weekly quota.")
+                    let userInfo = [UploadErrorKey.FileSize.rawValue: result.fileSize, UploadErrorKey.AvailableSpace.rawValue: result.availableSpace]
+                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: UploadLocalErrorCode.WeeklyQuotaException.rawValue, description: "Upload would exceed weekly quota.").errorByAddingUserInfo(userInfo)
                 }
                 else
                 {

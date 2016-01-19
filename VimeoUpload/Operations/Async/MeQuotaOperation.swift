@@ -228,7 +228,7 @@ class MeQuotaOperation: ConcurrentOperation
                 return
             }
 
-            let operation = WeeklyQuotaOperation(user: me, filesize: value)
+            let operation = WeeklyQuotaOperation(user: me, fileSize: value)
             operation.completionBlock = { [weak self] () -> Void in
                 
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -245,9 +245,10 @@ class MeQuotaOperation: ConcurrentOperation
                     
                     // Do not check error, allow to pass [AH]
 
-                    if let result = operation.result where result == false
+                    if let result = operation.result where result.success == false
                     {
-                        strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.WeeklyQuotaException.rawValue, description: "Upload would exceed approximate weekly quota.")
+                        let userInfo = [UploadErrorKey.FileSize.rawValue: result.fileSize, UploadErrorKey.AvailableSpace.rawValue: result.availableSpace]
+                        strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.WeeklyQuotaException.rawValue, description: "Upload would exceed approximate weekly quota.").errorByAddingUserInfo(userInfo)
                     }
                     else
                     {
@@ -279,9 +280,10 @@ class MeQuotaOperation: ConcurrentOperation
                 
                 // Do not check error, allow to pass [AH]
 
-                if let result = operation.result where result == false
+                if let result = operation.result where result.success == false
                 {
-                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.DiskSpaceException.rawValue, description: "Not enough approximate disk space to export asset.")
+                    let userInfo = [UploadErrorKey.FileSize.rawValue: result.fileSize, UploadErrorKey.AvailableSpace.rawValue: result.availableSpace]
+                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.DiskSpaceException.rawValue, description: "Not enough approximate disk space to export asset.").errorByAddingUserInfo(userInfo)
                 }
                 else
                 {

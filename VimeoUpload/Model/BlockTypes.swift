@@ -38,3 +38,4 @@ typealias VideosCompletionHandler = (videos: [VIMVideo]?, error: NSError?) -> Vo
 typealias UploadTicketCompletionHandler = (uploadTicket: VIMUploadTicket?, error: NSError?) -> Void
 
 typealias VideoUri = String
+typealias FileSizeCheckResult = (fileSize: Float64, availableSpace: Float64, success: Bool)

@@ -32,7 +32,7 @@ import Foundation
 
     // MARK: 
     
-    var allowsCellularUpload = false // TODO: load from user defaults
+    var allowsCellularUpload = true
     {
         didSet
         {

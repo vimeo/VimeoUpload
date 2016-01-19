@@ -177,7 +177,7 @@ import Foundation
     {
         let status = video.videoStatus
         
-        return status == .Available || status == .UploadingError || status == .TranscodingError
+        return status == .Available || status == .UploadingError || status == .TranscodingError || status == .QuotaExceeded
     }
     
     // MARK: Notifications
