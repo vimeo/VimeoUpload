@@ -325,7 +325,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         if #available(iOS 8, *)
         {
             let alert = UIAlertController(title: "Asset Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
                 self?.collectionView.reloadItemsAtIndexPaths([indexPath]) // Let the user manually reselect the cell since reload is async
             }))
             
