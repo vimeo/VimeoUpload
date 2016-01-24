@@ -14,24 +14,37 @@ import AVFoundation
 {
     func requestImage(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
     {
-        let alAsset = cameraRollAsset as! ALAsset
+        let alAsset = (cameraRollAsset as! VIMALAsset).alAsset
 
         cameraRollAsset.inCloud = false
 
-        // TODO: cache info
-        // TODO: configure cell
+        let imageRef = alAsset.thumbnail().takeUnretainedValue()
+        let image = UIImage(CGImage: imageRef)
+        cell.setImage(image)
     }
     
     func requestAsset(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
     {
-        let alAsset = cameraRollAsset as! ALAsset
+        let alAsset = (cameraRollAsset as! VIMALAsset).alAsset
         
         if let url = alAsset.defaultRepresentation().url()
         {
-            cameraRollAsset.avAsset = AVURLAsset(URL: url)
+            let asset = AVURLAsset(URL: url)
+            
+            cameraRollAsset.avAsset = asset
             cameraRollAsset.inCloud = false
             
-            // TODO: configure cell
+            let seconds = CMTimeGetSeconds(asset.duration)
+            cell.setDuration(seconds: seconds)
+
+            asset.approximateFileSize({ (value) -> Void in
+                cell.setFileSize(bytes: value)
+            })
+        }
+        else
+        {
+            cell.setFileSize(bytes: 0)
+            cell.setDuration(seconds: 0)
         }
     }
 }

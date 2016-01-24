@@ -50,35 +50,10 @@ extension NSURL
         return NSURL.fileURLWithPath(path)
     }
     
-    // TODO: remove this
-//    static func vimeoDownloadDataURL() throws -> NSURL
-//    {
-//        let url = NSURL.downloadDataDirectory()
-//        
-//        if NSFileManager.defaultManager().fileExistsAtPath(url.absoluteString) == false
-//        {
-//            try NSFileManager.defaultManager().createDirectoryAtPath(url.absoluteString, withIntermediateDirectories: true, attributes: nil)
-//        }
-//        
-//        let filename = NSProcessInfo.processInfo().globallyUniqueString
-//        let ext = "data"
-//        let path = url.URLByAppendingPathComponent(filename).URLByAppendingPathExtension(ext).absoluteString
-//
-//        return NSURL.fileURLWithPath(path)
-//    }
-    
     static func uploadDirectory() -> NSURL
     {
         let documentsURL = NSURL(string: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])!
         
         return documentsURL.URLByAppendingPathComponent("uploader").URLByAppendingPathComponent("video_files")
     }
-
-    // TODO: remove this
-//    static func downloadDataDirectory() -> NSURL
-//    {
-//        let documentsURL = NSURL(string: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])!
-//
-//        return documentsURL.URLByAppendingPathComponent("vimeo_download_data")
-//    }
 }
