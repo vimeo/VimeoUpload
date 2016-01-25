@@ -113,7 +113,7 @@ class Upload1Descriptor: Descriptor
     override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
         if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.taskForIdentifier(identifier) as? NSURLSessionUploadTask,
+            let task = sessionManager.uploadTaskForIdentifier(identifier),
             let progress = sessionManager.uploadProgressForTask(task)
         {
             self.progress = progress
