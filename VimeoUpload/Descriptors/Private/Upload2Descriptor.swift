@@ -112,8 +112,8 @@ class Upload2Descriptor: Descriptor
     {
         super.resume(sessionManager: sessionManager)
         
-        if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.taskForIdentifier(identifier) as? NSURLSessionUploadTask,
+         if let identifier = self.currentTaskIdentifier,
+            let task = sessionManager.uploadTaskForIdentifier(identifier),
             let progress = sessionManager.uploadProgressForTask(task)
         {
             self.progress = progress
@@ -123,7 +123,7 @@ class Upload2Descriptor: Descriptor
     override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.taskForIdentifier(identifier) as? NSURLSessionUploadTask,
+            let task = sessionManager.uploadTaskForIdentifier(identifier),
             let progress = sessionManager.uploadProgressForTask(task) else
         {
             // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload

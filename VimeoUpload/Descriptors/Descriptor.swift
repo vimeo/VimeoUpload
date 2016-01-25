@@ -82,9 +82,36 @@ class Descriptor: NSObject, DescriptorProtocol
     {
         self.state = .Executing
         
-        if let identifier = self.currentTaskIdentifier, let task = sessionManager.taskForIdentifier(identifier)
+        if #available(iOS 8, *)
         {
-            task.resume()
+            if let identifier = self.currentTaskIdentifier,
+                let task = sessionManager.taskForIdentifier(identifier)
+            {
+                task.resume()
+            }
+        }
+        else
+        {
+            if let identifier = self.currentTaskIdentifier,
+                let task = sessionManager.taskForIdentifierWorkaround(identifier)
+            {
+                if let dataTask = task as? NSURLSessionDataTask
+                {
+                    dataTask.resume()
+                }
+                else if let uploadTask = task as? NSURLSessionUploadTask
+                {
+                    uploadTask.resume()
+                }
+                else if let downloadTask = task as? NSURLSessionDownloadTask
+                {
+                    downloadTask.resume()
+                }
+                else
+                {
+                    assertionFailure("Unable to cast task to proper class, therefore unable to resume")
+                }
+            }
         }
     }
     
@@ -92,21 +119,45 @@ class Descriptor: NSObject, DescriptorProtocol
     {
         self.state = .Suspended
         
-        if let identifier = self.currentTaskIdentifier, let task = sessionManager.taskForIdentifier(identifier)
-        {
-            // Would be nice to call task.suspend(), but the upload will start over from 0 (if you suspend it for long enough?),
-            // but the server thinks that we're resuming from the last byte, no good. Instead we need to cancel and start over,
-            // appending the Content-Range header [AH] 12/25/2015
+        // Would be nice to call task.suspend(), but the upload will start over from 0 (if you suspend it for long enough?),
+        // but the server thinks that we're resuming from the last byte, no good. Instead we need to cancel and start over,
+        // appending the Content-Range header [AH] 12/25/2015
 
-            task.cancel()
-        }
+        self.cancel(sessionManager: sessionManager)
     }
 
     func cancel(sessionManager sessionManager: AFURLSessionManager)
     {
-        if let identifier = self.currentTaskIdentifier, let task = sessionManager.taskForIdentifier(identifier)
+        if #available(iOS 8, *)
         {
-            task.cancel()
+            if let identifier = self.currentTaskIdentifier,
+                let task = sessionManager.taskForIdentifier(identifier)
+            {
+                task.cancel()
+            }
+        }
+        else
+        {
+            if let identifier = self.currentTaskIdentifier,
+                let task = sessionManager.taskForIdentifierWorkaround(identifier)
+            {
+                if let dataTask = task as? NSURLSessionDataTask
+                {
+                    dataTask.cancel()
+                }
+                else if let uploadTask = task as? NSURLSessionUploadTask
+                {
+                    uploadTask.cancel()
+                }
+                else if let downloadTask = task as? NSURLSessionDownloadTask
+                {
+                    downloadTask.cancel()
+                }
+                else
+                {
+                    assertionFailure("Unable to cast task to proper class, therefore unable to cancel")
+                }
+            }
         }
     }
 
