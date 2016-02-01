@@ -28,7 +28,7 @@ import Foundation
 
 @objc class UploadFailureTracker: NSObject
 {
-    private let FailedDescriptorsArchiveKey = "failed_descriptors"
+    private static let FailedDescriptorsArchiveKey = "failed_descriptors"
 
     // MARK: 
     
@@ -60,6 +60,7 @@ import Foundation
         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
         
         var documentsURL = NSURL(string: documentsPath)!
+        documentsURL = documentsURL.URLByAppendingPathComponent(UploadFailureTracker.FailedDescriptorsArchiveKey)
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
@@ -70,14 +71,14 @@ import Foundation
         return KeyedArchiver(basePath: documentsURL.path!)
     }
     
-    private func loadFailedDescriptors() -> [String: Upload2Descriptor]
+    private func loadFailedDescriptors() -> [VideoUri: Upload2Descriptor]
     {
-        return self.archiver.loadObjectForKey(FailedDescriptorsArchiveKey) as? [String: Upload2Descriptor] ?? [:]
+        return self.archiver.loadObjectForKey(UploadFailureTracker.FailedDescriptorsArchiveKey) as? [VideoUri: Upload2Descriptor] ?? [:]
     }
     
     private func saveFailedDescriptors()
     {
-        self.archiver.saveObject(self.failedDescriptors, key: FailedDescriptorsArchiveKey)
+        self.archiver.saveObject(self.failedDescriptors, key: UploadFailureTracker.FailedDescriptorsArchiveKey)
     }
     
     // MARK: Public API
