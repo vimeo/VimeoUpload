@@ -139,7 +139,7 @@ class Descriptor: NSObject, DescriptorProtocol
     {
         self.state = .Suspended
         
-        // Would be nice to call task.suspend(), but the upload will start over from 0 (if you suspend it for long enough?),
+        // Would be nice to call task.suspend(), but the task will start over from 0 (if you suspend it for long enough?),
         // but the server thinks that we're resuming from the last byte, no good. Instead we need to cancel and start over,
         // appending the Content-Range header [AH] 12/25/2015
 

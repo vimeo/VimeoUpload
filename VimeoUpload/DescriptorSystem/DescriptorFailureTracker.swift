@@ -26,14 +26,19 @@
 
 import Foundation
 
-@objc class UploadFailureTracker: NSObject
+// TODO: This entire class should leverage generics, 
+// This would mean we would need upload- and download-specific subclasses
+// But NSKeyedArchiving doesn't work with generics,
+// Instead we have a method below that subclasses must override [AH] 02/02/2016
+
+@objc class DescriptorFailureTracker: NSObject
 {
     private let FailedDescriptorsArchiveKey = "failed_descriptors"
 
     // MARK: 
     
     private let archiver: KeyedArchiver
-    private var failedDescriptors: [VideoUri: Upload2Descriptor] = [:]
+    private var failedDescriptors: [VideoUri: Descriptor] = [:]
 
     // MARK: - Initialization
     
@@ -70,9 +75,9 @@ import Foundation
         return KeyedArchiver(basePath: documentsURL.path!)
     }
     
-    private func loadFailedDescriptors() -> [String: Upload2Descriptor]
+    private func loadFailedDescriptors() -> [String: Descriptor]
     {
-        return self.archiver.loadObjectForKey(FailedDescriptorsArchiveKey) as? [String: Upload2Descriptor] ?? [:]
+        return self.archiver.loadObjectForKey(FailedDescriptorsArchiveKey) as? [String: Descriptor] ?? [:]
     }
     
     private func saveFailedDescriptors()
@@ -120,7 +125,7 @@ import Foundation
         
         dispatch_async(dispatch_get_main_queue()) { () -> Void in // TODO: can async cause failure to not be stored?
             
-            if let descriptor = notification.object as? Upload2Descriptor, let videoUri = descriptor.uploadTicket.video?.uri, let error = descriptor.error
+            if let descriptor = notification.object as? Upload2Descriptor, let videoUri = self.videoUriForDescriptor(descriptor), let error = descriptor.error
             {
                 if error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled // No need to store failures that occurred due to cancellation
                 {
@@ -131,5 +136,14 @@ import Foundation
                 self.saveFailedDescriptors()
             }
         }
+    }
+    
+    // MARK: Subclass Overrides
+    
+    func videoUriForDescriptor<T>(descriptor: T) -> VideoUri?
+    {
+        assertionFailure("Subclasses must override")
+        
+        return nil
     }
 }
