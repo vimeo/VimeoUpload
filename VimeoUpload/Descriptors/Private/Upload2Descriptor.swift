@@ -26,54 +26,20 @@
 
 import Foundation
 
-class Upload2Descriptor: Descriptor
+class Upload2Descriptor: ProgressDescriptor
 {
+    private static let FileNameCoderKey = "fileName"
+    private static let FileExtensionCoderKey = "fileExtension"
+    private static let UploadTicketCoderKey = "uploadTicket"
+    private static let AssetIdentifierCoderKey = "assetIdentifier"
+
+    // MARK: 
+    
     let url: NSURL
     let uploadTicket: VIMUploadTicket
     let assetIdentifier: String // Used to track the original ALAsset or PHAsset
-    
-    // MARK:
-    
-    // We observe progress here via progressObservable because the descriptor is the only object that knows about the progress object's lifecycle
-    // If we allow views to observe the progress they wont know exactly when to remove and add observers when the descriptor is 
-    // suspended and resumed [AH] 12/25/2015
-    
-    private static let ProgressKeyPath = "fractionCompleted"
-    private var progressKVOContext = UInt8()
-    dynamic private(set) var progressObservable: Double = 0
-    private(set) var progress: NSProgress?
-    {
-        willSet
-        {
-            self.progress?.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
-        }
         
-        didSet
-        {
-            self.progress?.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
-        }
-    }
-    
-    // MARK:
-    
-    override var error: NSError?
-    {
-        didSet
-        {
-            if error != nil
-            {
-                self.currentTaskIdentifier = nil
-                self.state = .Finished
-            }
-        }
-    }
-    
     // MARK: - Initialization
-    
-    deinit
-    {
-        self.progress = nil
-    }
     
     init(url: NSURL, uploadTicket: VIMUploadTicket, assetIdentifier: String)
     {
@@ -163,41 +129,20 @@ class Upload2Descriptor: Descriptor
             return
         }
         
-        self.currentTaskIdentifier = nil
         self.state = .Finished
     }
     
-    // MARK: KVO
-    
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
-    {
-        if let keyPath = keyPath
-        {
-            switch (keyPath, context)
-            {
-            case(self.dynamicType.ProgressKeyPath, &self.progressKVOContext):
-                self.progressObservable = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0
-            default:
-                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-            }
-        }
-        else
-        {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-        }
-    }
-
     // MARK: NSCoding
     
     required init(coder aDecoder: NSCoder)
     {
-        let fileName = aDecoder.decodeObjectForKey("fileName") as! String // If force unwrap fails we have a big problem
-        let fileExtension = aDecoder.decodeObjectForKey("fileExtension") as! String 
+        let fileName = aDecoder.decodeObjectForKey(self.dynamicType.FileNameCoderKey) as! String 
+        let fileExtension = aDecoder.decodeObjectForKey(self.dynamicType.FileExtensionCoderKey) as! String
         let path = NSURL.uploadDirectory().URLByAppendingPathComponent(fileName).URLByAppendingPathExtension(fileExtension).absoluteString
         
         self.url = NSURL.fileURLWithPath(path)
-        self.uploadTicket = aDecoder.decodeObjectForKey("uploadTicket") as! VIMUploadTicket
-        self.assetIdentifier = aDecoder.decodeObjectForKey("assetIdentifier") as! String
+        self.uploadTicket = aDecoder.decodeObjectForKey(self.dynamicType.UploadTicketCoderKey) as! VIMUploadTicket
+        self.assetIdentifier = aDecoder.decodeObjectForKey(self.dynamicType.AssetIdentifierCoderKey) as! String
 
         super.init(coder: aDecoder)
     }
@@ -207,10 +152,10 @@ class Upload2Descriptor: Descriptor
         let fileName = self.url.URLByDeletingPathExtension!.lastPathComponent
         let ext = self.url.pathExtension
 
-        aCoder.encodeObject(fileName, forKey: "fileName")
-        aCoder.encodeObject(ext, forKey: "fileExtension")
-        aCoder.encodeObject(self.uploadTicket, forKey: "uploadTicket")
-        aCoder.encodeObject(self.assetIdentifier, forKey: "assetIdentifier")
+        aCoder.encodeObject(fileName, forKey: self.dynamicType.FileNameCoderKey)
+        aCoder.encodeObject(ext, forKey: self.dynamicType.FileExtensionCoderKey)
+        aCoder.encodeObject(self.uploadTicket, forKey: self.dynamicType.UploadTicketCoderKey)
+        aCoder.encodeObject(self.assetIdentifier, forKey: self.dynamicType.AssetIdentifierCoderKey)
         
         super.encodeWithCoder(aCoder)
     }

@@ -44,9 +44,4 @@ extension AFURLSessionManager
     {
         return self.tasks.filter{ $0.taskIdentifier == identifier }.first as? NSURLSessionTask
     }
-
-    func uploadTaskForIdentifier(identifier: Int) -> NSURLSessionUploadTask?
-    {
-        return self.uploadTasks.filter{ $0.taskIdentifier == identifier }.first as? NSURLSessionUploadTask
-    }
 }
