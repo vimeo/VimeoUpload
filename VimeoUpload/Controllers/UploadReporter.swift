@@ -35,39 +35,39 @@ class UploadReporter: DescriptorManagerDelegate
     
     @objc func didLoadDescriptors(count count: Int)
     {
-        self.sendMessage("Loaded \(count) descriptors")
+        self.printMessageAndPostLocalNotification("Loaded \(count) descriptors")
     }
 
     @objc func didSaveDescriptors(count count: Int)
     {
-        self.sendMessage("Did save \(count) descriptors")
+        self.printMessageAndPostLocalNotification("Did save \(count) descriptors")
     }
 
     @objc func didFailToLoadDescriptor(error error: NSError)
     {
-        self.sendMessage("Did fail to load descriptor \(error.localizedDescription)")
+        self.printMessageAndPostLocalNotification("Did fail to load descriptor \(error.localizedDescription)")
     }
     
     @objc func sessionDidBecomeInvalid(error error: NSError)
     {
-        self.sendMessage("Session invalid \(error.localizedDescription)")
+        self.printMessageAndPostLocalNotification("Session invalid \(error.localizedDescription)")
     }
     
     @objc func willHandleEventsForBackgroundSession()
     {
-        self.sendMessage("Will handle background events")
+        self.printMessageAndPostLocalNotification("Will handle background events")
     }
     
     @objc func didFinishEventsForBackgroundSession()
     {
-        self.sendMessage("Did handle background events")
+        self.printMessageAndPostLocalNotification("Did handle background events")
     }
     
     @objc func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
-            self.sendMessage("Task download \(task.description) descriptor \(descriptorIdentifier)")
+            self.printMessageAndPostLocalNotification("Task download \(task.description) descriptor \(descriptorIdentifier)")
         }
     }
     
@@ -77,11 +77,11 @@ class UploadReporter: DescriptorManagerDelegate
         {
             if let error = error
             {
-                self.sendMessage("Task complete \(task.description) descriptor \(descriptorIdentifier) error \(error.localizedDescription)")
+                self.printMessageAndPostLocalNotification("Task complete \(task.description) descriptor \(descriptorIdentifier) error \(error.localizedDescription)")
             }
             else
             {
-                self.sendMessage("Task complete \(task.description) descriptor \(descriptorIdentifier)")
+                self.printMessageAndPostLocalNotification("Task complete \(task.description) descriptor \(descriptorIdentifier)")
             }
         }
     }
@@ -90,7 +90,7 @@ class UploadReporter: DescriptorManagerDelegate
     {
         if let identifier = descriptor.identifier
         {
-            self.sendMessage("Start \(identifier)")
+            self.printMessageAndPostLocalNotification("Start \(identifier)")
         }
     }
 
@@ -98,7 +98,7 @@ class UploadReporter: DescriptorManagerDelegate
     {
         if let descriptorIdentifier = descriptor.identifier
         {
-            self.sendMessage("Success \(descriptorIdentifier)")
+            self.printMessageAndPostLocalNotification("Success \(descriptorIdentifier)")
         }
     }
     
@@ -106,18 +106,18 @@ class UploadReporter: DescriptorManagerDelegate
     {
         if let descriptorIdentifier = descriptor.identifier
         {
-            self.sendMessage("Failure \(descriptorIdentifier)")
+            self.printMessageAndPostLocalNotification("Failure \(descriptorIdentifier)")
         }
     }
     
     @objc func descriptorForTaskNotFound(task: NSURLSessionTask)
     {
-        self.sendMessage("Descriptor not found (task) \(task.description)")
+        self.printMessageAndPostLocalNotification("Descriptor not found (task) \(task.description)")
     }
     
     // Private API
     
-    private func sendMessage(message: String)
+    private func printMessageAndPostLocalNotification(message: String)
     {
         print(message)
         

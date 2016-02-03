@@ -92,6 +92,7 @@ class Upload2Descriptor: ProgressDescriptor
             let task = sessionManager.uploadTaskForIdentifier(identifier),
             let progress = sessionManager.uploadProgressForTask(task) else
         {
+            // TODO: can we handle this better? [AH]
             // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload
             // Upon reopening the app, the descriptor is loaded but no longer has a task 
             

@@ -45,30 +45,7 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
         
     // MARK: Public API
 
-    func checkFileDownloadResponseForError(response response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> [String: AnyObject]?
-    {
-        var responseObject: [String: AnyObject]? = nil
-        var serializationError: NSError? = nil
-        do
-        {
-            responseObject = try self.dictionaryFromDownloadTaskResponse(url: url)
-        }
-        catch let error as NSError
-        {
-            serializationError = error
-        }
-        
-        try checkDataResponseForError(response: response, responseObject: responseObject, error: error)
-        
-        if let serializationError = serializationError
-        {
-            throw serializationError
-        }
-        
-        return responseObject
-    }
-
-    func checkDownloadResponseForError(response response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> [String: AnyObject]?
+    func responseObjectFromDownloadTaskResponse(response response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> [String: AnyObject]?
     {
         var responseObject: [String: AnyObject]? = nil
         var serializationError: NSError? = nil
