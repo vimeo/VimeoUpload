@@ -38,7 +38,7 @@ class Upload2Descriptor: ProgressDescriptor
     let url: NSURL
     let uploadTicket: VIMUploadTicket
     let assetIdentifier: String // Used to track the original ALAsset or PHAsset
-        
+    
     // MARK: - Initialization
     
     init(url: NSURL, uploadTicket: VIMUploadTicket, assetIdentifier: String)
