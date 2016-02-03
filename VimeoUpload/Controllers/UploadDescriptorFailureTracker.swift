@@ -1,9 +1,9 @@
 //
-//  AFURLSessionManager+Extensions.swift
+//  UploadDescriptorFailureTracker.swift
 //  VimeoUpload
 //
-//  Created by Alfred Hanssen on 12/7/15.
-//  Copyright © 2015 Vimeo. All rights reserved.
+//  Created by Alfred Hanssen on 2/2/16.
+//  Copyright © 2016 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,24 +24,19 @@
 //  THE SOFTWARE.
 //
 
-import UIKit
+import Foundation
 
-extension AFURLSessionManager
+class UploadDescriptorFailureTracker: DescriptorFailureTracker
 {
-    // Workaround for iOS7 / iPod bug
-    // On iOS7 taskForIdentifier returns nil when casting the identified task to NSURLSessionTask
-    // On iOS8 and above the result is non-nil
-    // Modifying this method to return AnyObject and cast in the calling class to NSURLSessionData/Download/UploadTask [AH] 1/24/2016
-
-    @available(iOS 7.0, *)
-    func taskForIdentifierWorkaround(identifier: Int) -> AnyObject?
+    // MARK: Subclass Overrides
+    
+    override func videoUriForDescriptor<T>(descriptor: T) -> VideoUri?
     {
-        return self.tasks.filter{ $0.taskIdentifier == identifier }.first
-    }
-
-    @available(iOS 8.0, *)
-    func taskForIdentifier(identifier: Int) -> NSURLSessionTask?
-    {
-        return self.tasks.filter{ $0.taskIdentifier == identifier }.first as? NSURLSessionTask
+        if let descriptor = descriptor as? Upload2Descriptor
+        {
+            return descriptor.uploadTicket.video?.uri
+        }
+        
+        return nil
     }
 }
