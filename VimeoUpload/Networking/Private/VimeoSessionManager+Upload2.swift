@@ -54,7 +54,7 @@ extension VimeoSessionManager
             })
         })
         
-        task.taskDescription = TaskDescription.CreateVideo.rawValue
+        task.taskDescription = UploadTaskDescription.CreateVideo.rawValue
         
         return task
     }

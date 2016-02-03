@@ -26,7 +26,7 @@
 
 import Foundation
 
-enum TaskDescription: String
+enum UploadTaskDescription: String
 {
     case Me = "Me"
     case MyVideos = "MyVideos"
@@ -66,7 +66,7 @@ extension VimeoSessionManager
             })
         })
         
-        task.taskDescription = TaskDescription.Me.rawValue
+        task.taskDescription = UploadTaskDescription.Me.rawValue
         
         return task
     }
@@ -97,7 +97,7 @@ extension VimeoSessionManager
             })
         })
         
-        task.taskDescription = TaskDescription.MyVideos.rawValue
+        task.taskDescription = UploadTaskDescription.MyVideos.rawValue
         
         return task
     }
@@ -108,7 +108,7 @@ extension VimeoSessionManager
 
         let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
         
-        task.taskDescription = TaskDescription.CreateVideo.rawValue
+        task.taskDescription = UploadTaskDescription.CreateVideo.rawValue
         
         return task
     }
@@ -135,7 +135,7 @@ extension VimeoSessionManager
             }
         })
 
-        task.taskDescription = TaskDescription.UploadVideo.rawValue
+        task.taskDescription = UploadTaskDescription.UploadVideo.rawValue
         
         return task
     }
@@ -147,7 +147,7 @@ extension VimeoSessionManager
         
         let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
         
-        task.taskDescription = TaskDescription.ActivateVideo.rawValue
+        task.taskDescription = UploadTaskDescription.ActivateVideo.rawValue
         
         return task
     }    
@@ -159,7 +159,7 @@ extension VimeoSessionManager
         
         let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
         
-        task.taskDescription = TaskDescription.VideoSettings.rawValue
+        task.taskDescription = UploadTaskDescription.VideoSettings.rawValue
         
         return task
     }
@@ -190,7 +190,7 @@ extension VimeoSessionManager
             })
         })
         
-        task.taskDescription = TaskDescription.VideoSettings.rawValue
+        task.taskDescription = UploadTaskDescription.VideoSettings.rawValue
         
         return task
     }
@@ -217,7 +217,7 @@ extension VimeoSessionManager
             }
         })
         
-        task.taskDescription = TaskDescription.DeleteVideo.rawValue
+        task.taskDescription = UploadTaskDescription.DeleteVideo.rawValue
         
         return task
     }
@@ -244,7 +244,7 @@ extension VimeoSessionManager
             }
         })
         
-        task.taskDescription = TaskDescription.Video.rawValue
+        task.taskDescription = UploadTaskDescription.Video.rawValue
         
         return task
     }

@@ -47,7 +47,12 @@ enum State: String
 
 class Descriptor: NSObject, DescriptorProtocol
 {
-    // MARK: 
+    private static let StateCoderKey = "state"
+    private static let IdentifierCoderKey = "identifier"
+    private static let ErrorCoderKey = "error"
+    private static let CurrentTaskIdentifierCoderKey = "currentTaskIdentifier"
+
+    // MARK:
     
     dynamic private(set) var stateObservable: String = State.Ready.rawValue
     var state = State.Ready
@@ -55,6 +60,11 @@ class Descriptor: NSObject, DescriptorProtocol
         didSet
         {
             self.stateObservable = state.rawValue
+            
+            if self.state == .Finished
+            {
+                self.currentTaskIdentifier = nil
+            }
         }
     }
     
@@ -62,6 +72,16 @@ class Descriptor: NSObject, DescriptorProtocol
     
     var identifier: String?
     var error: NSError?
+    {
+        didSet
+        {
+            if error != nil
+            {
+                self.state = .Finished
+            }
+        }
+    }
+
     var currentTaskIdentifier: Int?
 
     // MARK: - Initialization
@@ -180,20 +200,20 @@ class Descriptor: NSObject, DescriptorProtocol
     
     required init(coder aDecoder: NSCoder)
     {
-        self.state = State(rawValue: aDecoder.decodeObjectForKey("state") as! String)! // If force unwrap fails we have a big problem
-        self.identifier = aDecoder.decodeObjectForKey("identifier") as? String
-        self.error = aDecoder.decodeObjectForKey("error") as? NSError
-        self.currentTaskIdentifier = aDecoder.decodeIntegerForKey("currentTaskIdentifier")
+        self.state = State(rawValue: aDecoder.decodeObjectForKey(self.dynamicType.StateCoderKey) as! String)!
+        self.identifier = aDecoder.decodeObjectForKey(self.dynamicType.IdentifierCoderKey) as? String
+        self.error = aDecoder.decodeObjectForKey(self.dynamicType.ErrorCoderKey) as? NSError
+        self.currentTaskIdentifier = aDecoder.decodeIntegerForKey(self.dynamicType.CurrentTaskIdentifierCoderKey)
     }
     
     func encodeWithCoder(aCoder: NSCoder)
     {
-        aCoder.encodeObject(self.state.rawValue, forKey: "state")
-        aCoder.encodeObject(self.identifier, forKey: "identifier")
-        aCoder.encodeObject(self.error, forKey: "error")
+        aCoder.encodeObject(self.state.rawValue, forKey: self.dynamicType.StateCoderKey)
+        aCoder.encodeObject(self.identifier, forKey: self.dynamicType.IdentifierCoderKey)
+        aCoder.encodeObject(self.error, forKey: self.dynamicType.ErrorCoderKey)
         if let currentTaskIdentifier = self.currentTaskIdentifier
         {
-            aCoder.encodeInteger(currentTaskIdentifier, forKey: "currentTaskIdentifier")
+            aCoder.encodeInteger(currentTaskIdentifier, forKey: self.dynamicType.CurrentTaskIdentifierCoderKey)
         }
     }
 }

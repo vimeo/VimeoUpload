@@ -27,7 +27,9 @@
 import Foundation
 
 class VimeoResponseSerializer: AFJSONResponseSerializer
-{    
+{
+    private static let ErrorDomain = "VimeoResponseSerializerErrorDomain"
+    
     override init()
     {
         super.init()
@@ -42,7 +44,30 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
     }
         
     // MARK: Public API
-    
+
+    func checkFileDownloadResponseForError(response response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> [String: AnyObject]?
+    {
+        var responseObject: [String: AnyObject]? = nil
+        var serializationError: NSError? = nil
+        do
+        {
+            responseObject = try self.dictionaryFromDownloadTaskResponse(url: url)
+        }
+        catch let error as NSError
+        {
+            serializationError = error
+        }
+        
+        try checkDataResponseForError(response: response, responseObject: responseObject, error: error)
+        
+        if let serializationError = serializationError
+        {
+            throw serializationError
+        }
+        
+        return responseObject
+    }
+
     func checkDownloadResponseForError(response response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> [String: AnyObject]?
     {
         var responseObject: [String: AnyObject]? = nil
@@ -72,7 +97,7 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
         
         if let error = error
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, userInfo: errorInfo)
+            throw error.errorByAddingDomain(self.dynamicType.ErrorDomain, code: nil, userInfo: errorInfo)
         }
 
         try self.checkStatusCodeValidity(response: response)
@@ -82,7 +107,7 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
     {
         if let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode < 200 || httpResponse.statusCode > 299
         {
-            throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Invalid http status code for download task")
+            throw NSError.errorWithDomain(self.dynamicType.ErrorDomain, code: nil, description: "Invalid http status code for download task")
         }
     }
     
@@ -90,12 +115,12 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
     {
         guard let url = url else
         {
-            throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Url for completed download task is nil.")
+            throw NSError.errorWithDomain(self.dynamicType.ErrorDomain, code: nil, description: "Url for completed download task is nil.")
         }
         
         guard let data = NSData(contentsOfURL: url) else
         {
-            throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Data at url for completed download task is nil.")
+            throw NSError.errorWithDomain(self.dynamicType.ErrorDomain, code: nil, description: "Data at url for completed download task is nil.")
         }
         
         var dictionary: [String: AnyObject]? = [:]
@@ -107,13 +132,13 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
             }
             catch let error as NSError
             {
-                throw error.errorByAddingDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue)
+                throw error.errorByAddingDomain(self.dynamicType.ErrorDomain)
             }
         }
         
         if dictionary == nil
         {
-            throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Download task response dictionary is nil.")
+            throw NSError.errorWithDomain(self.dynamicType.ErrorDomain, code: nil, description: "Download task response dictionary is nil.")
         }
         
         return dictionary!
@@ -121,10 +146,11 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
     
     func errorInfoFromResponse(response: NSURLResponse?, responseObject: AnyObject?) -> [String: AnyObject]?
     {
+        var errorInfo: [String: AnyObject] = [:]
+
         if let dictionary = responseObject as? [String: AnyObject]
         {
             let errorKeys = ["error", "VimeoErrorCode", "error_code", "developer_message", "invalid_parameters"]
-            var errorInfo: [String: AnyObject] = [:]
             
             for (key, value) in dictionary
             {
@@ -133,16 +159,14 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
                     errorInfo[key] = value
                 }
             }
-            
-            if let headerErrorCode = (response as? NSHTTPURLResponse)?.allHeaderFields["Vimeo-Error-Code"]
-            {
-                errorInfo["error_code"] = headerErrorCode
-            }
-            
-            return errorInfo
         }
         
-        return nil
+        if let headerErrorCode = (response as? NSHTTPURLResponse)?.allHeaderFields["Vimeo-Error-Code"]
+        {
+            errorInfo["error_code"] = headerErrorCode
+        }
+        
+        return errorInfo.count == 0 ? nil : errorInfo
     }
 
     // MARK: Private API
