@@ -1,8 +1,8 @@
 //
-//  UploadDescriptorFailureTracker.swift
-//  VimeoUpload
+//  CameraRollAssetCell.swift
+//  Smokescreen
 //
-//  Created by Alfred Hanssen on 2/2/16.
+//  Created by Alfred Hanssen on 2/5/16.
 //  Copyright © 2016 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,13 +25,14 @@
 //
 
 import Foundation
+import CoreGraphics
+import UIKit
 
-class UploadDescriptorFailureTracker: DescriptorFailureTracker
+@objc protocol CameraRollAssetCell
 {
-    // MARK: Subclass Overrides
-    
-    override func videoUriForDescriptor<T>(descriptor: T) -> VideoUri?
-    {
-        return (descriptor as? Upload2Descriptor)?.uploadTicket.video?.uri
-    }
+    var bounds: CGRect { get }
+    func setImage(image: UIImage)
+    func setDuration(seconds seconds: Float64)
+    func setFileSize(bytes bytes: Float64)
+    func setInCloud()
 }

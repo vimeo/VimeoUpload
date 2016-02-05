@@ -1,8 +1,8 @@
 //
-//  BlockTypes.swift
-//  VimeoUpload
+//  CameraRollAssetHelper.swift
+//  Smokescreen
 //
-//  Created by Hanssen, Alfie on 10/13/15.
+//  Created by Alfred Hanssen on 12/18/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,16 +26,10 @@
 
 import Foundation
 
-typealias VoidBlock = () -> Void
-typealias ProgressBlock = (progress: Double) -> Void
-typealias ErrorBlock = (error: NSError?) -> Void
-typealias StringErrorBlock = (value: String?, error: NSError?) -> Void
-typealias FloatBlock = (value: Float64) -> Void
-
-typealias UserCompletionHandler = (user: VIMUser?, error: NSError?) -> Void
-typealias VideoCompletionHandler = (video: VIMVideo?, error: NSError?) -> Void
-typealias VideosCompletionHandler = (videos: [VIMVideo]?, error: NSError?) -> Void
-typealias UploadTicketCompletionHandler = (uploadTicket: VIMUploadTicket?, error: NSError?) -> Void
-
-typealias VideoUri = String
-typealias FileSizeCheckResult = (fileSize: Float64, availableSpace: Float64, success: Bool)
+@objc protocol CameraRollAssetHelper
+{
+    func requestImage(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
+    func requestAsset(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
+    
+    optional func cancelRequests(cameraRollAsset: CameraRollAsset)
+}

@@ -26,12 +26,7 @@
 
 import Foundation
 
-// TODO: This entire class should leverage generics, 
-// This would mean we would need upload- and download-specific subclasses
-// But NSKeyedArchiving doesn't work with generics,
-// Instead we have a method below that subclasses must override [AH] 02/02/2016
-
-@objc class DescriptorFailureTracker: NSObject
+@objc class VideoDescriptorFailureTracker: NSObject
 {
     private static let FailedDescriptorsArchiveKey = "failed_descriptors"
 
@@ -65,7 +60,7 @@ import Foundation
         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
         
         var documentsURL = NSURL(string: documentsPath)!
-        documentsURL = documentsURL.URLByAppendingPathComponent(DescriptorFailureTracker.FailedDescriptorsArchiveKey)
+        documentsURL = documentsURL.URLByAppendingPathComponent(VideoDescriptorFailureTracker.FailedDescriptorsArchiveKey)
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
@@ -88,9 +83,9 @@ import Foundation
     
     // MARK: Public API
     
-    func removeFailedDescriptorForVideoUri(videoUri: VideoUri) -> Descriptor?
+    func removeFailedDescriptorForKey(key: VideoUri) -> Descriptor?
     {
-        guard let descriptor = self.failedDescriptors.removeValueForKey(videoUri) else
+        guard let descriptor = self.failedDescriptors.removeValueForKey(key) else
         {
             return nil
         }
@@ -100,9 +95,9 @@ import Foundation
         return descriptor
     }
     
-    func failedDescriptorForVideoUri(videoUri: VideoUri) -> Descriptor?
+    func failedDescriptorForKey(key: VideoUri) -> Descriptor?
     {
-        return self.failedDescriptors[videoUri]
+        return self.failedDescriptors[key]
     }
     
     // MARK: Notifications
@@ -127,25 +122,16 @@ import Foundation
         
         dispatch_async(dispatch_get_main_queue()) { () -> Void in // TODO: can async cause failure to not be stored?
             
-            if let descriptor = notification.object as? Upload2Descriptor, let videoUri = self.videoUriForDescriptor(descriptor), let error = descriptor.error
+            if let descriptor = notification.object as? Descriptor, let key = (descriptor as? VideoDescriptor)?.videoUri, let error = descriptor.error
             {
                 if error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled // No need to store failures that occurred due to cancellation
                 {
                     return
                 }
                 
-                self.failedDescriptors[videoUri] = descriptor
+                self.failedDescriptors[key] = descriptor
                 self.saveFailedDescriptors()
             }
         }
-    }
-    
-    // MARK: Subclass Overrides
-    
-    func videoUriForDescriptor<T>(descriptor: T) -> VideoUri?
-    {
-        assertionFailure("Subclasses must override")
-        
-        return nil
     }
 }

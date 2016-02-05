@@ -28,7 +28,6 @@ import Foundation
 
 enum UploadErrorDomain: String
 {
-    case VimeoUpload = "VimeoUploadErrorDomain"
     case PHAssetExportSession = "PHAssetExportSessionErrorDomain"
     case DailyQuota = "DailyQuotaErrorDomain"
     case WeeklyQuota = "WeeklyQuotaErrorDomain"
@@ -76,67 +75,6 @@ enum UploadErrorDomain: String
 
 enum UploadErrorKey: String
 {
-    case VimeoErrorCode = "VimeoLocalErrorCode"
-    case VimeoErrorDomain = "VimeoDomain"
     case AvailableSpace = "AvailableSpace"
     case FileSize = "FileSize"
-}
-
-extension NSError
-{
-    // MARK: Creation / Augmentation
-    
-    class func errorWithDomain(domain: String?, code: Int?, description: String?) -> NSError
-    {
-        var error = NSError(domain: UploadErrorDomain.VimeoUpload.rawValue, code: 0, userInfo: nil)
-
-        if let description = description
-        {
-            let userInfo = [NSLocalizedDescriptionKey: description]
-            error = error.errorByAddingDomain(domain, code: code, userInfo: userInfo)
-        }
-        else
-        {
-            error = error.errorByAddingDomain(domain, code: code, userInfo: nil)
-        }
-        
-        return error
-    }
-    
-    func errorByAddingDomain(domain: String) -> NSError
-    {
-        return self.errorByAddingDomain(domain, code: nil, userInfo: nil)
-    }
-
-    func errorByAddingUserInfo(userInfo: [String: AnyObject]) -> NSError
-    {
-        return self.errorByAddingDomain(nil, code: nil, userInfo: userInfo)
-    }
-    
-    func errorByAddingCode(code: Int) -> NSError
-    {
-        return self.errorByAddingDomain(nil, code: code, userInfo: nil)
-    }
-
-    func errorByAddingDomain(domain: String?, code: Int?, userInfo: [String: AnyObject]?) -> NSError
-    {
-        let augmentedInfo = NSMutableDictionary(dictionary: self.userInfo)
-        
-        if let domain = domain
-        {
-            augmentedInfo[UploadErrorKey.VimeoErrorDomain.rawValue] = domain
-        }
-
-        if let code = code
-        {
-            augmentedInfo[UploadErrorKey.VimeoErrorCode.rawValue] = code
-        }
-
-        if let userInfo = userInfo
-        {
-            augmentedInfo.addEntriesFromDictionary(userInfo)
-        }
-        
-        return NSError(domain: self.domain, code: self.code, userInfo: augmentedInfo as [NSObject: AnyObject])
-    }
 }

@@ -1,9 +1,9 @@
 //
-//  VIMPHAsset.swift
+//  VideoDescriptor.swift
 //  Smokescreen
 //
-//  Created by Hanssen, Alfie on 12/18/15.
-//  Copyright © 2015 Vimeo. All rights reserved.
+//  Created by Alfred Hanssen on 2/5/16.
+//  Copyright © 2016 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,28 +24,9 @@
 //  THE SOFTWARE.
 //
 
-import Photos
-import AVFoundation
+import Foundation
 
-@available(iOS 8.0, *)
-@objc class VIMPHAsset: NSObject, CameraRollAsset
+protocol VideoDescriptor
 {
-    let phAsset: PHAsset
-    
-    init(phAsset: PHAsset)
-    {
-        self.phAsset = phAsset
-    }
-
-    var identifier: String
-    {
-        get
-        {
-            return self.phAsset.localIdentifier
-        }
-    }
-    
-    var inCloud: Bool = false
-    var avAsset: AVAsset?
-    var error: NSError?
+    var videoUri: VideoUri? { get }
 }

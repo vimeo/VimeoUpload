@@ -1,8 +1,8 @@
 //
-//  VIMPHAsset.swift
-//  Smokescreen
+//  BlockTypes.swift
+//  VimeoUpload
 //
-//  Created by Hanssen, Alfie on 12/18/15.
+//  Created by Hanssen, Alfie on 10/13/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,28 +24,17 @@
 //  THE SOFTWARE.
 //
 
-import Photos
-import AVFoundation
+import Foundation
 
-@available(iOS 8.0, *)
-@objc class VIMPHAsset: NSObject, CameraRollAsset
-{
-    let phAsset: PHAsset
-    
-    init(phAsset: PHAsset)
-    {
-        self.phAsset = phAsset
-    }
+typealias ProgressBlock = (progress: Double) -> Void
+typealias ErrorBlock = (error: NSError?) -> Void
+typealias StringErrorBlock = (value: String?, error: NSError?) -> Void
+typealias FloatBlock = (value: Float64) -> Void
 
-    var identifier: String
-    {
-        get
-        {
-            return self.phAsset.localIdentifier
-        }
-    }
-    
-    var inCloud: Bool = false
-    var avAsset: AVAsset?
-    var error: NSError?
-}
+typealias UserCompletionHandler = (user: VIMUser?, error: NSError?) -> Void
+typealias VideoCompletionHandler = (video: VIMVideo?, error: NSError?) -> Void
+typealias VideosCompletionHandler = (videos: [VIMVideo]?, error: NSError?) -> Void
+typealias UploadTicketCompletionHandler = (uploadTicket: VIMUploadTicket?, error: NSError?) -> Void
+
+typealias VideoUri = String
+typealias FileSizeCheckResult = (fileSize: Float64, availableSpace: Float64, success: Bool)

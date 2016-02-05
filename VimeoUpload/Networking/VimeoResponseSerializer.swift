@@ -70,11 +70,13 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
     
     func checkDataResponseForError(response response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws
     {
-        let errorInfo = self.errorInfoFromResponse(response, responseObject: responseObject)
+        // TODO: if error is nil and errorInfo is non-nil, we should throw an error [AH] 2/5/2016
+        
+        let errorInfo = self.errorInfoFromResponse(response, responseObject: responseObject) ?? [:]
         
         if let error = error
         {
-            throw error.errorByAddingDomain(self.dynamicType.ErrorDomain, code: nil, userInfo: errorInfo)
+            throw error.errorByAddingUserInfo(errorInfo)
         }
 
         try self.checkStatusCodeValidity(response: response)
@@ -84,7 +86,8 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
     {
         if let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode < 200 || httpResponse.statusCode > 299
         {
-            throw NSError.errorWithDomain(self.dynamicType.ErrorDomain, code: nil, description: "Invalid http status code for download task")
+            let userInfo = [NSLocalizedDescriptionKey: "Invalid http status code for download task."]
+            throw NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: userInfo)
         }
     }
     
@@ -92,39 +95,37 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
     {
         guard let url = url else
         {
-            throw NSError.errorWithDomain(self.dynamicType.ErrorDomain, code: nil, description: "Url for completed download task is nil.")
+            let userInfo = [NSLocalizedDescriptionKey: "Url for completed download task is nil."]
+            throw NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: userInfo)
         }
         
         guard let data = NSData(contentsOfURL: url) else
         {
-            throw NSError.errorWithDomain(self.dynamicType.ErrorDomain, code: nil, description: "Data at url for completed download task is nil.")
+            let userInfo = [NSLocalizedDescriptionKey: "Data at url for completed download task is nil."]
+            throw NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: userInfo)
         }
         
         var dictionary: [String: AnyObject]? = [:]
         if data.length > 0
         {
-            do
-            {
-                dictionary = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? [String: AnyObject]
-            }
-            catch let error as NSError
-            {
-                throw error.errorByAddingDomain(self.dynamicType.ErrorDomain)
-            }
+            dictionary = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? [String: AnyObject]
         }
         
         if dictionary == nil
         {
-            throw NSError.errorWithDomain(self.dynamicType.ErrorDomain, code: nil, description: "Download task response dictionary is nil.")
+            let userInfo = [NSLocalizedDescriptionKey: "Download task response dictionary is nil."]
+            throw NSError(domain: self.dynamicType.ErrorDomain, code: 0, userInfo: userInfo)
         }
         
         return dictionary!
     }
     
-    func errorInfoFromResponse(response: NSURLResponse?, responseObject: AnyObject?) -> [String: AnyObject]?
+    // MARK: Private API
+
+    private func errorInfoFromResponse(response: NSURLResponse?, responseObject: AnyObject?) -> [String: AnyObject]?
     {
         var errorInfo: [String: AnyObject] = [:]
-
+        
         if let dictionary = responseObject as? [String: AnyObject]
         {
             let errorKeys = ["error", "VimeoErrorCode", "error_code", "developer_message", "invalid_parameters"]
@@ -145,8 +146,6 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
         
         return errorInfo.count == 0 ? nil : errorInfo
     }
-
-    // MARK: Private API
 
     private static func acceptableContentTypes() -> Set<String>
     {
