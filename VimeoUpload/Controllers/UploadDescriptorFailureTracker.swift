@@ -32,11 +32,6 @@ class UploadDescriptorFailureTracker: DescriptorFailureTracker
     
     override func videoUriForDescriptor<T>(descriptor: T) -> VideoUri?
     {
-        if let descriptor = descriptor as? Upload2Descriptor
-        {
-            return descriptor.uploadTicket.video?.uri
-        }
-        
-        return nil
+        return (descriptor as? Upload2Descriptor)?.uploadTicket.video?.uri
     }
 }

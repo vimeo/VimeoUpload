@@ -33,7 +33,7 @@ import Foundation
 
 @objc class DescriptorFailureTracker: NSObject
 {
-    private let FailedDescriptorsArchiveKey = "failed_descriptors"
+    private static let FailedDescriptorsArchiveKey = "failed_descriptors"
 
     // MARK: 
     
@@ -65,6 +65,7 @@ import Foundation
         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
         
         var documentsURL = NSURL(string: documentsPath)!
+        documentsURL = documentsURL.URLByAppendingPathComponent(DescriptorFailureTracker.FailedDescriptorsArchiveKey)
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
@@ -75,14 +76,14 @@ import Foundation
         return KeyedArchiver(basePath: documentsURL.path!)
     }
     
-    private func loadFailedDescriptors() -> [String: Descriptor]
+    private func loadFailedDescriptors() -> [VideoUri: Descriptor]
     {
-        return self.archiver.loadObjectForKey(FailedDescriptorsArchiveKey) as? [String: Descriptor] ?? [:]
+        return self.archiver.loadObjectForKey(self.dynamicType.FailedDescriptorsArchiveKey) as? [VideoUri: Descriptor] ?? [:]
     }
     
     private func saveFailedDescriptors()
     {
-        self.archiver.saveObject(self.failedDescriptors, key: FailedDescriptorsArchiveKey)
+        self.archiver.saveObject(self.failedDescriptors, key: self.dynamicType.FailedDescriptorsArchiveKey)
     }
     
     // MARK: Public API
@@ -119,6 +120,7 @@ import Foundation
     func descriptorDidFail(notification: NSNotification)
     {
         // TODO: Should we do this:
+        // Leaving this in place until we see reason to change it
         
         // Intentionally holding a strong reference to self here to ensure that this block executes,
         // Otherwise we potentially lose access to failures

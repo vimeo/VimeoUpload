@@ -77,7 +77,7 @@ extension VimeoResponseSerializer
         let responseObject: [String: AnyObject]?
         do
         {
-            responseObject = try checkDownloadResponseForError(response: response, url: url, error: error)
+            responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url, error: error)
         }
         catch let error as NSError
         {
@@ -124,7 +124,7 @@ extension VimeoResponseSerializer
     {
         do
         {
-            try checkDownloadResponseForError(response: response, url: url, error: error)
+            try responseObjectFromDownloadTaskResponse(response: response, url: url, error: error)
         }
         catch let error as NSError
         {
@@ -144,7 +144,7 @@ extension VimeoResponseSerializer
         let responseObject: [String: AnyObject]?
         do
         {
-            responseObject = try checkDownloadResponseForError(response: response, url: url, error: error)
+            responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url, error: error)
         }
         catch let error as NSError
         {
