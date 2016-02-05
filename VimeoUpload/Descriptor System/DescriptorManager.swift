@@ -35,6 +35,7 @@ enum DescriptorManagerNotification: String
 }
 
 typealias TestBlock = (descriptor: Descriptor) -> Bool
+typealias VoidBlock = () -> Void
 
 class DescriptorManager
 {

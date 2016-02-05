@@ -1,9 +1,9 @@
 //
-//  CameraRollAssetHelper.swift
+//  VideoDescriptor.swift
 //  Smokescreen
 //
-//  Created by Alfred Hanssen on 12/18/15.
-//  Copyright © 2015 Vimeo. All rights reserved.
+//  Created by Alfred Hanssen on 2/5/16.
+//  Copyright © 2016 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -26,10 +26,7 @@
 
 import Foundation
 
-@objc protocol CameraRollAssetHelper
+protocol VideoDescriptor
 {
-    func requestImage(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
-    func requestAsset(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
-    
-    optional func cancelRequests(cameraRollAsset: CameraRollAsset)
+    var videoUri: VideoUri? { get }
 }

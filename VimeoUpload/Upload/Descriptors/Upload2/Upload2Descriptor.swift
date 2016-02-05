@@ -26,7 +26,7 @@
 
 import Foundation
 
-class Upload2Descriptor: ProgressDescriptor
+class Upload2Descriptor: ProgressDescriptor, VideoDescriptor
 {
     private static let FileNameCoderKey = "fileName"
     private static let FileExtensionCoderKey = "fileExtension"
@@ -38,6 +38,13 @@ class Upload2Descriptor: ProgressDescriptor
     let url: NSURL
     let uploadTicket: VIMUploadTicket
     let assetIdentifier: String // Used to track the original ALAsset or PHAsset
+    
+    // MARK: VideoDescriptor
+    
+    var videoUri: VideoUri?
+    {
+        return self.uploadTicket.video?.uri
+    }
     
     // MARK: - Initialization
     

@@ -26,7 +26,6 @@
 
 import Foundation
 
-typealias VoidBlock = () -> Void
 typealias ProgressBlock = (progress: Double) -> Void
 typealias ErrorBlock = (error: NSError?) -> Void
 typealias StringErrorBlock = (value: String?, error: NSError?) -> Void

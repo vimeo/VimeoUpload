@@ -30,7 +30,7 @@ typealias AuthTokenBlock = () -> String?
 
 class VimeoSessionManager: AFHTTPSessionManager
 {    
-    // MARK: - Initialization
+    // MARK: - Default Session Initialization
     
     static func defaultSessionManager(authToken authToken: String) -> VimeoSessionManager
     {
@@ -46,7 +46,7 @@ class VimeoSessionManager: AFHTTPSessionManager
         return VimeoSessionManager(sessionConfiguration: sessionConfiguration, authTokenBlock: authTokenBlock)
     }
 
-    // MARK:
+    // MARK: - Background Session Initialization
     
     static func backgroundSessionManager(identifier identifier: String, authToken: String) -> VimeoSessionManager
     {
@@ -62,12 +62,12 @@ class VimeoSessionManager: AFHTTPSessionManager
         return VimeoSessionManager(sessionConfiguration: sessionConfiguration, authTokenBlock: authTokenBlock)
     }
 
-    // MARK: 
+    // MARK: Initialization
     
     convenience init(sessionConfiguration: NSURLSessionConfiguration, authToken: String)
     {
         self.init(sessionConfiguration: sessionConfiguration, authTokenBlock: { () -> String in
-            return "Bearer \(authToken)"
+            return authToken
         })
     }
     
@@ -78,8 +78,6 @@ class VimeoSessionManager: AFHTTPSessionManager
         self.requestSerializer = VimeoRequestSerializer(authTokenBlock: authTokenBlock)
         self.responseSerializer = VimeoResponseSerializer()
     }
-
-    // MARK:
     
     required init?(coder aDecoder: NSCoder)
     {
@@ -87,6 +85,8 @@ class VimeoSessionManager: AFHTTPSessionManager
     }
         
     // MARK: Private API
+    
+    // Would prefer that this live in a NSURLSessionConfiguration extension but the method name would conflict [AH] 2/5/2016
     
     private static func backgroundSessionConfiguration(identifier identifier: String) -> NSURLSessionConfiguration
     {

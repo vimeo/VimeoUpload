@@ -26,19 +26,14 @@
 
 import Foundation
 
-// TODO: This entire class should leverage generics, 
-// This would mean we would need upload- and download-specific subclasses
-// But NSKeyedArchiving doesn't work with generics,
-// Instead we have a method below that subclasses must override [AH] 02/02/2016
-
-@objc class DescriptorFailureTracker: NSObject
+@objc class VideoDescriptorFailureTracker: NSObject
 {
     private static let FailedDescriptorsArchiveKey = "failed_descriptors"
 
     // MARK: 
     
     private let archiver: KeyedArchiver
-    private var failedDescriptors: [String: Descriptor] = [:]
+    private var failedDescriptors: [VideoUri: Descriptor] = [:]
 
     // MARK: - Initialization
     
@@ -65,7 +60,7 @@ import Foundation
         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
         
         var documentsURL = NSURL(string: documentsPath)!
-        documentsURL = documentsURL.URLByAppendingPathComponent(DescriptorFailureTracker.FailedDescriptorsArchiveKey)
+        documentsURL = documentsURL.URLByAppendingPathComponent(VideoDescriptorFailureTracker.FailedDescriptorsArchiveKey)
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
@@ -76,9 +71,9 @@ import Foundation
         return KeyedArchiver(basePath: documentsURL.path!)
     }
     
-    private func loadFailedDescriptors() -> [String: Descriptor]
+    private func loadFailedDescriptors() -> [VideoUri: Descriptor]
     {
-        return self.archiver.loadObjectForKey(self.dynamicType.FailedDescriptorsArchiveKey) as? [String: Descriptor] ?? [:]
+        return self.archiver.loadObjectForKey(self.dynamicType.FailedDescriptorsArchiveKey) as? [VideoUri: Descriptor] ?? [:]
     }
     
     private func saveFailedDescriptors()
@@ -88,7 +83,7 @@ import Foundation
     
     // MARK: Public API
     
-    func removeFailedDescriptorForKey(key: String) -> Descriptor?
+    func removeFailedDescriptorForKey(key: VideoUri) -> Descriptor?
     {
         guard let descriptor = self.failedDescriptors.removeValueForKey(key) else
         {
@@ -100,7 +95,7 @@ import Foundation
         return descriptor
     }
     
-    func failedDescriptorForKey(key: String) -> Descriptor?
+    func failedDescriptorForKey(key: VideoUri) -> Descriptor?
     {
         return self.failedDescriptors[key]
     }
@@ -127,7 +122,7 @@ import Foundation
         
         dispatch_async(dispatch_get_main_queue()) { () -> Void in // TODO: can async cause failure to not be stored?
             
-            if let descriptor = notification.object as? Descriptor, let key = self.failureKeyForDescriptor(descriptor), let error = descriptor.error
+            if let descriptor = notification.object as? Descriptor, let key = (descriptor as? VideoDescriptor)?.videoUri, let error = descriptor.error
             {
                 if error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled // No need to store failures that occurred due to cancellation
                 {
@@ -138,14 +133,5 @@ import Foundation
                 self.saveFailedDescriptors()
             }
         }
-    }
-    
-    // MARK: Subclass Overrides
-    
-    func failureKeyForDescriptor<T>(descriptor: T) -> String?
-    {
-        assertionFailure("Subclasses must override")
-        
-        return nil
     }
 }
