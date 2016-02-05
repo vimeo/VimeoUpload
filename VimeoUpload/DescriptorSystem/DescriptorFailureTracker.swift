@@ -78,12 +78,12 @@ import Foundation
     
     private func loadFailedDescriptors() -> [VideoUri: Descriptor]
     {
-        return self.archiver.loadObjectForKey(DescriptorFailureTracker.FailedDescriptorsArchiveKey) as? [VideoUri: Descriptor] ?? [:]
+        return self.archiver.loadObjectForKey(self.dynamicType.FailedDescriptorsArchiveKey) as? [VideoUri: Descriptor] ?? [:]
     }
     
     private func saveFailedDescriptors()
     {
-        self.archiver.saveObject(self.failedDescriptors, key: DescriptorFailureTracker.FailedDescriptorsArchiveKey)
+        self.archiver.saveObject(self.failedDescriptors, key: self.dynamicType.FailedDescriptorsArchiveKey)
     }
     
     // MARK: Public API

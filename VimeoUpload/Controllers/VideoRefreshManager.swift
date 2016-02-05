@@ -33,7 +33,7 @@ import Foundation
 
 @objc class VideoRefreshManager: NSObject
 {
-    private static let RetryDelay: Double = 5 // Seconds
+    private static let RetryDelayInSeconds: Double = 5
     
     // MARK:
     
@@ -166,7 +166,7 @@ import Foundation
 
     private func retryVideoWithUri(uri: VideoUri)
     {
-        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(self.dynamicType.RetryDelay * Double(NSEC_PER_SEC)))
+        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(self.dynamicType.RetryDelayInSeconds * Double(NSEC_PER_SEC)))
         
         dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] () -> Void in
             self?.doRefreshVideoWithUri(uri)
