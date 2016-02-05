@@ -30,7 +30,7 @@ class UploadDescriptorFailureTracker: DescriptorFailureTracker
 {
     // MARK: Subclass Overrides
     
-    override func videoUriForDescriptor<T>(descriptor: T) -> VideoUri?
+    override func failureKeyForDescriptor<T>(descriptor: T) -> String?
     {
         return (descriptor as? Upload2Descriptor)?.uploadTicket.video?.uri
     }

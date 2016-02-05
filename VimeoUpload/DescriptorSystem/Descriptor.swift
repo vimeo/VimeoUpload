@@ -112,6 +112,7 @@ class Descriptor: NSObject, DescriptorProtocol
         }
         else
         {
+            // See note above taskForIdentifierWorkaround for details on why this is necessary (iOS7 bug) [AH] 2/5/2016
             if let identifier = self.currentTaskIdentifier,
                 let task = sessionManager.taskForIdentifierWorkaround(identifier)
             {
@@ -158,6 +159,7 @@ class Descriptor: NSObject, DescriptorProtocol
         }
         else
         {
+            // See note above taskForIdentifierWorkaround for details on why this is necessary (iOS7 bug) [AH] 2/5/2016
             if let identifier = self.currentTaskIdentifier,
                 let task = sessionManager.taskForIdentifierWorkaround(identifier)
             {

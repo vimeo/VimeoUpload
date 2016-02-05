@@ -38,7 +38,7 @@ import Foundation
     // MARK: 
     
     private let archiver: KeyedArchiver
-    private var failedDescriptors: [VideoUri: Descriptor] = [:]
+    private var failedDescriptors: [String: Descriptor] = [:]
 
     // MARK: - Initialization
     
@@ -76,9 +76,9 @@ import Foundation
         return KeyedArchiver(basePath: documentsURL.path!)
     }
     
-    private func loadFailedDescriptors() -> [VideoUri: Descriptor]
+    private func loadFailedDescriptors() -> [String: Descriptor]
     {
-        return self.archiver.loadObjectForKey(self.dynamicType.FailedDescriptorsArchiveKey) as? [VideoUri: Descriptor] ?? [:]
+        return self.archiver.loadObjectForKey(self.dynamicType.FailedDescriptorsArchiveKey) as? [String: Descriptor] ?? [:]
     }
     
     private func saveFailedDescriptors()
@@ -88,9 +88,9 @@ import Foundation
     
     // MARK: Public API
     
-    func removeFailedDescriptorForVideoUri(videoUri: VideoUri) -> Descriptor?
+    func removeFailedDescriptorForKey(key: String) -> Descriptor?
     {
-        guard let descriptor = self.failedDescriptors.removeValueForKey(videoUri) else
+        guard let descriptor = self.failedDescriptors.removeValueForKey(key) else
         {
             return nil
         }
@@ -100,9 +100,9 @@ import Foundation
         return descriptor
     }
     
-    func failedDescriptorForVideoUri(videoUri: VideoUri) -> Descriptor?
+    func failedDescriptorForKey(key: String) -> Descriptor?
     {
-        return self.failedDescriptors[videoUri]
+        return self.failedDescriptors[key]
     }
     
     // MARK: Notifications
@@ -127,14 +127,14 @@ import Foundation
         
         dispatch_async(dispatch_get_main_queue()) { () -> Void in // TODO: can async cause failure to not be stored?
             
-            if let descriptor = notification.object as? Upload2Descriptor, let videoUri = self.videoUriForDescriptor(descriptor), let error = descriptor.error
+            if let descriptor = notification.object as? Descriptor, let key = self.failureKeyForDescriptor(descriptor), let error = descriptor.error
             {
                 if error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled // No need to store failures that occurred due to cancellation
                 {
                     return
                 }
                 
-                self.failedDescriptors[videoUri] = descriptor
+                self.failedDescriptors[key] = descriptor
                 self.saveFailedDescriptors()
             }
         }
@@ -142,7 +142,7 @@ import Foundation
     
     // MARK: Subclass Overrides
     
-    func videoUriForDescriptor<T>(descriptor: T) -> VideoUri?
+    func failureKeyForDescriptor<T>(descriptor: T) -> String?
     {
         assertionFailure("Subclasses must override")
         
