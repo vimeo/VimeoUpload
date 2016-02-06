@@ -331,6 +331,11 @@ class DescriptorManager
         })
     }
     
+    func cancelDescriptor(descriptor: Descriptor)
+    {
+        descriptor.cancel(sessionManager: self.sessionManager)
+    }
+    
     func descriptorPassingTest(test: TestBlock) -> Descriptor?
     {
         var descriptor: Descriptor?
