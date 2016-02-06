@@ -45,15 +45,15 @@ import Foundation
         }
     }
     
-    var allowsCellularUpload: Bool
+    var allowsCellularUsage: Bool
     {
         get
         {
-            return self.connectivityManager.allowsCellularUpload
+            return self.connectivityManager.allowsCellularUsage
         }
         set
         {
-            self.connectivityManager.allowsCellularUpload = newValue
+            self.connectivityManager.allowsCellularUsage = newValue
         }
     }
     
