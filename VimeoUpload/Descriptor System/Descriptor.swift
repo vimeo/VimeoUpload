@@ -37,7 +37,7 @@ import Foundation
     func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
 }
 
-enum State: String
+enum DescriptorState: String
 {
     case Ready = "Ready"
     case Executing = "Executing"
@@ -54,8 +54,8 @@ class Descriptor: NSObject, DescriptorProtocol
 
     // MARK:
     
-    dynamic private(set) var stateObservable: String = State.Ready.rawValue
-    var state = State.Ready
+    dynamic private(set) var stateObservable: String = DescriptorState.Ready.rawValue
+    var state = DescriptorState.Ready
     {
         didSet
         {
@@ -202,7 +202,7 @@ class Descriptor: NSObject, DescriptorProtocol
     
     required init(coder aDecoder: NSCoder)
     {
-        self.state = State(rawValue: aDecoder.decodeObjectForKey(self.dynamicType.StateCoderKey) as! String)!
+        self.state = DescriptorState(rawValue: aDecoder.decodeObjectForKey(self.dynamicType.StateCoderKey) as! String)!
         self.identifier = aDecoder.decodeObjectForKey(self.dynamicType.IdentifierCoderKey) as? String
         self.error = aDecoder.decodeObjectForKey(self.dynamicType.ErrorCoderKey) as? NSError
         self.currentTaskIdentifier = aDecoder.decodeIntegerForKey(self.dynamicType.CurrentTaskIdentifierCoderKey)

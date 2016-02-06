@@ -26,7 +26,17 @@
 
 import Foundation
 
+enum VideoDescriptorType
+{
+    case Upload
+    case Download
+}
+
 protocol VideoDescriptor
 {
+    var type: VideoDescriptorType { get }
+    
     var videoUri: VideoUri? { get }
+    
+    var progressDescriptor: ProgressDescriptor { get }
 }
