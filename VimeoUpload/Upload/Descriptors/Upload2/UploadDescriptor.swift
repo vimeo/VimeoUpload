@@ -1,5 +1,5 @@
 //
-//  Upload2Descriptor.swift
+//  UploadDescriptor.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/21/15.
@@ -26,7 +26,7 @@
 
 import Foundation
 
-class Upload2Descriptor: ProgressDescriptor, VideoDescriptor
+class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
     private static let FileNameCoderKey = "fileName"
     private static let FileExtensionCoderKey = "fileExtension"
