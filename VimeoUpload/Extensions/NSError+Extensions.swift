@@ -34,6 +34,11 @@ enum VimeoErrorKey: String
 
 extension NSError
 {
+    func isNetworkTaskCancellationError() -> Bool
+    {
+        return self.domain == NSURLErrorDomain && self.code == NSURLErrorCancelled
+    }
+
     class func errorWithDomain(domain: String?, code: Int?, description: String?) -> NSError
     {
         var error = NSError(domain: VimeoErrorKey.VimeoErrorDomain.rawValue, code: 0, userInfo: nil)

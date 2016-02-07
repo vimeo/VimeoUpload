@@ -121,7 +121,7 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
-        if let error = error where self.state == .Suspended && error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled
+        if let error = error where self.state == .Suspended && error.isNetworkTaskCancellationError()
         {
             let _ = try? self.prepare(sessionManager: sessionManager) // An error can be set within prepare
             
