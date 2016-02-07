@@ -32,11 +32,11 @@ import Foundation
 
     // MARK: 
     
-    var allowsCellularUpload = true
+    var allowsCellularUsage = true
     {
         didSet
         {
-            if oldValue != allowsCellularUpload
+            if oldValue != allowsCellularUsage
             {
                 self.updateDescriptorManagerState()
             }
@@ -86,7 +86,7 @@ import Foundation
             }
             else
             {
-                if self.allowsCellularUpload
+                if self.allowsCellularUsage
                 {
                     self.descriptorManager.resume()
                 }
