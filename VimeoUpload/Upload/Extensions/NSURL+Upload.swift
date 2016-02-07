@@ -54,6 +54,6 @@ extension NSURL
     {
         let documentsURL = NSURL(string: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])!
         
-        return documentsURL.URLByAppendingPathComponent("uploader").URLByAppendingPathComponent("video_files")
+        return documentsURL.URLByAppendingPathComponent("uploader").URLByAppendingPathComponent("videos")
     }
 }
