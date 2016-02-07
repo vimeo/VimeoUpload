@@ -124,7 +124,7 @@ import Foundation
             
             if let descriptor = notification.object as? Descriptor, let key = (descriptor as? VideoDescriptor)?.videoUri, let error = descriptor.error
             {
-                if error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled // No need to store failures that occurred due to cancellation
+                if error.isNetworkTaskCancellationError() // No need to store failures that occurred due to cancellation
                 {
                     return
                 }
