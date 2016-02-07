@@ -71,6 +71,7 @@ class Descriptor: NSObject, DescriptorProtocol
     // MARK:
     
     var identifier: String?
+    var currentTaskIdentifier: Int?
     var error: NSError?
     {
         didSet
@@ -81,9 +82,11 @@ class Descriptor: NSObject, DescriptorProtocol
             }
         }
     }
-
-    var currentTaskIdentifier: Int?
-
+    var cancelled: Bool
+    {
+        return self.state == .Finished && self.error?.domain == NSURLErrorDomain && self.error?.code == NSURLErrorCancelled
+    }
+    
     // MARK: - Initialization
 
     override init()
