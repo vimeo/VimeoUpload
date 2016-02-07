@@ -82,10 +82,6 @@ class Descriptor: NSObject, DescriptorProtocol
             }
         }
     }
-    var cancelled: Bool
-    {
-        return self.state == .Finished && self.error?.domain == NSURLErrorDomain && self.error?.code == NSURLErrorCancelled
-    }
     
     // MARK: - Initialization
 
