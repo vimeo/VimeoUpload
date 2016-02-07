@@ -28,7 +28,7 @@ import Foundation
 
 @objc class VideoDescriptorFailureTracker: NSObject
 {
-    private static let FailedDescriptorsArchiveKey = "failed_descriptors"
+    private static let ArchiveKey = "failed_descriptors"
 
     // MARK: 
     
@@ -60,8 +60,8 @@ import Foundation
         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
         
         var documentsURL = NSURL(string: documentsPath)!
-        documentsURL = documentsURL.URLByAppendingPathComponent(VideoDescriptorFailureTracker.FailedDescriptorsArchiveKey)
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
+        documentsURL = documentsURL.URLByAppendingPathComponent(VideoDescriptorFailureTracker.ArchiveKey)
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
         {
@@ -73,12 +73,12 @@ import Foundation
     
     private func loadFailedDescriptors() -> [VideoUri: Descriptor]
     {
-        return self.archiver.loadObjectForKey(self.dynamicType.FailedDescriptorsArchiveKey) as? [VideoUri: Descriptor] ?? [:]
+        return self.archiver.loadObjectForKey(self.dynamicType.ArchiveKey) as? [VideoUri: Descriptor] ?? [:]
     }
     
     private func saveFailedDescriptors()
     {
-        self.archiver.saveObject(self.failedDescriptors, key: self.dynamicType.FailedDescriptorsArchiveKey)
+        self.archiver.saveObject(self.failedDescriptors, key: self.dynamicType.ArchiveKey)
     }
     
     // MARK: Public API
