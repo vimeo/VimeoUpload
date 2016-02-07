@@ -1,5 +1,5 @@
 //
-//  Upload2Descriptor.swift
+//  UploadDescriptor.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/21/15.
@@ -26,7 +26,7 @@
 
 import Foundation
 
-class Upload2Descriptor: ProgressDescriptor, VideoDescriptor
+class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
     private static let FileNameCoderKey = "fileName"
     private static let FileExtensionCoderKey = "fileExtension"
@@ -41,9 +41,19 @@ class Upload2Descriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: VideoDescriptor
     
+    var type: VideoDescriptorType
+    {
+        return .Upload
+    }
+    
     var videoUri: VideoUri?
     {
         return self.uploadTicket.video?.uri
+    }
+    
+    var progressDescriptor: ProgressDescriptor
+    {
+        return self
     }
     
     // MARK: - Initialization
@@ -111,7 +121,7 @@ class Upload2Descriptor: ProgressDescriptor, VideoDescriptor
     
     override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
-        if let error = error where self.state == .Suspended && error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled
+        if let error = error where self.state == .Suspended && error.isNetworkTaskCancellationError()
         {
             let _ = try? self.prepare(sessionManager: sessionManager) // An error can be set within prepare
             
