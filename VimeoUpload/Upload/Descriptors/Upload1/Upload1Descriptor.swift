@@ -266,6 +266,13 @@ class Upload1Descriptor: Descriptor
         super.init(coder: aDecoder)
     }
     
+    // TODO: implement NSCopying
+
+    required override init()
+    {
+        fatalError("init() has not been implemented")
+    }
+    
     override func encodeWithCoder(aCoder: NSCoder)
     {
         aCoder.encodeObject(self.url, forKey: "url")

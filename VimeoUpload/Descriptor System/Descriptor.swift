@@ -45,7 +45,7 @@ enum DescriptorState: String
     case Finished = "Finished"
 }
 
-class Descriptor: NSObject, DescriptorProtocol
+class Descriptor: NSObject, DescriptorProtocol, NSCopying, NSCoding
 {
     private static let StateCoderKey = "state"
     private static let IdentifierCoderKey = "identifier"
@@ -85,9 +85,9 @@ class Descriptor: NSObject, DescriptorProtocol
     
     // MARK: - Initialization
 
-    override init()
+    required override init()
     {
-        
+        super.init()
     }
     
     // MARK: Subclass Overrides
@@ -195,6 +195,19 @@ class Descriptor: NSObject, DescriptorProtocol
     func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
         fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
+    }
+    
+    // MARK: NSCopying
+    
+    func copyWithZone(zone: NSZone) -> AnyObject
+    {
+        let descriptor = self.dynamicType.init()
+        descriptor.identifier = self.identifier
+        descriptor.error = self.error
+        descriptor.currentTaskIdentifier = self.currentTaskIdentifier
+        descriptor.state = self.state
+        
+        return descriptor
     }
     
     // MARK: NSCoding

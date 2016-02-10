@@ -48,7 +48,7 @@ import Foundation
 
         super.init()
         
-        self.failedDescriptors = self.loadFailedDescriptors()
+        self.failedDescriptors = self.load()
 
         self.addObservers()
     }
@@ -71,17 +71,23 @@ import Foundation
         return KeyedArchiver(basePath: documentsURL.path!)
     }
     
-    private func loadFailedDescriptors() -> [VideoUri: Descriptor]
+    private func load() -> [VideoUri: Descriptor]
     {
         return self.archiver.loadObjectForKey(self.dynamicType.ArchiveKey) as? [VideoUri: Descriptor] ?? [:]
     }
     
-    private func saveFailedDescriptors()
+    private func save()
     {
         self.archiver.saveObject(self.failedDescriptors, key: self.dynamicType.ArchiveKey)
     }
     
     // MARK: Public API
+    
+    func removeAllFailures()
+    {
+        self.failedDescriptors.removeAll()
+        self.save()
+    }
     
     func removeFailedDescriptorForKey(key: VideoUri) -> Descriptor?
     {
@@ -90,7 +96,7 @@ import Foundation
             return nil
         }
         
-        self.saveFailedDescriptors()
+        self.save()
 
         return descriptor
     }
@@ -130,7 +136,7 @@ import Foundation
                 }
                 
                 self.failedDescriptors[key] = descriptor
-                self.saveFailedDescriptors()
+                self.save()
             }
         }
     }
