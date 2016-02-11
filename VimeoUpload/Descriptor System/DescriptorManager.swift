@@ -162,9 +162,8 @@ class DescriptorManager
 
             dispatch_sync(strongSelf.synchronizationQueue, { [weak self] () -> Void in
 
-                let strongSelf = self!
-
-                guard let descriptor = strongSelf.descriptorForTask(task) else
+                guard let strongSelf = self,
+                    let descriptor = strongSelf.descriptorForTask(task) else
                 {
                     return
                 }
@@ -176,8 +175,7 @@ class DescriptorManager
                     destination = url
                 }
                 
-                strongSelf.archiver.save()
-                strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.archiver.descriptors.count)
+                strongSelf.save()
             })
             
             return destination
@@ -192,12 +190,8 @@ class DescriptorManager
 
             dispatch_sync(strongSelf.synchronizationQueue, { [weak self] () -> Void in
 
-                guard let strongSelf = self else
-                {
-                    return
-                }
-
-                guard let descriptor = strongSelf.descriptorForTask(task) else
+                guard let strongSelf = self,
+                    let descriptor = strongSelf.descriptorForTask(task) else
                 {
                     return
                 }
@@ -205,8 +199,7 @@ class DescriptorManager
                 strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error)
                 descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error)
 
-                strongSelf.archiver.save()
-                strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.archiver.descriptors.count)
+                strongSelf.save()
 
                 // If the descriptor is suspended, it means we've cancelled the task so we can start over from byte 0
                 if descriptor.state == .Suspended
@@ -234,12 +227,8 @@ class DescriptorManager
         
         self.sessionManager.setDidFinishEventsForBackgroundURLSessionBlock { [weak self] (session) -> Void in
 
-            guard let strongSelf = self else
-            {
-                return
-            }
-
-            if let backgroundEventsCompletionHandler = strongSelf.backgroundEventsCompletionHandler
+            if let strongSelf = self,
+                let backgroundEventsCompletionHandler = strongSelf.backgroundEventsCompletionHandler
             {
                 strongSelf.delegate?.didFinishEventsForBackgroundSession?()
                 
@@ -326,14 +315,41 @@ class DescriptorManager
                 descriptor.resume(sessionManager: strongSelf.sessionManager)
             }
 
-            strongSelf.archiver.save()
-            strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.archiver.descriptors.count)
+            strongSelf.save()
         })
     }
     
     func cancelDescriptor(descriptor: Descriptor)
     {
         descriptor.cancel(sessionManager: self.sessionManager)
+    }
+    
+    func killAllDescriptors(completion completion: VoidClosure)
+    {
+        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
+            
+            guard let strongSelf = self else
+            {
+                return
+            }
+
+            // Get a reference to the descriptor list
+            let descriptors = strongSelf.archiver.descriptors
+
+            // Clear the list so that any completion calls have no impact on the system or observers (via early return / guard statements above)
+            strongSelf.archiver.removeAll()
+            strongSelf.save()
+
+            // Cancel each descriptor to kill any in-flight network requests
+            for descriptor in descriptors
+            {
+                descriptor.cancel(sessionManager: strongSelf.sessionManager)
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                completion()
+            })
+        })
     }
     
     func descriptorPassingTest(test: TestBlock) -> Descriptor?
@@ -355,7 +371,7 @@ class DescriptorManager
     
     // MARK: Private API
     
-    func doSuspend()
+    private func doSuspend()
     {
         self.archiver.suspended = true
         
@@ -372,12 +388,11 @@ class DescriptorManager
             }
             
             // Doing this after the loop rather than within, incrementally greater margin for error but faster
-            strongSelf.archiver.save()
-            strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.archiver.descriptors.count)
+            strongSelf.save()
         })
     }
     
-    func doResume()
+    private func doResume()
     {
         self.archiver.suspended = false
         
@@ -394,9 +409,14 @@ class DescriptorManager
             }
             
             // Doing this after the loop rather than within, incrementally greater margin for error but faster
-            strongSelf.archiver.save()
-            strongSelf.delegate?.didSaveDescriptors?(count: strongSelf.archiver.descriptors.count)
+            strongSelf.save()
         })
+    }
+    
+    private func save()
+    {
+        self.archiver.save()
+        self.delegate?.didSaveDescriptors?(count: self.archiver.descriptors.count)
     }
 
     private func descriptorForTask(task: NSURLSessionTask) -> Descriptor?

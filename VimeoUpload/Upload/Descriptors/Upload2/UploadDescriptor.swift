@@ -35,9 +35,9 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: 
     
-    let url: NSURL
-    let uploadTicket: VIMUploadTicket
-    let assetIdentifier: String // Used to track the original ALAsset or PHAsset
+    var url: NSURL
+    var uploadTicket: VIMUploadTicket
+    var assetIdentifier: String // Used to track the original ALAsset or PHAsset
     
     // MARK: VideoDescriptor
     
@@ -58,6 +58,11 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: - Initialization
     
+    required init()
+    {
+        fatalError("init() has not been implemented")
+    }
+
     init(url: NSURL, uploadTicket: VIMUploadTicket, assetIdentifier: String)
     {
         self.url = url
@@ -164,7 +169,7 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
         super.init(coder: aDecoder)
     }
-    
+
     override func encodeWithCoder(aCoder: NSCoder)
     {
         let fileName = self.url.URLByDeletingPathExtension!.lastPathComponent
