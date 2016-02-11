@@ -58,11 +58,11 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: - Initialization
     
-    required init() // For NSCopying
+    required init()
     {
         fatalError("init() has not been implemented")
     }
-    
+
     init(url: NSURL, uploadTicket: VIMUploadTicket, assetIdentifier: String)
     {
         self.url = url
@@ -155,18 +155,6 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.state = .Finished
     }
     
-    // MARK: NSCopying
-    
-    override func copyWithZone(zone: NSZone) -> AnyObject
-    {
-        let descriptor = super.copyWithZone(zone) as! UploadDescriptor
-        descriptor.url = self.url
-        descriptor.uploadTicket = self.uploadTicket
-        descriptor.assetIdentifier = self.assetIdentifier
-        
-        return descriptor
-    }
-
     // MARK: NSCoding
     
     required init(coder aDecoder: NSCoder)

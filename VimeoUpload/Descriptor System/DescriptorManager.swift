@@ -324,7 +324,7 @@ class DescriptorManager
         descriptor.cancel(sessionManager: self.sessionManager)
     }
     
-    func killAllDescriptors()
+    func killAllDescriptors(completion completion: VoidClosure)
     {
         dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
             
@@ -333,18 +333,22 @@ class DescriptorManager
                 return
             }
 
-            // Get a copy of the downloads list
-            let descriptorsCopy = strongSelf.archiver.descriptors.map { $0.copy() }
+            // Get a reference to the descriptor list
+            let descriptors = strongSelf.archiver.descriptors
 
             // Clear the list so that any completion calls have no impact on the system or observers (via early return / guard statements above)
             strongSelf.archiver.removeAll()
             strongSelf.save()
 
             // Cancel each descriptor to kill any in-flight network requests
-            for descriptor in descriptorsCopy
+            for descriptor in descriptors
             {
                 descriptor.cancel(sessionManager: strongSelf.sessionManager)
             }
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                completion()
+            })
         })
     }
     

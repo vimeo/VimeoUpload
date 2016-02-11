@@ -26,17 +26,6 @@
 
 import Foundation
 
-@objc protocol DescriptorProtocol
-{
-    func prepare(sessionManager sessionManager: AFURLSessionManager) throws
-    func resume(sessionManager sessionManager: AFURLSessionManager)
-    func suspend(sessionManager sessionManager: AFURLSessionManager)
-    func cancel(sessionManager sessionManager: AFURLSessionManager)
-    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
-    optional func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
-    func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
-}
-
 enum DescriptorState: String
 {
     case Ready = "Ready"
@@ -45,7 +34,7 @@ enum DescriptorState: String
     case Finished = "Finished"
 }
 
-class Descriptor: NSObject, DescriptorProtocol, NSCopying, NSCoding
+class Descriptor: NSObject, NSCoding
 {
     private static let StateCoderKey = "state"
     private static let IdentifierCoderKey = "identifier"
@@ -195,19 +184,6 @@ class Descriptor: NSObject, DescriptorProtocol, NSCopying, NSCoding
     func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
         fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
-    }
-    
-    // MARK: NSCopying
-    
-    func copyWithZone(zone: NSZone) -> AnyObject
-    {
-        let descriptor = self.dynamicType.init()
-        descriptor.identifier = self.identifier
-        descriptor.error = self.error
-        descriptor.currentTaskIdentifier = self.currentTaskIdentifier
-        descriptor.state = self.state
-        
-        return descriptor
     }
     
     // MARK: NSCoding
