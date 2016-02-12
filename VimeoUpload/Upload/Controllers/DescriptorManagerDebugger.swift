@@ -1,5 +1,5 @@
 //
-//  UploadDebugger.swift
+//  DescriptorManagerDebugger.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/28/15.
@@ -29,28 +29,28 @@ import UIKit
 
 // We use this class purely to report lifecycle events via print statements and local notifications [AH] 10/28/2015
 
-class UploadDebugger: DescriptorManagerDelegate
+class DescriptorManagerDebugger: DescriptorManagerDelegate
 {
     // MARK: DescriptorManagerDelegate
     
     @objc func didLoadDescriptors(count count: Int)
     {
-        self.printMessageAndPostLocalNotification("Loaded \(count) descriptors")
+        self.printMessageAndPostLocalNotification("Loaded \(count)")
     }
 
     @objc func didSaveDescriptors(count count: Int)
     {
-        self.printMessageAndPostLocalNotification("Did save \(count) descriptors")
+        self.printMessageAndPostLocalNotification("Saved \(count)")
     }
 
     @objc func didFailToLoadDescriptor(error error: NSError)
     {
-        self.printMessageAndPostLocalNotification("Did fail to load descriptor \(error.localizedDescription)")
+        self.printMessageAndPostLocalNotification("Load failed: \(error.localizedDescription)")
     }
     
     @objc func sessionDidBecomeInvalid(error error: NSError)
     {
-        self.printMessageAndPostLocalNotification("Session invalid \(error.localizedDescription)")
+        self.printMessageAndPostLocalNotification("Session invalidated: \(error.localizedDescription)")
     }
     
     @objc func willHandleEventsForBackgroundSession()
@@ -67,7 +67,7 @@ class UploadDebugger: DescriptorManagerDelegate
     {
         if let descriptorIdentifier = descriptor.identifier
         {
-            self.printMessageAndPostLocalNotification("Task download \(task.description) descriptor \(descriptorIdentifier)")
+            self.printMessageAndPostLocalNotification("Did finish downloading: \(descriptorIdentifier)")
         }
     }
     
@@ -77,11 +77,11 @@ class UploadDebugger: DescriptorManagerDelegate
         {
             if let error = error
             {
-                self.printMessageAndPostLocalNotification("Task complete \(task.description) descriptor \(descriptorIdentifier) error \(error.localizedDescription)")
+                self.printMessageAndPostLocalNotification("Did complete: \(descriptorIdentifier) error \(error.localizedDescription)")
             }
             else
             {
-                self.printMessageAndPostLocalNotification("Task complete \(task.description) descriptor \(descriptorIdentifier)")
+                self.printMessageAndPostLocalNotification("Did complete: \(descriptorIdentifier)")
             }
         }
     }
@@ -112,7 +112,7 @@ class UploadDebugger: DescriptorManagerDelegate
     
     @objc func descriptorForTaskNotFound(task: NSURLSessionTask)
     {
-        self.printMessageAndPostLocalNotification("Descriptor not found (task) \(task.description)")
+        self.printMessageAndPostLocalNotification("Descriptor for task not found")
     }
     
     // Private API
@@ -121,13 +121,13 @@ class UploadDebugger: DescriptorManagerDelegate
     {
         print(message)
         
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            
-            let localNotification = UILocalNotification()
-            localNotification.timeZone = NSTimeZone.defaultTimeZone()
-            localNotification.alertBody = message
-            
-            UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
-        }
+//        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+//            
+//            let localNotification = UILocalNotification()
+//            localNotification.timeZone = NSTimeZone.defaultTimeZone()
+//            localNotification.alertBody = message
+//            
+//            UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
+//        }
     }
 }
