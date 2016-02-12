@@ -36,7 +36,7 @@ class ProgressDescriptor: Descriptor
     
     private static let ProgressKeyPath = "fractionCompleted"
     private var progressKVOContext = UInt8()
-    dynamic private(set) var progressObservable: Double = 0
+    dynamic private(set) var progressObservable: Double = 0 // TODO: do we need to implement NSCoding and archive this value?
     var progress: NSProgress?
     {
         willSet

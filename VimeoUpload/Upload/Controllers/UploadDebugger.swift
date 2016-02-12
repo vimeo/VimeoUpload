@@ -1,5 +1,5 @@
 //
-//  UploadDebugger.swift
+//  DescriptorManagerDebugger.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 10/28/15.
@@ -29,7 +29,7 @@ import UIKit
 
 // We use this class purely to report lifecycle events via print statements and local notifications [AH] 10/28/2015
 
-class UploadDebugger: DescriptorManagerDelegate
+class DescriptorManagerDebugger: DescriptorManagerDelegate
 {
     // MARK: DescriptorManagerDelegate
     
