@@ -84,7 +84,8 @@ import Foundation
     {
         guard let uri = video.uri else
         {
-            return // There's no uri, wut??? [AH]
+            assertionFailure("Attempt to schedule refresh for a video with no uri")
+            return 
         }
 
         guard self.videos[uri] == nil else
