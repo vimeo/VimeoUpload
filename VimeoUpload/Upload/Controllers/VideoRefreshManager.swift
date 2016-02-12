@@ -28,7 +28,7 @@ import Foundation
 
 @objc protocol VideoRefreshManagerDelegate
 {
-    func videoDidFinishUploading(video: VIMVideo)
+    func uploadingStateDidChangeForVideo(video: VIMVideo)
 }
 
 @objc class VideoRefreshManager: NSObject
@@ -80,35 +80,32 @@ import Foundation
         self.videos.removeValueForKey(uri)
     }
 
-    func refreshVideoWithUri(uri: VideoUri)
+    func refreshVideo(video: VIMVideo)
     {
+        guard let uri = video.uri else
+        {
+            return // There's no uri, wut??? [AH]
+        }
+
         guard self.videos[uri] == nil else
         {
             return // It's already scheduled for refresh
         }
-        
-        self.doRefreshVideoWithUri(uri)
-    }
 
-    func refreshVideo(video: VIMVideo)
-    {
-        guard let uri = video.uri where self.videos[uri] == nil else
+        guard self.dynamicType.isVideoStatusFinal(video) != true else
         {
-            return // It's already scheduled for refresh
+            return // No need to refresh this video, it's already done
         }
 
-        if self.dynamicType.isVideoStatusFinal(video) == true // No need to refresh this video, it's already done
-        {
-            return
-        }
-
-        self.doRefreshVideoWithUri(uri)
+        self.doRefreshVideo(video)
     }
     
     // MARK: Private API
 
-    private func doRefreshVideoWithUri(uri: VideoUri)
+    private func doRefreshVideo(video: VIMVideo)
     {
+        let uri = video.uri!
+        
         self.videos[uri] = true
                 
         let operation = VideoOperation(sessionManager: self.sessionManager, videoUri: uri)
@@ -139,7 +136,7 @@ import Foundation
                     }
                     else
                     {
-                        strongSelf.retryVideoWithUri(uri)
+                        strongSelf.retryVideo(video)
                     }
                 }
                 else if let freshVideo = operation.video
@@ -147,11 +144,22 @@ import Foundation
                     if strongSelf.dynamicType.isVideoStatusFinal(freshVideo) == true // We're done!
                     {
                         strongSelf.videos.removeValueForKey(uri)
-                        strongSelf.delegate?.videoDidFinishUploading(freshVideo)
+                        strongSelf.delegate?.uploadingStateDidChangeForVideo(freshVideo)
+                        
+                        return
+                    }
+                    
+                    let existingStatus = video.videoStatus
+                    let newStatus = freshVideo.videoStatus
+
+                    if existingStatus == newStatus
+                    {
+                        strongSelf.retryVideo(freshVideo) // Nothing has changed, just retry
                     }
                     else
                     {
-                        strongSelf.retryVideoWithUri(uri)
+                        strongSelf.delegate?.uploadingStateDidChangeForVideo(freshVideo)
+                        strongSelf.retryVideo(freshVideo)
                     }
                 }
                 else // Execution should never reach this point
@@ -164,12 +172,12 @@ import Foundation
         self.operationQueue.addOperation(operation)
     }
 
-    private func retryVideoWithUri(uri: VideoUri)
+    private func retryVideo(video: VIMVideo)
     {
         let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(self.dynamicType.RetryDelayInSeconds * Double(NSEC_PER_SEC)))
         
         dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] () -> Void in
-            self?.doRefreshVideoWithUri(uri)
+            self?.doRefreshVideo(video)
         }
     }
     
