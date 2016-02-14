@@ -23,13 +23,12 @@
 ### Considerations
 
 1. The current server-side Vimeo upload API is comprised of 4 separate requests: 
+     - create a video object
+     - video file upload
+     - activate video object
+     - optionally set the video object's metadata (e.g. title, description, privacy, etc.)
 
-- create a video object
-- video file upload
-- activate video object
-- optionally set the video object's metadata (e.g. title, description, privacy, etc.)
-
-This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More steps means a process that's challenging to communicate to the user.
+     This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More steps means a process that's challenging to communicate to the user.
 
 1. We must support iOS 7 and up. Therefore we must support both the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) and [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) APIs.
 
