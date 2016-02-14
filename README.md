@@ -2,7 +2,8 @@
 
 ## Contents
 * [Draft Spec](#draft-spec)
-      * [Considerations](#Considerations)
+      * [Situation](#Situation)
+      * [Target](#Target)
 * [Getting Started](#getting-started)
       * [Gradle](#gradle)
       * [Submodule](#submodule)
@@ -20,15 +21,9 @@
 
 ## Draft Spec
 
-### Considerations
+### Situation
 
-1. The current server-side Vimeo upload API is comprised of 4 separate requests: 
-     1. create a video object
-     2. video file upload
-     3. activate video object
-     4. optionally set the video object's metadata (e.g. title, description, privacy, etc.)
-
-     This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More steps means a process that's challenging to communicate to the user.
+1. The current server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More steps means a process that's challenging to communicate to the user. The 4 requests are: (1) create a video object, (2) video file upload, (3) activate video object, (4) optionally set the video object's metadata (e.g. title, description, privacy, etc.)
 
 1. We must support iOS 7 and up. Therefore we must support both the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) and [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) APIs.
 
@@ -36,9 +31,7 @@
 
 1. If a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) is in iCloud and not resident on device we need to download it to the device before asset export. Download must happen when the app is in the foreground.
 
-1. Because an upload can take a significant amount of time, we must design for the user backgrounding the application at any point in the process. Therefore all requests must be handled by an [NSURLSession](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSURLSession_class/) configured with a background [NSURLSessionConfiguration](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionConfiguration_class/index.html). 
-
-     This means we must rely exclusively on the [NSURLSessionDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionDelegate_protocol/index.html), [NSURLSessionTaskDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionTaskDelegate_protocol/index.html#//apple_ref/occ/intf/NSURLSessionTaskDelegate), and [NSURLSessionDownloadDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionDownloadDelegate_protocol/index.html#//apple_ref/occ/intf/NSURLSessionDownloadDelegate) protocols. We cannot rely on an [NSURLSessionTask](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionTask_class/index.html) subclasses' completion blocks.
+1. Because an upload can take a significant amount of time, we must design for the user backgrounding the application at any point in the process. Therefore all requests must be handled by an [NSURLSession](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSURLSession_class/) configured with a background [NSURLSessionConfiguration](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionConfiguration_class/index.html). This means we must rely exclusively on the [NSURLSessionDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionDelegate_protocol/index.html), [NSURLSessionTaskDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionTaskDelegate_protocol/index.html#//apple_ref/occ/intf/NSURLSessionTaskDelegate), and [NSURLSessionDownloadDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionDownloadDelegate_protocol/index.html#//apple_ref/occ/intf/NSURLSessionDownloadDelegate) protocols. We cannot rely on an [NSURLSessionTask](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionTask_class/index.html) subclasses' completion blocks.
 
 1. The app process could be backgrounded, terminated, or crash at any time. This means that we need to persist the state of the upload system to disk so that it can be reconstructed as needed. Crashes should not adversely impact uploads or the upload system.
 
@@ -50,17 +43,17 @@
 
 1. We need to be able to communicate information to users about their [upload quota](https://vimeo.com/help/faq/uploading-to-vimeo/uploading-basics). 
 
-### Goals
+### Target
+
+An upload system that accommodates / addresses each point listed above.
+
+A revised server-side Vimeo upload API that collapses the current 4 steps into 1 or 2 steps.
 
 Clear and concise upload system initialization.
 
 Clear and concise upload management and introspection.
 
-An upload system API that accommodate many (all?) UX possibilities.
-
-Collapse the required server-side steps from 4 to 2. (Hopefully 1 at some point).
-
-In the Vimeo iOS app, 2-tap upload UX with a "head start" on each upload.
+An upload system that accommodates many UX possibilities.
 
 ## Getting Started
 ### Submodule
