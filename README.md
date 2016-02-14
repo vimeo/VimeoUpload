@@ -30,23 +30,24 @@
 
 ## Want to Contribute?
 
-If you'd like to contribute, please follow our guidelines found in [CONTRIBUTING.md](CONTRIBUTING.md)
+If you'd like to contribute, please follow our guidelines found in [CONTRIBUTING](CONTRIBUTING.md).
 
 ## Found an Issue?
 
-Please file any and all issues found in this library to the git [issue tracker](https://github.com/vimeo/vimeoupload/issues)
+Please file any and all issues found in this library to the git [issue tracker](https://github.com/vimeo/vimeoupload/issues).
 
 ## Questions?
 
-Tweet at us here: @vimeoapi
+Tweet at us here: [@vimeoapi](https://twitter.com/vimeoapi).
 
-Post on [Stackoverflow](http://stackoverflow.com/questions/tagged/vimeo-ios) with the tag `vimeo-ios`
+Post on [Stackoverflow](http://stackoverflow.com/questions/tagged/vimeo-ios) with the tag `vimeo-ios`.
 
-Get in touch [here](https://Vimeo.com/help/contact)
+Get in touch [here](https://Vimeo.com/help/contact).
 
 ## License
 
 `VimeoUpload` is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
+
 
 
 SITUATION
