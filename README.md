@@ -47,15 +47,15 @@ This library is under active development. We're shooting for a v1.0 release in M
 
 ### Target
 
-An upload system that accommodates / addresses each point listed above.
+1. An upload system that accommodates / addresses each point listed above.
 
-A revised server-side Vimeo upload API that collapses the current 4 steps into 1 or 2 steps.
+1. A revised server-side Vimeo upload API that collapses the current 4 steps into 1 or 2 steps.
 
-Clear and concise upload system initialization.
+1. Clear and concise upload system initialization.
 
-Clear and concise upload management and introspection.
+1. Clear and concise upload management and introspection.
 
-An upload system that accommodates many UX possibilities.
+1. An upload system that accommodates many UX possibilities.
 
 ## Getting Started
 ### Submodule
