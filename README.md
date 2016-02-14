@@ -11,7 +11,7 @@
      * [Canceling an Upload](#canceling-an-upload)
      * [Tracking Upload State and Progress](#tracking-upload-state-and-progress)
      * [Additional Configuration](#additional-configuration)
-* [Contributing](#contributing)
+* [Want to Contribute?](#want-to-contribute)
 * [Found an Issue?](#found-an-issue)
 * [Questions](#questions)
 * [License](#license)
@@ -28,10 +28,26 @@
 ### Tracking Upload State and Progress
 ### Additional Configuration
 
-## Contributing
-## Found and Issue?
-## Questions
+## Want to Contribute?
+
+If you'd like to contribute, please follow our guidelines found in [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Found an Issue?
+
+Please file any and all issues found in this library to the git [issue tracker](https://github.com/vimeo/vimeoupload/issues)
+
+## Questions?
+
+Tweet at us here: @vimeoapi
+
+Post on [Stackoverflow](http://stackoverflow.com/questions/tagged/vimeo-ios) with the tag `vimeo-ios`
+
+Get in touch [here](https://Vimeo.com/help/contact)
+
 ## License
+
+`VimeoUpload` is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
+
 
 SITUATION
 
