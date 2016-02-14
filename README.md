@@ -58,8 +58,8 @@ This library is under active development. We're shooting for a v1.0 release in M
 1. An upload system that accommodates many UX possibilities.
 
 ## Getting Started
-### Submodule
 ### CocoaPods
+### Submodule
 ### Initialization
 ### Authentication
 
