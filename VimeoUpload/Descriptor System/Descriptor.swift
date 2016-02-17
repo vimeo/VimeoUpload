@@ -72,6 +72,11 @@ class Descriptor: NSObject, NSCoding
         }
     }
     
+    // MARK: 
+    // (Wish that we didn't need this)
+    
+    var isUserInitiatedCancellation = false
+    
     // MARK: - Initialization
 
     required override init()
@@ -128,15 +133,42 @@ class Descriptor: NSObject, NSCoding
     {
         self.state = .Suspended
         
-        // Would be nice to call task.suspend(), but the task will start over from 0 (if you suspend it for long enough?),
-        // but the server thinks that we're resuming from the last byte, no good. Instead we need to cancel and start over,
-        // appending the Content-Range header [AH] 12/25/2015
-
-        self.cancel(sessionManager: sessionManager)
+        // Would be nice to call task.suspend(), but when you suspend and resume the task will start over from 0
+        // (If you suspend it for long enough? The behavior is a little unpredictable here),
+        // but the server thinks that we're resuming from the last byte, and we can't rewrite the headers, no good. 
+        // Instead we need to cancel and start over, appending the Content-Range header [AH] 12/25/2015
+        
+        self.cancel(sessionManager: sessionManager, isUserInitiatedCancellation: false)
     }
 
     func cancel(sessionManager sessionManager: AFURLSessionManager)
     {
+        self.cancel(sessionManager: sessionManager, isUserInitiatedCancellation: true)
+    }
+    
+    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    {
+        fatalError("didLoadFromCache(sessionManager:) has not been implemented")
+    }
+    
+    func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    {
+        return nil
+    }
+
+    func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    {
+        fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
+    }
+    
+    // MARK: Private API
+    
+    // We need this method because we need to differentiate between suspend-initiated cancellations and user-initiated cancellations [AH] 2/17/2016
+
+    private func cancel(sessionManager sessionManager: AFURLSessionManager, isUserInitiatedCancellation: Bool)
+    {
+        self.isUserInitiatedCancellation = isUserInitiatedCancellation
+        
         if #available(iOS 8, *)
         {
             if let identifier = self.currentTaskIdentifier,
@@ -169,21 +201,6 @@ class Descriptor: NSObject, NSCoding
                 }
             }
         }
-    }
-
-    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
-    {
-        fatalError("didLoadFromCache(sessionManager:) has not been implemented")
-    }
-    
-    func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
-    {
-        return nil
-    }
-
-    func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
-    {
-        fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
     }
     
     // MARK: NSCoding
