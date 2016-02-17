@@ -142,6 +142,7 @@ class Descriptor: NSObject, NSCoding
     
     It should never be false
     What happens if the queue is suspended and the user cancels the descriptor at roughly the same time?
+    Do we need to persist this boolean?
     
     2. 
     Cancel task
