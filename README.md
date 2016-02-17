@@ -47,6 +47,8 @@ This library is under active development. We're shooting for a v1.0 release in M
 
 1. We can't rely on NSURLSessionTask's `suspend` method. TODO: Explain why
 
+1. We need `taskForIdentifierWorkaround`. TODO: Explain why
+
 ### Target
 
 1. An upload system that accommodates / addresses each point listed above.
