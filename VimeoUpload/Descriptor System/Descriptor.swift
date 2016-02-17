@@ -75,7 +75,7 @@ class Descriptor: NSObject, NSCoding
     // MARK: 
     // (Wish that we didn't need this)
     
-    var isSuspendInitiatedCancellation = false
+    var isUserInitiatedCancellation = false
     
     // MARK: - Initialization
 
@@ -167,18 +167,35 @@ class Descriptor: NSObject, NSCoding
 
         // TODO: Is this the final word or will more exploration yield new info? [AH] 2/17/2016
         
-        self.cancel(sessionManager: sessionManager, isSuspendInitiatedCancellation: true)
+        self.cancel(sessionManager: sessionManager, isUserInitiatedCancellation: false)
     }
 
     func cancel(sessionManager sessionManager: AFURLSessionManager)
     {
-        self.cancel(sessionManager: sessionManager, isSuspendInitiatedCancellation: false)
+        self.cancel(sessionManager: sessionManager, isUserInitiatedCancellation: true)
     }
     
-    func cancel(sessionManager sessionManager: AFURLSessionManager, isSuspendInitiatedCancellation: Bool)
+    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        self.isSuspendInitiatedCancellation = isSuspendInitiatedCancellation
+        fatalError("didLoadFromCache(sessionManager:) has not been implemented")
+    }
+    
+    func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    {
+        return nil
+    }
 
+    func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    {
+        fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
+    }
+    
+    // MARK: Private API
+    
+    private func cancel(sessionManager sessionManager: AFURLSessionManager, isUserInitiatedCancellation: Bool)
+    {
+        self.isUserInitiatedCancellation = isUserInitiatedCancellation
+        
         if #available(iOS 8, *)
         {
             if let identifier = self.currentTaskIdentifier,
@@ -211,21 +228,6 @@ class Descriptor: NSObject, NSCoding
                 }
             }
         }
-    }
-
-    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
-    {
-        fatalError("didLoadFromCache(sessionManager:) has not been implemented")
-    }
-    
-    func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
-    {
-        return nil
-    }
-
-    func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
-    {
-        fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
     }
     
     // MARK: NSCoding

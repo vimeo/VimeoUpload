@@ -195,16 +195,21 @@ class DescriptorManager
                 {
                     return
                 }
+                
+                if descriptor.isUserInitiatedCancellation
+                {
+                    strongSelf.archiver.remove(descriptor)
+                    strongSelf.save()
+
+                    return
+                }
 
                 strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error)
                 descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error)
-
                 strongSelf.save()
 
-                // If the descriptor is suspended, it means we've cancelled the task so we can start over from byte 0
-                let isNetworkTaskCancellationError = error?.isNetworkTaskCancellationError() ?? false
-                if descriptor.state == .Suspended && descriptor.isSuspendInitiatedCancellation && isNetworkTaskCancellationError
-                {
+                if descriptor.state == .Suspended
+                {                    
                     return
                 }
                 

@@ -128,9 +128,9 @@ import Foundation
         
         dispatch_async(dispatch_get_main_queue()) { () -> Void in // TODO: can async cause failure to not be stored?
             
-            if let descriptor = notification.object as? Descriptor, let key = (descriptor as? VideoDescriptor)?.videoUri, let error = descriptor.error
+            if let descriptor = notification.object as? Descriptor, let key = (descriptor as? VideoDescriptor)?.videoUri where descriptor.error != nil
             {
-                if error.isNetworkTaskCancellationError() // No need to store failures that occurred due to cancellation
+                if descriptor.isUserInitiatedCancellation // No need to store failures that occurred due to cancellation
                 {
                     return
                 }

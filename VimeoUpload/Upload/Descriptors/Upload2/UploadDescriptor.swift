@@ -108,6 +108,13 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
+    override func cancel(sessionManager sessionManager: AFURLSessionManager)
+    {
+        super.cancel(sessionManager: sessionManager)
+        
+        NSFileManager.defaultManager().deleteFileAtURL(self.url)
+    }
+
     override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
@@ -126,14 +133,17 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
-        if let error = error where self.state == .Suspended && error.isNetworkTaskCancellationError()
+        if self.isUserInitiatedCancellation
+        {
+            return
+        }
+        
+        if self.state == .Suspended
         {
             let _ = try? self.prepare(sessionManager: sessionManager) // An error can be set within prepare
             
             return
         }
-                
-        NSFileManager.defaultManager().deleteFileAtURL(self.url)
         
         if self.error == nil
         {
@@ -146,12 +156,9 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
                 self.error = error.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
             }
         }
-        
-        if self.error != nil
-        {
-            return
-        }
-        
+
+        NSFileManager.defaultManager().deleteFileAtURL(self.url)
+
         self.state = .Finished
     }
     
