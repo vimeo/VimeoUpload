@@ -72,6 +72,11 @@ class Descriptor: NSObject, NSCoding
         }
     }
     
+    // MARK: 
+    // (Wish that we didn't need this)
+    
+    var isSuspendInitiatedCancellation = false
+    
     // MARK: - Initialization
 
     required override init()
@@ -151,7 +156,6 @@ class Descriptor: NSObject, NSCoding
     
     */
     
-    
     func suspend(sessionManager sessionManager: AFURLSessionManager)
     {
         self.state = .Suspended
@@ -173,6 +177,8 @@ class Descriptor: NSObject, NSCoding
     
     func cancel(sessionManager sessionManager: AFURLSessionManager, isSuspendInitiatedCancellation: Bool)
     {
+        self.isSuspendInitiatedCancellation = isSuspendInitiatedCancellation
+
         if #available(iOS 8, *)
         {
             if let identifier = self.currentTaskIdentifier,

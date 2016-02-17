@@ -202,7 +202,8 @@ class DescriptorManager
                 strongSelf.save()
 
                 // If the descriptor is suspended, it means we've cancelled the task so we can start over from byte 0
-                if descriptor.state == .Suspended
+                let isNetworkTaskCancellationError = error?.isNetworkTaskCancellationError() ?? false
+                if descriptor.state == .Suspended && descriptor.isSuspendInitiatedCancellation && isNetworkTaskCancellationError
                 {
                     return
                 }
