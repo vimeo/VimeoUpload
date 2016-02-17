@@ -130,7 +130,10 @@ import Foundation
             
             if let descriptor = notification.object as? Descriptor, let key = (descriptor as? VideoDescriptor)?.videoUri where descriptor.error != nil
             {
-                if descriptor.isUserInitiatedCancellation // No need to store failures that occurred due to cancellation
+                // No need to store failures that occurred due to cancellation
+                // In fact, cancellations should never make it this far (descriptorManager will not broadcast notifications) [AH] 2/17/2016
+                
+                if descriptor.isUserInitiatedCancellation
                 {
                     return
                 }

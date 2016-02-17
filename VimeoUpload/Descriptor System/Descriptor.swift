@@ -129,33 +129,6 @@ class Descriptor: NSObject, NSCoding
         }
     }
     
-    /*
-    
-    Suspend task
-    Task completion will be called with cancellation error and state = .Suspended
-    Then cancel the task
-    Callbacks will abort early if state == .Suspended
-    
-    Somehow we have to override the state check here
-    We need to differentiate between suspend-initiated cancellations and user-initiated cancellations
-
-    1. 
-    Suspend task, set descriptor.isSuspendInitiatedCancellation = true
-    Task completion will be called with cancellation error and state = .Suspended
-    Task completion checks cancellation error, self.state == .Suspended, descriptor.isSuspendInitiatedCancellation
-    If true we abort the cancellation process and reset descriptor.isSuspendInitiatedCancellation to false
-    
-    It should never be false
-    What happens if the queue is suspended and the user cancels the descriptor at roughly the same time?
-    Do we need to persist this boolean?
-    
-    2. 
-    Cancel task
-    Immediately set descriptor.isSuspendInitiatedCancellation = false
-    Should just work, regardless of whether queue is suspended
-    
-    */
-    
     func suspend(sessionManager sessionManager: AFURLSessionManager)
     {
         self.state = .Suspended
@@ -164,8 +137,6 @@ class Descriptor: NSObject, NSCoding
         // (If you suspend it for long enough? The behavior is a little unpredictable here),
         // but the server thinks that we're resuming from the last byte, and we can't rewrite the headers, no good. 
         // Instead we need to cancel and start over, appending the Content-Range header [AH] 12/25/2015
-
-        // TODO: Is this the final word or will more exploration yield new info? [AH] 2/17/2016
         
         self.cancel(sessionManager: sessionManager, isUserInitiatedCancellation: false)
     }
@@ -192,6 +163,8 @@ class Descriptor: NSObject, NSCoding
     
     // MARK: Private API
     
+    // We need this method because we need to differentiate between suspend-initiated cancellations and user-initiated cancellations [AH] 2/17/2016
+
     private func cancel(sessionManager sessionManager: AFURLSessionManager, isUserInitiatedCancellation: Bool)
     {
         self.isUserInitiatedCancellation = isUserInitiatedCancellation
