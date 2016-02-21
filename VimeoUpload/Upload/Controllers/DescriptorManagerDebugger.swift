@@ -121,13 +121,13 @@ class DescriptorManagerDebugger: DescriptorManagerDelegate
     {
         print(message)
         
-//        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-//            
-//            let localNotification = UILocalNotification()
-//            localNotification.timeZone = NSTimeZone.defaultTimeZone()
-//            localNotification.alertBody = message
-//            
-//            UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
-//        }
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            
+            let localNotification = UILocalNotification()
+            localNotification.timeZone = NSTimeZone.defaultTimeZone()
+            localNotification.alertBody = message
+            
+            UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
+        }
     }
 }
