@@ -28,7 +28,7 @@ import Foundation
 
 class ForegroundSessionManager: VimeoSessionManager
 {
-    // TODO: remove these from library
+    // TODO: remove these from library [AH] Jan 2016
     
     private static let BasicUserToken = "3e9dae312853936216aba3ce56cf5066"
     private static let ProUserToken = "caf4648129ec56e580175c4b45cce7fc"

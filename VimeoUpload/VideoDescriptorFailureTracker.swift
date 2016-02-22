@@ -120,7 +120,7 @@ import Foundation
     
     func descriptorDidFail(notification: NSNotification)
     {
-        // TODO: Should we do this:
+        // TODO: Should we do this: [AH]
         // Leaving this in place until we see reason to change it
         
         // Intentionally holding a strong reference to self here to ensure that this block executes,

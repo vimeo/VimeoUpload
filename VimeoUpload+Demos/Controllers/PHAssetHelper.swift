@@ -77,7 +77,7 @@ import Photos
                 return
             }
             
-            // TODO: determine if we can use this here and below Phimageresultrequestidkey
+            // TODO: Determine if we can use this here and below Phimageresultrequestidkey [AH] Jan 2016
             strongSelf.cancelImageRequest(cameraRollAsset: cameraRollAsset)
             
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
