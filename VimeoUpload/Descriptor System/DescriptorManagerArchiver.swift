@@ -31,7 +31,7 @@ import Foundation
 class DescriptorManagerArchiver
 {
     private static let DescriptorsArchiveKey = "descriptors"
-    private static let SuspendedArchiveKey = "suspended"
+    private static let SuspendedArchiveKey = "is_suspended"
 
     // MARK: 
     
@@ -63,7 +63,7 @@ class DescriptorManagerArchiver
         var documentsURL = NSURL(string: documentsPath)!
         
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
-        documentsURL = documentsURL.URLByAppendingPathComponent(DescriptorManagerArchiver.DescriptorsArchiveKey)
+//        documentsURL = documentsURL.URLByAppendingPathComponent(DescriptorManagerArchiver.DescriptorsArchiveKey)
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
         {
