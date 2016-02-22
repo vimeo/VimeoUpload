@@ -120,13 +120,13 @@ import Foundation
     
     func descriptorDidFail(notification: NSNotification)
     {
-        // TODO: Should we do this: [AH]
+        // TODO: [6.0][AH] Should we do this:
         // Leaving this in place until we see reason to change it
         
         // Intentionally holding a strong reference to self here to ensure that this block executes,
         // Otherwise we potentially lose access to failures
         
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in // TODO: can async cause failure to not be stored?
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in // TODO: [6.0][AH] can async cause failure to not be stored?
             
             if let descriptor = notification.object as? Descriptor, let key = (descriptor as? VideoDescriptor)?.videoUri where descriptor.error != nil
             {
