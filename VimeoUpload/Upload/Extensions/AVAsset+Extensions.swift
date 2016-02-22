@@ -44,6 +44,8 @@ extension AVAsset
                 approximateSize += seconds * Float64(bytesPerSecond)
             }
 
+            assert(approximateSize > 0, "Unable to calculate approximate fileSize")
+            
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 completion(value: approximateSize)
             })

@@ -37,6 +37,8 @@ class WeeklyQuotaOperation: NSOperation
 
     init(user: VIMUser, fileSize: Float64)
     {
+        assert(fileSize > 0, "fileSize must be greater than 0")
+        
         self.user = user
         self.fileSize = fileSize
     
