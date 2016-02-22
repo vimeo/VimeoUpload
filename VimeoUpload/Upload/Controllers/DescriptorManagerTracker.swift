@@ -33,7 +33,7 @@ class DescriptorManagerTracker: DescriptorManagerDelegate
 {
     // MARK: DescriptorManagerDelegate
     
-    @objc func didLoadDescriptors(descriptors descriptors: [Descriptor])
+    @objc func didLoadDescriptors(descriptors descriptors: Set<Descriptor>)
     {
         self.printMessageAndPostLocalNotification("Loaded \(descriptors.count)")
     }
