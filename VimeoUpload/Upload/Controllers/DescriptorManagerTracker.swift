@@ -33,9 +33,9 @@ class DescriptorManagerTracker: DescriptorManagerDelegate
 {
     // MARK: DescriptorManagerDelegate
     
-    @objc func didLoadDescriptors(count count: Int)
+    @objc func didLoadDescriptors(descriptors descriptors: [Descriptor])
     {
-        self.printMessageAndPostLocalNotification("Loaded \(count)")
+        self.printMessageAndPostLocalNotification("Loaded \(descriptors.count)")
     }
 
     @objc func didSaveDescriptors(count count: Int)

@@ -30,7 +30,7 @@ import Foundation
 
 @objc protocol DescriptorManagerDelegate: class
 {
-    optional func didLoadDescriptors(count count: Int)
+    optional func didLoadDescriptors(descriptors descriptors: [Descriptor])
     optional func didSaveDescriptors(count count: Int)
     optional func didFailToLoadDescriptor(error error: NSError)
     
