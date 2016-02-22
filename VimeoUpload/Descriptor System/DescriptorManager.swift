@@ -160,7 +160,7 @@ class DescriptorManager
 
             var destination: NSURL? = nil
 
-            dispatch_async(strongSelf.synchronizationQueue, { [weak self] () -> Void in
+            dispatch_sync(strongSelf.synchronizationQueue, { [weak self] () -> Void in
 
                 guard let strongSelf = self,
                     let descriptor = strongSelf.descriptorForTask(task) else
