@@ -70,7 +70,7 @@ class VimeoResponseSerializer: AFJSONResponseSerializer
     
     func checkDataResponseForError(response response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws
     {
-        // TODO: if error is nil and errorInfo is non-nil, we should throw an error [AH] 2/5/2016
+        // TODO: [6.0][AH] if error is nil and errorInfo is non-nil, we should throw an error [AH] 2/5/2016
         
         let errorInfo = self.errorInfoFromResponse(response, responseObject: responseObject) ?? [:]
         

@@ -84,7 +84,7 @@ class Upload1Descriptor: Descriptor
 
         do
         {
-            try self.transitionToState(request: .Create, sessionManager: sessionManager) // TODO: fix this
+            try self.transitionToState(request: .Create, sessionManager: sessionManager) // TODO: fix this [AH]
         }
         catch let error as NSError
         {
@@ -105,7 +105,7 @@ class Upload1Descriptor: Descriptor
     {
         super.cancel(sessionManager: sessionManager)
         
-        NSFileManager.defaultManager().deleteFileAtURL(self.url) // TODO: is this working as expected
+        NSFileManager.defaultManager().deleteFileAtURL(self.url) // TODO: is this working as expected [AH]
     }
     
     // If necessary, resume the current task and re-connect progress objects
@@ -266,7 +266,7 @@ class Upload1Descriptor: Descriptor
         super.init(coder: aDecoder)
     }
     
-    // TODO: implement NSCopying
+    // TODO: implement NSCopying [AH]
 
     required override init()
     {

@@ -136,7 +136,7 @@ class DescriptorManager
                 return
             }
 
-            dispatch_sync(strongSelf.synchronizationQueue, { [weak self] () -> Void in
+            dispatch_async(strongSelf.synchronizationQueue, { [weak self] () -> Void in
 
                 guard let strongSelf = self else
                 {
@@ -188,7 +188,7 @@ class DescriptorManager
                 return
             }
 
-            dispatch_sync(strongSelf.synchronizationQueue, { [weak self] () -> Void in
+            dispatch_async(strongSelf.synchronizationQueue, { [weak self] () -> Void in
 
                 guard let strongSelf = self,
                     let descriptor = strongSelf.descriptorForTask(task) else
@@ -233,15 +233,34 @@ class DescriptorManager
         
         self.sessionManager.setDidFinishEventsForBackgroundURLSessionBlock { [weak self] (session) -> Void in
 
-            if let strongSelf = self,
-                let backgroundEventsCompletionHandler = strongSelf.backgroundEventsCompletionHandler
+            guard let strongSelf = self else
             {
-                strongSelf.delegate?.didFinishEventsForBackgroundSession?()
-                
-                // This completionHandler must be called on the main thread
-                backgroundEventsCompletionHandler()
-                strongSelf.backgroundEventsCompletionHandler = nil
+                return
             }
+            
+            dispatch_async(strongSelf.synchronizationQueue, { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+
+                if let backgroundEventsCompletionHandler = strongSelf.backgroundEventsCompletionHandler
+                {
+                    // The completionHandler must be called on the main thread
+                    dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                        
+                        guard let strongSelf = self else
+                        {
+                            return
+                        }
+
+                        strongSelf.delegate?.didFinishEventsForBackgroundSession?()
+                        backgroundEventsCompletionHandler()
+                        strongSelf.backgroundEventsCompletionHandler = nil
+                    })
+                }
+            })
         }
     }
     
@@ -283,9 +302,6 @@ class DescriptorManager
     
     func addDescriptor(descriptor: Descriptor)
     {
-        // TODO: should this be sync? Changed this to async due to deadlock related to notifications
-        // Leaving as-is until we see reason to change
-        
         dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
             
             guard let strongSelf = self else
@@ -314,7 +330,7 @@ class DescriptorManager
 
             if strongSelf.archiver.suspended
             {
-                descriptor.state = .Suspended // TODO: figure out how to not set this externally like this
+                descriptor.state = .Suspended // TODO: [6.0][AH] figure out how to not set this externally like this
             }
             else
             {
@@ -381,7 +397,7 @@ class DescriptorManager
     {
         self.archiver.suspended = true
         
-        dispatch_sync(self.synchronizationQueue, { [weak self] () -> Void in
+        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
             
             guard let strongSelf = self else
             {
@@ -402,7 +418,7 @@ class DescriptorManager
     {
         self.archiver.suspended = false
         
-        dispatch_sync(self.synchronizationQueue, { [weak self] () -> Void in
+        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
             
             guard let strongSelf = self else
             {

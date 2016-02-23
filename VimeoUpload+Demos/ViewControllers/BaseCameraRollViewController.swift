@@ -175,7 +175,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         }
         else
         {
-            // TODO: iOS7
+            // iOS7
         }
         
         return assets
@@ -331,7 +331,10 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
             
             self.presentViewController(alert, animated: true, completion: nil)
         }
-        // TODO: iOS7
+        else
+        {
+            // iOS7
+        }
     }
     
     private func presentErrorAlert(indexPath: NSIndexPath, error: NSError)
@@ -364,7 +367,10 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
             
             self.presentViewController(alert, animated: true, completion: nil)
         }
-        // TODO: iOS7
+        else
+        {
+            // iOS7
+        }
     }
 
     private func finish(cameraRollAsset cameraRollAsset: CameraRollAsset)
