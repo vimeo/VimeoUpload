@@ -65,7 +65,7 @@ class Descriptor: NSObject, NSCoding
     {
         didSet
         {
-            if error != nil
+            if self.error != nil
             {
                 self.state = .Finished
             }
@@ -73,7 +73,8 @@ class Descriptor: NSObject, NSCoding
     }
     
     // MARK: 
-    // (Wish that we didn't need this)
+    
+    // (Wish we didn't need this)
     
     var isUserInitiatedCancellation = false
     
