@@ -107,7 +107,7 @@ class DescriptorManager
         }
         
         self.archiver.save()
-        self.delegate?.didLoadDescriptors?(count: self.archiver.descriptors.count)
+        self.delegate?.didLoadDescriptors?(descriptors: self.archiver.descriptors)
     }
     
     private func setupSuspendedState()
