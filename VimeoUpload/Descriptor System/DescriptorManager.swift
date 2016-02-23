@@ -56,10 +56,7 @@ class DescriptorManager
     
     var suspended: Bool
     {
-        get
-        {
-            return self.archiver.suspended
-        }
+        return self.archiver.suspended
     }
     
     // MARK:
@@ -195,21 +192,21 @@ class DescriptorManager
                 {
                     return
                 }
-                
-                if descriptor.isUserInitiatedCancellation
+
+                if descriptor.isCancelled
                 {
                     strongSelf.archiver.remove(descriptor)
-                    strongSelf.save()
 
                     return
                 }
 
                 strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error)
                 descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error)
-                strongSelf.save()
 
                 if descriptor.state == .Suspended
                 {                    
+                    strongSelf.save()
+
                     return
                 }
                 
@@ -343,7 +340,18 @@ class DescriptorManager
     
     func cancelDescriptor(descriptor: Descriptor)
     {
-        descriptor.cancel(sessionManager: self.sessionManager)
+        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
+
+            guard let strongSelf = self else
+            {
+                return
+            }
+
+            descriptor.cancel(sessionManager: strongSelf.sessionManager)
+            
+            strongSelf.save()
+
+        })
     }
     
     func killAllDescriptors(completion completion: VoidClosure)

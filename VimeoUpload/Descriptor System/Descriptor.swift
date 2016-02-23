@@ -49,11 +49,6 @@ class Descriptor: NSObject, NSCoding
         didSet
         {
             self.stateObservable = state.rawValue
-            
-            if self.state == .Finished
-            {
-                self.currentTaskIdentifier = nil
-            }
         }
     }
     
@@ -62,21 +57,11 @@ class Descriptor: NSObject, NSCoding
     var identifier: String?
     var currentTaskIdentifier: Int?
     var error: NSError?
+    
+    var isCancelled: Bool
     {
-        didSet
-        {
-            if self.error != nil
-            {
-                self.state = .Finished
-            }
-        }
+        return self.error?.isDescriptorCancellationError() == true
     }
-    
-    // MARK: 
-    
-    // (Wish we didn't need this)
-    
-    var isUserInitiatedCancellation = false
     
     // MARK: - Initialization
 
@@ -139,12 +124,17 @@ class Descriptor: NSObject, NSCoding
         // but the server thinks that we're resuming from the last byte, and we can't rewrite the headers, no good. 
         // Instead we need to cancel and start over, appending the Content-Range header [AH] 12/25/2015
         
-        self.cancel(sessionManager: sessionManager, isUserInitiatedCancellation: false)
+        self.doCancel(sessionManager: sessionManager)
     }
 
     func cancel(sessionManager sessionManager: AFURLSessionManager)
     {
-        self.cancel(sessionManager: sessionManager, isUserInitiatedCancellation: true)
+        self.error = NSError.descriptorCancellationError()
+        self.state = .Finished
+
+        self.doCancel(sessionManager: sessionManager)
+    
+        self.currentTaskIdentifier = nil // doCancel relies on this value [AH] 2/22/2016
     }
     
     func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
@@ -166,16 +156,18 @@ class Descriptor: NSObject, NSCoding
     
     // We need this method because we need to differentiate between suspend-initiated cancellations and user-initiated cancellations [AH] 2/17/2016
 
-    private func cancel(sessionManager sessionManager: AFURLSessionManager, isUserInitiatedCancellation: Bool)
+    private func doCancel(sessionManager sessionManager: AFURLSessionManager)
     {
-        self.isUserInitiatedCancellation = isUserInitiatedCancellation
-        
         if #available(iOS 8, *)
         {
             if let identifier = self.currentTaskIdentifier,
                 let task = sessionManager.taskForIdentifier(identifier)
             {
                 task.cancel()
+            }
+            else
+            {
+                assertionFailure("Unable to cancel task")
             }
         }
         else

@@ -63,7 +63,6 @@ class DescriptorManagerArchiver
         var documentsURL = NSURL(string: documentsPath)!
         
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
-//        documentsURL = documentsURL.URLByAppendingPathComponent(DescriptorManagerArchiver.DescriptorsArchiveKey)
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
         {

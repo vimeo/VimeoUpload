@@ -132,7 +132,7 @@ import Foundation
                 // No need to store failures that occurred due to cancellation
                 // In fact, cancellations should never make it this far (descriptorManager will not broadcast notifications) [AH] 2/17/2016
                 
-                if descriptor.isUserInitiatedCancellation
+                if descriptor.isCancelled
                 {
                     return
                 }

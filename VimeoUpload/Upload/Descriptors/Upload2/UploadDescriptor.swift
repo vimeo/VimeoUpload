@@ -90,8 +90,10 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
         catch let error as NSError
         {
+            self.currentTaskIdentifier = nil
             self.error = error
-            
+            self.state = .Finished
+
             throw error // Propagate this out so that DescriptorManager can remove the descriptor from the set
         }
     }
@@ -133,7 +135,9 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
-        if self.isUserInitiatedCancellation
+        self.currentTaskIdentifier = nil
+
+        if self.isCancelled
         {
             return
         }
