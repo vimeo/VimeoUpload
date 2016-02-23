@@ -36,7 +36,7 @@ class ProgressDescriptor: Descriptor
     
     private static let ProgressKeyPath = "fractionCompleted"
     private var progressKVOContext = UInt8()
-    dynamic private(set) var progressObservable: Double = 0 // TODO: [6.0][AH] do we need to implement NSCoding and archive this value?
+    dynamic private(set) var progressObservable: Double = 0
     var progress: NSProgress?
     {
         willSet
@@ -46,7 +46,7 @@ class ProgressDescriptor: Descriptor
         
         didSet
         {
-            self.progress?.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
+            self.progress?.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: .New, context: &self.progressKVOContext)
         }
     }
 
