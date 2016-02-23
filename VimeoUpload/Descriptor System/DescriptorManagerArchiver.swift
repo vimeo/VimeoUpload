@@ -63,7 +63,7 @@ class DescriptorManagerArchiver
         var documentsURL = NSURL(string: documentsPath)!
         
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
-        
+
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
         {
             try! NSFileManager.defaultManager().createDirectoryAtPath(documentsURL.path!, withIntermediateDirectories: true, attributes: nil)
