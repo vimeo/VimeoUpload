@@ -76,6 +76,8 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     override func prepare(sessionManager sessionManager: AFURLSessionManager) throws
     {
+        // TODO: Do we need to set self.state == .Ready here? [AH] 2/22/2016
+        
         do
         {
             guard let uploadLinkSecure = self.uploadTicket.uploadLinkSecure else
@@ -141,14 +143,21 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             return
         }
-        
+
         if self.state == .Suspended
         {
-            let _ = try? self.prepare(sessionManager: sessionManager) // An error can be set within prepare
+            assertionFailure("taskDidComplete was called for a suspended descriptor.")
+
+            return
+        }
+
+        if task.error?.isNetworkTaskCancellationError() == true || error?.isNetworkTaskCancellationError() == true
+        {
+            assertionFailure("taskDidComplete was called for a descriptor that failed dur to connection error.")
             
             return
         }
-        
+
         if self.error == nil
         {
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first

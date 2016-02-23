@@ -57,10 +57,16 @@ class Descriptor: NSObject, NSCoding
     var identifier: String?
     var currentTaskIdentifier: Int?
     var error: NSError?
+    {
+        didSet
+        {
+            print("DESCRIPTOR ERROR: \(self.error)")
+        }
+    }
     
     var isCancelled: Bool
     {
-        return self.error?.isDescriptorCancellationError() == true
+        return self.error?.isDescriptorCancellationError() == true || self.error?.isNetworkTaskCancellationError() == true
     }
     
     // MARK: - Initialization
@@ -133,8 +139,6 @@ class Descriptor: NSObject, NSCoding
         self.state = .Finished
 
         self.doCancel(sessionManager: sessionManager)
-    
-        self.currentTaskIdentifier = nil // doCancel relies on this value [AH] 2/22/2016
     }
     
     func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws

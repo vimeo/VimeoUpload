@@ -38,7 +38,17 @@ extension NSError
     {
         return self.domain == NSURLErrorDomain && self.code == NSURLErrorCancelled
     }
-
+    
+    func isConnectionError() -> Bool
+    {
+        return [NSURLErrorTimedOut,
+            NSURLErrorCannotFindHost,
+            NSURLErrorCannotConnectToHost,
+            NSURLErrorDNSLookupFailed,
+            NSURLErrorNotConnectedToInternet,
+            NSURLErrorNetworkConnectionLost].contains(self.code)
+    }
+    
     class func errorWithDomain(domain: String?, code: Int?, description: String?) -> NSError
     {
         var error = NSError(domain: VimeoErrorKey.VimeoErrorDomain.rawValue, code: 0, userInfo: nil)

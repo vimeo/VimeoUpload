@@ -200,15 +200,30 @@ class DescriptorManager
                     return
                 }
 
-                strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error)
-                descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error)
-
                 if descriptor.state == .Suspended
-                {                    
+                {
+                    let _ = try? descriptor.prepare(sessionManager: strongSelf.sessionManager) // TODO: Catch and remove from list [AH]
+                    
                     strongSelf.save()
 
                     return
                 }
+                
+                if task.error?.isConnectionError() == true || error?.isConnectionError() == true
+                {
+                    let _ = try? descriptor.prepare(sessionManager: strongSelf.sessionManager) // TODO: Catch and remove from list [AH]
+                    
+                    // TODO: resume only if not suspended?
+                    
+                    descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
+                    
+                    strongSelf.save()
+
+                    return
+                }
+                
+                strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error)
+                descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error)
                 
                 if descriptor.state == .Finished
                 {
