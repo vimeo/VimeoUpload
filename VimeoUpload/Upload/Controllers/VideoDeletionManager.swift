@@ -29,6 +29,7 @@ import Foundation
 class VideoDeletionManager: NSObject
 {
     private static let DeletionsArchiveKey = "deletions"
+    private static let DefaultRetryCount = 3
     
     // MARK:
     
@@ -49,7 +50,7 @@ class VideoDeletionManager: NSObject
         self.removeObservers()
     }
         
-    init(sessionManager: VimeoSessionManager, retryCount: Int)
+    init(sessionManager: VimeoSessionManager, retryCount: Int = VideoDeletionManager.DefaultRetryCount)
     {
         self.sessionManager = sessionManager
         self.retryCount = retryCount
