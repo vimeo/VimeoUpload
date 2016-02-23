@@ -340,6 +340,8 @@ class DescriptorManager
     
     func cancelDescriptor(descriptor: Descriptor)
     {
+        // TODO: This may not need to be dispatched. Depends on whether we need to call save() [AH] 2/22/2016
+        
         dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
 
             guard let strongSelf = self else
