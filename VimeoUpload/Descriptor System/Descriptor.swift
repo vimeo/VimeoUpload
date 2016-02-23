@@ -65,8 +65,9 @@ class Descriptor: NSObject, NSCoding
     {
         didSet
         {
-            if error != nil
+            if self.error != nil
             {
+                print(self.error)
                 self.state = .Finished
             }
         }
