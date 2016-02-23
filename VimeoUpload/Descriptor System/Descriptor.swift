@@ -169,10 +169,6 @@ class Descriptor: NSObject, NSCoding
             {
                 task.cancel()
             }
-            else
-            {
-                assertionFailure("Unable to cancel task")
-            }
         }
         else
         {
@@ -191,10 +187,6 @@ class Descriptor: NSObject, NSCoding
                 else if let downloadTask = task as? NSURLSessionDownloadTask
                 {
                     downloadTask.cancel()
-                }
-                else
-                {
-                    assertionFailure("Unable to cast task to proper class, therefore unable to cancel")
                 }
             }
         }

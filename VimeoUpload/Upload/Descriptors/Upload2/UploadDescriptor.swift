@@ -125,11 +125,14 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             let task = sessionManager.uploadTaskForIdentifier(identifier),
             let progress = sessionManager.uploadProgressForTask(task) else
         {
-            // TODO: can we handle this better? [AH]
             // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload
             // Upon reopening the app, the descriptor is loaded but no longer has a task 
+         
+            let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
+            self.error = error
+            self.state = .Finished
             
-            throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
+            throw error
         }
 
         self.progress = progress
