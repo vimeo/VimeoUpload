@@ -28,7 +28,7 @@ import Foundation
 
 @objc class VideoDescriptorFailureTracker: NSObject
 {
-    private static let ArchiveKey = "failed_descriptors"
+    private static let ArchiveKey = "descriptors_failed"
 
     // MARK: 
     
@@ -61,7 +61,6 @@ import Foundation
         
         var documentsURL = NSURL(string: documentsPath)!
         documentsURL = documentsURL.URLByAppendingPathComponent(name)
-        documentsURL = documentsURL.URLByAppendingPathComponent(VideoDescriptorFailureTracker.ArchiveKey)
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
         {
