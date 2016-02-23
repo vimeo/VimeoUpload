@@ -46,7 +46,7 @@ class ProgressDescriptor: Descriptor
         
         didSet
         {
-            self.progress?.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: [.Initial, .New], context: &self.progressKVOContext)
+            self.progress?.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: .New, context: &self.progressKVOContext)
         }
     }
 
