@@ -57,12 +57,6 @@ class Descriptor: NSObject, NSCoding
     var identifier: String?
     var currentTaskIdentifier: Int?
     var error: NSError?
-    {
-        didSet
-        {
-            print("DESCRIPTOR ERROR: \(self.error)")
-        }
-    }
     
     var isCancelled = false
     
