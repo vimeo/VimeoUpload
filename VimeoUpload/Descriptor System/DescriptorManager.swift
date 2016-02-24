@@ -31,6 +31,7 @@ enum DescriptorManagerNotification: String
     case DescriptorAdded = "DescriptorAddedNotification"
     case DescriptorDidFail = "DescriptorDidFailNotification"
     case DescriptorDidSucceed = "DescriptorDidSucceedNotification"
+    case DescriptorDidCancel = "DescriptorDidCancelNotification"
     case SessionDidBecomeInvalid = "SessionDidBecomeInvalidNotification"
 }
 
@@ -56,10 +57,7 @@ class DescriptorManager
     
     var suspended: Bool
     {
-        get
-        {
-            return self.archiver.suspended
-        }
+        return self.archiver.suspended
     }
     
     // MARK:
@@ -94,9 +92,8 @@ class DescriptorManager
             {
                 try descriptor.didLoadFromCache(sessionManager: self.sessionManager)
             }
-            catch let error as NSError
+            catch
             {
-                descriptor.error = error
                 failedDescriptors.append(descriptor)
             }
         }
@@ -144,6 +141,8 @@ class DescriptorManager
                 }
 
                 strongSelf.archiver.removeAll()
+                
+                // TODO: Need to respond to this notification [AH] 2/22/2016 (remove from downloads store, delete active uploads etc.)
 
                 strongSelf.delegate?.sessionDidBecomeInvalid?(error: error)
                 
@@ -195,23 +194,51 @@ class DescriptorManager
                 {
                     return
                 }
-                
-                if descriptor.isUserInitiatedCancellation
+
+                if descriptor.isCancelled
                 {
-                    strongSelf.archiver.remove(descriptor)
+                    return
+                }
+
+                if descriptor.state == .Suspended
+                {
+                    let _ = try? descriptor.prepare(sessionManager: strongSelf.sessionManager) // TODO: Catch and remove from list [AH]
+                    
                     strongSelf.save()
 
                     return
                 }
 
-                strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error)
-                descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error)
-                strongSelf.save()
+                // This case should not be necessary, isNetworkTaskCancellationError should always be covered by the .Suspended case above.
+                // This needs testing to deem if necessary. [AH] 2/22/2016
+                
+                if task.error?.isNetworkTaskCancellationError() == true || error?.isNetworkTaskCancellationError() == true
+                {
+                    let _ = try? descriptor.prepare(sessionManager: strongSelf.sessionManager)
 
-                if descriptor.state == .Suspended
-                {                    
+                    descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
+
+                    strongSelf.save()
+                    
                     return
                 }
+                
+                // These types of errors can occur when connection drops and before suspend() is called,
+                // Or when connection drop is slow -> timeouts etc. [AH] 2/22/2016
+                
+                if task.error?.isConnectionError() == true || error?.isConnectionError() == true
+                {
+                    let _ = try? descriptor.prepare(sessionManager: strongSelf.sessionManager) // TODO: Catch and remove from list [AH]
+                                        
+                    descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
+                    
+                    strongSelf.save()
+
+                    return
+                }
+                
+                strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error)
+                descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error)
                 
                 if descriptor.state == .Finished
                 {
@@ -343,7 +370,21 @@ class DescriptorManager
     
     func cancelDescriptor(descriptor: Descriptor)
     {
-        descriptor.cancel(sessionManager: self.sessionManager)
+        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
+
+            guard let strongSelf = self else
+            {
+                return
+            }
+
+            strongSelf.archiver.remove(descriptor)
+
+            descriptor.cancel(sessionManager: strongSelf.sessionManager)
+            
+            strongSelf.delegate?.descriptorDidCancel?(descriptor)
+            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: descriptor)
+
+        })
     }
     
     func killAllDescriptors(completion completion: VoidClosure)
@@ -359,6 +400,9 @@ class DescriptorManager
             let descriptors = strongSelf.archiver.descriptors
 
             // Clear the list so that any completion calls have no impact on the system or observers (via early return / guard statements above)
+            
+            // TODO: Post notifications from here [AH] 2/22/2016 (respond in download store and my videos?)
+            
             strongSelf.archiver.removeAll()
             strongSelf.save()
 
