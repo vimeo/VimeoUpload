@@ -197,8 +197,6 @@ class DescriptorManager
 
                 if descriptor.isCancelled
                 {
-                    strongSelf.archiver.remove(descriptor) // TODO; we should actually do this down below in the cancel method [AH] 2/22/2016
-
                     return
                 }
 
@@ -372,8 +370,6 @@ class DescriptorManager
     
     func cancelDescriptor(descriptor: Descriptor)
     {
-        // TODO: This may not need to be dispatched. Depends on whether we need to call save() [AH] 2/22/2016
-        
         dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
 
             guard let strongSelf = self else
@@ -381,11 +377,9 @@ class DescriptorManager
                 return
             }
 
+            strongSelf.archiver.remove(descriptor)
+
             descriptor.cancel(sessionManager: strongSelf.sessionManager)
-            
-            // TODO: we should remove from descriptors list here [AH]
-            
-            strongSelf.save()
             
             strongSelf.delegate?.descriptorDidCancel?(descriptor)
             NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: descriptor)
