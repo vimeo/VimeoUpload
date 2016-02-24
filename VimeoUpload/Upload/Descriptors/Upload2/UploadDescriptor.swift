@@ -144,6 +144,8 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
         if self.isCancelled
         {
+            assertionFailure("taskDidComplete was called for a cancelled descriptor.")
+
             return
         }
 

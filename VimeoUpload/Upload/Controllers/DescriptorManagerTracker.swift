@@ -101,7 +101,15 @@ class DescriptorManagerTracker: DescriptorManagerDelegate
             self.printMessageAndPostLocalNotification("Success \(descriptorIdentifier)")
         }
     }
-    
+
+    @objc func descriptorDidCancel(descriptor: Descriptor)
+    {
+        if let descriptorIdentifier = descriptor.identifier
+        {
+            self.printMessageAndPostLocalNotification("Cancellation \(descriptorIdentifier)")
+        }
+    }
+
     @objc func descriptorDidFail(descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier

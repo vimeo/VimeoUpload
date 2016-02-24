@@ -31,6 +31,7 @@ enum DescriptorManagerNotification: String
     case DescriptorAdded = "DescriptorAddedNotification"
     case DescriptorDidFail = "DescriptorDidFailNotification"
     case DescriptorDidSucceed = "DescriptorDidSucceedNotification"
+    case DescriptorDidCancel = "DescriptorDidCancelNotification"
     case SessionDidBecomeInvalid = "SessionDidBecomeInvalidNotification"
 }
 
@@ -91,9 +92,8 @@ class DescriptorManager
             {
                 try descriptor.didLoadFromCache(sessionManager: self.sessionManager)
             }
-            catch let error as NSError
+            catch
             {
-                descriptor.error = error
                 failedDescriptors.append(descriptor)
             }
         }
@@ -141,6 +141,8 @@ class DescriptorManager
                 }
 
                 strongSelf.archiver.removeAll()
+                
+                // TODO: Need to respond to this notification [AH] 2/22/2016 (remove from downloads store, delete active uploads etc.)
 
                 strongSelf.delegate?.sessionDidBecomeInvalid?(error: error)
                 
@@ -195,7 +197,7 @@ class DescriptorManager
 
                 if descriptor.isCancelled
                 {
-                    strongSelf.archiver.remove(descriptor)
+                    strongSelf.archiver.remove(descriptor) // TODO; we should actually do this down below in the cancel method [AH] 2/22/2016
 
                     return
                 }
@@ -208,6 +210,23 @@ class DescriptorManager
 
                     return
                 }
+
+                // This case should not be necessary, isNetworkTaskCancellationError should always be covered by the .Suspended case above.
+                // This needs testing to deem if necessary. [AH] 2/22/2016
+                
+                if task.error?.isNetworkTaskCancellationError() == true || error?.isNetworkTaskCancellationError() == true
+                {
+                    let _ = try? descriptor.prepare(sessionManager: strongSelf.sessionManager)
+
+                    descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
+
+                    strongSelf.save()
+                    
+                    return
+                }
+                
+                // These types of errors can occur when connection drops and before suspend() is called,
+                // Or when connection drop is slow -> timeouts etc. [AH] 2/22/2016
                 
                 if task.error?.isConnectionError() == true || error?.isConnectionError() == true
                 {
@@ -364,7 +383,12 @@ class DescriptorManager
 
             descriptor.cancel(sessionManager: strongSelf.sessionManager)
             
+            // TODO: we should remove from descriptors list here [AH]
+            
             strongSelf.save()
+            
+            strongSelf.delegate?.descriptorDidCancel?(descriptor)
+            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: descriptor)
 
         })
     }
@@ -382,6 +406,9 @@ class DescriptorManager
             let descriptors = strongSelf.archiver.descriptors
 
             // Clear the list so that any completion calls have no impact on the system or observers (via early return / guard statements above)
+            
+            // TODO: Post notifications from here [AH] 2/22/2016 (respond in download store and my videos?)
+            
             strongSelf.archiver.removeAll()
             strongSelf.save()
 

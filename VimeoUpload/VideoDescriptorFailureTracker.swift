@@ -110,35 +110,33 @@ import Foundation
     private func addObservers()
     {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "descriptorDidFail:", name: DescriptorManagerNotification.DescriptorDidFail.rawValue, object: nil)
+
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "descriptorDidCancel:", name: DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: nil)
     }
     
     private func removeObservers()
     {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: DescriptorManagerNotification.DescriptorDidFail.rawValue, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: nil)
     }
     
     func descriptorDidFail(notification: NSNotification)
     {
-        // TODO: [6.0][AH] Should we do this:
-        // Leaving this in place until we see reason to change it
-        
-        // Intentionally holding a strong reference to self here to ensure that this block executes,
-        // Otherwise we potentially lose access to failures
-        
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in // TODO: [6.0][AH] can async cause failure to not be stored?
-            
-            if let descriptor = notification.object as? Descriptor, let key = (descriptor as? VideoDescriptor)?.videoUri where descriptor.error != nil
-            {
-                // No need to store failures that occurred due to cancellation
-                // In fact, cancellations should never make it this far (descriptorManager will not broadcast notifications) [AH] 2/17/2016
-                
-                if descriptor.isCancelled
-                {
-                    return
-                }
-                
+        if let descriptor = notification.object as? Descriptor, let key = (descriptor as? VideoDescriptor)?.videoUri where descriptor.error != nil
+        {
+            dispatch_async(dispatch_get_main_queue()) { () -> Void in
                 self.failedDescriptors[key] = descriptor
                 self.save()
+            }
+        }
+    }
+    
+    func descriptorDidCancel(notification: NSNotification)
+    {
+        if let descriptor = notification.object as? Descriptor, let key = (descriptor as? VideoDescriptor)?.videoUri
+        {
+            dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                self.removeFailedDescriptorForKey(key)
             }
         }
     }

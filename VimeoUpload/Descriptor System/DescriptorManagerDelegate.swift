@@ -43,6 +43,7 @@ import Foundation
 
     optional func descriptorAdded(descriptor: Descriptor)
     optional func descriptorDidSucceed(descriptor: Descriptor)
+    optional func descriptorDidCancel(descriptor: Descriptor)
     optional func descriptorDidFail(descriptor: Descriptor)
     
     optional func descriptorForTaskNotFound(task: NSURLSessionTask)

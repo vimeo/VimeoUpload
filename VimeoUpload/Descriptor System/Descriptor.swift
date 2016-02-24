@@ -64,10 +64,7 @@ class Descriptor: NSObject, NSCoding
         }
     }
     
-    var isCancelled: Bool
-    {
-        return self.error?.isDescriptorCancellationError() == true || self.error?.isNetworkTaskCancellationError() == true
-    }
+    var isCancelled = false
     
     // MARK: - Initialization
 
@@ -135,7 +132,7 @@ class Descriptor: NSObject, NSCoding
 
     func cancel(sessionManager sessionManager: AFURLSessionManager)
     {
-        self.error = NSError.descriptorCancellationError()
+        self.isCancelled = true
         self.state = .Finished
 
         self.doCancel(sessionManager: sessionManager)
