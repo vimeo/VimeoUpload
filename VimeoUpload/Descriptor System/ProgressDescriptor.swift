@@ -37,28 +37,53 @@ class ProgressDescriptor: Descriptor
     private static let ProgressKeyPath = "fractionCompleted"
     private var progressKVOContext = UInt8()
     dynamic private(set) var progressObservable: Double = 0
+    
     var progress: NSProgress?
     {
         willSet
         {
-            self.progress?.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
+            self.removeObserversIfNecessary()
         }
         
         didSet
         {
-            self.progress?.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: .New, context: &self.progressKVOContext)
+            self.addObserversIfNecessary()
         }
     }
+    
+    // MARK: 
+    
+    private var observersAdded = false
 
     // MARK: - Initialization
     
     deinit
     {
-        self.progress = nil
+        self.removeObserversIfNecessary()
     }
 
     // MARK: KVO
     
+    private func addObserversIfNecessary()
+    {
+        if let progress = self.progress where self.observersAdded == false
+        {
+            progress.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: .New, context: &self.progressKVOContext)
+
+            self.observersAdded = true
+        }
+    }
+    
+    private func removeObserversIfNecessary()
+    {
+        if let progress = self.progress where self.observersAdded == true
+        {
+            progress.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
+            
+            self.observersAdded = false
+        }
+    }
+
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
     {
         if let keyPath = keyPath

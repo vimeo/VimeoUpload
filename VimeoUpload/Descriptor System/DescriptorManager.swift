@@ -166,6 +166,11 @@ class DescriptorManager
                 {
                     return
                 }
+                
+                if descriptor.isCancelled
+                {
+                    return
+                }
 
                 strongSelf.delegate?.downloadTaskDidFinishDownloading?(task: task, descriptor: descriptor)
 
