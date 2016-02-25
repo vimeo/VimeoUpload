@@ -33,7 +33,7 @@ import Foundation
 
 @objc class VideoRefreshManager: NSObject
 {
-    private static let RetryDelayInSeconds: Double = 5
+    private static let RetryDelayInSeconds: Double = 3
     
     // MARK:
     
@@ -59,7 +59,7 @@ import Foundation
         self.delegate = delegate
         
         self.operationQueue = NSOperationQueue()
-        self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
+        self.operationQueue.maxConcurrentOperationCount = 2
         
         super.init()
         

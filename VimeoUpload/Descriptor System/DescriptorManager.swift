@@ -357,7 +357,7 @@ class DescriptorManager
 
             if strongSelf.archiver.suspended
             {
-                descriptor.state = .Suspended // TODO: [6.0][AH] figure out how to not set this externally like this
+                descriptor.suspend(sessionManager: strongSelf.sessionManager)
             }
             else
             {

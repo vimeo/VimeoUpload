@@ -26,7 +26,7 @@
 
 import Foundation
 
-@objc class VimeoDescriptorManager: NSObject // TODO: [6.0][AH] rename this to something more appropriate [AH] 2/7/2016
+@objc class VimeoDescriptorManager: NSObject // TODO: Rename this to something more appropriate [AH] 2/7/2016
 {
     private let backgroundSessionManager: VimeoSessionManager
     private let connectivityManager: ConnectivityManager
