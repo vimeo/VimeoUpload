@@ -202,38 +202,48 @@ class DescriptorManager
 
                 if descriptor.state == .Suspended
                 {
-                    let _ = try? descriptor.prepare(sessionManager: strongSelf.sessionManager) // TODO: Catch and remove from list [AH]
+                    do
+                    {
+                        try descriptor.prepare(sessionManager: strongSelf.sessionManager)
                     
-                    strongSelf.save()
+                        strongSelf.save()
+                    }
+                    catch
+                    {
+                        strongSelf.archiver.remove(descriptor)
+                        
+                        strongSelf.delegate?.descriptorDidFail?(descriptor)
+                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
+                    }
 
                     return
                 }
 
                 // This case should not be necessary, isNetworkTaskCancellationError should always be covered by the .Suspended case above.
                 // This needs testing to deem if necessary. [AH] 2/22/2016
-                
-                if task.error?.isNetworkTaskCancellationError() == true || error?.isNetworkTaskCancellationError() == true
-                {
-                    let _ = try? descriptor.prepare(sessionManager: strongSelf.sessionManager)
-
-                    descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
-
-                    strongSelf.save()
-                    
-                    return
-                }
+                let isNetworkCancellationError = (task.error?.isNetworkTaskCancellationError() == true || error?.isNetworkTaskCancellationError() == true)
                 
                 // These types of errors can occur when connection drops and before suspend() is called,
                 // Or when connection drop is slow -> timeouts etc. [AH] 2/22/2016
+                let isConnectionError = (task.error?.isConnectionError() == true || error?.isConnectionError() == true)
                 
-                if task.error?.isConnectionError() == true || error?.isConnectionError() == true
+                if isNetworkCancellationError || isConnectionError
                 {
-                    let _ = try? descriptor.prepare(sessionManager: strongSelf.sessionManager) // TODO: Catch and remove from list [AH]
-                                        
-                    descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
+                    do
+                    {
+                        try descriptor.prepare(sessionManager: strongSelf.sessionManager)
+                        
+                        descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
+                        strongSelf.save()
+                    }
+                    catch
+                    {
+                        strongSelf.archiver.remove(descriptor)
+                        
+                        strongSelf.delegate?.descriptorDidFail?(descriptor)
+                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
+                    }
                     
-                    strongSelf.save()
-
                     return
                 }
                 
