@@ -114,7 +114,16 @@ class Descriptor: NSObject, NSCoding
     
     func suspend(sessionManager sessionManager: AFURLSessionManager)
     {
+        let originalState = self.state
+        
         self.state = .Suspended
+
+        // If we're suspending a just-enqueued descriptor, don't cancel it, just update it's state to .Suspended [AH] 2/24/2016
+        
+        if originalState == .Ready
+        {
+            return
+        }
         
         // Would be nice to call task.suspend(), but when you suspend and resume the task will start over from 0
         // (If you suspend it for long enough? The behavior is a little unpredictable here),
