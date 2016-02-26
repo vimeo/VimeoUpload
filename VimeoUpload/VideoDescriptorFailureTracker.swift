@@ -122,7 +122,9 @@ import Foundation
     
     func descriptorDidFail(notification: NSNotification)
     {
-        if let descriptor = notification.object as? Descriptor, let key = (descriptor as? VideoDescriptor)?.videoUri where descriptor.error != nil
+        if let descriptor = notification.object as? Descriptor,
+            let key = (descriptor as? VideoDescriptor)?.videoUri
+            where descriptor.error != nil
         {
             dispatch_async(dispatch_get_main_queue()) { () -> Void in
                 self.failedDescriptors[key] = descriptor
