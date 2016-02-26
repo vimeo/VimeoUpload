@@ -82,6 +82,8 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             guard let uploadLinkSecure = self.uploadTicket.uploadLinkSecure else
             {
+                // TODO: delete file here? Same in download?
+                
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
             
@@ -128,8 +130,10 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload
             // Upon reopening the app, the descriptor is loaded but no longer has a task 
          
+            NSFileManager.defaultManager().deleteFileAtURL(self.url)
+
             let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
-            self.error = error
+            self.error = error // TODO: Whenever we set error delete local file? Same for download?
             self.state = .Finished
             
             throw error
