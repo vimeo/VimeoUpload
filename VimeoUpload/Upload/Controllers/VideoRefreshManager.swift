@@ -59,7 +59,7 @@ import Foundation
         self.delegate = delegate
         
         self.operationQueue = NSOperationQueue()
-        self.operationQueue.maxConcurrentOperationCount = 2
+        self.operationQueue.maxConcurrentOperationCount = 1
         
         super.init()
         
