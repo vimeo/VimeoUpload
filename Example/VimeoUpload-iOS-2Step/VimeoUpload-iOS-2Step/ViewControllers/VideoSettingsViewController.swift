@@ -113,18 +113,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let sessionManager = ForegroundSessionManager.sharedInstance
         let videoSettings = self.videoSettings
         
-        let operation: ExportQuotaCreateOperation
-        
-        if #available(iOS 8.0, *)
-        {
-            let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
-            operation = PHAssetCloudExportQuotaCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
-        }
-        else
-        {
-            let alAsset = cameraRollAsset as! ALAsset
-            operation = ALAssetExportQuotaCreateOperation(me: me, alAsset: alAsset, sessionManager: sessionManager, videoSettings: videoSettings)
-        }
+        let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
+        let operation = PHAssetCloudExportQuotaCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
@@ -210,7 +200,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
-        self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil)
+        self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil, password: nil)
      
         let operation = self.operation as! ExportQuotaCreateOperation
         
@@ -257,46 +247,32 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         // TODO: check error.code == AVError.DiskFull.rawValue and message appropriately
         // TODO: check error.code == AVError.OperationInterrupted.rawValue (app backgrounded during export)
         
-        if #available(iOS 8.0, *)
-        {
-            let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-                self?.navigationController?.popViewControllerAnimated(true)
-            }))
-            
-            alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-                self?.activityIndicatorView.startAnimating()
-                self?.setupAndStartOperation()
-            }))
-            
-            self.presentViewController(alert, animated: true, completion: nil)
-        }
-        else
-        {
-            // TODO: iOS7
-        }
+        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.navigationController?.popViewControllerAnimated(true)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.activityIndicatorView.startAnimating()
+            self?.setupAndStartOperation()
+        }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     private func presentVideoSettingsErrorAlert(error: NSError)
     {
-        if #available(iOS 8.0, *)
-        {
-            let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-                self?.navigationController?.popViewControllerAnimated(true)
-            }))
-            
-            alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-                self?.activityIndicatorView.startAnimating()
-                self?.applyVideoSettings()
-            }))
-            
-            self.presentViewController(alert, animated: true, completion: nil)
-        }
-        else
-        {
-            // TODO: iOS7
-        }
+        let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.navigationController?.popViewControllerAnimated(true)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.activityIndicatorView.startAnimating()
+            self?.applyVideoSettings()
+        }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 
     // MARK: Private API

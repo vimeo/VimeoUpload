@@ -152,7 +152,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
-    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: Upload2Descriptor)
+    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: UploadDescriptor)
     {
         let videoUri = descriptor.uploadTicket.video!.uri!
 
@@ -191,7 +191,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: VideoRefreshManagerDelegate
     
-    func videoDidFinishUploading(video: VIMVideo)
+    func uploadingStateDidChangeForVideo(video: VIMVideo)
     {
         if let uri = video.uri, let indexPath = self.indexPathForVideoUri(uri)
         {
@@ -268,54 +268,31 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func presentRefreshErrorAlert(error: NSError)
     {
-        if #available(iOS 8.0, *)
-        {
-            let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
-            alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-                self?.refresh()
-            }))
-            
-            self.presentViewController(alert, animated: true, completion: nil)
-        }
-        else
-        {
-            // TODO: iOS7
-        }
+        let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.refresh()
+        }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     private func presentUploadRetryErrorAlert(error: NSError)
     {
-        if #available(iOS 8.0, *)
-        {
-            let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
-            
-            self.presentViewController(alert, animated: true, completion: nil)
-        }
-        else
-        {
-            // TODO: iOS7
-        }
+        let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     // MARK: Private API
     
-    private func retryUploadDescriptor(descriptor: Upload2Descriptor, completion: ErrorBlock)
+    private func retryUploadDescriptor(descriptor: UploadDescriptor, completion: ErrorBlock)
     {
         // TODO: This should be cancellable
 
-        let operation: RetryUploadOperation
-        if #available(iOS 8.0, *)
-        {
-            let phAsset = try! self.phAssetForRetry(descriptor: descriptor) // TODO: do not force unwrap
-            operation = PHAssetRetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
-        }
-        else
-        {
-            let alAsset = ALAsset()//self.alAssetForRetry(descriptor: descriptor)!
-            operation = ALAssetRetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, alAsset: alAsset)
-        }
+        let phAsset = try! self.phAssetForRetry(descriptor: descriptor) // TODO: do not force unwrap
+        let operation = PHAssetRetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
 
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
@@ -357,7 +334,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     @available(iOS 8.0, *)
-    private func phAssetForRetry(descriptor descriptor: Upload2Descriptor) throws -> PHAsset
+    private func phAssetForRetry(descriptor descriptor: UploadDescriptor) throws -> PHAsset
     {
         let assetIdentifier = descriptor.assetIdentifier
         
@@ -374,7 +351,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         return result.firstObject as! PHAsset
     }
     
-    private func alAssetForRetry(descriptor descriptor: Upload2Descriptor)
+    private func alAssetForRetry(descriptor descriptor: UploadDescriptor)
     {
         let identifier = descriptor.assetIdentifier
         let url = NSURL(string: identifier)
