@@ -46,14 +46,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
         
-        UploadManager.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
+        UploadManager.sharedInstance // Ensure init is called on launch
                 
         return true
     }
     
     func application(application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: () -> Void)
     {
-        if UploadManager.sharedInstance.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
+        if UploadManager.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
         {
             assertionFailure("Unhandled background events")
         }
