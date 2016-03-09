@@ -35,8 +35,8 @@ enum DescriptorManagerNotification: String
     case SessionDidBecomeInvalid = "SessionDidBecomeInvalidNotification"
 }
 
-typealias TestBlock = (descriptor: Descriptor) -> Bool
-typealias VoidBlock = () -> Void
+typealias TestClosure = (descriptor: Descriptor) -> Bool
+typealias VoidClosure = () -> Void
 
 class DescriptorManager
 {
@@ -62,7 +62,7 @@ class DescriptorManager
     
     // MARK:
     
-    var backgroundEventsCompletionHandler: VoidBlock?
+    var backgroundEventsCompletionHandler: VoidClosure?
 
     // MARK: - Initialization
     
@@ -308,7 +308,7 @@ class DescriptorManager
     
     // MARK: Public API
     
-    func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidBlock) -> Bool
+    func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidClosure) -> Bool
     {
         guard identifier == self.sessionManager.session.configuration.identifier else
         {
@@ -433,7 +433,7 @@ class DescriptorManager
         })
     }
     
-    func descriptorPassingTest(test: TestBlock) -> Descriptor?
+    func descriptorPassingTest(test: TestClosure) -> Descriptor?
     {
         var descriptor: Descriptor?
         

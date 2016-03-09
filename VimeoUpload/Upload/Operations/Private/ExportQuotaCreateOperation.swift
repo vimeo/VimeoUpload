@@ -25,6 +25,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 class ExportQuotaCreateOperation: ConcurrentOperation
 {

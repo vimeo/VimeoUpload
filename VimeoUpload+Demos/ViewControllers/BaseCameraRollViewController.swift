@@ -72,15 +72,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     {
         super.viewDidLoad()
         
-        if #available(iOS 8, *)
-        {
-            self.cameraRollAssetHelper = PHAssetHelper()
-        }
-        else
-        {
-            self.cameraRollAssetHelper = ALAssetHelper()
-        }
-
+        self.cameraRollAssetHelper = PHAssetHelper()
         self.assets = self.loadAssets()
 
         self.addObservers()
@@ -157,26 +149,19 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     {
         var assets = [CameraRollAsset]()
 
-        if #available(iOS 8, *)
-        {
-            let options = PHFetchOptions()
-            options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-            
-            let fetchResult = PHAsset.fetchAssetsWithMediaType(.Video, options: options)
+        let options = PHFetchOptions()
+        options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        
+        let fetchResult = PHAsset.fetchAssetsWithMediaType(.Video, options: options)
 
-            fetchResult.enumerateObjectsUsingBlock{ (object: AnyObject?, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+        fetchResult.enumerateObjectsUsingBlock{ (object: AnyObject?, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
 
-                if let phAsset = object as? PHAsset
-                {
-                    let vimPHAsset = VIMPHAsset(phAsset: phAsset)
-                    assets.append(vimPHAsset)
-                }
-            }        
-        }
-        else
-        {
-            // iOS7
-        }
+            if let phAsset = object as? PHAsset
+            {
+                let vimPHAsset = VIMPHAsset(phAsset: phAsset)
+                assets.append(vimPHAsset)
+            }
+        }        
         
         return assets
     }
@@ -322,55 +307,41 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     private func presentAssetErrorAlert(indexPath: NSIndexPath, error: NSError)
     {
-        if #available(iOS 8, *)
-        {
-            let alert = UIAlertController(title: "Asset Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-                self?.collectionView.reloadItemsAtIndexPaths([indexPath]) // Let the user manually reselect the cell since reload is async
-            }))
-            
-            self.presentViewController(alert, animated: true, completion: nil)
-        }
-        else
-        {
-            // iOS7
-        }
+        let alert = UIAlertController(title: "Asset Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+            self?.collectionView.reloadItemsAtIndexPaths([indexPath]) // Let the user manually reselect the cell since reload is async
+        }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     private func presentErrorAlert(indexPath: NSIndexPath, error: NSError)
     {
-        if #available(iOS 8, *)
-        {
-            let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                strongSelf.selectedIndexPath = nil
-                strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
-                strongSelf.setupAndStartOperation()
-            }))
-
-            alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
             
-                guard let strongSelf = self else
-                {
-                    return
-                }
-
-                strongSelf.setupAndStartOperation()
-                strongSelf.didSelectIndexPath(indexPath)
-            }))
+            guard let strongSelf = self else
+            {
+                return
+            }
             
-            self.presentViewController(alert, animated: true, completion: nil)
-        }
-        else
-        {
-            // iOS7
-        }
+            strongSelf.selectedIndexPath = nil
+            strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+            strongSelf.setupAndStartOperation()
+        }))
+
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+        
+            guard let strongSelf = self else
+            {
+                return
+            }
+
+            strongSelf.setupAndStartOperation()
+            strongSelf.didSelectIndexPath(indexPath)
+        }))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 
     private func finish(cameraRollAsset cameraRollAsset: CameraRollAsset)

@@ -164,7 +164,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
-        self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil)
+        self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil, password: nil)
         
         if operation?.state == .Executing
         {

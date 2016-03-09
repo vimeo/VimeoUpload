@@ -46,7 +46,7 @@ import Foundation
     
     // MARK:
     
-    private let reporter = UploadReporter()
+    private let reporter = DescriptorManagerTracker()
     
     // MARK: - Initialization
     
@@ -76,7 +76,7 @@ import Foundation
     
     func allowsCellularUpload(allows: Bool)
     {
-        self.connectivityManager.allowsCellularUpload = allows
+        self.connectivityManager.allowsCellularUsage = allows
     }
 
     // We need a reference (via the assetIdentifier) to the original asset so that we can retry failed uploads

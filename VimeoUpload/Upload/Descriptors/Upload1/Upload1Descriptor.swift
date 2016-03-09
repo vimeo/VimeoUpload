@@ -266,9 +266,7 @@ class Upload1Descriptor: Descriptor
         super.init(coder: aDecoder)
     }
     
-    // TODO: implement NSCopying [AH]
-
-    required override init()
+    required init()
     {
         fatalError("init() has not been implemented")
     }
