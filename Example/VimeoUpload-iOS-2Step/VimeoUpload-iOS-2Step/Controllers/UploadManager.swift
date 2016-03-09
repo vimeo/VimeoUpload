@@ -94,13 +94,13 @@ class UploadManager
         
         self.failureTracker.removeFailedDescriptorForKey(videoUri)
 
-        if let descriptor = self.uploadDescriptorForVideo(videoUri: videoUri)
+        if let descriptor = self.descriptorForVideo(videoUri: videoUri)
         {
             self.descriptorManager.cancelDescriptor(descriptor)
         }
     }
 
-    func uploadDescriptorForVideo(videoUri videoUri: String) -> UploadDescriptor?
+    func descriptorForVideo(videoUri videoUri: String) -> UploadDescriptor?
     {
         // Check active descriptors
         

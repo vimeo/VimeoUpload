@@ -84,7 +84,7 @@ class UploadManager
     
     func deleteUpload(assetIdentifier assetIdentifier: String)
     {
-        if let descriptor = self.uploadDescriptorForAssetIdentifier(assetIdentifier)
+        if let descriptor = self.descriptorForAssetIdentifier(assetIdentifier)
         {
             self.descriptorManager.cancelDescriptor(descriptor)
         
@@ -95,7 +95,7 @@ class UploadManager
         }
     }
     
-    func uploadDescriptorForAssetIdentifier(assetIdentifier: String) -> Upload1Descriptor?
+    func descriptorForAssetIdentifier(assetIdentifier: String) -> Upload1Descriptor?
     {
         // Check active descriptors
         let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
