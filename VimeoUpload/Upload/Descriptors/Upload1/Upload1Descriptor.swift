@@ -50,6 +50,23 @@ class Upload1Descriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
+    // MARK: VideoDescriptor
+    
+    var type: VideoDescriptorType
+    {
+        return .Upload
+    }
+    
+//    var videoUri: VideoUri?
+//    {
+//        return self.uploadTicket.video?.uri
+//    }
+    
+    var progressDescriptor: ProgressDescriptor
+    {
+        return self
+    }
+
     // MARK: - Initialization
     
     init(url: NSURL, assetIdentifier: String, videoSettings: VideoSettings? = nil)
