@@ -26,11 +26,15 @@
 
 import Foundation
 
+protocol ConnectivityManagerDelegate: class
+{
+    func suspend(connectivityManager connectivityManager: ConnectivityManager)
+    func resume(connectivityManager connectivityManager: ConnectivityManager)
+}
+
 @objc class ConnectivityManager: NSObject
 {
-    private let descriptorManager: DescriptorManager
-
-    // MARK: 
+    weak var delegate: ConnectivityManagerDelegate?
     
     var allowsCellularUsage = true
     {
@@ -38,7 +42,7 @@ import Foundation
         {
             if oldValue != allowsCellularUsage
             {
-                self.updateDescriptorManagerState()
+                self.updateState()
             }
         }
     }
@@ -50,10 +54,8 @@ import Foundation
         self.removeObservers()
     }
     
-    init(descriptorManager: DescriptorManager)
+    override init()
     {
-        self.descriptorManager = descriptorManager
-        
         super.init()
         
         self.addObservers()
@@ -73,32 +75,32 @@ import Foundation
     
     func reachabilityDidChange(notification: NSNotification)
     {
-        self.updateDescriptorManagerState()
+        self.updateState()
     }
     
-    private func updateDescriptorManagerState()
+    private func updateState()
     {
         if AFNetworkReachabilityManager.sharedManager().reachable == true
         {
             if AFNetworkReachabilityManager.sharedManager().reachableViaWiFi
             {
-                self.descriptorManager.resume()
+                self.delegate?.resume(connectivityManager: self)
             }
             else
             {
                 if self.allowsCellularUsage
                 {
-                    self.descriptorManager.resume()
+                    self.delegate?.resume(connectivityManager: self)
                 }
                 else
                 {
-                    self.descriptorManager.suspend()
+                    self.delegate?.suspend(connectivityManager: self)
                 }
             }
         }
         else
         {
-            self.descriptorManager.suspend()
+            self.delegate?.suspend(connectivityManager: self)
         }
     }
 }

@@ -38,7 +38,7 @@ enum DescriptorManagerNotification: String
 typealias TestClosure = (descriptor: Descriptor) -> Bool
 typealias VoidClosure = () -> Void
 
-class DescriptorManager
+class DescriptorManager: NSObject
 {
     private static let QueueName = "descriptor_manager.synchronization_queue"
     
@@ -76,6 +76,8 @@ class DescriptorManager
         self.delegate = delegate
         self.archiver = DescriptorManagerArchiver(name: name)
         
+        super.init()
+
         self.setupDescriptors()
         self.setupSessionBlocks()
         self.setupSuspendedState()
