@@ -1,5 +1,5 @@
 //
-//  RetryManager.swift
+//  VideoDeletionManager.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/23/15.

@@ -17,14 +17,14 @@ end
 
 target :'VimeoUpload-iOS-2StepTests' do
     platform :ios, '8.0'
-    use_frameworks!
+    #use_frameworks!
     shared_pods
     xcodeproj 'Example/VimeoUpload-iOS-2Step/VimeoUpload-iOS-2Step.xcodeproj'
 end
 
 target :'VimeoUpload-iOS-2StepUITests' do
     platform :ios, '8.0'
-    use_frameworks!
+    #use_frameworks!
     shared_pods
     xcodeproj 'Example/VimeoUpload-iOS-2Step/VimeoUpload-iOS-2Step.xcodeproj'
 end
@@ -39,14 +39,14 @@ end
 
 target :'VimeoUpload-iOS-ExampleTests' do
     platform :ios, '8.0'
-    use_frameworks!
+    #use_frameworks!
     shared_pods
     xcodeproj 'Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj'
 end
 
 target :'VimeoUpload-iOS-ExampleUITests' do
     platform :ios, '8.0'
-    use_frameworks!
+    #use_frameworks!
     shared_pods
     xcodeproj 'Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj'
 end

@@ -1,6 +1,6 @@
 //
-//  Test.swift
-//  Smokescreen
+//  VimeoDescriptorManager.swift
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 2/6/16.
 //  Copyright © 2016 Vimeo. All rights reserved.

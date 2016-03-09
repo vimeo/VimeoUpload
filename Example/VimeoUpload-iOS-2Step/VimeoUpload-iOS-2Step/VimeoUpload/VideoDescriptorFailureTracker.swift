@@ -1,5 +1,5 @@
 //
-//  UploadFailureTracker.swift
+//  VideoDescriptorFailureTracker.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 12/9/15.

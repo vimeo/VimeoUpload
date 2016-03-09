@@ -257,9 +257,7 @@
 			children = (
 				500D4F0C1C84FC3600492825 /* Descriptor System */,
 				500D4F151C84FC3600492825 /* Extensions */,
-				500D4F191C84FC3600492825 /* Model */,
 				500D4F1A1C84FC3600492825 /* Networking */,
-				500D4F1F1C84FC3600492825 /* Operations */,
 				500D4F231C84FC3600492825 /* Upload */,
 				500D4F5D1C84FC3600492825 /* VideoDescriptorFailureTracker.swift */,
 				500D4F5E1C84FC3600492825 /* VimeoDescriptorManager.swift */,
@@ -292,13 +290,6 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		500D4F191C84FC3600492825 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		500D4F1A1C84FC3600492825 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
@@ -308,37 +299,6 @@
 				500D4F1E1C84FC3600492825 /* VimeoSessionManager.swift */,
 			);
 			path = Networking;
-			sourceTree = "<group>";
-		};
-		500D4F1F1C84FC3600492825 /* Operations */ = {
-			isa = PBXGroup;
-			children = (
-				500D4F201C84FC3600492825 /* Async */,
-				500D4F221C84FC3600492825 /* Private */,
-			);
-			path = Operations;
-			sourceTree = "<group>";
-		};
-		500D4F201C84FC3600492825 /* Async */ = {
-			isa = PBXGroup;
-			children = (
-				500D4F211C84FC3600492825 /* iOS8 */,
-			);
-			path = Async;
-			sourceTree = "<group>";
-		};
-		500D4F211C84FC3600492825 /* iOS8 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = iOS8;
-			sourceTree = "<group>";
-		};
-		500D4F221C84FC3600492825 /* Private */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Private;
 			sourceTree = "<group>";
 		};
 		500D4F231C84FC3600492825 /* Upload */ = {
