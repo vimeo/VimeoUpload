@@ -87,16 +87,75 @@ You can obtain an OAuth token by using the authentication methods provided by [V
 ## Uploading Videos
 ### Initiating an Upload
 
+Construct an NSURL that points to a video file on disk:
+
 ```Swift
-    let phAsset: PHAsset = ...
-    let assetIdentifier = phAsset.localIdentifier 
+    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
+    let url = NSURL.fileURLWithPath(path)
+```
+
+If you're attempting to upload a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) you'll first need to export it using an [AVAssetExportSesson](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html):
+
+```Swift
+    // Export
 
     let path = "PATH_TO_VIDEO_FILE_ON_DISK"
     let url = NSURL.fileURLWithPath(path)
+```
+
+If you're attempting to upload an [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you'll first need to export it using an [AVAssetExportSesson](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html):
+
+```Swift
+    // Export
+
+    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
+    let url = NSURL.fileURLWithPath(path)
+
+```
+
+Request an upload ticket from the Vimeo API: 
+
+```Swift
+    do
+    {
+        let task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, completionHandler: { [weak self] (uploadTicket, error) -> Void in
+            
+            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+
+                if let error = error
+                {
+                // The upload ticket request failed
+
+                     return
+                }
+            
+                guard let uploadTicket = uploadTicket else
+                {
+                     // error and uploadTicket are mutually exclusive, so this should never happen
+               
+                    return
+                }
+            
+               // Use the uploadTicket to initiate an upload, see documentation below
+            
+            })
+        })
+        
+        task.resume()
+    }
+    catch let error as NSError
+    {
+        // An error was thrown while attempting to construct the task
+    }
+```
+
+```Swift
+    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
+    let url = NSURL.fileURLWithPath(path)
     
-    let uploadTicket: VIMUploadTicket = ...
+    let uploadTicket: VIMUploadTicket = ... // Obtain this from the Vimeo API, see documentation below
     
-    vimeoUpload.uploadVideo(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier) // Note to self: make assetId optional
+    vimeoUpload.uploadVideo(url: url, uploadTicket: uploadTicket)
 ```
 
 ### Canceling an Upload
