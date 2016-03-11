@@ -77,7 +77,7 @@ class UploadCell: UITableViewCell
         {
             if let assetIdentifier = self.assetIdentifier
             {
-                self.descriptor = UploadManager.sharedInstance.uploadDescriptorForAssetIdentifier(assetIdentifier)
+                self.descriptor = UploadManager.sharedInstance.descriptorForAssetIdentifier(assetIdentifier)
             }
         }
     }

@@ -107,7 +107,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
             if let descriptor = notification.object as? Upload1Descriptor
             {
                 let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-                self.items.insert(descriptor.assetIdentifier, atIndex: indexPath.row)
+                self.items.insert(descriptor.identifier!, atIndex: indexPath.row) // TODO: do not force unwrap
                 self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
             }
         }

@@ -291,50 +291,50 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     {
         // TODO: This should be cancellable
 
-        guard let phAsset = descriptor.phAssetForRetry() else
-        {
-            return
-        }
-        
-        let operation = PHAssetRetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
-
-        operation.downloadProgressBlock = { (progress: Double) -> Void in
-            print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
-        }
-        
-        operation.exportProgressBlock = { (progress: Double) -> Void in
-            print("Export progress (settings): \(progress)")
-        }
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.cancelled == true
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.presentUploadRetryErrorAlert(error)
-                }
-                else
-                {
-                    // Initiate the retry
-
-                    let url = operation.url!
-                    UploadManager.sharedInstance.retryUpload(descriptor: descriptor, url: url)
-                }
-                
-                completion(error: operation.error)
-            })
-        }
-        
-        operation.start()
+//        guard let phAsset = descriptor.phAssetForRetry() else
+//        {
+//            return
+//        }
+//        
+//        let operation = PHAssetRetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
+//
+//        operation.downloadProgressBlock = { (progress: Double) -> Void in
+//            print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
+//        }
+//        
+//        operation.exportProgressBlock = { (progress: Double) -> Void in
+//            print("Export progress (settings): \(progress)")
+//        }
+//        operation.completionBlock = { [weak self] () -> Void in
+//            
+//            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+//                
+//                guard let strongSelf = self else
+//                {
+//                    return
+//                }
+//                
+//                if operation.cancelled == true
+//                {
+//                    return
+//                }
+//                
+//                if let error = operation.error
+//                {
+//                    strongSelf.presentUploadRetryErrorAlert(error)
+//                }
+//                else
+//                {
+//                    // Initiate the retry
+//
+//                    let url = operation.url!
+//                    UploadManager.sharedInstance.retryUpload(descriptor: descriptor, url: url)
+//                }
+//                
+//                completion(error: operation.error)
+//            })
+//        }
+//        
+//        operation.start()
     }
 }
