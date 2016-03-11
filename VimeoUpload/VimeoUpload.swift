@@ -57,12 +57,9 @@ class VimeoUpload
     
     // MARK: Public API
     
-    // Clarify whether url is a fileURL or not
-    // We need a reference (via the assetIdentifier) to the original asset so that we can retry failed uploads
-    
-    func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket, assetIdentifier: String)
+    func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket)
     {
-        let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
+        let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket)
         self.descriptorManager.addDescriptor(descriptor)
     }
     

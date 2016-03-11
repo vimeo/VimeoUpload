@@ -31,13 +31,11 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     private static let FileNameCoderKey = "fileName"
     private static let FileExtensionCoderKey = "fileExtension"
     private static let UploadTicketCoderKey = "uploadTicket"
-    private static let AssetIdentifierCoderKey = "assetIdentifier"
 
     // MARK: 
     
     var url: NSURL
     var uploadTicket: VIMUploadTicket
-    var assetIdentifier: String // Used to track the original ALAsset or PHAsset
     
     // MARK: VideoDescriptor
     
@@ -63,11 +61,10 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         fatalError("init() has not been implemented")
     }
 
-    init(url: NSURL, uploadTicket: VIMUploadTicket, assetIdentifier: String)
+    init(url: NSURL, uploadTicket: VIMUploadTicket)
     {
         self.url = url
         self.uploadTicket = uploadTicket
-        self.assetIdentifier = assetIdentifier
         
         super.init()
     }
@@ -194,7 +191,6 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         self.url = NSURL.fileURLWithPath(path)
         self.uploadTicket = aDecoder.decodeObjectForKey(self.dynamicType.UploadTicketCoderKey) as! VIMUploadTicket
-        self.assetIdentifier = aDecoder.decodeObjectForKey(self.dynamicType.AssetIdentifierCoderKey) as! String
 
         super.init(coder: aDecoder)
     }
@@ -207,7 +203,6 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         aCoder.encodeObject(fileName, forKey: self.dynamicType.FileNameCoderKey)
         aCoder.encodeObject(ext, forKey: self.dynamicType.FileExtensionCoderKey)
         aCoder.encodeObject(self.uploadTicket, forKey: self.dynamicType.UploadTicketCoderKey)
-        aCoder.encodeObject(self.assetIdentifier, forKey: self.dynamicType.AssetIdentifierCoderKey)
         
         super.encodeWithCoder(aCoder)
     }
