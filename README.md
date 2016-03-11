@@ -97,10 +97,43 @@ Construct an NSURL that points to a video file on disk:
 If you're attempting to upload a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) you'll first need to export it using an [AVAssetExportSesson](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html):
 
 ```Swift
-    // Export
-
-    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
+    let exportOperation = ExportOperation(exportSession: exportSession)
+    
+    // Optionally set a progress block
+    exportOperation.progressBlock = { [weak self] (progress: Double) -> Void in
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            // Do something with progress
+        })
+    }
+    
+    exportOperation.completionBlock = { [weak self] () -> Void in
+        
+        dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            if exportOperation.cancelled == true
+            {
+                return
+            }
+            
+            if let error = exportOperation.error
+            {
+                strongSelf.error = error
+            }
+            else
+            {
+                let url = exportOperation.outputURL!
+                    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
     let url = NSURL.fileURLWithPath(path)
+            }
+        })
+    }
+    
+    exportOperation.start()
 ```
 
 If you're attempting to upload an [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you'll first need to export it using an [AVAssetExportSesson](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html):
