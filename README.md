@@ -74,6 +74,9 @@ Create an instance, perhaps a singleton instance, of `VimeoUpload`:
 If your OAuth token can change during the course of a session, use the constructor whose second argument is an `authTokenBlock`:
 
 ```Swift
+    let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
+    var authToken = "YOUR_OAUTH_TOKEN"
+
     let vimeoUpload = VimeoUpload(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: { () -> String? in
         return authToken 
     })
