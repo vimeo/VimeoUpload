@@ -53,11 +53,9 @@ This library is under active development. We're shooting for a v1.0 release in M
 
 1. A revised server-side Vimeo upload API that collapses the current 4 steps into 1 or 2 steps.
 
-1. Clear and concise upload system initialization.
+1. Clear and concise upload system initialization, management, and introspection.
 
-1. Clear and concise upload management and introspection.
-
-1. An upload system that accommodates many UX possibilities.
+1. An upload system that accommodates as many UX futures as possible.
 
 ## Getting Started
 ### CocoaPods
@@ -70,6 +68,12 @@ Create an instance, perhaps a singleton instance, of `VimeoUpload`:
     let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
     let authToken = "YOUR_AUTH_TOKEN"
     
+    let vimeoUpload = VimeoUpload(backgroundSessionIdentifier: backgroundSessionIdentifier, authToken: authToken)
+```
+
+If your auth token may change, use the constructor whose second argument is an `authTokenBlock`:
+
+```
     let vimeoUpload = VimeoUpload(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: { () -> String? in
         return authToken 
     })
