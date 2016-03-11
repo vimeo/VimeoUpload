@@ -291,7 +291,11 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     {
         // TODO: This should be cancellable
 
-        let phAsset = try! self.phAssetForRetry(descriptor: descriptor) // TODO: do not force unwrap
+        guard let phAsset = descriptor.phAssetForRetry() else
+        {
+            return
+        }
+        
         let operation = PHAssetRetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
 
         operation.downloadProgressBlock = { (progress: Double) -> Void in
@@ -330,39 +334,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
                 completion(error: operation.error)
             })
         }
+        
         operation.start()
-    }
-    
-    @available(iOS 8.0, *)
-    private func phAssetForRetry(descriptor descriptor: UploadDescriptor) throws -> PHAsset
-    {
-        let assetIdentifier = descriptor.assetIdentifier
-        
-        let options = PHFetchOptions()
-        options.predicate = NSPredicate(format: "localIdentifier = %@", assetIdentifier)
-        
-        let result = PHAsset.fetchAssetsWithLocalIdentifiers([assetIdentifier], options: options)
-        
-        guard result.count == 1 else
-        {
-            throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to find PHAsset"])
-        }
-        
-        return result.firstObject as! PHAsset
-    }
-    
-    private func alAssetForRetry(descriptor descriptor: UploadDescriptor)
-    {
-        let identifier = descriptor.assetIdentifier
-        let url = NSURL(string: identifier)
-        
-        let library = ALAssetsLibrary()
-        library.assetForURL(url, resultBlock: { (asset) -> Void in
-            
-            // TODO: return asset
-            
-        }) { (error) -> Void in
-            // TODO: handle error
-        }
     }
 }
