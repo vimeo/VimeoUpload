@@ -29,7 +29,7 @@ import UIKit
 protocol VideoCellDelegate: class
 {
     func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
-    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: Upload2Descriptor)
+    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: UploadDescriptor)
 }
 
 class VideoCell: UITableViewCell
@@ -60,7 +60,7 @@ class VideoCell: UITableViewCell
     private var progressKVOContext = UInt8()
     private var stateKVOContext = UInt8()
     
-    private var descriptor: Upload2Descriptor?
+    private var descriptor: UploadDescriptor?
     {
         willSet
         {
@@ -168,7 +168,7 @@ class VideoCell: UITableViewCell
         self.progressConstraint.constant = constant
     }
 
-    private func updateState(state: State)
+    private func updateState(state: DescriptorState)
     {
         switch state
         {
@@ -221,8 +221,8 @@ class VideoCell: UITableViewCell
 
             case(self.dynamicType.StateKeyPath, &self.stateKVOContext):
                 
-                let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? State.Ready.rawValue;
-                let state = State(rawValue: stateRaw)!
+                let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? DescriptorState.Ready.rawValue;
+                let state = DescriptorState(rawValue: stateRaw)!
 
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                     self?.updateState(state)

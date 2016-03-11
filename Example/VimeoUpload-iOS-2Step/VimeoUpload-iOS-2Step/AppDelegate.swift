@@ -35,15 +35,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     {
         AFNetworkReachabilityManager.sharedManager().startMonitoring()
         
-        if #available(iOS 8.0, *)
-        {
-            let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
-            application.registerUserNotificationSettings(settings)
-        }
-        else
-        {
-            // TODO: Fallback on earlier versions
-        }
+        let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
+        application.registerUserNotificationSettings(settings)
         
         let viewController = MyVideosViewController(nibName: MyVideosViewController.NibName, bundle:NSBundle.mainBundle())
         let navigationController = UINavigationController(rootViewController: viewController)
@@ -53,14 +46,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
         
-        UploadManager.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
+        UploadManager.sharedInstance // Ensure init is called on launch
                 
         return true
     }
     
     func application(application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: () -> Void)
     {
-        if UploadManager.sharedInstance.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
+        if UploadManager.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
         {
             assertionFailure("Unhandled background events")
         }

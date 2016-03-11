@@ -1,6 +1,6 @@
 //
-//  Test.swift
-//  Smokescreen
+//  ReachableDescriptorManager.swift
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 2/6/16.
 //  Copyright © 2016 Vimeo. All rights reserved.
@@ -26,24 +26,11 @@
 
 import Foundation
 
-@objc class VimeoDescriptorManager: NSObject // TODO: Rename this to something more appropriate [AH] 2/7/2016
+@objc class ReachableDescriptorManager: DescriptorManager, ConnectivityManagerDelegate
 {
-    private let backgroundSessionManager: VimeoSessionManager
-    private let connectivityManager: ConnectivityManager
-    
-    // MARK: 
-    
-    let descriptorManager: DescriptorManager
+    private let connectivityManager = ConnectivityManager()
     
     // MARK:
-    
-    var suspended: Bool
-    {
-        get
-        {
-            return self.descriptorManager.suspended
-        }
-    }
     
     var allowsCellularUsage: Bool
     {
@@ -61,22 +48,29 @@ import Foundation
     
     init(name: String, backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, authTokenBlock: AuthTokenBlock)
     {
-        self.backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, authTokenBlock: authTokenBlock)
-        self.descriptorManager = DescriptorManager(sessionManager: self.backgroundSessionManager, name: name, delegate: descriptorManagerDelegate)
-        self.connectivityManager = ConnectivityManager(descriptorManager: self.descriptorManager)
+        let backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, authTokenBlock: authTokenBlock)
         
-        super.init()
+        super.init(sessionManager: backgroundSessionManager, name: name, delegate: descriptorManagerDelegate)
+        
+        self.connectivityManager.delegate = self
     }
     
     // MARK: Public API - Background Session
     
     func applicationDidFinishLaunching()
     {
-        // Do nothing at the moment
+        // No-op
     }
     
-    func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidBlock) -> Bool
+    // MARK: ConnectivityManagerDelegate
+
+    func suspend(connectivityManager connectivityManager: ConnectivityManager)
     {
-        return self.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler)
+        self.suspend()
+    }
+    
+    func resume(connectivityManager connectivityManager: ConnectivityManager)
+    {
+        self.resume()
     }
 }

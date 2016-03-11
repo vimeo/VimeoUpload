@@ -26,7 +26,7 @@
 
 import Foundation
 
-class Upload1Descriptor: Descriptor
+class Upload1Descriptor: ProgressDescriptor, VideoDescriptor
 {
     // MARK:
     
@@ -39,10 +39,6 @@ class Upload1Descriptor: Descriptor
     private(set) var uploadTicket: VIMUploadTicket? // Create response
     private(set) var videoUri: String? // Activate response
     private(set) var video: VIMVideo? // Settings response
-    
-    // MARK:
-    
-    private(set) var progress: NSProgress?
 
     // MARK:
     
@@ -53,18 +49,24 @@ class Upload1Descriptor: Descriptor
             print(self.currentRequest.rawValue)
         }
     }
-
-    override var error: NSError?
+    
+    // MARK: VideoDescriptor
+    
+    var type: VideoDescriptorType
     {
-        didSet
-        {
-            if self.error != nil
-            {
-                self.state = .Finished
-            }
-        }
+        return .Upload
     }
     
+//    var videoUri: VideoUri?
+//    {
+//        return self.uploadTicket.video?.uri
+//    }
+    
+    var progressDescriptor: ProgressDescriptor
+    {
+        return self
+    }
+
     // MARK: - Initialization
     
     init(url: NSURL, assetIdentifier: String, videoSettings: VideoSettings? = nil)
@@ -88,7 +90,9 @@ class Upload1Descriptor: Descriptor
         }
         catch let error as NSError
         {
+            self.currentTaskIdentifier = nil
             self.error = error
+            self.state = .Finished
             
             throw error // Propagate this out so that DescriptorManager can remove the descriptor from the set
         }
@@ -266,9 +270,7 @@ class Upload1Descriptor: Descriptor
         super.init(coder: aDecoder)
     }
     
-    // TODO: implement NSCopying [AH]
-
-    required override init()
+    required init()
     {
         fatalError("init() has not been implemented")
     }

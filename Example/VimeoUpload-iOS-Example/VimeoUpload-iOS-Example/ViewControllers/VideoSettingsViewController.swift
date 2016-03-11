@@ -38,7 +38,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK:
     
-    var input: CameraRollViewControllerResult?
+    var input: UploadUserAndCameraRollAsset?
     
     // MARK:
     
@@ -88,8 +88,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     private func setupAndStartOperation()
     {
-        let me = self.input!.me
-        let phAsset = self.input!.phAsset        
+        let me = self.input!.user
+        let phAsset = (self.input!.cameraRollAsset as! VIMPHAsset).phAsset
         let operation = PHAssetCloudExportQuotaOperation(me: me, phAsset: phAsset)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
@@ -143,7 +143,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func startUpload()
     {
         let url = self.url!
-        let phAsset = self.input!.phAsset
+        let phAsset = (self.input!.cameraRollAsset as! VIMPHAsset).phAsset
         let assetIdentifier = phAsset.localIdentifier
         
         UploadManager.sharedInstance.uploadVideo(url: url, assetIdentifier: assetIdentifier, videoSettings: self.videoSettings)
@@ -164,7 +164,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
-        self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil)
+        self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil, password: nil)
         
         if operation?.state == .Executing
         {

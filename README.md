@@ -65,11 +65,37 @@ This library is under active development. We're shooting for a v1.0 release in M
 ### CocoaPods
 ### Submodule
 ### Initialization
-### Authentication
+
+Create an instance, perhaps a singleton instance, of `VimeoUpload`: 
+
+```Swift
+    let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
+    let authToken = "YOUR_AUTH_TOKEN"
+    
+    let vimeoUpload = VimeoUpload(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: { () -> String? in
+        return authToken 
+    })
+```
+
+You can obtain an auth token by using the authentication methods provided by [VIMNetworking](https://github.com/vimeo/VIMNetworking) or by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated auth token.
 
 ## Uploading Videos
-### Starting an Upload
+### Initiating an Upload
+
+```Swift
+    let phAsset: PHAsset = ...
+    let assetIdentifier = phAsset.localIdentifier 
+
+    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
+    let url = NSURL.fileURLWithPath(path)
+    
+    let uploadTicket: VIMUploadTicket = ...
+    
+    vimeoUpload.uploadVideo(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier) // Note to self: make assetId optional
+```
+
 ### Canceling an Upload
+
 ### Tracking Upload State and Progress
 ### Additional Configuration
 

@@ -107,7 +107,7 @@ class UploadCell: UITableViewCell
 //        self.progressConstraint.constant = constant
     }
     
-    private func updateState(state: State)
+    private func updateState(state: DescriptorState)
     {
         switch state
         {
@@ -160,8 +160,8 @@ class UploadCell: UITableViewCell
                 
             case(self.dynamicType.StateKeyPath, &self.stateKVOContext):
                 
-                let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? State.Ready.rawValue;
-                let state = State(rawValue: stateRaw)!
+                let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? DescriptorState.Ready.rawValue;
+                let state = DescriptorState(rawValue: stateRaw)!
                 
                 dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
                     self?.updateState(state)

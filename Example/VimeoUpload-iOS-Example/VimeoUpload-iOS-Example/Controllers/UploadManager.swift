@@ -26,60 +26,41 @@
 
 import Foundation
 
-@objc class UploadManager: NSObject
+class UploadManager
 {
     static let sharedInstance = UploadManager()
     
     // MARK:
     
-    private let BackgroundSessionIdentifier = "com.vimeo.upload"
-    private let DescriptorManagerName = "uploader"
-    private let BasicUserToken = "3e9dae312853936216aba3ce56cf5066"
-    private let ProUserToken = "caf4648129ec56e580175c4b45cce7fc"
-    
-    // MARK:
-    
-    private let sessionManager: VimeoSessionManager
-    private let descriptorManager: DescriptorManager
-    private let connectivityManager: ConnectivityManager
+    private let failureTracker: VideoDescriptorFailureTracker
     private let deletionManager: VideoDeletionManager
+    private let tracker = DescriptorManagerTracker()
     
     // MARK:
     
-    private let reporter = UploadReporter()
+    let descriptorManager: ReachableDescriptorManager
+    let foregroundSessionManager: VimeoSessionManager
     
     // MARK: - Initialization
     
-    override init()
+    init()
     {
-        self.sessionManager = VimeoSessionManager.backgroundSessionManager(identifier: BackgroundSessionIdentifier, authToken: BasicUserToken)
-        self.descriptorManager = DescriptorManager(sessionManager: self.sessionManager, name: DescriptorManagerName, delegate: self.reporter)
-        self.connectivityManager = ConnectivityManager(descriptorManager: self.descriptorManager)
-        self.deletionManager = VideoDeletionManager(sessionManager: ForegroundSessionManager.sharedInstance, retryCount: 2)
+        let name = "uploader"
+        let backgroundSessionIdentifier = "com.vimeo.upload"
+        let authTokenBlock = { () -> String? in
+            return "3e9dae312853936216aba3ce56cf5066"
+        }
         
-        super.init()
-    }
-    
-    // MARK: Public API - Background Session
-    
-    func applicationDidFinishLaunching()
-    {
-        // Do nothing at the moment
-    }
-    
-    func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidBlock) -> Bool
-    {
-        return self.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler)
-    }
-    
-    // MARK: Public API - Uploads
-    
-    func allowsCellularUpload(allows: Bool)
-    {
-        self.connectivityManager.allowsCellularUpload = allows
+        self.foregroundSessionManager = VimeoSessionManager.defaultSessionManagerWithAuthTokenBlock(authTokenBlock: authTokenBlock)
+        self.failureTracker = VideoDescriptorFailureTracker(name: name)
+        self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager)
+        self.descriptorManager = ReachableDescriptorManager(name: name, backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: self.tracker, authTokenBlock: authTokenBlock)
     }
 
+    // MARK: Public API
+    
     // We need a reference (via the assetIdentifier) to the original asset so that we can retry failed uploads
+
     func uploadVideo(url url: NSURL, assetIdentifier: String, videoSettings: VideoSettings?)
     {
         let descriptor = Upload1Descriptor(url: url, assetIdentifier: assetIdentifier, videoSettings: videoSettings)
@@ -88,22 +69,24 @@ import Foundation
         self.descriptorManager.addDescriptor(descriptor)
     }
     
-//    func retryUpload(descriptor descriptor: Upload1Descriptor, url: NSURL)
-//    {
-//        let videoSettings = descriptor.videoSettings
-//        let assetIdentifier = descriptor.assetIdentifier
-//        
-//        let newDescriptor = Upload1Descriptor(url: url, assetIdentifier: assetIdentifier, videoSettings: videoSettings)
-//        newDescriptor.identifier = assetIdentifier
-//        
-//        self.descriptorManager.addDescriptor(newDescriptor)
-//    }
+    func retryUpload(descriptor descriptor: Upload1Descriptor, url: NSURL)
+    {
+        if let videoUri = descriptor.uploadTicket?.video?.uri
+        {
+            self.failureTracker.removeFailedDescriptorForKey(videoUri)
+        }
+        
+        let newDescriptor = Upload1Descriptor(url: url, assetIdentifier: descriptor.assetIdentifier, videoSettings: descriptor.videoSettings)
+        newDescriptor.identifier = descriptor.assetIdentifier
+        
+        self.descriptorManager.addDescriptor(newDescriptor)
+    }
     
     func deleteUpload(assetIdentifier assetIdentifier: String)
     {
-        if let descriptor = self.uploadDescriptorForAssetIdentifier(assetIdentifier)
+        if let descriptor = self.descriptorForAssetIdentifier(assetIdentifier)
         {
-            descriptor.cancel(sessionManager: self.sessionManager)
+            self.descriptorManager.cancelDescriptor(descriptor)
         
             if let videoUri = descriptor.videoUri
             {
@@ -112,7 +95,7 @@ import Foundation
         }
     }
     
-    func uploadDescriptorForAssetIdentifier(assetIdentifier: String) -> Upload1Descriptor?
+    func descriptorForAssetIdentifier(assetIdentifier: String) -> Upload1Descriptor?
     {
         // Check active descriptors
         let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in

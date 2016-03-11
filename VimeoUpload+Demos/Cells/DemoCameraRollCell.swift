@@ -28,8 +28,8 @@ import UIKit
 
 class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
 {
-    static let CellIdentifier = "CameraRollCellIdentifier"
-    static let NibName = "CameraRollCell"
+    static let CellIdentifier = "DemoCameraRollCellIdentifier"
+    static let NibName = "DemoCameraRollCell"
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var fileSizeLabel: UILabel!

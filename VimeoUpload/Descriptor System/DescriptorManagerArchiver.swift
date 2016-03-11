@@ -117,7 +117,7 @@ class DescriptorManagerArchiver
         self.saveDescriptors()
     }
     
-    func descriptorPassingTest(test: TestBlock) -> Descriptor?
+    func descriptorPassingTest(test: TestClosure) -> Descriptor?
     {
         for currentDescriptor in self.descriptors
         {
