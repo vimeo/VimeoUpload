@@ -66,20 +66,20 @@ Create an instance, perhaps a singleton instance, of `VimeoUpload`:
 
 ```Swift
     let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
-    let authToken = "YOUR_AUTH_TOKEN"
+    let authToken = "YOUR_OAUTH_TOKEN"
     
     let vimeoUpload = VimeoUpload(backgroundSessionIdentifier: backgroundSessionIdentifier, authToken: authToken)
 ```
 
-If your auth token may change, use the constructor whose second argument is an `authTokenBlock`:
+If your OAuth token can change during the course of a session, use the constructor whose second argument is an `authTokenBlock`:
 
-```
+```Swift
     let vimeoUpload = VimeoUpload(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: { () -> String? in
         return authToken 
     })
 ```
 
-You can obtain an auth token by using the authentication methods provided by [VIMNetworking](https://github.com/vimeo/VIMNetworking) or by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated auth token.
+You can obtain an OAuth token by using the authentication methods provided by [VIMNetworking](https://github.com/vimeo/VIMNetworking) or by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
 
 ## Uploading Videos
 ### Initiating an Upload
