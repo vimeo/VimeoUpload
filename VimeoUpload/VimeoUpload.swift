@@ -28,10 +28,6 @@ import Foundation
 
 class VimeoUpload
 {
-    static let sharedInstance = VimeoUpload(backgroundSessionIdentifier: "com.vimeo.upload", authTokenBlock: { () -> String? in
-        return "3e9dae312853936216aba3ce56cf5066"
-    })
-    
     private static let Name = "vimeo_upload"
     
     // MARK:
@@ -43,7 +39,14 @@ class VimeoUpload
     private let deletionManager: VideoDeletionManager
 
     // MARK: - Initialization
-    
+
+    convenience init(backgroundSessionIdentifier: String, authToken: String)
+    {
+        self.init(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: { () -> String? in
+            return authToken
+        })
+    }
+
     init(backgroundSessionIdentifier: String, authTokenBlock: AuthTokenBlock)
     {
         let foregroundSessionManager = VimeoSessionManager.defaultSessionManagerWithAuthTokenBlock(authTokenBlock: authTokenBlock)
