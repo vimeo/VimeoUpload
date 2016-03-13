@@ -278,27 +278,35 @@ The `uploadVideo(url: uploadTicket:)` method returns an instance of `UploadDescr
 
 You can track upload state and progress by inspecting the `stateObservable` and `progressObservable` properties of an `UploadDescriptor`. 
 
-You can obtain a reference to a specific `UploadDescriptor` by holding onto the `UploadDescriptor` returned from your call to `uploadVideo(url: uploadTicket:)`, or by asking VimeoUpload for a specific descriptor passing a test that you construct. Here we're looking for an `UploadDescriptor` whose `videoUri` matches the `videoUri` we're interested in:
+You can obtain a reference to a specific `UploadDescriptor` by holding onto the `UploadDescriptor` returned from your call to `uploadVideo(url: uploadTicket:)`, or by asking `VimeoUpload` for a specific `UploadDescriptor`:
 
 ```Swift
-    let videoUri = ... // The uri for the video object whose upload state and progress you're interested in
+    let uploadTicket = ... // Your upload ticket (see above)
+    if let videoUri = uploadTicket.video?.uri
+    {
+        let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+        let descriptor = vimeoUpload.descriptorForVideo(videoUri: videoUri)
+    }
+```
+
+You can also ask `VimeoUpload` for an `UploadDescriptor` that passes a test that you construct. You can construct any test you'd like. You might consider setting `descriptor.identifier` to a value meaningful to you before you start your upload (e.g. set it to a PHAsset `localIdentifier`). That way you can leverage `descriptor.identifier` inside `descriptorPassingTest`:
+
+```Swift
+    let phAsset = ... // The PHAsset whose upload you'd like to inspect
     let vimeoUpload = ... // Your instance of VimeoUpload (see above)
-    let descriptor = vimeoUpload.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
-        
-        if let descriptor = descriptor as? VideoDescriptor, let currentVideoUri = descriptor.videoUri
-        {
-            return videoUri == currentVideoUri
-        }
-        
-        return false
-    })
     
+    let descriptor = vimeoUpload.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
+        return descriptor.identifier == phAsset.localIdentifier   
+    })
+```
+
+Once you have a reference to the `UploadDescriptor` you're interested in you can inspect its state directly:
+
+```Swift
     print(descriptor.state)
 ```
 
-You can construct any test you'd like. You might consider setting `descriptor.identifier` to a value meaningful to you before you start your upload (e.g. a PHAsset `localIdentifier`). That way you can leverage `descriptor.identifier` inside `descriptorPassingTest`.
-
-Once you have a reference to the `UploadDescriptor` you're interested in you can inspect its state directly or use KVO to observe changes to its state and progress: 
+Or use KVO to observe changes to its state and progress: 
 
 ```Swift
     private static let ProgressKeyPath = "progressObservable"
@@ -351,6 +359,25 @@ Once you have a reference to the `UploadDescriptor` you're interested in you can
 ```
 
 ### Canceling an Upload
+
+Canceling an upload will cancel the file upload itself as well as delete the video object from Vimeo servers. You can cancel an upload using the `UploadDescriptor` instance in question:
+
+```Swift
+    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+    let descriptor = ... // The descriptor you'd like to cancel
+    
+    vimeoUpload.cancelUpload(descriptor: descriptor)
+```
+
+Or by using the `videoUri` of the `uploadTicket` you used to create the upload: 
+
+```Swift
+    if let videoUri = uploadTicket.video?.uri
+    {
+        let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+        vimeoUpload.cancelUpload(videoUri: videoUri)
+    }
+```
 
 ### Additional Configuration
 
