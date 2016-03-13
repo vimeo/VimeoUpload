@@ -113,10 +113,10 @@ Request an instance of [AVAssetExportSession](https://developer.apple.com/librar
         // Do something with progress
     }
     
-    operation.completionBlock = { [weak self] () -> Void in
-        dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+    operation.completionBlock = {
+        dispatch_async(dispatch_get_main_queue(), {
         
-            guard let strongSelf = self where operation.cancelled == false else
+            guard operation.cancelled == false else
             {
                 return
             }
@@ -150,10 +150,10 @@ Next, export a copy the [PHAsset](https://developer.apple.com/library/prerelease
         // Do something with progress
     }
     
-    operation.completionBlock = { [weak self] () -> Void in
-        dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+    operation.completionBlock = {
+        dispatch_async(dispatch_get_main_queue(), {
             
-            guard let strongSelf = self where operation.cancelled == false else
+            guard operation.cancelled == false else
             {
                 return
             }
@@ -191,10 +191,10 @@ Use an instance of `ExportOperation` to export a copy of the [ALAsset](https://d
         // Do something with progress
     }
     
-    operation.completionBlock = { [weak self] () -> Void in
-        dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+    operation.completionBlock = {
+        dispatch_async(dispatch_get_main_queue(), {
             
-            guard let strongSelf = self where operation.cancelled == false else
+            guard operation.cancelled == false else
             {
                 return
             }
@@ -233,9 +233,9 @@ Request an upload ticket from the [Vimeo API](https://developer.vimeo.com):
 ```Swift
     do
     {
-        let task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, completionHandler: { [weak self] (uploadTicket, error) -> Void in
+        let task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, completionHandler: { (uploadTicket, error) -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            dispatch_async(dispatch_get_main_queue(), {
 
                 if let error = error
                 {
