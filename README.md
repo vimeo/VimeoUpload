@@ -13,8 +13,10 @@ This library is under active development. We're shooting for a v1.0 release in M
       * [Authentication](#authentication)
 * [Uploading Videos](#uploading-videos)
      * [Starting an Upload](#starting-an-upload)
-           * [Obtaining a File URL for a PHAsset](#obtaining-a-file-url-for-a-phasset)
-           * [Obtaining a File URL for an ALAsset](#obtaining-a-file-url-for-an-alasset)
+           * [Obtaining a File URL For a PHAsset](#obtaining-a-file-url-for-a-phasset)
+           * [Obtaining a File URL For an ALAsset](#obtaining-a-file-url-for-an-alasset)
+           * [Obtaining a File URL For an Asset That You Manage](#obtaining-a-file-url-for-an-asset-that-you-manage)
+           * [Obtaining an Upload Ticket](#obtaining-an-upload-ticket)
      * [Canceling an Upload](#canceling-an-upload)
      * [Tracking Upload State and Progress](#tracking-upload-state-and-progress)
      * [Additional Configuration](#additional-configuration)
@@ -95,34 +97,29 @@ In order to start an upload, you need two pieces of information:
 1. A file URL pointing to the video file on disk that you would like to upload, and
 2. An upload ticket
 
-The steps required to obtain the file URL will vary depending on whether you are uploading a PHAsset, an ALAsset, or an asset that you manage outside of the device Photos environment. Once you have a valid file URL, you will use it to obtain an upload ticket. Then you can start your upload.
+The steps required to obtain the file URL will vary depending on whether you are uploading a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html), an ALAsset, or an asset that you manage outside of the device Photos environment. Once you have a valid file URL, you will use it to obtain an upload ticket. Then you can start your upload.
 
-#### Obtaining a File URL for a PHAsset
+#### Obtaining a File URL For a PHAsset
 
-1. Request an instance of `AVAssetExportSession` for the PHAsset you intend to upload. If the PHAsset is in iCloud (i.e. not resident on the device) this will download the PHAsset from iCloud. 
+Request an instance of [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) for the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) that you intend to upload. If the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) is in iCloud (i.e. not resident on the device) this will download the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) from iCloud. Use the resulting `exportSession` to export a copy of the PHAsset. 
 
 ```Swift 
     let phAsset = ... // The PHAsset you intend to upload
     let operation = PHAssetExportSessionOperation(phAsset: phAsset)
     
     // Optionally set a progress block
-    operation.progressBlock = { [weak self] (progress: Double) -> Void in
+    operation.progressBlock = { (progress: Double) -> Void in
         // Do something with progress
     }
     
     operation.completionBlock = { [weak self] () -> Void in
         dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
         
-            guard let strongSelf = self else
+            guard let strongSelf = self where operation.cancelled == false else
             {
                 return
             }
             
-            if operation.cancelled == true
-            {
-                return
-            }
-
             if let error = operation.error
             {
                 // Do something with the error
@@ -141,37 +138,32 @@ The steps required to obtain the file URL will vary depending on whether you are
     operation.start()
 ```
 
-2. Export the PHAsset
+Next, export a copy the PHAsset and use the resulting `url` to obtain an upload ticket.
 
 ```Swift
     let exportSession = ... // The export session you just generated (see above)
     let operation = ExportOperation(exportSession: exportSession)
     
     // Optionally set a progress block
-    operation.progressBlock = { [weak self] (progress: Double) -> Void in
+    operation.progressBlock = { (progress: Double) -> Void in
         // Do something with progress
     }
     
     operation.completionBlock = { [weak self] () -> Void in
         dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
             
-            guard let strongSelf = self else
+            guard let strongSelf = self where operation.cancelled == false else
             {
                 return
             }
-            
-            if operation.cancelled == true
-            {
-                return
-            }
-            
+
             if let error = operation.error
             {
                 // Do something with the error
             }
             else if let url = operation.outputURL
             {
-                // Use the url to generate an upload ticket
+                // Use the url to generate an upload ticket (see below)
             }
             else
             {
@@ -183,68 +175,57 @@ The steps required to obtain the file URL will vary depending on whether you are
     operation.start()
 ```
 
-3. Use the file URL to generate an upload ticket.
+#### Obtaining a File URL For an ALAsset
 
-#### Obtaining a File URL for an ALAsset
-
-Construct an NSURL that points to a video file on disk:
+Use an instance of `ExportOperation` to export a copy of the ALAsset you intend to upload. (Alternatively, you can use [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) directly.) Then use the resulting `url` to obtain an upload ticket.
 
 ```Swift
-    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
-    let url = NSURL.fileURLWithPath(path)
-```
-
-If you're attempting to upload a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) you'll first need to export it using an [AVAssetExportSesson](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html):
-
-```Swift
-    let exportOperation = ExportOperation(exportSession: exportSession)
+    let alAsset = ... // The ALAsset you intend to upload
+    let url = alAsset.defaultRepresentation().url() // For example
+    let avAsset = AVURLAsset(URL: url)
+    let operation = ExportOperation(asset: avAsset)
     
     // Optionally set a progress block
-    exportOperation.progressBlock = { [weak self] (progress: Double) -> Void in
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            // Do something with progress
-        })
+    operation.progressBlock = { (progress: Double) -> Void in
+        // Do something with progress
     }
     
-    exportOperation.completionBlock = { [weak self] () -> Void in
-        
+    operation.completionBlock = { [weak self] () -> Void in
         dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
             
-            guard let strongSelf = self else
+            guard let strongSelf = self where operation.cancelled == false else
             {
                 return
             }
-            
-            if exportOperation.cancelled == true
+
+            if let error = operation.error
             {
-                return
+                // Do something with the error
             }
-            
-            if let error = exportOperation.error
+            else if let url = operation.outputURL
             {
-                strongSelf.error = error
+                // Use the url to generate an upload ticket (see below)
             }
             else
             {
-                let url = exportOperation.outputURL!
-                    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
-    let url = NSURL.fileURLWithPath(path)
+                assertionFailure("error and outputURL are mutually exclusive, this should never happen.")
             }
         })
     }
     
-    exportOperation.start()
+    operation.start()
 ```
 
-If you're attempting to upload an [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you'll first need to export it using an [AVAssetExportSesson](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html):
+#### Obtaining a File URL For an Asset That You Manage
+
+This is quite a bit simpler: 
 
 ```Swift
-    // Export
-
     let path = "PATH_TO_VIDEO_FILE_ON_DISK"
     let url = NSURL.fileURLWithPath(path)
-
 ```
+
+#### Obtaining an Upload Ticket 
 
 Request an upload ticket from the Vimeo API: 
 
@@ -257,20 +238,16 @@ Request an upload ticket from the Vimeo API:
 
                 if let error = error
                 {
-                // The upload ticket request failed
-
-                     return
+                    // The upload ticket request failed
                 }
-            
-                guard let uploadTicket = uploadTicket else
+                else if let uploadTicket = uploadTicket else
                 {
-                     // error and uploadTicket are mutually exclusive, so this should never happen
-               
-                    return
+                     // Use your url and uploadTicket to start your upload (see below)
                 }
-            
-               // Use the uploadTicket to initiate an upload, see documentation below
-            
+                else
+                {
+                    assertionFailure("error and uploadTicket are mutually exclusive, this should never happen.")
+                }
             })
         })
         
@@ -283,10 +260,9 @@ Request an upload ticket from the Vimeo API:
 ```
 
 ```Swift
-    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
-    let url = NSURL.fileURLWithPath(path)
-    
-    let uploadTicket: VIMUploadTicket = ... // Obtain this from the Vimeo API, see documentation below
+    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+    let url = ... // Your url (see above)
+    let uploadTicket = ... // Your upload ticket (see above)
     
     vimeoUpload.uploadVideo(url: url, uploadTicket: uploadTicket)
 ```
