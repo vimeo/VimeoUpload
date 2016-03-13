@@ -57,10 +57,12 @@ class VimeoUpload
     
     // MARK: Public API
     
-    func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket)
+    func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket) -> UploadDescriptor
     {
         let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket)
         self.descriptorManager.addDescriptor(descriptor)
+        
+        return descriptor
     }
     
     func cancelUpload(videoUri videoUri: VideoUri)
