@@ -13,6 +13,8 @@ This library is under active development. We're shooting for a v1.0 release in M
       * [Authentication](#authentication)
 * [Uploading Videos](#uploading-videos)
      * [Starting an Upload](#starting-an-upload)
+           * [Obtaining a File URL for a PHAsset](#obtaining-a-file-url-for-a-phasset)
+           * [Obtaining a File URL for an ALAsset](#obtaining-a-file-url-for-an-alasset)
      * [Canceling an Upload](#canceling-an-upload)
      * [Tracking Upload State and Progress](#tracking-upload-state-and-progress)
      * [Additional Configuration](#additional-configuration)
@@ -85,9 +87,17 @@ If your OAuth token can change during the course of a session, use the construct
 You can obtain an OAuth token by using the authentication methods provided by [VIMNetworking](https://github.com/vimeo/VIMNetworking) or by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
 
 ## Uploading Videos
-### Initiating an Upload
 
-#### Uploading a PHAsset
+### Starting an Upload
+
+In order to start an upload, you need two pieces of information:
+
+1. A file URL pointing to the video file on disk that you would like to upload, and
+2. An upload ticket
+
+The steps required to obtain the file URL will vary depending on whether you are uploading a PHAsset, an ALAsset, or an asset that you manage outside of the device Photos environment. Once you have a valid file URL, you will use it to obtain an upload ticket. Then you can start your upload.
+
+#### Obtaining a File URL for a PHAsset
 
 1. Request an instance of `AVAssetExportSession` for the PHAsset you intend to upload. If the PHAsset is in iCloud (i.e. not resident on the device) this will download the PHAsset from iCloud. 
 
@@ -116,12 +126,15 @@ You can obtain an OAuth token by using the authentication methods provided by [V
             if let error = operation.error
             {
                 // Do something with the error
-                
-                return
             }
-
-            let exportSession = operation.result! // error and result are mutually exclusive
-            // Use the exportSession to export the asset (see below)
+            else if let exportSession = operation.result
+            {
+                // Use the export session to export a copy of the asset (see below)
+            }
+            else
+            {
+                assertionFailure("error and exportSession are mutually exclusive. This should never happen.")
+            }
         })
     }
 
@@ -155,18 +168,24 @@ You can obtain an OAuth token by using the authentication methods provided by [V
             if let error = operation.error
             {
                 // Do something with the error
-                
-                return
             }
-
-            let outputURL = operation.outputURL! // error and outputURL are mutually exclusive
+            else if let url = operation.outputURL
+            {
+                // Use the url to generate an upload ticket
+            }
+            else
+            {
+                assertionFailure("error and outputURL are mutually exclusive, this should never happen.")
+            }
         })
     }
     
     operation.start()
 ```
 
-#### Uploading an ALAsset
+3. Use the file URL to generate an upload ticket.
+
+#### Obtaining a File URL for an ALAsset
 
 Construct an NSURL that points to a video file on disk:
 
