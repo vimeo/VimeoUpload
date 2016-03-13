@@ -313,6 +313,11 @@ Once you have a reference to the `UploadDescriptor` you're interested in you can
     
     ...
     
+    descriptor.removeObserver(self, forKeyPath: self.dynamicType.StateKeyPath, context: &self.stateKVOContext)
+    descriptor.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
+
+    ...
+    
     // MARK: KVO
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
