@@ -13,14 +13,14 @@ This library is under active development. We're shooting for a v1.0 release in M
       * [Authentication](#authentication)
 * [Uploading Videos](#uploading-videos)
      * [Starting an Upload](#starting-an-upload)
-           * [Obtaining a File URL For a PHAsset](#obtaining-a-file-url-for-a-phasset)
-           * [Obtaining a File URL For an ALAsset](#obtaining-a-file-url-for-an-alasset)
-           * [Obtaining a File URL For an Asset That You Manage](#obtaining-a-file-url-for-an-asset-that-you-manage)
-           * [Obtaining an Upload Ticket](#obtaining-an-upload-ticket)
-           * [Start Your Upload](#start-your-upload)
-     * [Canceling an Upload](#canceling-an-upload)
+          * [Obtaining a File URL For a PHAsset](#obtaining-a-file-url-for-a-phasset)
+          * [Obtaining a File URL For an ALAsset](#obtaining-a-file-url-for-an-alasset)
+          * [Obtaining a File URL For an Asset That You Manage](#obtaining-a-file-url-for-an-asset-that-you-manage)
+          * [Obtaining an Upload Ticket](#obtaining-an-upload-ticket)
+          * [Start Your Upload](#start-your-upload)
      * [Tracking Upload State and Progress](#tracking-upload-state-and-progress)
-     * [Additional Configuration](#additional-configuration)
+     * [Canceling an Upload](#canceling-an-upload)
+* [Custom Workflows](#custom-workflows)
 * [Want to Contribute?](#want-to-contribute)
 * [Found an Issue?](#found-an-issue)
 * [Questions](#questions)
@@ -96,7 +96,7 @@ You can obtain an OAuth token by using the authentication methods provided by [V
 In order to start an upload, you need two pieces of information:
 
 1. A file URL pointing to the video file on disk that you would like to upload, and
-2. An upload ticket
+2. An upload ticket [obtained from the Vimeo API](https://developer.vimeo.com/api/upload/videos#generate-an-upload-ticket)
 
 The steps required to obtain the file URL will vary depending on whether you are uploading a [PHAsset](#obtaining-a-file-url-for-a-phasset), an [ALAsset](#obtaining-a-file-url-for-an-alasset), or an [asset that you manage](#obtaining-a-file-url-for-an-asset-that-you-manage) outside of the device Photos environment. Once you have a valid file URL, you will use it to [obtain an upload ticket](#obtaining-an-upload-ticket). Then you can [start your upload](#start-your-upload).
 
@@ -228,7 +228,7 @@ This is quite a bit simpler:
 
 #### Obtaining an Upload Ticket 
 
-Request an upload ticket from the [Vimeo API](https://developer.vimeo.com): 
+Request an upload ticket from the [Vimeo API](https://developer.vimeo.com/api/upload/videos#generate-an-upload-ticket): 
 
 ```Swift
     do
@@ -272,9 +272,18 @@ Use the `url` and `uploadTicket` to start your upload:
     vimeoUpload.uploadVideo(url: url, uploadTicket: uploadTicket)
 ```
 
-### Canceling an Upload
+The `uploadVideo(url: uploadTicket:)` method returns an instance of `UploadDescriptor`. You can use this to [observe state and progress](#tracking-upload-state-and-progress), or to [cancel the upload](#canceling-an-upload).
 
 ### Tracking Upload State and Progress
+
+You can track upload state and progress by inspecting the `stateObservable` and `progressObservable` properties of the `UploadDescriptor` you're interested in. 
+
+```Swift
+...
+```
+
+### Canceling an Upload
+
 ### Additional Configuration
 
 ## Want to Contribute?
