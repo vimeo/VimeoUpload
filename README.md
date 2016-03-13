@@ -87,8 +87,6 @@ You can obtain an OAuth token by using the authentication methods provided by [V
 ## Uploading Videos
 ### Initiating an Upload
 
-#### Uploading a File on Disk
-
 #### Uploading a PHAsset
 
 1. Request an instance of `AVAssetExportSession` for the PHAsset you intend to upload. If the PHAsset is in iCloud (i.e. not resident on the device) this will download the PHAsset from iCloud. 
