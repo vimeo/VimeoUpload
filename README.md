@@ -13,9 +13,14 @@ This library is under active development. We're shooting for a v1.0 release in M
       * [Authentication](#authentication)
 * [Uploading Videos](#uploading-videos)
      * [Starting an Upload](#starting-an-upload)
-     * [Canceling an Upload](#canceling-an-upload)
+          * [Obtaining a File URL For a PHAsset](#obtaining-a-file-url-for-a-phasset)
+          * [Obtaining a File URL For an ALAsset](#obtaining-a-file-url-for-an-alasset)
+          * [Obtaining a File URL For an Asset That You Manage](#obtaining-a-file-url-for-an-asset-that-you-manage)
+          * [Obtaining an Upload Ticket](#obtaining-an-upload-ticket)
+          * [Start Your Upload](#start-your-upload)
      * [Tracking Upload State and Progress](#tracking-upload-state-and-progress)
-     * [Additional Configuration](#additional-configuration)
+     * [Canceling an Upload](#canceling-an-upload)
+* [Custom Workflows](#custom-workflows)
 * [Want to Contribute?](#want-to-contribute)
 * [Found an Issue?](#found-an-issue)
 * [Questions](#questions)
@@ -85,92 +90,165 @@ If your OAuth token can change during the course of a session, use the construct
 You can obtain an OAuth token by using the authentication methods provided by [VIMNetworking](https://github.com/vimeo/VIMNetworking) or by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
 
 ## Uploading Videos
-### Initiating an Upload
 
-Construct an NSURL that points to a video file on disk:
+### Starting an Upload
 
-```Swift
-    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
-    let url = NSURL.fileURLWithPath(path)
-```
+In order to start an upload, you need two pieces of information:
 
-If you're attempting to upload a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) you'll first need to export it using an [AVAssetExportSesson](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html):
+1. A file URL pointing to the video file on disk that you would like to upload, and
+2. An upload ticket [obtained from the Vimeo API](https://developer.vimeo.com/api/upload/videos#generate-an-upload-ticket)
 
-```Swift
-    let exportOperation = ExportOperation(exportSession: exportSession)
+The steps required to obtain the file URL will vary depending on whether you are uploading a [PHAsset](#obtaining-a-file-url-for-a-phasset), an [ALAsset](#obtaining-a-file-url-for-an-alasset), or an [asset that you manage](#obtaining-a-file-url-for-an-asset-that-you-manage) outside of the device Photos environment. Once you have a valid file URL, you will use it to [obtain an upload ticket](#obtaining-an-upload-ticket). Then you can [start your upload](#start-your-upload).
+
+#### Obtaining a File URL For a PHAsset
+
+Request an instance of [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) for the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) that you intend to upload. If the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) is in iCloud (i.e. not resident on the device) this will download the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) from iCloud. Use the resulting `exportSession` to export a copy of the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html). 
+
+```Swift 
+    let phAsset = ... // The PHAsset you intend to upload
+    let operation = PHAssetExportSessionOperation(phAsset: phAsset)
     
     // Optionally set a progress block
-    exportOperation.progressBlock = { [weak self] (progress: Double) -> Void in
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            // Do something with progress
-        })
+    operation.progressBlock = { (progress: Double) -> Void in
+        // Do something with progress
     }
     
-    exportOperation.completionBlock = { [weak self] () -> Void in
+    operation.completionBlock = {
+        dispatch_async(dispatch_get_main_queue(), {
         
-        dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-            
-            guard let strongSelf = self else
+            guard operation.cancelled == false else
             {
                 return
             }
             
-            if exportOperation.cancelled == true
+            if let error = operation.error
             {
-                return
+                // Do something with the error
             }
-            
-            if let error = exportOperation.error
+            else if let exportSession = operation.result
             {
-                strongSelf.error = error
+                // Use the export session to export a copy of the asset (see below)
             }
             else
             {
-                let url = exportOperation.outputURL!
-                    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
-    let url = NSURL.fileURLWithPath(path)
+                assertionFailure("error and exportSession are mutually exclusive. This should never happen.")
+            }
+        })
+    }
+
+    operation.start()
+```
+
+Next, export a copy the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) and use the resulting `url` to obtain an upload ticket.
+
+```Swift
+    let exportSession = ... // The export session you just generated (see above)
+    let operation = ExportOperation(exportSession: exportSession)
+    
+    // Optionally set a progress block
+    operation.progressBlock = { (progress: Double) -> Void in
+        // Do something with progress
+    }
+    
+    operation.completionBlock = {
+        dispatch_async(dispatch_get_main_queue(), {
+            
+            guard operation.cancelled == false else
+            {
+                return
+            }
+
+            if let error = operation.error
+            {
+                // Do something with the error
+            }
+            else if let url = operation.outputURL
+            {
+                // Use the url to generate an upload ticket (see below)
+            }
+            else
+            {
+                assertionFailure("error and outputURL are mutually exclusive, this should never happen.")
             }
         })
     }
     
-    exportOperation.start()
+    operation.start()
 ```
 
-If you're attempting to upload an [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you'll first need to export it using an [AVAssetExportSesson](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html):
+#### Obtaining a File URL For an ALAsset
+
+Use an instance of `ExportOperation` to export a copy of the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you intend to upload. (Alternatively, you can use [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) directly.) Then use the resulting `url` to obtain an upload ticket.
 
 ```Swift
-    // Export
+    let alAsset = ... // The ALAsset you intend to upload
+    let url = alAsset.defaultRepresentation().url() // For example
+    let avAsset = AVURLAsset(URL: url)
+    let operation = ExportOperation(asset: avAsset)
+    
+    // Optionally set a progress block
+    operation.progressBlock = { (progress: Double) -> Void in
+        // Do something with progress
+    }
+    
+    operation.completionBlock = {
+        dispatch_async(dispatch_get_main_queue(), {
+            
+            guard operation.cancelled == false else
+            {
+                return
+            }
 
-    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
-    let url = NSURL.fileURLWithPath(path)
-
+            if let error = operation.error
+            {
+                // Do something with the error
+            }
+            else if let url = operation.outputURL
+            {
+                // Use the url to generate an upload ticket (see below)
+            }
+            else
+            {
+                assertionFailure("error and outputURL are mutually exclusive, this should never happen.")
+            }
+        })
+    }
+    
+    operation.start()
 ```
 
-Request an upload ticket from the Vimeo API: 
+#### Obtaining a File URL For an Asset That You Manage
+
+This is quite a bit simpler: 
+
+```Swift
+    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
+    let url = NSURL.fileURLWithPath(path)
+```
+
+#### Obtaining an Upload Ticket 
+
+Request an upload ticket from the [Vimeo API](https://developer.vimeo.com/api/upload/videos#generate-an-upload-ticket): 
 
 ```Swift
     do
     {
-        let task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, completionHandler: { [weak self] (uploadTicket, error) -> Void in
+        let task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, completionHandler: { (uploadTicket, error) -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            dispatch_async(dispatch_get_main_queue(), {
 
                 if let error = error
                 {
-                // The upload ticket request failed
-
-                     return
+                    // The upload ticket request failed
                 }
-            
-                guard let uploadTicket = uploadTicket else
+                else if let uploadTicket = uploadTicket else
                 {
-                     // error and uploadTicket are mutually exclusive, so this should never happen
-               
-                    return
+                     // Use your url and uploadTicket to start your upload (see below)
                 }
-            
-               // Use the uploadTicket to initiate an upload, see documentation below
-            
+                else
+                {
+                    assertionFailure("error and uploadTicket are mutually exclusive, this should never happen.")
+                }
             })
         })
         
@@ -182,19 +260,128 @@ Request an upload ticket from the Vimeo API:
     }
 ```
 
+#### Start Your Upload
+
+Use the `url` and `uploadTicket` to start your upload: 
+
 ```Swift
-    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
-    let url = NSURL.fileURLWithPath(path)
-    
-    let uploadTicket: VIMUploadTicket = ... // Obtain this from the Vimeo API, see documentation below
+    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+    let url = ... // Your url (see above)
+    let uploadTicket = ... // Your upload ticket (see above)
     
     vimeoUpload.uploadVideo(url: url, uploadTicket: uploadTicket)
 ```
 
-### Canceling an Upload
+The `uploadVideo(url: uploadTicket:)` method returns an instance of `UploadDescriptor`. You can use this to [observe state and progress](#tracking-upload-state-and-progress), or to [cancel the upload](#canceling-an-upload).
 
 ### Tracking Upload State and Progress
-### Additional Configuration
+
+You can track upload state and progress by inspecting the `stateObservable` and `progressObservable` properties of an `UploadDescriptor`. 
+
+You can obtain a reference to a specific `UploadDescriptor` by holding onto the `UploadDescriptor` returned from your call to `uploadVideo(url: uploadTicket:)`, or by asking `VimeoUpload` for a specific `UploadDescriptor`:
+
+```Swift
+    let uploadTicket = ... // Your upload ticket (see above)
+    if let videoUri = uploadTicket.video?.uri
+    {
+        let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+        let descriptor = vimeoUpload.descriptorForVideo(videoUri: videoUri)
+    }
+```
+
+You can also ask `VimeoUpload` for an `UploadDescriptor` that passes a test that you construct. You can construct any test you'd like. You might consider setting `descriptor.identifier` to a value meaningful to you before you start your upload (e.g. set it to a PHAsset `localIdentifier`). That way you can leverage `descriptor.identifier` inside `descriptorPassingTest`:
+
+```Swift
+    let phAsset = ... // The PHAsset whose upload you'd like to inspect
+    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+    
+    let descriptor = vimeoUpload.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
+        return descriptor.identifier == phAsset.localIdentifier   
+    })
+```
+
+Once you have a reference to the `UploadDescriptor` you're interested in you can inspect its state directly:
+
+```Swift
+    print(descriptor.state)
+```
+
+Or use KVO to observe changes to its state and progress: 
+
+```Swift
+    private static let ProgressKeyPath = "progressObservable"
+    private static let StateKeyPath = "stateObservable"
+    private var progressKVOContext = UInt8()
+    private var stateKVOContext = UInt8()
+
+    ...
+    
+    descriptor.addObserver(self, forKeyPath: self.dynamicType.StateKeyPath, options: .New, context: &self.stateKVOContext)
+    descriptor.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: .New, context: &self.progressKVOContext)
+    
+    ...
+    
+    descriptor.removeObserver(self, forKeyPath: self.dynamicType.StateKeyPath, context: &self.stateKVOContext)
+    descriptor.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
+
+    ...
+    
+    // MARK: KVO
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+    {
+        if let keyPath = keyPath
+        {
+            switch (keyPath, context)
+            {
+            case(self.dynamicType.ProgressKeyPath, &self.progressKVOContext):
+                
+                let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0
+                
+                // Do something with progress                
+
+            case(self.dynamicType.StateKeyPath, &self.stateKVOContext):
+                
+                let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? DescriptorState.Ready.rawValue;
+                let state = DescriptorState(rawValue: stateRaw)!
+                
+                // Do something with state
+                
+            default:
+                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            }
+        }
+        else
+        {
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+        }
+    }
+```
+
+### Canceling an Upload
+
+Canceling an upload will cancel the file upload itself as well as delete the video object from Vimeo servers. You can cancel an upload using the `UploadDescriptor` instance in question:
+
+```Swift
+    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+    let descriptor = ... // The descriptor you'd like to cancel
+    
+    vimeoUpload.cancelUpload(descriptor: descriptor)
+```
+
+Or by using the `videoUri` of the `uploadTicket` you used to create the upload: 
+
+```Swift
+    if let videoUri = uploadTicket.video?.uri
+    {
+        let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+        vimeoUpload.cancelUpload(videoUri: videoUri)
+    }
+```
+
+## Custom Workflows
+
+TBD
 
 ## Want to Contribute?
 
