@@ -87,6 +87,89 @@ You can obtain an OAuth token by using the authentication methods provided by [V
 ## Uploading Videos
 ### Initiating an Upload
 
+#### Uploading a File on Disk
+
+#### Uploading a PHAsset
+
+1. Request an instance of `AVAssetExportSession` for the PHAsset you intend to upload. If the PHAsset is in iCloud (i.e. not resident on the device) this will download the PHAsset from iCloud. 
+
+```Swift 
+    let phAsset = ... // The PHAsset you intend to upload
+    let operation = PHAssetExportSessionOperation(phAsset: phAsset)
+    
+    // Optionally set a progress block
+    operation.progressBlock = { [weak self] (progress: Double) -> Void in
+        // Do something with progress
+    }
+    
+    operation.completionBlock = { [weak self] () -> Void in
+        dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+        
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            if operation.cancelled == true
+            {
+                return
+            }
+
+            if let error = operation.error
+            {
+                // Do something with the error
+                
+                return
+            }
+
+            let exportSession = operation.result! // error and result are mutually exclusive
+            // Use the exportSession to export the asset (see below)
+        })
+    }
+
+    operation.start()
+```
+
+2. Export the PHAsset
+
+```Swift
+    let exportSession = ... // The export session you just generated (see above)
+    let operation = ExportOperation(exportSession: exportSession)
+    
+    // Optionally set a progress block
+    operation.progressBlock = { [weak self] (progress: Double) -> Void in
+        // Do something with progress
+    }
+    
+    operation.completionBlock = { [weak self] () -> Void in
+        dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            if operation.cancelled == true
+            {
+                return
+            }
+            
+            if let error = operation.error
+            {
+                // Do something with the error
+                
+                return
+            }
+
+            let outputURL = operation.outputURL! // error and outputURL are mutually exclusive
+        })
+    }
+    
+    operation.start()
+```
+
+#### Uploading an ALAsset
+
 Construct an NSURL that points to a video file on disk:
 
 ```Swift
