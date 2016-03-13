@@ -276,10 +276,73 @@ The `uploadVideo(url: uploadTicket:)` method returns an instance of `UploadDescr
 
 ### Tracking Upload State and Progress
 
-You can track upload state and progress by inspecting the `stateObservable` and `progressObservable` properties of the `UploadDescriptor` you're interested in. 
+You can track upload state and progress by inspecting the `stateObservable` and `progressObservable` properties of an `UploadDescriptor`. 
+
+You can obtain a reference to a specific `UploadDescriptor` by holding onto the `UploadDescriptor` returned from your call to `uploadVideo(url: uploadTicket:)`, or by asking VimeoUpload for a specific descriptor passing a test that you construct. Here we're looking for an `UploadDescriptor` whose `videoUri` matches the `videoUri` we're interested in:
 
 ```Swift
-...
+    let videoUri = ... // The uri for the video object whose upload state and progress you're interested in
+    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+    let descriptor = vimeoUpload.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
+        
+        if let descriptor = descriptor as? VideoDescriptor, let currentVideoUri = descriptor.videoUri
+        {
+            return videoUri == currentVideoUri
+        }
+        
+        return false
+    })
+    
+    print(descriptor.state)
+```
+
+You can construct any test you'd like. You might consider setting `descriptor.identifier` to a value meaningful to you before you start your upload (e.g. a PHAsset `localIdentifier`). That way you can leverage `descriptor.identifier` inside `descriptorPassingTest`.
+
+Once you have a reference to the `UploadDescriptor` you're interested in you can inspect its state directly or use KVO to observe changes to its state and progress: 
+
+```Swift
+    private static let ProgressKeyPath = "progressObservable"
+    private static let StateKeyPath = "stateObservable"
+    private var progressKVOContext = UInt8()
+    private var stateKVOContext = UInt8()
+
+    ...
+    
+    descriptor.addObserver(self, forKeyPath: self.dynamicType.StateKeyPath, options: .New, context: &self.stateKVOContext)
+    descriptor.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: .New, context: &self.progressKVOContext)
+    
+    ...
+    
+    // MARK: KVO
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+    {
+        if let keyPath = keyPath
+        {
+            switch (keyPath, context)
+            {
+            case(self.dynamicType.ProgressKeyPath, &self.progressKVOContext):
+                
+                let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0
+                
+                // Do something with progress                
+
+            case(self.dynamicType.StateKeyPath, &self.stateKVOContext):
+                
+                let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? DescriptorState.Ready.rawValue;
+                let state = DescriptorState(rawValue: stateRaw)!
+                
+                // Do something with state
+                
+            default:
+                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            }
+        }
+        else
+        {
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+        }
+    }
 ```
 
 ### Canceling an Upload
