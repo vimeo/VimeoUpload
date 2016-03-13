@@ -379,7 +379,9 @@ Or by using the `videoUri` of the `uploadTicket` you used to create the upload:
     }
 ```
 
-### Additional Configuration
+## Custom Workflows
+
+TBD
 
 ## Want to Contribute?
 
