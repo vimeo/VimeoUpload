@@ -56,9 +56,9 @@ This library is under active development. We're shooting for a v1.0 release in M
 
 ### Goals
 
-1. An upload system that accommodates / addresses each point listed above.
+1. A simplified server-side upload API that collapses the current 4 steps into 1 or 2 steps.
 
-1. A revised server-side Vimeo upload API that collapses the current 4 steps into 1 or 2 steps.
+1. An upload system that accommodates / addresses each point listed above.
 
 1. Clear and concise upload system initialization, management, and introspection.
 
