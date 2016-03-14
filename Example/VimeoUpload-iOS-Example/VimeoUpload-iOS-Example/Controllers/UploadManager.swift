@@ -48,7 +48,7 @@ class UploadManager
         let name = "uploader"
         let backgroundSessionIdentifier = "com.vimeo.upload"
         let authTokenBlock = { () -> String? in
-            return "3e9dae312853936216aba3ce56cf5066"
+            return "YOUR_OAUTH_TOKEN_HERE"
         }
         
         self.foregroundSessionManager = VimeoSessionManager.defaultSessionManagerWithAuthTokenBlock(authTokenBlock: authTokenBlock)
