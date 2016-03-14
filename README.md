@@ -220,14 +220,25 @@ This is quite a bit simpler:
 
 #### Obtaining an Upload Ticket 
 
-Request an upload ticket from the [Vimeo API](https://developer.vimeo.com/). VimeoUpload provides a simple mechanism by which to make this request: 
+Request an upload ticket from the [Vimeo API](https://developer.vimeo.com/). VimeoUpload provides a simple mechanism by which to make this request. First, create an instance of `VimeoSessionManager`:
+
+```Swift
+    let authToken = "YOUR_OAUTH_TOKEN"
+    let sessionManager = VimeoSessionManager.defaultSessionManager(authToken: authToken)
+```
+
+If your OAuth token can change during the course of a session, use the constructor that takes an `authTokenBlock` argument:
 
 ```Swift
     let authToken = "YOUR_OAUTH_TOKEN"
     let sessionManager = VimeoSessionManager.defaultSessionManager(authTokenBlock: { () -> String? in
         return authToken 
     })
+```
 
+Then make the request: 
+
+```Swift
     do
     {
         let task = try sessionManager.createVideoDataTask(url: url, videoSettings: nil, completionHandler: { (uploadTicket, error) -> Void in
