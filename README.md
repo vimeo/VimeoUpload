@@ -8,6 +8,7 @@ This library is under active development. We're shooting for a v1.0 release soon
       * [Constraints](#constraints)
       * [Goals](#goals)
 * [Getting Started](#getting-started)
+      * [Example Projects](#example-projects)
       * [CocoaPods](#cocoapods)
       * [Submodule](#submodule)
       * [Initialization](#initialization)
@@ -45,7 +46,7 @@ We affectionately refer to this 2-step flow as New Upload.
 
 VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. The library currently contains support for both. However, New Upoad classes are currently marked as "private" and will not work for the general public until they are released from private beta.
 
-The VimeoUpload APIs for New and Old Upload are very similar. Differences are noted inline below.
+The VimeoUpload APIs for New and Old Upload are very similar. New Upload is fully documented below. Old Upload documentation coming soon. The main difference in terms of consumption is that `UploadDescriptor`s are initialized with a `url` and `uploadTicket`. Whereas `OldUploadDescriptor`s are initialized with a `url` alone. More detail soon.
 
 ### Constraints
 
@@ -110,6 +111,10 @@ The VimeoUpload APIs for New and Old Upload are very similar. Differences are no
 1. An upload system that accommodates as many UX futures as possible
 
 ## Getting Started
+### Example Projects
+
+There's an example project for New Upload and one for Old Upload. In order to run them you'll have to drop a valid OAuth token into the example project's `UploadManager` `init` method where it says `"YOUR_OAUTH_TOKEN_HERE"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
+
 ### CocoaPods
 ### Submodule
 ### Initialization
