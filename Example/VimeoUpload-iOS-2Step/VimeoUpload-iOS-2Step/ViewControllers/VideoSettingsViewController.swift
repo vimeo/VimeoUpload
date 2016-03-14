@@ -110,7 +110,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let me = self.input!.user
         let cameraRollAsset = self.input!.cameraRollAsset
-        let sessionManager = ForegroundSessionManager.sharedInstance
+        let sessionManager = UploadManager.sharedInstance.foregroundSessionManager
         let videoSettings = self.videoSettings
         
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
@@ -284,7 +284,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         do
         {
-            self.task = try ForegroundSessionManager.sharedInstance.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+            self.task = try UploadManager.sharedInstance.foregroundSessionManager.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 self?.task = nil
                 

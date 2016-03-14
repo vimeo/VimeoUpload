@@ -1,6 +1,6 @@
 //
 //  ALAssetHelper.swift
-//  Smokescreen
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 12/18/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
