@@ -10,7 +10,6 @@ This library is under active development. We're shooting for a v1.0 release in M
       * [CocoaPods](#cocoapods)
       * [Submodule](#submodule)
       * [Initialization](#initialization)
-      * [Authentication](#authentication)
 * [Uploading Videos](#uploading-videos)
      * [Starting an Upload](#starting-an-upload)
           * [Obtaining a File URL For a PHAsset](#obtaining-a-file-url-for-a-phasset)
@@ -104,7 +103,7 @@ Unfortunately, because of how Apple's [PHAsset](https://developer.apple.com/libr
 
 #### Obtaining a File URL For a PHAsset
 
-Use `PHAssetExportSessionOperation` to request an instance of [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) configured for the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) that you intend to upload. If the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) is in iCloud (i.e. not resident on the device) this will download the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) from iCloud. 
+Use VimeoUpload's `PHAssetExportSessionOperation` to request an instance of [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) configured for the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) that you intend to upload. If the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) is in iCloud (i.e. not resident on the device) this will download the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) from iCloud. 
 
 ```Swift 
     let phAsset = ... // The PHAsset you intend to upload
@@ -138,7 +137,7 @@ Use `PHAssetExportSessionOperation` to request an instance of [AVAssetExportSess
     operation.start()
 ```
 
-Next, use `ExportOperation` to export a copy of the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html). You can then use the resulting `url` to [obtain an upload ticket](#obtaining-an-upload-ticket).
+Next, use VimeoUpload's `ExportOperation` to export a copy of the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html). You can then use the resulting `url` to [obtain an upload ticket](#obtaining-an-upload-ticket).
 
 ```Swift
     let exportSession = ... // The export session you just generated (see above)
@@ -174,7 +173,7 @@ Next, use `ExportOperation` to export a copy of the [PHAsset](https://developer.
 
 #### Obtaining a File URL For an ALAsset
 
-Use `ExportOperation` to export a copy of the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you intend to upload. You can then use the resulting `url` to [obtain an upload ticket](#obtaining-an-upload-ticket).
+Use VimeoUpload's `ExportOperation` to export a copy of the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you intend to upload. You can then use the resulting `url` to [obtain an upload ticket](#obtaining-an-upload-ticket).
 
 ```Swift
     let alAsset = ... // The ALAsset you intend to upload
@@ -199,7 +198,7 @@ Use `ExportOperation` to export a copy of the [ALAsset](https://developer.apple.
         }
         else if let url = operation.outputURL
         {
-            // Use the url to generate an upload ticket (see below)
+            // Use the url to [generate an upload ticket](#obtaining-an-upload-ticket)
         }
         else
         {
@@ -221,7 +220,7 @@ This is quite a bit simpler:
 
 #### Obtaining an Upload Ticket 
 
-Request an upload ticket from the [Vimeo API](https://developer.vimeo.com/). `VimeoUpload` provides a simple mechanism by which to make this request: 
+Request an upload ticket from the [Vimeo API](https://developer.vimeo.com/). VimeoUpload provides a simple mechanism by which to make this request: 
 
 ```Swift
     let authToken = "YOUR_OAUTH_TOKEN"
