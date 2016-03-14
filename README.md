@@ -100,9 +100,11 @@ In order to start an upload, you need two pieces of information:
 
 The steps required to obtain the file URL will vary depending on whether you are uploading a [PHAsset](#obtaining-a-file-url-for-a-phasset), an [ALAsset](#obtaining-a-file-url-for-an-alasset), or an [asset that you manage](#obtaining-a-file-url-for-an-asset-that-you-manage) outside of the device Photos environment. Once you have a valid file URL, you will use it to [obtain an upload ticket](#obtaining-an-upload-ticket). Then you can [start your upload](#start-your-upload).
 
+Unfortunately, because of how Apple's [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) and [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) APIs are designed uploading directly from a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) or [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) resource URL is not possible. In order to upload [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html)s and [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/)s you will need to first create a copy of the asset itself and upload from that copy. See below for instructions on how to do this. 
+
 #### Obtaining a File URL For a PHAsset
 
-Request an instance of [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) for the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) that you intend to upload. If the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) is in iCloud (i.e. not resident on the device) this will download the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) from iCloud. Use the resulting `exportSession` to export a copy of the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html). 
+Use `PHAssetExportSessionOperation` to request an instance of [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) configured for the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) that you intend to upload. If the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) is in iCloud (i.e. not resident on the device) this will download the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) from iCloud. 
 
 ```Swift 
     let phAsset = ... // The PHAsset you intend to upload
@@ -136,7 +138,7 @@ Request an instance of [AVAssetExportSession](https://developer.apple.com/librar
     operation.start()
 ```
 
-Next, export a copy the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) and use the resulting `url` to obtain an upload ticket.
+Next, use `ExportOperation` to export a copy of the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html). You can then use the resulting `url` to [obtain an upload ticket](#obtaining-an-upload-ticket).
 
 ```Swift
     let exportSession = ... // The export session you just generated (see above)
@@ -172,7 +174,7 @@ Next, export a copy the [PHAsset](https://developer.apple.com/library/prerelease
 
 #### Obtaining a File URL For an ALAsset
 
-Use an instance of `ExportOperation` to export a copy of the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you intend to upload. (Alternatively, you can use [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) directly.) Then use the resulting `url` to obtain an upload ticket.
+Use `ExportOperation` to export a copy of the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you intend to upload. You can then use the resulting `url` to [obtain an upload ticket](#obtaining-an-upload-ticket).
 
 ```Swift
     let alAsset = ... // The ALAsset you intend to upload
@@ -219,7 +221,7 @@ This is quite a bit simpler:
 
 #### Obtaining an Upload Ticket 
 
-Request an upload ticket from the [Vimeo API](https://developer.vimeo.com/). Details about this request are [here](https://developer.vimeo.com/api/upload/videos#generate-an-upload-ticket). `VimeoUpload` provides a simple mechanism by which to make this request: 
+Request an upload ticket from the [Vimeo API](https://developer.vimeo.com/). `VimeoUpload` provides a simple mechanism by which to make this request: 
 
 ```Swift
     let authToken = "YOUR_OAUTH_TOKEN"
@@ -252,6 +254,8 @@ Request an upload ticket from the [Vimeo API](https://developer.vimeo.com/). Det
         // An error was thrown while attempting to construct the task
     }
 ```
+
+You can read more about this request [here](https://developer.vimeo.com/api/upload/videos#generate-an-upload-ticket). 
 
 #### Start Your Upload
 
