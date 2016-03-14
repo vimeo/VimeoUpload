@@ -1,5 +1,5 @@
 //
-//  CameraRollCell.swift
+//  DemoCameraRollCell.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/1/15.

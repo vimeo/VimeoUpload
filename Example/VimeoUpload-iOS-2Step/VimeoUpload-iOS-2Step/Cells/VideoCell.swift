@@ -90,7 +90,7 @@ class VideoCell: UITableViewCell
             {
                 self.setupImageView(video: video)
                 self.setupStatusLabel(video: video)
-                self.descriptor = UploadManager.sharedInstance.uploadDescriptorForVideo(videoUri: video.uri!)
+                self.descriptor = UploadManager.sharedInstance.descriptorForVideo(videoUri: video.uri!)
             }
         }
     }

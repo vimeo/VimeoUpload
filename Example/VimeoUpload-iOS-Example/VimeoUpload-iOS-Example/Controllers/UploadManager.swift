@@ -48,7 +48,7 @@ class UploadManager
         let name = "uploader"
         let backgroundSessionIdentifier = "com.vimeo.upload"
         let authTokenBlock = { () -> String? in
-            return "3e9dae312853936216aba3ce56cf5066"
+            return "YOUR_OAUTH_TOKEN"
         }
         
         self.foregroundSessionManager = VimeoSessionManager.defaultSessionManagerWithAuthTokenBlock(authTokenBlock: authTokenBlock)
@@ -63,21 +63,21 @@ class UploadManager
 
     func uploadVideo(url url: NSURL, assetIdentifier: String, videoSettings: VideoSettings?)
     {
-        let descriptor = Upload1Descriptor(url: url, assetIdentifier: assetIdentifier, videoSettings: videoSettings)
+        let descriptor = OldUploadDescriptor(url: url, videoSettings: videoSettings)
         descriptor.identifier = assetIdentifier
         
         self.descriptorManager.addDescriptor(descriptor)
     }
     
-    func retryUpload(descriptor descriptor: Upload1Descriptor, url: NSURL)
+    func retryUpload(descriptor descriptor: OldUploadDescriptor, url: NSURL)
     {
         if let videoUri = descriptor.uploadTicket?.video?.uri
         {
             self.failureTracker.removeFailedDescriptorForKey(videoUri)
         }
         
-        let newDescriptor = Upload1Descriptor(url: url, assetIdentifier: descriptor.assetIdentifier, videoSettings: descriptor.videoSettings)
-        newDescriptor.identifier = descriptor.assetIdentifier
+        let newDescriptor = OldUploadDescriptor(url: url, videoSettings: descriptor.videoSettings)
+        newDescriptor.identifier = descriptor.identifier
         
         self.descriptorManager.addDescriptor(newDescriptor)
     }
@@ -95,19 +95,19 @@ class UploadManager
         }
     }
     
-    func descriptorForAssetIdentifier(assetIdentifier: String) -> Upload1Descriptor?
+    func descriptorForAssetIdentifier(assetIdentifier: String) -> OldUploadDescriptor?
     {
         // Check active descriptors
         let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
             
-            if let descriptor = descriptor as? Upload1Descriptor
+            if let descriptor = descriptor as? OldUploadDescriptor
             {
-                return assetIdentifier == descriptor.assetIdentifier
+                return assetIdentifier == descriptor.identifier
             }
             
             return false
         })
         
-        return descriptor as? Upload1Descriptor
+        return descriptor as? OldUploadDescriptor
     }    
 }
