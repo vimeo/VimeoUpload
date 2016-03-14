@@ -20,7 +20,7 @@ This library is under active development. We're shooting for a v1.0 release in M
           * [Start Your Upload](#start-your-upload)
      * [Inspecting Upload State and Progress](#inspecting-upload-state-and-progress)
      * [Canceling an Upload](#canceling-an-upload)
-* [Custom Workflows](#custom-workflows)
+* [Custom Workflows 🍪](#custom-workflows)
 * [Want to Contribute?](#want-to-contribute)
 * [Found an Issue?](#found-an-issue)
 * [Questions](#questions)
