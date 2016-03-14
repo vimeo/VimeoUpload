@@ -4,7 +4,7 @@ This library is under active development. We're shooting for a v1.0 release in M
 
 ## Contents
 * [Design Considerations](#design-considerations)
-      * [New Upload, Old Upload](#new-upload-old-upload)
+      * [Old Upload, New Upload 👴👶](#old-upload-new-upload)
       * [Constraints](#constraints)
       * [Goals](#goals)
 * [Getting Started](#getting-started)
@@ -28,16 +28,22 @@ This library is under active development. We're shooting for a v1.0 release in M
 
 ## Design Considerations
 
-### New Upload, Old Upload
+### Old Upload, New Upload
 
-The current (public) server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More steps means a process that's challenging to communicate to the developer and user. The 4 requests are: 
+The current (public) server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More requests means a process that's challenging to communicate to the developer and in turn to the user. The 4 requests are: 
 
 1. Create a video object 
-2. Video file upload
+2. Upload the video file
 3. Activate the video object 
 4. Optionally set the video object's metadata (e.g. title, description, privacy, etc.)
 
-A simplified flow is in private beta right now. It's being used in the current [Vimeo iOS app](https://itunes.apple.com/app/id425194759).
+We affectionately refer to this 4-step flow as "Old Upload". 
+
+A simplified flow that eliminates steps 3 and 4 above is in private beta right now. It's being used in the current [Vimeo iOS](https://itunes.apple.com/app/id425194759) and [Vimeo Android](https://play.google.com/store/apps/details?id=com.vimeo.android.videoapp) apps and it's slated to be made available to the public later this year.
+
+We affectionately refer to this 2-step flow as "New Upload".
+
+VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. You'll see that it currently contains support for both, with New Upoad classes  marked as "private". However, because New Upload is still in private beta it will not work for the general public at the moment. 
 
 ### Constraints
 
