@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		50001E191C908E6B0074E3C7 /* DemoCameraRollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50001E071C908E6B0074E3C7 /* DemoCameraRollCell.swift */; };
 		50001E1A1C908E6B0074E3C7 /* DemoCameraRollCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50001E081C908E6B0074E3C7 /* DemoCameraRollCell.xib */; };
-		50001E1B1C908E6B0074E3C7 /* ForegroundSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50001E0A1C908E6B0074E3C7 /* ForegroundSessionManager.swift */; };
 		50001E1C1C908E6B0074E3C7 /* BaseCameraRollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50001E0C1C908E6B0074E3C7 /* BaseCameraRollViewController.swift */; };
 		50001E1D1C908E6B0074E3C7 /* BaseCameraRollViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50001E0D1C908E6B0074E3C7 /* BaseCameraRollViewController.xib */; };
 		50001E1E1C908E6B0074E3C7 /* ALAssetHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50001E0F1C908E6B0074E3C7 /* ALAssetHelper.swift */; };
@@ -118,7 +117,6 @@
 		3DF9ADF361E9CF02BA40147C /* Pods-VimeoUpload-iOS-ExampleUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-ExampleUITests.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-ExampleUITests/Pods-VimeoUpload-iOS-ExampleUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		50001E071C908E6B0074E3C7 /* DemoCameraRollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoCameraRollCell.swift; sourceTree = "<group>"; };
 		50001E081C908E6B0074E3C7 /* DemoCameraRollCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DemoCameraRollCell.xib; sourceTree = "<group>"; };
-		50001E0A1C908E6B0074E3C7 /* ForegroundSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForegroundSessionManager.swift; sourceTree = "<group>"; };
 		50001E0C1C908E6B0074E3C7 /* BaseCameraRollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCameraRollViewController.swift; sourceTree = "<group>"; };
 		50001E0D1C908E6B0074E3C7 /* BaseCameraRollViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BaseCameraRollViewController.xib; sourceTree = "<group>"; };
 		50001E0F1C908E6B0074E3C7 /* ALAssetHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAssetHelper.swift; sourceTree = "<group>"; };
@@ -248,7 +246,6 @@
 			isa = PBXGroup;
 			children = (
 				50001E061C908E6B0074E3C7 /* Cells */,
-				50001E091C908E6B0074E3C7 /* Controllers */,
 				50001E0B1C908E6B0074E3C7 /* ViewControllers */,
 			);
 			name = "VimeoUpload+Demos";
@@ -262,14 +259,6 @@
 				50001E081C908E6B0074E3C7 /* DemoCameraRollCell.xib */,
 			);
 			path = Cells;
-			sourceTree = "<group>";
-		};
-		50001E091C908E6B0074E3C7 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				50001E0A1C908E6B0074E3C7 /* ForegroundSessionManager.swift */,
-			);
-			path = Controllers;
 			sourceTree = "<group>";
 		};
 		50001E0B1C908E6B0074E3C7 /* ViewControllers */ = {
@@ -989,7 +978,6 @@
 				50001E221C908E6B0074E3C7 /* CameraRollAsset.swift in Sources */,
 				AFFA3CFB1C9656D200C7B6F3 /* VimeoSessionManager+Upload.swift in Sources */,
 				AFFA3CE21C9656D200C7B6F3 /* ProgressDescriptor.swift in Sources */,
-				50001E1B1C908E6B0074E3C7 /* ForegroundSessionManager.swift in Sources */,
 				50596D391BE296FA00D1F8EC /* AppDelegate.swift in Sources */,
 				AFFA3D101C9656D200C7B6F3 /* RetryUploadOperation.swift in Sources */,
 				AFFA3CE11C9656D200C7B6F3 /* KeyedArchiver.swift in Sources */,

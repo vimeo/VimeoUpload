@@ -79,7 +79,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func setupVideoRefreshManager()
     {
-        self.videoRefreshManager = VideoRefreshManager(sessionManager: ForegroundSessionManager.sharedInstance, delegate: self)
+        self.videoRefreshManager = VideoRefreshManager(sessionManager: UploadManager.sharedInstance.foregroundSessionManager, delegate: self)
     }
     
     // MARK: Notifications
@@ -207,7 +207,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     {
         self.refreshControl?.beginRefreshing()
 
-        let sessionManager = ForegroundSessionManager.sharedInstance
+        let sessionManager = UploadManager.sharedInstance.foregroundSessionManager
         
         do
         {
@@ -296,7 +296,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
 //            return
 //        }
 //        
-//        let operation = PHAssetRetryUploadOperation(sessionManager: ForegroundSessionManager.sharedInstance, phAsset: phAsset)
+//        let operation = PHAssetRetryUploadOperation(sessionManager: UploadManager.sharedInstance.foregroundSessionManager, phAsset: phAsset)
 //
 //        operation.downloadProgressBlock = { (progress: Double) -> Void in
 //            print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread

@@ -1,6 +1,6 @@
 //
 //  CameraRollAsset.swift
-//  Smokescreen
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 12/17/15.
 //  Copyright © 2015 Vimeo. All rights reserved.

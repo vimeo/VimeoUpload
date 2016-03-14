@@ -1,6 +1,6 @@
 //
 //  VIMALAsset.swift
-//  Smokescreen
+//  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 12/22/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
