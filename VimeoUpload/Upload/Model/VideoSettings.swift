@@ -32,7 +32,7 @@ class VideoSettings: NSObject
     {
         didSet
         {
-            self.title = self.title?.trim()
+            self.title = title?.trim()
         }
     }
     
@@ -40,7 +40,7 @@ class VideoSettings: NSObject
     {
         didSet
         {
-            self.desc = self.desc?.trim()
+            self.desc = desc?.trim()
         }
     }
     
