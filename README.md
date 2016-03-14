@@ -8,13 +8,13 @@ This library is under active development. We're shooting for a v1.0 release soon
       * [Constraints](#constraints)
       * [Goals](#goals)
 * [Getting Started](#getting-started)
-      * [Example Projects](#example-projects)
-      * [CocoaPods](#cocoapods)
-      * [Submodule](#submodule)
       * [Anatomy](#anatomy)
           * [NSURLSession](#nsurlsession)
           * [AFNetworking](#afnetworking)
           * [VimeoUpload](#vimeoupload)
+      * [Example Projects](#example-projects)
+      * [CocoaPods](#cocoapods)
+      * [Submodule](#submodule)
       * [Initialization](#initialization)
 * [Uploading Videos](#uploading-videos)
      * [Starting an Upload](#starting-an-upload)
@@ -115,18 +115,6 @@ The VimeoUpload APIs for New and Old Upload are very similar. New Upload is full
 1. An upload system that accommodates as many UX futures as possible
 
 ## Getting Started
-### Example Projects
-
-There's an example project for New Upload and one for Old Upload. In order to run them you'll have to drop a valid OAuth token into the example project's `UploadManager` `init` method where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
-
-### CocoaPods
-
-TODO
-
-### Submodule
-
-TODO
-
 ### Anatomy
 
 #### NSURLSession
@@ -138,6 +126,18 @@ TODO
 TODO
 
 #### VimeoUpload
+
+TODO
+
+### Example Projects
+
+There's an example project for New Upload and one for Old Upload. In order to run them you'll have to drop a valid OAuth token into the example project's `UploadManager` `init` method where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
+
+### CocoaPods
+
+TODO
+
+### Submodule
 
 TODO
 
