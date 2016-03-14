@@ -1,5 +1,5 @@
 //
-//  UploadDescriptor.swift
+//  OldUploadDescriptor.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 10/18/15.
@@ -26,7 +26,7 @@
 
 import Foundation
 
-class Upload1Descriptor: ProgressDescriptor, VideoDescriptor
+class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
     // MARK:
     
@@ -41,7 +41,7 @@ class Upload1Descriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK:
     
-    private(set) var currentRequest = Upload1Request.Create
+    private(set) var currentRequest = OldUploadRequest.Create
     {
         didSet
         {
@@ -173,7 +173,7 @@ class Upload1Descriptor: ProgressDescriptor, VideoDescriptor
             }
         }
         
-        let nextRequest = Upload1Request.nextRequest(self.currentRequest)
+        let nextRequest = OldUploadRequest.nextRequest(self.currentRequest)
         if self.error != nil || nextRequest == nil || (nextRequest == .Settings && self.videoSettings == nil)
         {
             self.currentTaskIdentifier = nil
@@ -195,7 +195,7 @@ class Upload1Descriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: Private API
     
-    private func transitionToState(request request: Upload1Request, sessionManager: VimeoSessionManager) throws
+    private func transitionToState(request request: OldUploadRequest, sessionManager: VimeoSessionManager) throws
     {
         self.currentRequest = request
         let task = try self.taskForRequest(request, sessionManager: sessionManager)
@@ -203,7 +203,7 @@ class Upload1Descriptor: ProgressDescriptor, VideoDescriptor
         task.resume()
     }
     
-    private func taskForRequest(request: Upload1Request, sessionManager: VimeoSessionManager) throws -> NSURLSessionTask
+    private func taskForRequest(request: OldUploadRequest, sessionManager: VimeoSessionManager) throws -> NSURLSessionTask
     {
         switch request
         {
@@ -236,7 +236,7 @@ class Upload1Descriptor: ProgressDescriptor, VideoDescriptor
         }
     }
 
-    private func errorDomainForRequest(request: Upload1Request) -> String
+    private func errorDomainForRequest(request: OldUploadRequest) -> String
     {
         switch request
         {
@@ -262,7 +262,7 @@ class Upload1Descriptor: ProgressDescriptor, VideoDescriptor
         self.videoSettings = aDecoder.decodeObjectForKey("videoSettings") as? VideoSettings
         self.uploadTicket = aDecoder.decodeObjectForKey("uploadTicket") as? VIMUploadTicket
         self.videoUri = aDecoder.decodeObjectForKey("videoUri") as? String
-        self.currentRequest = Upload1Request(rawValue: aDecoder.decodeObjectForKey("currentRequest") as! String)!
+        self.currentRequest = OldUploadRequest(rawValue: aDecoder.decodeObjectForKey("currentRequest") as! String)!
 
         super.init(coder: aDecoder)
     }

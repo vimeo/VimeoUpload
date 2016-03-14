@@ -63,20 +63,20 @@ class UploadManager
 
     func uploadVideo(url url: NSURL, assetIdentifier: String, videoSettings: VideoSettings?)
     {
-        let descriptor = Upload1Descriptor(url: url, videoSettings: videoSettings)
+        let descriptor = OldUploadDescriptor(url: url, videoSettings: videoSettings)
         descriptor.identifier = assetIdentifier
         
         self.descriptorManager.addDescriptor(descriptor)
     }
     
-    func retryUpload(descriptor descriptor: Upload1Descriptor, url: NSURL)
+    func retryUpload(descriptor descriptor: OldUploadDescriptor, url: NSURL)
     {
         if let videoUri = descriptor.uploadTicket?.video?.uri
         {
             self.failureTracker.removeFailedDescriptorForKey(videoUri)
         }
         
-        let newDescriptor = Upload1Descriptor(url: url, videoSettings: descriptor.videoSettings)
+        let newDescriptor = OldUploadDescriptor(url: url, videoSettings: descriptor.videoSettings)
         newDescriptor.identifier = descriptor.identifier
         
         self.descriptorManager.addDescriptor(newDescriptor)
@@ -95,12 +95,12 @@ class UploadManager
         }
     }
     
-    func descriptorForAssetIdentifier(assetIdentifier: String) -> Upload1Descriptor?
+    func descriptorForAssetIdentifier(assetIdentifier: String) -> OldUploadDescriptor?
     {
         // Check active descriptors
         let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
             
-            if let descriptor = descriptor as? Upload1Descriptor
+            if let descriptor = descriptor as? OldUploadDescriptor
             {
                 return assetIdentifier == descriptor.identifier
             }
@@ -108,6 +108,6 @@ class UploadManager
             return false
         })
         
-        return descriptor as? Upload1Descriptor
+        return descriptor as? OldUploadDescriptor
     }    
 }
