@@ -11,6 +11,10 @@ This library is under active development. We're shooting for a v1.0 release soon
       * [Example Projects](#example-projects)
       * [CocoaPods](#cocoapods)
       * [Submodule](#submodule)
+      * [Anatomy](#anatomy)
+          * [NSURLSession](#nsurlsession)
+          * [AFNetworking](#afnetworking)
+          * [VimeoUpload](#vimeoupload)
       * [Initialization](#initialization)
 * [Uploading Videos](#uploading-videos)
      * [Starting an Upload](#starting-an-upload)
@@ -120,6 +124,20 @@ There's an example project for New Upload and one for Old Upload. In order to ru
 TODO
 
 ### Submodule
+
+TODO
+
+### Anatomy
+
+#### NSURLSession
+
+TODO
+
+#### AFNetworking
+
+TODO
+
+#### VimeoUpload
 
 TODO
 
