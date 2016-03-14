@@ -43,7 +43,9 @@ A simplified flow that eliminates steps 3 and 4 above is in private beta right n
 
 We affectionately refer to this 2-step flow as New Upload.
 
-VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. The library currently contains support for both. However, New Upoad classes are marked as "private" and will not work for the general public until they are released from private beta.
+VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. The library currently contains support for both. However, New Upoad classes are currently marked as "private" and will not work for the general public until they are released from private beta.
+
+The VimeoUpload APIs for New and Old Upload are very similar. Differences are noted inline below.
 
 ### Constraints
 
