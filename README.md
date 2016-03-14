@@ -1,6 +1,6 @@
 # VimeoUpload
 
-This library is under active development. We're shooting for a v1.0 release in March 2016. All comments, questions, pull requests, and issues are welcome. See below for a draft spec and for information on contributing.
+This library is under active development. We're shooting for a v1.0 release soon. All comments, questions, pull requests, and issues are welcome. See below for details.
 
 ## Contents
 * [Design Considerations](#design-considerations)
@@ -37,13 +37,15 @@ The current (public) server-side Vimeo upload API is comprised of 4 separate req
 3. Activate the video object 
 4. Optionally set the video object's metadata (e.g. title, description, privacy, etc.)
 
-We affectionately refer to this 4-step flow as "Old Upload". 
+We affectionately refer to this 4-step flow as Old Upload. 
 
 A simplified flow that eliminates steps 3 and 4 above is in private beta right now. It's being used in the current [Vimeo iOS](https://itunes.apple.com/app/id425194759) and [Vimeo Android](https://play.google.com/store/apps/details?id=com.vimeo.android.videoapp) apps and it's slated to be made available to the public later this year.
 
-We affectionately refer to this 2-step flow as "New Upload".
+We affectionately refer to this 2-step flow as New Upload.
 
-VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. You'll see that it currently contains support for both, with New Upoad classes  marked as "private". However, because New Upload is still in private beta it will not work for the general public at the moment. 
+VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. The library currently contains support for both. However, New Upoad classes are currently marked as "private" and will not work for the general public until they are released from private beta.
+
+The VimeoUpload APIs for New and Old Upload are very similar. Differences are noted inline below.
 
 ### Constraints
 
