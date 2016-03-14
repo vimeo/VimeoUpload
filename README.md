@@ -67,7 +67,7 @@ This library is under active development. We're shooting for a v1.0 release in M
 ### Submodule
 ### Initialization
 
-Create an instance, perhaps a singleton instance, of `VimeoUpload`: 
+Create an instance of `VimeoUpload`, or modify `VimeoUpload` to act as a singleton: 
 
 ```Swift
     let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
@@ -114,26 +114,23 @@ Request an instance of [AVAssetExportSession](https://developer.apple.com/librar
     }
     
     operation.completionBlock = {
-        dispatch_async(dispatch_get_main_queue(), {
-        
-            guard operation.cancelled == false else
-            {
-                return
-            }
-            
-            if let error = operation.error
-            {
-                // Do something with the error
-            }
-            else if let exportSession = operation.result
-            {
-                // Use the export session to export a copy of the asset (see below)
-            }
-            else
-            {
-                assertionFailure("error and exportSession are mutually exclusive. This should never happen.")
-            }
-        })
+        guard operation.cancelled == false else
+        {
+            return
+        }
+
+        if let error = operation.error
+        {
+            // Do something with the error
+        }
+        else if let exportSession = operation.result
+        {
+            // Use the export session to export a copy of the asset (see below)
+        }
+        else
+        {
+            assertionFailure("error and exportSession are mutually exclusive. This should never happen.")
+        }
     }
 
     operation.start()
@@ -151,26 +148,23 @@ Next, export a copy the [PHAsset](https://developer.apple.com/library/prerelease
     }
     
     operation.completionBlock = {
-        dispatch_async(dispatch_get_main_queue(), {
-            
-            guard operation.cancelled == false else
-            {
-                return
-            }
+        guard operation.cancelled == false else
+        {
+            return
+        }
 
-            if let error = operation.error
-            {
-                // Do something with the error
-            }
-            else if let url = operation.outputURL
-            {
-                // Use the url to generate an upload ticket (see below)
-            }
-            else
-            {
-                assertionFailure("error and outputURL are mutually exclusive, this should never happen.")
-            }
-        })
+        if let error = operation.error
+        {
+            // Do something with the error
+        }
+        else if let url = operation.outputURL
+        {
+            // Use the url to generate an upload ticket (see below)
+        }
+        else
+        {
+            assertionFailure("error and outputURL are mutually exclusive, this should never happen.")
+        }
     }
     
     operation.start()
@@ -192,26 +186,23 @@ Use an instance of `ExportOperation` to export a copy of the [ALAsset](https://d
     }
     
     operation.completionBlock = {
-        dispatch_async(dispatch_get_main_queue(), {
-            
-            guard operation.cancelled == false else
-            {
-                return
-            }
+        guard operation.cancelled == false else
+        {
+            return
+        }
 
-            if let error = operation.error
-            {
-                // Do something with the error
-            }
-            else if let url = operation.outputURL
-            {
-                // Use the url to generate an upload ticket (see below)
-            }
-            else
-            {
-                assertionFailure("error and outputURL are mutually exclusive, this should never happen.")
-            }
-        })
+        if let error = operation.error
+        {
+            // Do something with the error
+        }
+        else if let url = operation.outputURL
+        {
+            // Use the url to generate an upload ticket (see below)
+        }
+        else
+        {
+            assertionFailure("error and outputURL are mutually exclusive, this should never happen.")
+        }
     }
     
     operation.start()
@@ -228,28 +219,30 @@ This is quite a bit simpler:
 
 #### Obtaining an Upload Ticket 
 
-Request an upload ticket from the [Vimeo API](https://developer.vimeo.com/api/upload/videos#generate-an-upload-ticket): 
+Request an upload ticket from the [Vimeo API](https://developer.vimeo.com/). Details about this request are [here](https://developer.vimeo.com/api/upload/videos#generate-an-upload-ticket). `VimeoUpload` provides a simple mechanism by which to make this request: 
 
 ```Swift
+    let authToken = "YOUR_OAUTH_TOKEN"
+    let sessionManager = VimeoSessionManager.defaultSessionManager(authTokenBlock: { () -> String? in
+        return authToken 
+    })
+
     do
     {
-        let task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, completionHandler: { (uploadTicket, error) -> Void in
+        let task = try sessionManager.createVideoDataTask(url: url, videoSettings: nil, completionHandler: { (uploadTicket, error) -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), {
-
-                if let error = error
-                {
-                    // The upload ticket request failed
-                }
-                else if let uploadTicket = uploadTicket else
-                {
-                     // Use your url and uploadTicket to start your upload (see below)
-                }
-                else
-                {
-                    assertionFailure("error and uploadTicket are mutually exclusive, this should never happen.")
-                }
-            })
+            if let error = error
+            {
+                // The upload ticket request failed
+            }
+            else if let uploadTicket = uploadTicket else
+            {
+                // Use your url and uploadTicket to start your upload (see below)
+            }
+            else
+            {
+                assertionFailure("error and uploadTicket are mutually exclusive, this should never happen.")
+            }
         })
         
         task.resume()
