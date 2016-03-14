@@ -313,7 +313,7 @@ If your OAuth token can change during the course of a session, use the construct
     })
 ```
 
-Then make the request: 
+Then make the request using `createVideoDataTask(url: videoSettings: completionHandler:)`. This method uses the URL to add the file size to the request parameters. It accepts an optional `VideoSettings` object, and completion handler: 
 
 ```Swift
     do
