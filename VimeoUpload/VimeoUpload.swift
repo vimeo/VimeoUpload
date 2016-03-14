@@ -49,7 +49,7 @@ class VimeoUpload
 
     init(backgroundSessionIdentifier: String, authTokenBlock: AuthTokenBlock)
     {
-        let foregroundSessionManager = VimeoSessionManager.defaultSessionManagerWithAuthTokenBlock(authTokenBlock: authTokenBlock)
+        let foregroundSessionManager = VimeoSessionManager.defaultSessionManager(authTokenBlock: authTokenBlock)
         self.deletionManager = VideoDeletionManager(sessionManager: foregroundSessionManager)
 
         self.descriptorManager = ReachableDescriptorManager(name: self.dynamicType.Name, backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: authTokenBlock)
