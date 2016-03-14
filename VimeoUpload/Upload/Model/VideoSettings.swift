@@ -32,7 +32,7 @@ class VideoSettings: NSObject
     {
         didSet
         {
-            self.title = title?.trim()
+            self.title = self.title?.trim()
         }
     }
     
@@ -40,26 +40,21 @@ class VideoSettings: NSObject
     {
         didSet
         {
-            self.desc = desc?.trim()
+            self.desc = self.desc?.trim()
         }
     }
     
     var privacy: String?
     var users: [String]? // List of uris of users who can view this video
     var password: String?
-
+    
     init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
     {
+        self.title = title?.trim()
+        self.desc = description?.trim()
         self.privacy = privacy
         self.users = users
         self.password = password
-        
-        super.init()
-        
-        defer {
-            self.title = title
-            self.desc = description
-        }
     }
     
     // MARK: Public API
