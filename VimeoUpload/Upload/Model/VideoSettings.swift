@@ -36,7 +36,8 @@ class VideoSettings: NSObject
 
     init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
     {
-        self.title = title
+        // Remove trailing whitespace [CL]
+        self.title = title?.trim()
         self.desc = description
         self.privacy = privacy
         self.users = users
