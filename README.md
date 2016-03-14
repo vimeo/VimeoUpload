@@ -198,7 +198,7 @@ Use VimeoUpload's `ExportOperation` to export a copy of the [ALAsset](https://de
         }
         else if let url = operation.outputURL
         {
-            // Use the url to [generate an upload ticket](#obtaining-an-upload-ticket)
+            // Use the url to generate an upload ticket (see below)
         }
         else
         {
