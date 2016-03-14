@@ -1,6 +1,6 @@
 # VimeoUpload
 
-This library is under active development. We're shooting for a v1.0 release in March 2016. All comments, questions, pull requests, and issues are welcome. See below for a draft spec and for information on contributing.
+This library is under active development. We're shooting for a v1.0 release soon. All comments, questions, pull requests, and issues are welcome. See below for details.
 
 ## Contents
 * [Design Considerations](#design-considerations)
@@ -8,6 +8,7 @@ This library is under active development. We're shooting for a v1.0 release in M
       * [Constraints](#constraints)
       * [Goals](#goals)
 * [Getting Started](#getting-started)
+      * [Example Projects](#example-projects)
       * [CocoaPods](#cocoapods)
       * [Submodule](#submodule)
       * [Initialization](#initialization)
@@ -37,13 +38,15 @@ The current (public) server-side Vimeo upload API is comprised of 4 separate req
 3. Activate the video object 
 4. Optionally set the video object's metadata (e.g. title, description, privacy, etc.)
 
-We affectionately refer to this 4-step flow as "Old Upload". 
+We affectionately refer to this 4-step flow as Old Upload. 
 
 A simplified flow that eliminates steps 3 and 4 above is in private beta right now. It's being used in the current [Vimeo iOS](https://itunes.apple.com/app/id425194759) and [Vimeo Android](https://play.google.com/store/apps/details?id=com.vimeo.android.videoapp) apps and it's slated to be made available to the public later this year.
 
-We affectionately refer to this 2-step flow as "New Upload".
+We affectionately refer to this 2-step flow as New Upload.
 
-VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. You'll see that it currently contains support for both, with New Upoad classes  marked as "private". However, because New Upload is still in private beta it will not work for the general public at the moment. 
+VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. The library currently contains support for both. However, New Upoad classes are currently marked as "private" and will not work for the general public until they are released from private beta.
+
+The VimeoUpload APIs for New and Old Upload are very similar. New Upload is fully documented below. Old Upload documentation coming soon. The main difference in terms of consumption is that `UploadDescriptor`s are initialized with a `url` and `uploadTicket`. Whereas `OldUploadDescriptor`s are initialized with a `url` alone. More detail soon.
 
 ### Constraints
 
@@ -108,6 +111,10 @@ VimeoUpload is designed to accommodate a variety of [background task workflows](
 1. An upload system that accommodates as many UX futures as possible
 
 ## Getting Started
+### Example Projects
+
+There's an example project for New Upload and one for Old Upload. In order to run them you'll have to drop a valid OAuth token into the example project's `UploadManager` `init` method where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
+
 ### CocoaPods
 ### Submodule
 ### Initialization

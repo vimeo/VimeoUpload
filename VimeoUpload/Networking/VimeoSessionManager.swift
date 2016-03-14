@@ -39,7 +39,7 @@ class VimeoSessionManager: AFHTTPSessionManager
         return VimeoSessionManager(sessionConfiguration: sessionConfiguration, authToken: authToken)
     }
 
-    static func defaultSessionManagerWithAuthTokenBlock(authTokenBlock authTokenBlock: AuthTokenBlock) -> VimeoSessionManager
+    static func defaultSessionManager(authTokenBlock authTokenBlock: AuthTokenBlock) -> VimeoSessionManager
     {
         let sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
         
