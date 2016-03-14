@@ -17,7 +17,7 @@ This library is under active development. We're shooting for a v1.0 release in M
           * [Obtaining a File URL For an Asset That You Manage](#obtaining-a-file-url-for-an-asset-that-you-manage)
           * [Obtaining an Upload Ticket](#obtaining-an-upload-ticket)
           * [Start Your Upload](#start-your-upload)
-     * [Tracking Upload State and Progress](#tracking-upload-state-and-progress)
+     * [Inspecting Upload State and Progress](#inspecting-upload-state-and-progress)
      * [Canceling an Upload](#canceling-an-upload)
 * [Custom Workflows](#custom-workflows)
 * [Want to Contribute?](#want-to-contribute)
@@ -279,13 +279,13 @@ Use the `url` and `uploadTicket` to start your upload:
     vimeoUpload.uploadVideo(url: url, uploadTicket: uploadTicket)
 ```
 
-The `uploadVideo(url: uploadTicket:)` method returns an instance of `UploadDescriptor`. You can use this to [observe state and progress](#tracking-upload-state-and-progress), or to [cancel the upload](#canceling-an-upload).
+The `uploadVideo(url: uploadTicket:)` method returns an instance of `UploadDescriptor`. You can use this to [inspect state and progress](#inspecting-upload-state-and-progress), or to [cancel the upload](#canceling-an-upload).
 
-### Tracking Upload State and Progress
+### Inspecting Upload State and Progress
 
-You can track upload state and progress by inspecting the `stateObservable` and `progressObservable` properties of an `UploadDescriptor`. 
+You can examine upload state and progress by inspecting the `stateObservable` and `progressObservable` properties of an `UploadDescriptor`. 
 
-You can obtain a reference to a specific `UploadDescriptor` by holding onto the `UploadDescriptor` returned from your call to `uploadVideo(url: uploadTicket:)`, or by asking `VimeoUpload` for a specific `UploadDescriptor`:
+You can obtain a reference to a specific `UploadDescriptor` by holding onto the `UploadDescriptor` returned from your call to `uploadVideo(url: uploadTicket:)`, or by asking `VimeoUpload` for a specific `UploadDescriptor` like so:
 
 ```Swift
     let uploadTicket = ... // Your upload ticket (see above)
@@ -311,6 +311,7 @@ Once you have a reference to the `UploadDescriptor` you're interested in you can
 
 ```Swift
     print(descriptor.state)
+    print(descriptor.error?.localizedDescription)
 ```
 
 Or use KVO to observe changes to its state and progress: 
