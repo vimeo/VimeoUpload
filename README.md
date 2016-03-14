@@ -20,7 +20,7 @@ This library is under active development. We're shooting for a v1.0 release in M
           * [Start Your Upload](#start-your-upload)
      * [Inspecting Upload State and Progress](#inspecting-upload-state-and-progress)
      * [Canceling an Upload](#canceling-an-upload)
-* [Custom Workflows 🍪](#custom-workflows)
+* [Custom Workflows 🍪🎉](#custom-workflows)
 * [Want to Contribute?](#want-to-contribute)
 * [Found an Issue?](#found-an-issue)
 * [Questions](#questions)
@@ -30,7 +30,14 @@ This library is under active development. We're shooting for a v1.0 release in M
 
 ### New Upload, Old Upload
 
-1. **Complex Server-side API** The current server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More steps means a process that's challenging to communicate to the user. The 4 requests are: (1) create a video object, (2) video file upload, (3) activate video object, (4) optionally set the video object's metadata (e.g. title, description, privacy, etc.)
+The current (public) server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More steps means a process that's challenging to communicate to the developer and user. The 4 requests are: 
+
+1. Create a video object 
+2. Video file upload
+3. Activate the video object 
+4. Optionally set the video object's metadata (e.g. title, description, privacy, etc.)
+
+A simplified flow is in private beta right now. It's being used in the current [Vimeo iOS app](https://itunes.apple.com/app/id425194759).
 
 ### Constraints
 
