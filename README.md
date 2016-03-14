@@ -3,9 +3,10 @@
 This library is under active development. We're shooting for a v1.0 release in March 2016. All comments, questions, pull requests, and issues are welcome. See below for a draft spec and for information on contributing.
 
 ## Contents
-* [Draft Spec](#draft-spec)
-      * [Context](#context)
-      * [Target](#target)
+* [Design Considerations](#design-considerations)
+      * [New Upload, Old Upload](#new-upload-old-upload)
+      * [Constraints](#constraints)
+      * [Goals](#goals)
 * [Getting Started](#getting-started)
       * [CocoaPods](#cocoapods)
       * [Submodule](#submodule)
@@ -25,11 +26,13 @@ This library is under active development. We're shooting for a v1.0 release in M
 * [Questions](#questions)
 * [License](#license)
 
-## Draft Spec
+## Design Considerations
 
-### Context
+### New Upload, Old Upload
 
 1. **Complex Server-side API** The current server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More steps means a process that's challenging to communicate to the user. The 4 requests are: (1) create a video object, (2) video file upload, (3) activate video object, (4) optionally set the video object's metadata (e.g. title, description, privacy, etc.)
+
+### Constraints
 
 1. **iOS 7 Support Required** Therefore we must support both the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) and [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) APIs.
 
@@ -51,7 +54,7 @@ This library is under active development. We're shooting for a v1.0 release in M
 
 1. **iOS SDK Quirks** We can't rely on NSURLSessionTask's `suspend` method. TODO: Explain why. We need `taskForIdentifierWorkaround`. TODO: Explain why.
 
-### Target
+### Goals
 
 1. An upload system that accommodates / addresses each point listed above.
 
