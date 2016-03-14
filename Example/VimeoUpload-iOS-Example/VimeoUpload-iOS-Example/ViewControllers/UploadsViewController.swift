@@ -104,7 +104,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         // TODO: should we move this dispatch to within the descriptor manager itself?
         dispatch_async(dispatch_get_main_queue()) { () -> Void in
             
-            if let descriptor = notification.object as? Upload1Descriptor
+            if let descriptor = notification.object as? OldUploadDescriptor
             {
                 let indexPath = NSIndexPath(forRow: 0, inSection: 0)
                 self.items.insert(descriptor.identifier!, atIndex: indexPath.row) // TODO: do not force unwrap
