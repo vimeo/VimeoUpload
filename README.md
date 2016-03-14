@@ -116,7 +116,13 @@ The VimeoUpload APIs for New and Old Upload are very similar. New Upload is full
 There's an example project for New Upload and one for Old Upload. In order to run them you'll have to drop a valid OAuth token into the example project's `UploadManager` `init` method where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
 
 ### CocoaPods
+
+TODO
+
 ### Submodule
+
+TODO
+
 ### Initialization
 
 Create an instance of `VimeoUpload`, or modify `VimeoUpload` to act as a singleton: 
@@ -442,7 +448,7 @@ Or by using the `videoUri` of the `uploadTicket` you used to create the upload:
 
 ## Custom Workflows
 
-TBD
+TODO
 
 ## Want to Contribute?
 
