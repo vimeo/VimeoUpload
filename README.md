@@ -96,7 +96,7 @@ You can obtain an OAuth token by using the authentication methods provided by [V
 In order to start an upload, you need two pieces of information:
 
 1. A file URL pointing to the video file on disk that you would like to upload, and
-2. An upload ticket [obtained from the Vimeo API](https://developer.vimeo.com/api/upload/videos#generate-an-upload-ticket)
+2. An upload ticket obtained from the Vimeo API
 
 The steps required to obtain the file URL will vary depending on whether you are uploading a [PHAsset](#obtaining-a-file-url-for-a-phasset), an [ALAsset](#obtaining-a-file-url-for-an-alasset), or an [asset that you manage](#obtaining-a-file-url-for-an-asset-that-you-manage) outside of the device Photos environment. Once you have a valid file URL, you will use it to [obtain an upload ticket](#obtaining-an-upload-ticket). Then you can [start your upload](#start-your-upload).
 
