@@ -48,7 +48,7 @@ class UploadManager
         let name = "uploader"
         let backgroundSessionIdentifier = "com.vimeo.upload"
         let authTokenBlock = { () -> String? in
-            return "3e9dae312853936216aba3ce56cf5066"
+            return "YOUR_OAUTH_TOKEN"
         }
         
         self.foregroundSessionManager = VimeoSessionManager.defaultSessionManagerWithAuthTokenBlock(authTokenBlock: authTokenBlock)
@@ -63,13 +63,8 @@ class UploadManager
     
     func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket, assetIdentifier: String)
     {
-        guard let videoUri = uploadTicket.video?.uri else
-        {
-            return
-        }
-
-        let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
-        descriptor.identifier = videoUri
+        let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket)
+        descriptor.identifier = assetIdentifier
         
         self.descriptorManager.addDescriptor(descriptor)
     }
@@ -83,8 +78,8 @@ class UploadManager
         
         self.failureTracker.removeFailedDescriptorForKey(videoUri)
 
-        let newDescriptor = UploadDescriptor(url: url, uploadTicket: descriptor.uploadTicket, assetIdentifier: descriptor.assetIdentifier)
-        newDescriptor.identifier = videoUri
+        let newDescriptor = UploadDescriptor(url: url, uploadTicket: descriptor.uploadTicket)
+        newDescriptor.identifier = descriptor.identifier
         self.descriptorManager.addDescriptor(newDescriptor)
     }
 

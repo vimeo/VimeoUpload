@@ -1,6 +1,6 @@
 //
 //  AFURLSessionManager+Upload.swift
-//  Smokescreen
+//  VimeoUpload
 //
 //  Created by Alfred Hanssen on 2/2/16.
 //  Copyright © 2016 Vimeo. All rights reserved.

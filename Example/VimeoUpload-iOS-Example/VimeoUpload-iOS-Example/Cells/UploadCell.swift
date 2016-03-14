@@ -49,7 +49,7 @@ class UploadCell: UITableViewCell
     private var progressKVOContext = UInt8()
     private var stateKVOContext = UInt8()
 
-    private var descriptor: Upload1Descriptor?
+    private var descriptor: OldUploadDescriptor?
         {
         willSet
         {
@@ -77,7 +77,7 @@ class UploadCell: UITableViewCell
         {
             if let assetIdentifier = self.assetIdentifier
             {
-                self.descriptor = UploadManager.sharedInstance.uploadDescriptorForAssetIdentifier(assetIdentifier)
+                self.descriptor = UploadManager.sharedInstance.descriptorForAssetIdentifier(assetIdentifier)
             }
         }
     }

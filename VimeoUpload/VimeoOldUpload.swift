@@ -26,7 +26,7 @@
 
 import Foundation
 
-class VimeoUpload
+class VimeoOldUpload
 {
     private static let Name = "vimeo_upload"
     
@@ -57,9 +57,9 @@ class VimeoUpload
     
     // MARK: Public API
     
-    func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket) -> UploadDescriptor
+    func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket) -> OldUploadDescriptor
     {
-        let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket)
+        let descriptor = OldUploadDescriptor(url: url)
         self.descriptorManager.addDescriptor(descriptor)
         
         return descriptor
@@ -75,9 +75,9 @@ class VimeoUpload
         }
     }
 
-    func cancelUpload(descriptor descriptor: UploadDescriptor)
+    func cancelUpload(descriptor descriptor: OldUploadDescriptor)
     {
-        if let videoUri = descriptor.uploadTicket.video?.uri
+        if let videoUri = descriptor.uploadTicket?.video?.uri
         {
             self.deletionManager.deleteVideoWithUri(videoUri)
         }
@@ -85,7 +85,7 @@ class VimeoUpload
         self.descriptorManager.cancelDescriptor(descriptor)
     }
 
-    func descriptorForVideo(videoUri videoUri: VideoUri) -> UploadDescriptor?
+    func descriptorForVideo(videoUri videoUri: VideoUri) -> OldUploadDescriptor?
     {
         let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
             
@@ -97,6 +97,6 @@ class VimeoUpload
             return false
         })
         
-        return descriptor as? UploadDescriptor
+        return descriptor as? OldUploadDescriptor
     }
 }

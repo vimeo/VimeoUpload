@@ -1,8 +1,8 @@
 //
-//  ForegroundSessionManager.swift
+//  UploadRequest.swift
 //  VimeoUpload
 //
-//  Created by Alfred Hanssen on 11/23/15.
+//  Created by Hanssen, Alfie on 11/11/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,12 +26,26 @@
 
 import Foundation
 
-class ForegroundSessionManager: VimeoSessionManager
+enum OldUploadRequest: String
 {
-    // TODO: remove these from library [AH] Jan 2016
+    case Create = "Create"
+    case Upload = "Upload"
+    case Activate = "Activate"
+    case Settings = "Settings"
     
-    private static let BasicUserToken = "3e9dae312853936216aba3ce56cf5066"
-    private static let ProUserToken = "caf4648129ec56e580175c4b45cce7fc"
+    static func orderedRequests() -> [OldUploadRequest]
+    {
+        return [.Create, .Upload, .Activate, .Settings]
+    }
     
-    static let sharedInstance = VimeoSessionManager.defaultSessionManager(authToken: ForegroundSessionManager.ProUserToken)
+    static func nextRequest(currentRequest: OldUploadRequest) -> OldUploadRequest?
+    {
+        let orderedRequests = OldUploadRequest.orderedRequests()
+        if let index = orderedRequests.indexOf(currentRequest) where index + 1 < orderedRequests.count
+        {
+            return orderedRequests[index + 1]
+        }
+        
+        return nil
+    }
 }

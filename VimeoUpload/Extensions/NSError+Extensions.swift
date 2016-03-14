@@ -1,6 +1,6 @@
 //
 //  NSError+Extensions.swift
-//  Smokescreen
+//  VimemoUpload
 //
 //  Created by Alfred Hanssen on 2/5/16.
 //  Copyright © 2016 Vimeo. All rights reserved.
