@@ -225,16 +225,11 @@ class DescriptorManager: NSObject
 
                     return
                 }
-
-                // This case should not be necessary, isNetworkTaskCancellationError should always be covered by the .Suspended case above.
-                // This needs testing to deem if necessary. [AH] 2/22/2016
-                let isNetworkCancellationError = (task.error?.isNetworkTaskCancellationError() == true || error?.isNetworkTaskCancellationError() == true)
                 
                 // These types of errors can occur when connection drops and before suspend() is called,
                 // Or when connection drop is slow -> timeouts etc. [AH] 2/22/2016
                 let isConnectionError = (task.error?.isConnectionError() == true || error?.isConnectionError() == true)
-                
-                if isNetworkCancellationError || isConnectionError
+                if isConnectionError
                 {
                     do
                     {
