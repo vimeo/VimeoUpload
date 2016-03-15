@@ -157,13 +157,6 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             return
         }
 
-        if task.error?.isNetworkTaskCancellationError() == true || error?.isNetworkTaskCancellationError() == true
-        {
-            assertionFailure("taskDidComplete was called for a descriptor that failed dur to connection error.")
-            
-            return
-        }
-
         if self.error == nil
         {
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first
