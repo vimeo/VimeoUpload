@@ -254,15 +254,26 @@ class DescriptorManager: NSObject
                 
                 if descriptor.state == .Finished
                 {
-                    strongSelf.archiver.remove(descriptor)
-                    
-                    if descriptor.error != nil
+                    if let error = descriptor.error
                     {
+                        // When a user initiates a descriptor and then kills the app from multitasking we will receive a networkTaskCancellation error
+                        // In this case we don't want to disappear the descriptor, instead we want to flag it as an error
+                        // However, the code below that would track/persist that type of failure does not always execute when the app is killed
+                        // So we're intentionally not removing the descriptor from the list, 
+                        // So that the error is tracked/persisted on next launch via loadFromCache above [AH] 3/15/2016
+                        
+                        if error.isNetworkTaskCancellationError() == false
+                        {
+                            strongSelf.archiver.remove(descriptor)
+                        }
+                        
                         strongSelf.delegate?.descriptorDidFail?(descriptor)
                         NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
                     }
                     else
                     {
+                        strongSelf.archiver.remove(descriptor)
+
                         strongSelf.delegate?.descriptorDidSucceed?(descriptor)
                         NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidSucceed.rawValue, object: descriptor)
                     }
