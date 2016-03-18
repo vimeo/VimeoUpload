@@ -29,29 +29,15 @@ import Foundation
 class VideoSettings: NSObject
 {
     var title: String?
-    {
-        didSet
-        {
-            self.title = self.title?.trim()
-        }
-    }
-    
     var desc: String?
-    {
-        didSet
-        {
-            self.desc = self.desc?.trim()
-        }
-    }
-    
     var privacy: String?
     var users: [String]? // List of uris of users who can view this video
     var password: String?
 
     init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
     {
-        self.title = title?.trim()
-        self.desc = description?.trim()
+        self.title = title
+        self.desc = description
         self.privacy = privacy
         self.users = users
         self.password = password
