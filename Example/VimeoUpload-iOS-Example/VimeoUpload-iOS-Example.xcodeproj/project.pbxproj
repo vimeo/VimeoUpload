@@ -392,11 +392,11 @@
 		AFFA3C8B1C9656D200C7B6F3 /* VimeoUpload */ = {
 			isa = PBXGroup;
 			children = (
+				AFFA3CDA1C9656D200C7B6F3 /* VimeoUpload.swift */,
+				AFFA3C9F1C9656D200C7B6F3 /* Upload */,
 				AFFA3C8C1C9656D200C7B6F3 /* Descriptor System */,
 				AFFA3C961C9656D200C7B6F3 /* Extensions */,
 				AFFA3C9A1C9656D200C7B6F3 /* Networking */,
-				AFFA3C9F1C9656D200C7B6F3 /* Upload */,
-				AFFA3CDA1C9656D200C7B6F3 /* VimeoUpload.swift */,
 			);
 			name = VimeoUpload;
 			path = ../../../VimeoUpload;
