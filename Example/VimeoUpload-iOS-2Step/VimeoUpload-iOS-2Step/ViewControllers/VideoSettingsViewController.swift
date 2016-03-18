@@ -182,7 +182,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket)
         descriptor.identifier = assetIdentifier
-
+        
         NewVimeoUpload.sharedInstance.uploadVideo(descriptor: descriptor)
     }
 

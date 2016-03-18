@@ -37,5 +37,9 @@ class NewVimeoUpload: VimeoUpload<UploadDescriptor>
     override init(backgroundSessionIdentifier: String, authTokenBlock: AuthTokenBlock)
     {
         super.init(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: authTokenBlock)
+        
+        let test = VimeoUpload<UploadDescriptor>(backgroundSessionIdentifier: "") { () -> String? in
+            return nil
+        }
     }
 }
