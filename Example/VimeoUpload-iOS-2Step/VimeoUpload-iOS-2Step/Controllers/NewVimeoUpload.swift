@@ -29,7 +29,7 @@ import Foundation
 class NewVimeoUpload: VimeoUpload<UploadDescriptor>
 {
     static let sharedInstance = NewVimeoUpload(backgroundSessionIdentifier: "com.vimeo.upload") { () -> String? in
-        return "5043d2d9999ecc4dab7a489a5c140dd0"
+        return "YOUR_OAUTH_TOKEN" // See README for details on how to obtain and OAuth token
     }
     
     // MARK: - Initialization
