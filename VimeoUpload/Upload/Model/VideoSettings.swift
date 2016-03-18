@@ -117,11 +117,6 @@ class VideoSettings: NSObject
     
     func trim(text: String?) -> String?
     {
-        if let constText = text
-        {
-            return constText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
-        }
-        
-        return nil
+        return text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
     }
 }
