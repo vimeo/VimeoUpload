@@ -32,11 +32,7 @@ class VideoSettings: NSObject
     {
         didSet
         {
-            if let title = self.title
-            {
-                self.title = trim(title)
-            }
-            
+            self.title = trim(self.title)
         }
     }
     
@@ -44,10 +40,7 @@ class VideoSettings: NSObject
     {
         didSet
         {
-            if let desc = self.desc
-            {
-                self.desc = trim(desc)
-            }
+            self.desc = trim(self.desc)
         }
     }
     
@@ -57,21 +50,13 @@ class VideoSettings: NSObject
 
     init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
     {
+        super.init()
+        
         self.privacy = privacy
         self.users = users
         self.password = password
-        
-        super.init()
-        
-        if let titleText = title
-        {
-            self.title = self.trim(titleText)
-        }
-        
-        if let descText = description
-        {
-            self.desc = self.trim(descText)
-        }
+        self.title = self.trim(title)
+        self.desc = self.trim(description)
     }
     
     // MARK: Public API
@@ -130,8 +115,13 @@ class VideoSettings: NSObject
     
     // MARK : String Methods
     
-    func trim(text: String) -> String
+    func trim(text: String?) -> String
     {
-        return text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        if let constText = text
+        {
+            return constText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        }
+        
+        return ""
     }
 }
