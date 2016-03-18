@@ -29,18 +29,49 @@ import Foundation
 class VideoSettings: NSObject
 {
     var title: String?
+    {
+        didSet
+        {
+            if let title = self.title
+            {
+                self.title = trim(title)
+            }
+            
+        }
+    }
+    
     var desc: String?
+    {
+        didSet
+        {
+            if let desc = self.desc
+            {
+                self.desc = trim(desc)
+            }
+        }
+    }
+    
     var privacy: String?
     var users: [String]? // List of uris of users who can view this video
     var password: String?
 
     init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
     {
-        self.title = title
-        self.desc = description
         self.privacy = privacy
         self.users = users
         self.password = password
+        
+        super.init()
+        
+        if let titleText = title
+        {
+            self.title = self.trim(titleText)
+        }
+        
+        if let descText = description
+        {
+            self.desc = self.trim(descText)
+        }
     }
     
     // MARK: Public API
@@ -95,5 +126,12 @@ class VideoSettings: NSObject
         aCoder.encodeObject(self.privacy, forKey: "privacy")
         aCoder.encodeObject(self.users, forKey: "users")
         aCoder.encodeObject(self.password, forKey: "password")
+    }
+    
+    // MARK : String Methods
+    
+    func trim(text: String) -> String
+    {
+        return text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
     }
 }
