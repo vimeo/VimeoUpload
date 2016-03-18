@@ -21,7 +21,6 @@ This library is under active development. We're shooting for a v1.0 release soon
           * [Obtaining a File URL For a PHAsset](#obtaining-a-file-url-for-a-phasset)
           * [Obtaining a File URL For an ALAsset](#obtaining-a-file-url-for-an-alasset)
           * [Obtaining a File URL For an Asset That You Manage](#obtaining-a-file-url-for-an-asset-that-you-manage)
-          * [Obtaining an Upload Ticket](#obtaining-an-upload-ticket)
           * [Start Your Upload](#start-your-upload)
      * [Inspecting Upload State and Progress](#inspecting-upload-state-and-progress)
      * [Canceling an Upload](#canceling-an-upload)
@@ -50,7 +49,7 @@ We affectionately refer to this 2-step flow as New Upload.
 
 VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. The library currently contains support for both. However, New Upoad classes are currently marked as "private" and will not work for the general public until they are released from private beta.
 
-The VimeoUpload APIs for New and Old Upload are very similar. New Upload is fully documented below. Old Upload documentation coming soon. The main difference in terms of consumption is that `UploadDescriptor`s are initialized with a `url` and `uploadTicket`. Whereas `OldUploadDescriptor`s are initialized with a `url` alone. More detail soon.
+The VimeoUpload APIs for New and Old Upload are very similar. The Old Upload API is documented below. Old upload will be deprecated as soon as possible and the README will be updated to reflec the New Upload API at that time.
 
 ### Constraints
 
@@ -131,7 +130,7 @@ TODO
 
 ### Example Projects
 
-There's an example project for New Upload and one for Old Upload. In order to run them you'll have to drop a valid OAuth token into the example project's `UploadManager` `init` method where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
+There's an example project for New Upload and one for Old Upload. In order to run them you'll have to drop a valid OAuth token into the example project's `VimeoUpload` subclass' `init` method where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
 
 ### CocoaPods
 
@@ -149,7 +148,7 @@ Create an instance of `VimeoUpload`, or modify `VimeoUpload` to act as a singlet
     let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
     let authToken = "YOUR_OAUTH_TOKEN"
     
-    let vimeoUpload = VimeoUpload(backgroundSessionIdentifier: backgroundSessionIdentifier, authToken: authToken)
+    let vimeoUpload = VimeoUpload<OldUploadDescriptor>(backgroundSessionIdentifier: backgroundSessionIdentifier, authToken: authToken)
 ```
 
 If your OAuth token can change during the course of a session, use the constructor whose second argument is an `authTokenBlock`:
@@ -158,7 +157,7 @@ If your OAuth token can change during the course of a session, use the construct
     let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
     var authToken = "YOUR_OAUTH_TOKEN"
 
-    let vimeoUpload = VimeoUpload(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: { () -> String? in
+    let vimeoUpload = VimeoUpload<OldUploadDescriptor>(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: { () -> String? in
         return authToken 
     })
 ```
@@ -169,12 +168,9 @@ You can obtain an OAuth token by using the authentication methods provided by [V
 
 ### Starting an Upload
 
-In order to start an upload, you need two pieces of information:
+In order to start an upload, you need a file URL pointing to the video file on disk that you would like to upload.
 
-1. A file URL pointing to the video file on disk that you would like to upload, and
-2. An upload ticket obtained from the Vimeo API
-
-The steps required to obtain the file URL will vary depending on whether you are uploading a [PHAsset](#obtaining-a-file-url-for-a-phasset), an [ALAsset](#obtaining-a-file-url-for-an-alasset), or an [asset that you manage](#obtaining-a-file-url-for-an-asset-that-you-manage) outside of the device Photos environment. Once you have a valid file URL, you will use it to [obtain an upload ticket](#obtaining-an-upload-ticket). Then you can [start your upload](#start-your-upload).
+The steps required to obtain the file URL will vary depending on whether you are uploading a [PHAsset](#obtaining-a-file-url-for-a-phasset), an [ALAsset](#obtaining-a-file-url-for-an-alasset), or an [asset that you manage](#obtaining-a-file-url-for-an-asset-that-you-manage) outside of the device Photos environment. Once you have a valid file URL, you will use it to [start your upload](#start-your-upload).
 
 Unfortunately, because of how Apple's [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) and [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) APIs are designed uploading directly from a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) or [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) resource URL is not possible. In order to upload [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html)s and [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/)s you will need to first create a copy of the asset itself and upload from that copy. See below for instructions on how to do this. 
 
@@ -214,7 +210,7 @@ Use VimeoUpload's `PHAssetExportSessionOperation` to request an instance of [AVA
     operation.start()
 ```
 
-Next, use VimeoUpload's `ExportOperation` to export a copy of the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html). You can then use the resulting `url` to [obtain an upload ticket](#obtaining-an-upload-ticket).
+Next, use VimeoUpload's `ExportOperation` to export a copy of the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html). You can then use the resulting `url` to [start your upload](#start-your-upload).
 
 ```Swift
     let exportSession = ... // The export session you just generated (see above)
@@ -237,7 +233,7 @@ Next, use VimeoUpload's `ExportOperation` to export a copy of the [PHAsset](http
         }
         else if let url = operation.outputURL
         {
-            // Use the url to generate an upload ticket (see below)
+            // Use the url to start your upload (see below)
         }
         else
         {
@@ -250,7 +246,7 @@ Next, use VimeoUpload's `ExportOperation` to export a copy of the [PHAsset](http
 
 #### Obtaining a File URL For an ALAsset
 
-Use VimeoUpload's `ExportOperation` to export a copy of the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you intend to upload. You can then use the resulting `url` to [obtain an upload ticket](#obtaining-an-upload-ticket).
+Use VimeoUpload's `ExportOperation` to export a copy of the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you intend to upload. You can then use the resulting `url` to [start your upload](#start-your-upload).
 
 ```Swift
     let alAsset = ... // The ALAsset you intend to upload
@@ -275,7 +271,7 @@ Use VimeoUpload's `ExportOperation` to export a copy of the [ALAsset](https://de
         }
         else if let url = operation.outputURL
         {
-            // Use the url to generate an upload ticket (see below)
+            // Use the url to start your upload (see below)
         }
         else
         {
@@ -295,85 +291,48 @@ This is quite a bit simpler:
     let url = NSURL.fileURLWithPath(path)
 ```
 
-#### Obtaining an Upload Ticket 
-
-Request an upload ticket from the [Vimeo API](https://developer.vimeo.com/). VimeoUpload provides a simple mechanism by which to make this request. First, create an instance of `VimeoSessionManager`:
-
-```Swift
-    let authToken = "YOUR_OAUTH_TOKEN"
-    let sessionManager = VimeoSessionManager.defaultSessionManager(authToken: authToken)
-```
-
-If your OAuth token can change during the course of a session, use the constructor that takes an `authTokenBlock` argument:
-
-```Swift
-    let authToken = "YOUR_OAUTH_TOKEN"
-    let sessionManager = VimeoSessionManager.defaultSessionManager(authTokenBlock: { () -> String? in
-        return authToken 
-    })
-```
-
-Then make the request using `createVideoDataTask(url: videoSettings: completionHandler:)`. This method uses the URL to add the file size to the request parameters. It accepts an optional `VideoSettings` object, and completion handler: 
-
-```Swift
-    do
-    {
-        let task = try sessionManager.createVideoDataTask(url: url, videoSettings: nil, completionHandler: { (uploadTicket, error) -> Void in
-            
-            if let error = error
-            {
-                // The upload ticket request failed
-            }
-            else if let uploadTicket = uploadTicket else
-            {
-                // Use your url and uploadTicket to start your upload (see below)
-            }
-            else
-            {
-                assertionFailure("error and uploadTicket are mutually exclusive, this should never happen.")
-            }
-        })
-        
-        task.resume()
-    }
-    catch let error as NSError
-    {
-        // An error was thrown while attempting to construct the task
-    }
-```
-
-You can read more about this request [here](https://developer.vimeo.com/api/upload/videos#generate-an-upload-ticket). 
-
 #### Start Your Upload
 
-Use the `url` and `uploadTicket` to start your upload: 
+Use the `url` to start your upload: 
 
 ```Swift
     let vimeoUpload = ... // Your instance of VimeoUpload (see above)
     let url = ... // Your url (see above)
-    let uploadTicket = ... // Your upload ticket (see above)
-    
-    vimeoUpload.uploadVideo(url: url, uploadTicket: uploadTicket)
+
+    let descriptor = OldUploadDescriptor(url: url)
+    vimeoUpload.uploadVideo(descriptor: descriptor)
 ```
 
-The `uploadVideo(url: uploadTicket:)` method returns an instance of `UploadDescriptor`. You can use this to [inspect state and progress](#inspecting-upload-state-and-progress), or to [cancel the upload](#canceling-an-upload).
+You can also pass in a VideoSettings object if you'd like. This will set your video's metadata after the upload completes: 
+
+```Swift
+    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+    let url = ... // Your url (see above)
+    
+    let title = "Untitled"
+    let description = "A really cool video"
+    let privacy = "nobody"
+    let videoSettings = VideoSettings(title: title, description: description, privacy: privacy, users: nil, password: nil)
+    
+    let descriptor = OldUploadDescriptor(url: url, videoSettings: videoSettings)
+    vimeoUpload.uploadVideo(descriptor: descriptor)
+```
+
+You can use the descriptor you create to [inspect state and progress](#inspecting-upload-state-and-progress), or to [cancel the upload](#canceling-an-upload).
 
 ### Inspecting Upload State and Progress
 
-You can examine upload state and progress by inspecting the `stateObservable` and `progressObservable` properties of an `UploadDescriptor`. 
+You can examine upload state and progress by inspecting the `stateObservable` and `progressObservable` properties of an `OldUploadDescriptor`. 
 
-You can obtain a reference to a specific `UploadDescriptor` by holding onto the `UploadDescriptor` returned from your call to `uploadVideo(url: uploadTicket:)`, or by asking `VimeoUpload` for a specific `UploadDescriptor` like so:
+You can obtain a reference to a specific `OldUploadDescriptor` by holding onto the `OldUploadDescriptor` that you used to initiate the upload, or by asking `VimeoUpload` for a specific `OldUploadDescriptor` like so:
 
 ```Swift
-    let uploadTicket = ... // Your upload ticket (see above)
-    if let videoUri = uploadTicket.video?.uri
-    {
-        let vimeoUpload = ... // Your instance of VimeoUpload (see above)
-        let descriptor = vimeoUpload.descriptorForVideo(videoUri: videoUri)
-    }
+    let identifier = ... // The identifier you set on the descriptor when you created it (see above)
+    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+    let descriptor = vimeoUpload.descriptorForIdentifier(identifier: identifier)
 ```
 
-You can also ask `VimeoUpload` for an `UploadDescriptor` that passes a test that you construct. You can construct any test you'd like. You might consider setting `descriptor.identifier` to a value meaningful to you before you start your upload (e.g. set it to a PHAsset `localIdentifier`). That way you can leverage `descriptor.identifier` inside `descriptorPassingTest`:
+You can also ask `VimeoUpload` for an `OldUploadDescriptor` that passes a test that you construct. You can construct any test you'd like. In the case where we want a descriptor with a certain identifier, the convenience method `descriptorForIdentifier` leverages `descriptorPassingTest` under the hood:
 
 ```Swift
     let phAsset = ... // The PHAsset whose upload you'd like to inspect
@@ -384,7 +343,7 @@ You can also ask `VimeoUpload` for an `UploadDescriptor` that passes a test that
     })
 ```
 
-Once you have a reference to the `UploadDescriptor` you're interested in you can inspect its state directly:
+Once you have a reference to the `OldUploadDescriptor` you're interested in you can inspect its state directly:
 
 ```Swift
     print(descriptor.state)
@@ -445,7 +404,7 @@ Or use KVO to observe changes to its state and progress:
 
 ### Canceling an Upload
 
-Canceling an upload will cancel the file upload itself as well as delete the video object from Vimeo servers. You can cancel an upload using the `UploadDescriptor` instance in question:
+Canceling an upload will cancel the file upload itself as well as delete the video object from Vimeo servers. You can cancel an upload using the `OldUploadDescriptor` instance in question:
 
 ```Swift
     let vimeoUpload = ... // Your instance of VimeoUpload (see above)
@@ -454,14 +413,12 @@ Canceling an upload will cancel the file upload itself as well as delete the vid
     vimeoUpload.cancelUpload(descriptor: descriptor)
 ```
 
-Or by using the `videoUri` of the `uploadTicket` you used to create the upload: 
+Or by using the `identifier` of the `OldUploadDescriptor` in question: 
 
 ```Swift
-    if let videoUri = uploadTicket.video?.uri
-    {
-        let vimeoUpload = ... // Your instance of VimeoUpload (see above)
-        vimeoUpload.cancelUpload(videoUri: videoUri)
-    }
+    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
+    let identifier = phAsset.localIdentifier
+    vimeoUpload.cancelUpload(identifier: identifier)
 ```
 
 ## Custom Workflows
