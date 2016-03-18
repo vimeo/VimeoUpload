@@ -115,13 +115,13 @@ class VideoSettings: NSObject
     
     // MARK : String Methods
     
-    func trim(text: String?) -> String
+    func trim(text: String?) -> String?
     {
         if let constText = text
         {
             return constText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
         }
         
-        return ""
+        return nil
     }
 }
