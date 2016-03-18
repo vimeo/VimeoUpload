@@ -117,11 +117,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let operation = PHAssetCloudExportQuotaCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
-            print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
+            print(String(format: "Download progress: %.2f", progress)) // TODO: Dispatch to main thread
         }
         
         operation.exportProgressBlock = { (progress: Double) -> Void in
-            print("Export progress (settings): \(progress)")
+            print(String(format: "Export progress: %.2f", progress))
         }
         
         operation.completionBlock = { [weak self] () -> Void in

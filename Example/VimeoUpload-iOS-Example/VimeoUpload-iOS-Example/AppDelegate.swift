@@ -34,15 +34,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
     {
         AFNetworkReachabilityManager.sharedManager().startMonitoring()
-        
+        OldVimeoUpload.sharedInstance // Ensure init is called on launch
+
         let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
         application.registerUserNotificationSettings(settings)
         
         let cameraRollViewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:NSBundle.mainBundle())
+        let cameraNavController = UINavigationController(rootViewController: cameraRollViewController)
+
         let uploadsViewController = UploadsViewController(nibName: UploadsViewController.NibName, bundle:NSBundle.mainBundle())
+        let uploadsNavController = UINavigationController(rootViewController: uploadsViewController)
         
         let tabBarController = UITabBarController()
-        tabBarController.viewControllers = [cameraRollViewController, uploadsViewController]
+        tabBarController.viewControllers = [cameraNavController, uploadsNavController]
         tabBarController.selectedIndex = 1
         
         let frame = UIScreen.mainScreen().bounds
@@ -50,14 +54,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         self.window?.rootViewController = tabBarController
         self.window?.makeKeyAndVisible()
         
-        UploadManager.sharedInstance // Ensure init is called on launch
-        
         return true
     }
 
     func application(application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: () -> Void)
     {
-        if UploadManager.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
+        if OldVimeoUpload.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
         {
             assertionFailure("Unhandled background events")
         }

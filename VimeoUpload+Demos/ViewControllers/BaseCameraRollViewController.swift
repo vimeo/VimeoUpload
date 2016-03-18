@@ -113,7 +113,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
             return
         }
         
-        let operation = MeOperation(sessionManager: UploadManager.sharedInstance.foregroundSessionManager)
+        let operation = MeOperation(sessionManager: OldVimeoUpload.sharedInstance.foregroundSessionManager)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -178,7 +178,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     private func setupAndStartOperation()
     {
-        let sessionManager = UploadManager.sharedInstance.foregroundSessionManager
+        let sessionManager = OldVimeoUpload.sharedInstance.foregroundSessionManager
      
         let operation = MeQuotaOperation(sessionManager: sessionManager, me: self.me)
         operation.completionBlock = { [weak self] () -> Void in
