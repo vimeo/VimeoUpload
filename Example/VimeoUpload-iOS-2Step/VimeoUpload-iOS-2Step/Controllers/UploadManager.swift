@@ -51,7 +51,7 @@ class UploadManager
             return "YOUR_OAUTH_TOKEN"
         }
         
-        self.foregroundSessionManager = VimeoSessionManager.defaultSessionManagerWithAuthTokenBlock(authTokenBlock: authTokenBlock)
+        self.foregroundSessionManager = VimeoSessionManager.defaultSessionManager(authTokenBlock: authTokenBlock)
         self.failureTracker = VideoDescriptorFailureTracker(name: name)
         self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager)
         self.descriptorManager = ReachableDescriptorManager(name: name, backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: self.tracker, authTokenBlock: authTokenBlock)
