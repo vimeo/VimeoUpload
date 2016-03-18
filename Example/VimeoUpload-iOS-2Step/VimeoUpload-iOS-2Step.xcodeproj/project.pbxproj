@@ -50,7 +50,7 @@
 		AF34DB711BE721150094D1F8 /* MyVideosViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AF34DB691BE721150094D1F8 /* MyVideosViewController.xib */; };
 		AFF28EC51C03D52900258476 /* VideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF28EC11C03D52900258476 /* VideoCell.swift */; };
 		AFF28EC61C03D52900258476 /* VideoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFF28EC21C03D52900258476 /* VideoCell.xib */; };
-		AFF28EC71C03D52900258476 /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF28EC41C03D52900258476 /* UploadManager.swift */; };
+		AFF28EC71C03D52900258476 /* NewVimeoUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF28EC41C03D52900258476 /* NewVimeoUpload.swift */; };
 		AFFA3C621C9655A000C7B6F3 /* VideoDeletionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3C291C9655A000C7B6F3 /* VideoDeletionManager.swift */; };
 		AFFA3C631C9655A000C7B6F3 /* VideoRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3C2A1C9655A000C7B6F3 /* VideoRefreshManager.swift */; };
 		AFFA3C641C9655A000C7B6F3 /* DescriptorManagerTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3C2C1C9655A000C7B6F3 /* DescriptorManagerTracker.swift */; };
@@ -167,7 +167,7 @@
 		AF34DB691BE721150094D1F8 /* MyVideosViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyVideosViewController.xib; sourceTree = "<group>"; };
 		AFF28EC11C03D52900258476 /* VideoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCell.swift; sourceTree = "<group>"; };
 		AFF28EC21C03D52900258476 /* VideoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoCell.xib; sourceTree = "<group>"; };
-		AFF28EC41C03D52900258476 /* UploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
+		AFF28EC41C03D52900258476 /* NewVimeoUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewVimeoUpload.swift; sourceTree = "<group>"; };
 		AFFA3C291C9655A000C7B6F3 /* VideoDeletionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDeletionManager.swift; sourceTree = "<group>"; };
 		AFFA3C2A1C9655A000C7B6F3 /* VideoRefreshManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoRefreshManager.swift; sourceTree = "<group>"; };
 		AFFA3C2C1C9655A000C7B6F3 /* DescriptorManagerTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorManagerTracker.swift; sourceTree = "<group>"; };
@@ -457,7 +457,7 @@
 		AFF28EC31C03D52900258476 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				AFF28EC41C03D52900258476 /* UploadManager.swift */,
+				AFF28EC41C03D52900258476 /* NewVimeoUpload.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -984,7 +984,7 @@
 				50001E031C908E620074E3C7 /* VIMPHAsset.swift in Sources */,
 				AFFA3C891C9655A100C7B6F3 /* DiskSpaceOperation.swift in Sources */,
 				500020B31C90C94E0074E3C7 /* DescriptorManagerDelegate.swift in Sources */,
-				AFF28EC71C03D52900258476 /* UploadManager.swift in Sources */,
+				AFF28EC71C03D52900258476 /* NewVimeoUpload.swift in Sources */,
 				AFFA3C681C9655A000C7B6F3 /* VideoDescriptor.swift in Sources */,
 				AFFA3C881C9655A100C7B6F3 /* DailyQuotaOperation.swift in Sources */,
 			);

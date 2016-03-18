@@ -29,7 +29,6 @@ import UIKit
 protocol VideoCellDelegate: class
 {
     func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
-    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: UploadDescriptor)
 }
 
 class VideoCell: UITableViewCell
@@ -47,7 +46,6 @@ class VideoCell: UITableViewCell
     @IBOutlet weak var progressView: UIView!
     @IBOutlet weak var progressConstraint: NSLayoutConstraint!
     @IBOutlet weak var deleteButton: UIButton!
-    @IBOutlet weak var retryButton: UIButton!
     
     // MARK:
 
@@ -60,12 +58,13 @@ class VideoCell: UITableViewCell
     private var progressKVOContext = UInt8()
     private var stateKVOContext = UInt8()
     
+    private var observersAdded = false
+
     private var descriptor: UploadDescriptor?
     {
         willSet
         {
-            self.descriptor?.removeObserver(self, forKeyPath: self.dynamicType.StateKeyPath, context: &self.stateKVOContext)
-            self.descriptor?.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
+            self.removeObserversIfNecessary()
         }
         
         didSet
@@ -74,9 +73,8 @@ class VideoCell: UITableViewCell
             {
                 self.updateState(state)
             }
-
-            self.descriptor?.addObserver(self, forKeyPath: self.dynamicType.StateKeyPath, options: NSKeyValueObservingOptions.New, context: &self.stateKVOContext)
-            self.descriptor?.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
+            
+            self.addObserversIfNecessary()
         }
     }
     
@@ -86,11 +84,12 @@ class VideoCell: UITableViewCell
     {
         didSet
         {
-            if let video = self.video
+            if let video = self.video,
+                let uri = video.uri
             {
                 self.setupImageView(video: video)
                 self.setupStatusLabel(video: video)
-                self.descriptor = UploadManager.sharedInstance.descriptorForVideo(videoUri: video.uri!)
+                self.descriptor = NewVimeoUpload.sharedInstance.descriptorForVideo(videoUri: uri)
             }
         }
     }
@@ -99,7 +98,7 @@ class VideoCell: UITableViewCell
 
     deinit
     {
-        self.descriptor = nil
+        self.removeObserversIfNecessary()
     }
     
     override func awakeFromNib()
@@ -135,14 +134,6 @@ class VideoCell: UITableViewCell
         }
     }
 
-    @IBAction func didTapRetryButton(sender: UIButton)
-    {
-        if let descriptor = self.descriptor
-        {
-            self.delegate?.cellDidRetryUploadDescriptor(cell: self, descriptor: descriptor)
-        }
-    }
-
     // MARK: Video Setup
     
     private func setupImageView(video video: VIMVideo)
@@ -172,13 +163,20 @@ class VideoCell: UITableViewCell
     {
         switch state
         {
-        case .Ready, .Executing:
+        case .Ready:
+            self.updateProgress(0)
+            self.progressView.hidden = false
             self.deleteButton.setTitle("Cancel", forState: .Normal)
-            self.errorLabel.text = "Ready or Executing"
-            self.retryButton.hidden = true
+            self.errorLabel.text = "Ready"
+            
+        case .Executing:
+            self.progressView.hidden = false
+            self.deleteButton.setTitle("Cancel", forState: .Normal)
+            self.errorLabel.text = "Executing"
 
         case .Suspended:
-            self.updateProgress(0) // Reset the progress bar to 0
+            self.updateProgress(0)
+            self.progressView.hidden = true
             self.errorLabel.text = "Suspended"
 
         case .Finished:
@@ -189,18 +187,38 @@ class VideoCell: UITableViewCell
             if let error = self.descriptor?.error
             {
                 self.errorLabel.text = error.localizedDescription
-                self.retryButton.hidden = false
             }
             else
             {
                 self.errorLabel.text = "Finished"
-                self.retryButton.hidden = true
             }
         }
     }
 
     // MARK: KVO
     
+    private func addObserversIfNecessary()
+    {
+        if let descriptor = self.descriptor where self.observersAdded == false
+        {
+            descriptor.addObserver(self, forKeyPath: self.dynamicType.StateKeyPath, options: .New, context: &self.stateKVOContext)
+            descriptor.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: .New, context: &self.progressKVOContext)
+            
+            self.observersAdded = true
+        }
+    }
+    
+    private func removeObserversIfNecessary()
+    {
+        if let descriptor = self.descriptor where self.observersAdded == true
+        {
+            descriptor.removeObserver(self, forKeyPath: self.dynamicType.StateKeyPath, context: &self.stateKVOContext)
+            descriptor.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
+            
+            self.observersAdded = false
+        }
+    }
+
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
     {
         if let keyPath = keyPath

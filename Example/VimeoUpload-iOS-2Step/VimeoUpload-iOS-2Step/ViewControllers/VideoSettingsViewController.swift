@@ -110,7 +110,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let me = self.input!.user
         let cameraRollAsset = self.input!.cameraRollAsset
-        let sessionManager = UploadManager.sharedInstance.foregroundSessionManager
+        let sessionManager = NewVimeoUpload.sharedInstance.foregroundSessionManager
         let videoSettings = self.videoSettings
         
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
@@ -179,7 +179,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let url = self.url!
         let uploadTicket = self.uploadTicket!
         let assetIdentifier = self.input!.cameraRollAsset.identifier
-        UploadManager.sharedInstance.uploadVideo(url: url, uploadTicket: uploadTicket, assetIdentifier: assetIdentifier)
+        
+        let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket)
+        descriptor.identifier = assetIdentifier
+
+        NewVimeoUpload.sharedInstance.uploadVideo(descriptor: descriptor)
     }
 
     // MARK: Actions
@@ -192,7 +196,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         if let videoUri = self.uploadTicket?.video?.uri
         {
-            UploadManager.sharedInstance.deleteUpload(videoUri: videoUri)
+            NewVimeoUpload.sharedInstance.cancelUpload(videoUri: videoUri)
         }
     }
 
@@ -284,7 +288,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         do
         {
-            self.task = try UploadManager.sharedInstance.foregroundSessionManager.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+            self.task = try NewVimeoUpload.sharedInstance.foregroundSessionManager.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 self?.task = nil
                 

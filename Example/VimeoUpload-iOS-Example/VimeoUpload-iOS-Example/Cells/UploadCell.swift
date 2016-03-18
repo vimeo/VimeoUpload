@@ -131,7 +131,7 @@ class UploadCell: UITableViewCell
         switch state
         {
         case .Ready:
-            self.updateProgress(0) // Reset the progress bar to 0
+            self.updateProgress(0)
             self.progressView.hidden = false
             self.deleteButton.setTitle("Cancel", forState: .Normal)
             self.descriptorStateLabel.text = "Ready"
@@ -144,13 +144,14 @@ class UploadCell: UITableViewCell
             self.errorLabel.text = ""
 
         case .Suspended:
-            self.progressView.hidden = false
+            self.updateProgress(0)
+            self.progressView.hidden = true
             self.deleteButton.setTitle("Cancel", forState: .Normal)
             self.descriptorStateLabel.text = "Suspended"
             self.errorLabel.text = ""
     
         case .Finished:
-            self.updateProgress(0) // Reset the progress bar to 0
+            self.updateProgress(0)
             self.progressView.hidden = true
             self.deleteButton.setTitle("Delete", forState: .Normal)
             self.descriptorStateLabel.text = "Finished"
