@@ -41,7 +41,7 @@ class CameraRollViewController: BaseCameraRollViewController
 
         self.tabBarItem.title = "Camera Roll"
     }
-    
+        
     override func didFinishWithResult(result: UploadUserAndCameraRollAsset)
     {
         let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())

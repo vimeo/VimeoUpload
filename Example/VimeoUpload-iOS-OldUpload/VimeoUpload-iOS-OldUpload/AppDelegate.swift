@@ -25,6 +25,7 @@
 //
 
 import UIKit
+import Photos
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate
@@ -54,6 +55,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         self.window?.rootViewController = tabBarController
         self.window?.makeKeyAndVisible()
         
+        self.requestCameraRollAccessIfNecessary()
+        
         return true
     }
 
@@ -62,6 +65,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         if OldVimeoUpload.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
         {
             assertionFailure("Unhandled background events")
+        }
+    }
+    
+    private func requestCameraRollAccessIfNecessary()
+    {
+        PHPhotoLibrary.requestAuthorization { status in
+            switch status
+            {
+            case .Authorized:
+                print("Camera roll access granted")
+            case .Restricted:
+                print("Unable to present camera roll. Camera roll access restricted.")
+            case .Denied:
+                print("Unable to present camera roll. Camera roll access denied.")
+            default:
+                // place for .NotDetermined - in this callback status is already determined so should never get here
+                break
+            }
         }
     }
 }

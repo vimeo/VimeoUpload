@@ -256,12 +256,29 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     @IBAction func didTapUpload(sender: UIButton)
     {
-        let viewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:NSBundle.mainBundle())
+        PHPhotoLibrary.requestAuthorization { status in
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
 
-        let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.view.backgroundColor = UIColor.whiteColor()
-        
-        self.presentViewController(navigationController, animated: true, completion: nil)
+                switch status
+                {
+                case .Authorized:
+                    let viewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:NSBundle.mainBundle())
+                    let navigationController = UINavigationController(rootViewController: viewController)
+                    navigationController.view.backgroundColor = UIColor.whiteColor()
+                    self.presentViewController(navigationController, animated: true, completion: nil)
+
+                case .Restricted:
+                    print("Unable to present camera roll. Camera roll access restricted.")
+                case .Denied:
+                    print("Unable to present camera roll. Camera roll access denied.")
+                default:
+                    // place for .NotDetermined - in this callback status is already determined so should never get here
+                    break
+                }
+
+            })
+        }
     }
     
     // MARK: Alerts
