@@ -38,11 +38,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
         let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
         application.registerUserNotificationSettings(settings)
-        
-        let cameraRollViewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:NSBundle.mainBundle())        
-        let cameraNavController = UINavigationController(rootViewController: cameraRollViewController)
 
+        let cameraRollViewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:NSBundle.mainBundle())
         let uploadsViewController = UploadsViewController(nibName: UploadsViewController.NibName, bundle:NSBundle.mainBundle())
+        
+        let cameraNavController = UINavigationController(rootViewController: cameraRollViewController)
         let uploadsNavController = UINavigationController(rootViewController: uploadsViewController)
         
         let tabBarController = UITabBarController()
