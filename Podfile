@@ -1,7 +1,7 @@
 workspace 'VimeoUpload'
-xcodeproj 'Example/VimeoUpload-iOS-2Step/VimeoUpload-iOS-2Step.xcodeproj'
-xcodeproj 'Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj'
-xcodeproj 'Example/VimeoUpload-OSX-Example/VimeoUpload-OSX-Example.xcodeproj'
+xcodeproj 'Example/VimeoUpload-iOS/VimeoUpload-iOS.xcodeproj'
+xcodeproj 'Example/VimeoUpload-iOS-OldUpload/VimeoUpload-iOS-OldUpload.xcodeproj'
+xcodeproj 'Example/VimeoUpload-OSX/VimeoUpload-OSX.xcodeproj'
 
 def shared_pods
     pod 'AFNetworking', '2.6.3'
