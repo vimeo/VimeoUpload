@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
     {
         AFNetworkReachabilityManager.sharedManager().startMonitoring()
-        OldVimeoUpload.sharedInstance // Ensure init is called on launch
+        OldVimeoUpload.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
 
         let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
         application.registerUserNotificationSettings(settings)

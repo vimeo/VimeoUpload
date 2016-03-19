@@ -28,9 +28,13 @@ import Foundation
 
 class VimeoUpload<T: VideoDescriptor>
 {
+    static var Name: String
+    {
+        return "vimeo_upload" // Generic types don't yet support static properties [AH] 3/19/2016
+    }
+    
     // MARK:
     
-    let name = "vimeo_upload" // Generic types don't yet support static properties [AH] 3/19/2016
     let descriptorManager: ReachableDescriptorManager
     let foregroundSessionManager: VimeoSessionManager
     
@@ -51,11 +55,16 @@ class VimeoUpload<T: VideoDescriptor>
     {
         self.foregroundSessionManager = VimeoSessionManager.defaultSessionManager(authTokenBlock: authTokenBlock)
         self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager)
-        self.descriptorManager = ReachableDescriptorManager(name: self.name, backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: authTokenBlock)
+        self.descriptorManager = ReachableDescriptorManager(name: self.dynamicType.Name, backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: authTokenBlock)
     }
     
     // MARK: Public API - Starting
 
+    func applicationDidFinishLaunching()
+    {
+        // No-op
+    }
+    
     func uploadVideo(descriptor descriptor: T)
     {
         self.descriptorManager.addDescriptor(descriptor.progressDescriptor)
