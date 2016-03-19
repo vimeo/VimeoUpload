@@ -45,6 +45,8 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     static let NibName = "BaseCameraRollViewController"
     private static let CollectionViewSpacing: CGFloat = 2
     
+    var sessionManager: VimeoSessionManager!
+    
     // MARK: 
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -113,7 +115,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
             return
         }
         
-        let operation = MeOperation(sessionManager: NewVimeoUpload.sharedInstance.foregroundSessionManager)
+        let operation = MeOperation(sessionManager: self.sessionManager)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
@@ -178,9 +180,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     private func setupAndStartOperation()
     {
-        let sessionManager = NewVimeoUpload.sharedInstance.foregroundSessionManager
-     
-        let operation = MeQuotaOperation(sessionManager: sessionManager, me: self.me)
+        let operation = MeQuotaOperation(sessionManager: self.sessionManager, me: self.me)
         operation.completionBlock = { [weak self] () -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
