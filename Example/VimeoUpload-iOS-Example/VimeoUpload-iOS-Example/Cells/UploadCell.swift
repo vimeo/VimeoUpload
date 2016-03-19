@@ -30,6 +30,7 @@ class UploadCell: UITableViewCell
 {
     // MARK:
     
+    static let Height: CGFloat = 100
     static let CellIdentifier = "UploadCellIdentifier"
     static let NibName = "UploadCell"
 
@@ -37,24 +38,24 @@ class UploadCell: UITableViewCell
 
     @IBOutlet weak var descriptorStateLabel: UILabel!
     @IBOutlet weak var errorLabel: UILabel!
-//    @IBOutlet weak var progressView: UIView!
-//    @IBOutlet weak var progressConstraint: NSLayoutConstraint!
+    @IBOutlet weak var progressView: UIView!
+    @IBOutlet weak var progressConstraint: NSLayoutConstraint!
     @IBOutlet weak var deleteButton: UIButton!
-    @IBOutlet weak var retryButton: UIButton!
 
     // MARK:
     
-    private static let ProgressKeyPath = "fractionCompleted"
+    private static let ProgressKeyPath = "progressObservable"
     private static let StateKeyPath = "stateObservable"
     private var progressKVOContext = UInt8()
     private var stateKVOContext = UInt8()
 
+    private var observersAdded = false
+
     private var descriptor: OldUploadDescriptor?
-        {
+    {
         willSet
         {
-            self.descriptor?.removeObserver(self, forKeyPath: self.dynamicType.StateKeyPath, context: &self.stateKVOContext)
-            self.descriptor?.progress?.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
+            self.removeObserversIfNecessary()
         }
         
         didSet
@@ -64,8 +65,7 @@ class UploadCell: UITableViewCell
                 self.updateState(state)
             }
             
-            self.descriptor?.addObserver(self, forKeyPath: self.dynamicType.StateKeyPath, options: NSKeyValueObservingOptions.New, context: &self.stateKVOContext)
-            self.descriptor?.progress?.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.progressKVOContext)
+            self.addObserversIfNecessary()
         }
     }
 
@@ -77,25 +77,44 @@ class UploadCell: UITableViewCell
         {
             if let assetIdentifier = self.assetIdentifier
             {
-                self.descriptor = UploadManager.sharedInstance.descriptorForAssetIdentifier(assetIdentifier)
+                self.descriptor = OldVimeoUpload.sharedInstance.descriptorForIdentifier(assetIdentifier)
             }
         }
     }
     
     // MARK: - Initialization
     
+    deinit
+    {
+        self.removeObserversIfNecessary()
+    }
+    
     override func awakeFromNib()
     {
         super.awakeFromNib()
-        // Initialization code
+        
+        self.progressView.hidden = true
+        self.updateProgress(0)
     }
-    
+
     override func prepareForReuse()
     {
         super.prepareForReuse()
     
+        self.progressView.hidden = true
+        self.updateProgress(0)
         self.assetIdentifier = nil
         self.descriptor = nil
+    }
+    
+    // MARK: Actions
+    
+    @IBAction func didTapButton(sender: UIButton)
+    {
+        if let descriptor = self.descriptor
+        {
+            OldVimeoUpload.sharedInstance.cancelUpload(descriptor: descriptor)
+        }
     }
     
     // MARK: Descriptor Setup
@@ -104,42 +123,70 @@ class UploadCell: UITableViewCell
     {
         let width = self.contentView.frame.size.width
         let constant = CGFloat(1 - progress) * width
-//        self.progressConstraint.constant = constant
+        self.progressConstraint.constant = constant
     }
     
     private func updateState(state: DescriptorState)
     {
         switch state
         {
-        case .Ready, .Executing:
+        case .Ready:
+            self.updateProgress(0)
+            self.progressView.hidden = false
             self.deleteButton.setTitle("Cancel", forState: .Normal)
-            
-            self.descriptorStateLabel.text = "Ready or Executing"
-            self.retryButton.hidden = true
-            
+            self.descriptorStateLabel.text = "Ready"
+            self.errorLabel.text = ""
+        
+        case .Executing:
+            self.progressView.hidden = false
+            self.deleteButton.setTitle("Cancel", forState: .Normal)
+            self.descriptorStateLabel.text = "Executing"
+            self.errorLabel.text = ""
+
         case .Suspended:
+            self.updateProgress(0)
+            self.progressView.hidden = true
+            self.deleteButton.setTitle("Cancel", forState: .Normal)
             self.descriptorStateLabel.text = "Suspended"
-            
+            self.errorLabel.text = ""
+    
         case .Finished:
-            self.updateProgress(0) // Reset the progress bar to 0
-//            self.progressView.hidden = true
+            self.updateProgress(0)
+            self.progressView.hidden = true
             self.deleteButton.setTitle("Delete", forState: .Normal)
-            
             self.descriptorStateLabel.text = "Finished"
+
             if let error = self.descriptor?.error
             {
                 self.errorLabel.text = error.localizedDescription
-                self.retryButton.hidden = false
-            }
-            else
-            {
-                self.retryButton.hidden = true
             }
         }
     }
     
     // MARK: KVO
     
+    private func addObserversIfNecessary()
+    {
+        if let descriptor = self.descriptor where self.observersAdded == false
+        {
+            descriptor.progressDescriptor.addObserver(self, forKeyPath: self.dynamicType.StateKeyPath, options: .New, context: &self.stateKVOContext)
+            descriptor.progressDescriptor.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: .New, context: &self.progressKVOContext)
+            
+            self.observersAdded = true
+        }
+    }
+    
+    private func removeObserversIfNecessary()
+    {
+        if let descriptor = self.descriptor where self.observersAdded == true
+        {
+            descriptor.progressDescriptor.removeObserver(self, forKeyPath: self.dynamicType.StateKeyPath, context: &self.stateKVOContext)
+            descriptor.progressDescriptor.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
+            
+            self.observersAdded = false
+        }
+    }
+
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
     {
         if let keyPath = keyPath
@@ -154,7 +201,7 @@ class UploadCell: UITableViewCell
                     // Set the progress view to visible here so that the view has already been laid out
                     // And therefore the initial state is calculated based on the laid out width of the cell
                     // Doing this in awakeFromNib is too early, the width is incorrect [AH] 11/25/2015
-//                    self?.progressView.hidden = false
+                    self?.progressView.hidden = false
                     self?.updateProgress(progress)
                 })
                 

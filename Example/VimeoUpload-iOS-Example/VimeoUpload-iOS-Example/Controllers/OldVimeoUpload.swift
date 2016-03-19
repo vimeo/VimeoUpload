@@ -1,8 +1,8 @@
 //
-//  CameraRollViewController.swift
+//  UploadManager.swift
 //  VimeoUpload
 //
-//  Created by Hanssen, Alfie on 12/14/15.
+//  Created by Alfred Hanssen on 10/18/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,29 +25,17 @@
 //
 
 import Foundation
-import UIKit
 
-class CameraRollViewController: BaseCameraRollViewController
+class OldVimeoUpload: VimeoUpload<OldUploadDescriptor>
 {
-    // MARK: Overrides
-    
-    override func viewDidLoad()
-    {
-        super.viewDidLoad()
-
-        self.title = "Camera Roll"
-
-        self.tabBarItem.title = "Camera Roll"
+    static let sharedInstance = OldVimeoUpload(backgroundSessionIdentifier: "com.vimeo.upload") { () -> String? in
+        return "YOUR_OAUTH_TOKEN" // See README for details on how to obtain and OAuth token
     }
     
-    override func didFinishWithResult(result: UploadUserAndCameraRollAsset)
+    // MARK: - Initialization
+    
+    override init(backgroundSessionIdentifier: String, authTokenBlock: AuthTokenBlock)
     {
-        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
-        viewController.input = result
-     
-        let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.view.backgroundColor = UIColor.whiteColor()
-        
-        self.tabBarController?.presentViewController(navigationController, animated: true, completion: nil)
+        super.init(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: authTokenBlock)
     }
 }

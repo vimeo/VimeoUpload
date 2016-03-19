@@ -26,13 +26,17 @@
 
 import Foundation
 
-class VimeoUpload
+class VimeoUpload<T: VideoDescriptor>
 {
-    private static let Name = "vimeo_upload"
+    static var Name: String
+    {
+        return "vimeo_upload" // Generic types don't yet support static properties [AH] 3/19/2016
+    }
     
     // MARK:
     
     let descriptorManager: ReachableDescriptorManager
+    let foregroundSessionManager: VimeoSessionManager
     
     // MARK: 
     
@@ -49,43 +53,61 @@ class VimeoUpload
 
     init(backgroundSessionIdentifier: String, authTokenBlock: AuthTokenBlock)
     {
-        let foregroundSessionManager = VimeoSessionManager.defaultSessionManager(authTokenBlock: authTokenBlock)
-        self.deletionManager = VideoDeletionManager(sessionManager: foregroundSessionManager)
-
+        self.foregroundSessionManager = VimeoSessionManager.defaultSessionManager(authTokenBlock: authTokenBlock)
+        self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager)
         self.descriptorManager = ReachableDescriptorManager(name: self.dynamicType.Name, backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: authTokenBlock)
     }
     
-    // MARK: Public API
-    
-    func uploadVideo(url url: NSURL, uploadTicket: VIMUploadTicket) -> UploadDescriptor
+    // MARK: Public API - Starting
+
+    func applicationDidFinishLaunching()
     {
-        let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket)
-        self.descriptorManager.addDescriptor(descriptor)
-        
-        return descriptor
+        // No-op
     }
     
+    func uploadVideo(descriptor descriptor: T)
+    {
+        self.descriptorManager.addDescriptor(descriptor.progressDescriptor)
+    }
+
+    // MARK: Public API - Canceling
+
     func cancelUpload(videoUri videoUri: VideoUri)
     {
         self.deletionManager.deleteVideoWithUri(videoUri)
         
         if let descriptor = self.descriptorForVideo(videoUri: videoUri)
         {
-            self.descriptorManager.cancelDescriptor(descriptor)
+            self.descriptorManager.cancelDescriptor(descriptor.progressDescriptor)
         }
     }
 
-    func cancelUpload(descriptor descriptor: UploadDescriptor)
+    func cancelUpload(descriptor descriptor: VideoDescriptor)
     {
-        if let videoUri = descriptor.uploadTicket.video?.uri
+        if let videoUri = descriptor.videoUri
         {
             self.deletionManager.deleteVideoWithUri(videoUri)
         }
         
-        self.descriptorManager.cancelDescriptor(descriptor)
+        self.descriptorManager.cancelDescriptor(descriptor.progressDescriptor)
     }
 
-    func descriptorForVideo(videoUri videoUri: VideoUri) -> UploadDescriptor?
+    func cancelUpload(identifier identifier: String)
+    {
+        if let descriptor = self.descriptorForIdentifier(identifier)
+        {
+            if let videoUri = descriptor.videoUri
+            {
+                self.deletionManager.deleteVideoWithUri(videoUri)
+            }
+
+            self.descriptorManager.cancelDescriptor(descriptor.progressDescriptor)
+        }
+    }
+    
+    // MARK: Public API - Accessing
+
+    func descriptorForVideo(videoUri videoUri: VideoUri) -> T?
     {
         let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
             
@@ -97,6 +119,21 @@ class VimeoUpload
             return false
         })
         
-        return descriptor as? UploadDescriptor
+        return descriptor as? T
+    }
+    
+    func descriptorForIdentifier(identifier: String) -> T?
+    {
+        let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
+            
+            if let descriptor = descriptor as? VideoDescriptor, let currentIdentifier = descriptor.progressDescriptor.identifier
+            {
+                return identifier == currentIdentifier
+            }
+            
+            return false
+        })
+        
+        return descriptor as? T
     }
 }

@@ -93,11 +93,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let operation = PHAssetCloudExportQuotaOperation(me: me, phAsset: phAsset)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
-            print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
+            print(String(format: "Download progress: %.2f", progress)) // TODO: Dispatch to main thread
         }
         
         operation.exportProgressBlock = { (progress: Double) -> Void in
-            print("Export progress (settings): \(progress)")
+            print(String(format: "Export progress: %.2f", progress))
         }
         
         operation.completionBlock = { [weak self] () -> Void in
@@ -146,7 +146,10 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let phAsset = (self.input!.cameraRollAsset as! VIMPHAsset).phAsset
         let assetIdentifier = phAsset.localIdentifier
         
-        UploadManager.sharedInstance.uploadVideo(url: url, assetIdentifier: assetIdentifier, videoSettings: self.videoSettings)
+        let descriptor = OldUploadDescriptor(url: url, videoSettings: self.videoSettings)
+        descriptor.identifier = assetIdentifier
+
+        OldVimeoUpload.sharedInstance.uploadVideo(descriptor: descriptor)
     }
 
     // MARK: Actions

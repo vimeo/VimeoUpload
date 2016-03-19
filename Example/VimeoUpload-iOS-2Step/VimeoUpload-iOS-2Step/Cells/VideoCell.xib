@@ -33,17 +33,6 @@
                             <action selector="didTapDeleteButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="uLJ-pp-Mfd"/>
                         </connections>
                     </button>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ORR-xk-8lz" userLabel="Retry Button">
-                        <rect key="frame" x="265" y="50" width="50" height="44"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="44" id="3a9-Lb-Arj"/>
-                            <constraint firstAttribute="width" constant="50" id="5fa-9Z-SZl"/>
-                        </constraints>
-                        <state key="normal" title="Retry"/>
-                        <connections>
-                            <action selector="didTapRetryButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="62O-c5-3fE"/>
-                        </connections>
-                    </button>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="k8H-JT-9qF">
                         <rect key="frame" x="8" y="8" width="83" height="83"/>
                         <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
@@ -51,13 +40,13 @@
                             <constraint firstAttribute="width" secondItem="k8H-JT-9qF" secondAttribute="height" multiplier="1:1" id="Qlu-Wd-Iat"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J46-9g-WWz">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Server State" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J46-9g-WWz">
                         <rect key="frame" x="101" y="10" width="201" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v3f-Ly-dYo" userLabel="Error Label">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Local State" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v3f-Ly-dYo" userLabel="Error Label">
                         <rect key="frame" x="101" y="36" width="201" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -71,9 +60,7 @@
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="8PW-nQ-Kdm" secondAttribute="bottom" id="3b2-CW-tpL"/>
                     <constraint firstItem="J46-9g-WWz" firstAttribute="leading" secondItem="k8H-JT-9qF" secondAttribute="trailing" constant="10" id="7Oh-4d-7yQ"/>
-                    <constraint firstAttribute="trailing" secondItem="ORR-xk-8lz" secondAttribute="trailing" constant="5" id="BJD-sI-qXu"/>
                     <constraint firstItem="J46-9g-WWz" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Jk0-gY-wYC"/>
-                    <constraint firstAttribute="bottom" secondItem="ORR-xk-8lz" secondAttribute="bottom" constant="5" id="KAx-LP-cqP"/>
                     <constraint firstItem="v3f-Ly-dYo" firstAttribute="leading" secondItem="k8H-JT-9qF" secondAttribute="trailing" constant="10" id="McK-Ix-xb5"/>
                     <constraint firstItem="v3f-Ly-dYo" firstAttribute="top" secondItem="J46-9g-WWz" secondAttribute="bottom" constant="5" id="Nya-VQ-Tym"/>
                     <constraint firstItem="J46-9g-WWz" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="R4j-Vl-5uk"/>
@@ -101,7 +88,6 @@
                 <outlet property="errorLabel" destination="v3f-Ly-dYo" id="KeP-NP-imq"/>
                 <outlet property="progressConstraint" destination="yUq-uW-f1v" id="h5v-vy-7Yw"/>
                 <outlet property="progressView" destination="8PW-nQ-Kdm" id="zLr-XP-Ufy"/>
-                <outlet property="retryButton" destination="ORR-xk-8lz" id="8if-uD-Wn5"/>
                 <outlet property="statusLabel" destination="J46-9g-WWz" id="8lU-R6-gCu"/>
                 <outlet property="thumbnailImageView" destination="k8H-JT-9qF" id="iXP-Mj-6jF"/>
             </connections>

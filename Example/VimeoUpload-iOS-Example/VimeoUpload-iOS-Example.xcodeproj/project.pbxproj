@@ -33,7 +33,7 @@
 		50B49D851C1F716900D8F1A2 /* CameraRollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B49D841C1F716900D8F1A2 /* CameraRollViewController.swift */; };
 		5BE5BFEB646CB93C6685C8F3 /* libPods-VimeoUpload-iOS-ExampleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CC920C9FBE5B8BE08EEF708 /* libPods-VimeoUpload-iOS-ExampleTests.a */; };
 		8678D2894ED80B052D5D4CD1 /* libPods-VimeoUpload-iOS-Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E58543EFDB473CB816D12DD8 /* libPods-VimeoUpload-iOS-Example.a */; };
-		AFF28ECA1C03D59100258476 /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF28EC91C03D59100258476 /* UploadManager.swift */; };
+		AFF28ECA1C03D59100258476 /* OldVimeoUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF28EC91C03D59100258476 /* OldVimeoUpload.swift */; };
 		AFFA3CDB1C9656D200C7B6F3 /* ArchiverProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3C8D1C9656D200C7B6F3 /* ArchiverProtocol.swift */; };
 		AFFA3CDC1C9656D200C7B6F3 /* ConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3C8E1C9656D200C7B6F3 /* ConnectivityManager.swift */; };
 		AFFA3CDD1C9656D200C7B6F3 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3C8F1C9656D200C7B6F3 /* Descriptor.swift */; };
@@ -149,7 +149,7 @@
 		5627E214EA4B8355574C0614 /* Pods-VimeoUpload-iOS-ExampleUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-ExampleUITests.release.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-ExampleUITests/Pods-VimeoUpload-iOS-ExampleUITests.release.xcconfig"; sourceTree = "<group>"; };
 		67A662EB2165C8DB78441721 /* Pods-VimeoUpload-iOS-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-Example.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-Example/Pods-VimeoUpload-iOS-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		8CC920C9FBE5B8BE08EEF708 /* libPods-VimeoUpload-iOS-ExampleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VimeoUpload-iOS-ExampleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AFF28EC91C03D59100258476 /* UploadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
+		AFF28EC91C03D59100258476 /* OldVimeoUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldVimeoUpload.swift; sourceTree = "<group>"; };
 		AFFA3C8D1C9656D200C7B6F3 /* ArchiverProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiverProtocol.swift; sourceTree = "<group>"; };
 		AFFA3C8E1C9656D200C7B6F3 /* ConnectivityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectivityManager.swift; sourceTree = "<group>"; };
 		AFFA3C8F1C9656D200C7B6F3 /* Descriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
@@ -384,7 +384,7 @@
 		AFF28EC81C03D59100258476 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				AFF28EC91C03D59100258476 /* UploadManager.swift */,
+				AFF28EC91C03D59100258476 /* OldVimeoUpload.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -392,11 +392,11 @@
 		AFFA3C8B1C9656D200C7B6F3 /* VimeoUpload */ = {
 			isa = PBXGroup;
 			children = (
+				AFFA3CDA1C9656D200C7B6F3 /* VimeoUpload.swift */,
+				AFFA3C9F1C9656D200C7B6F3 /* Upload */,
 				AFFA3C8C1C9656D200C7B6F3 /* Descriptor System */,
 				AFFA3C961C9656D200C7B6F3 /* Extensions */,
 				AFFA3C9A1C9656D200C7B6F3 /* Networking */,
-				AFFA3C9F1C9656D200C7B6F3 /* Upload */,
-				AFFA3CDA1C9656D200C7B6F3 /* VimeoUpload.swift */,
 			);
 			name = VimeoUpload;
 			path = ../../../VimeoUpload;
@@ -984,7 +984,7 @@
 				50001E241C908E6B0074E3C7 /* VIMPHAsset.swift in Sources */,
 				AFFA3D131C9656D200C7B6F3 /* WeeklyQuotaOperation.swift in Sources */,
 				AFFA3CE01C9656D200C7B6F3 /* DescriptorManagerDelegate.swift in Sources */,
-				AFF28ECA1C03D59100258476 /* UploadManager.swift in Sources */,
+				AFF28ECA1C03D59100258476 /* OldVimeoUpload.swift in Sources */,
 				AFFA3CF01C9656D200C7B6F3 /* OldUploadRequest.swift in Sources */,
 				AFFA3CEF1C9656D200C7B6F3 /* OldUploadDescriptor.swift in Sources */,
 			);

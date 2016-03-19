@@ -45,7 +45,7 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         didSet
         {
-            print(self.currentRequest.rawValue)
+            print("\(self.currentRequest.rawValue) \(self.identifier)")
         }
     }
     
@@ -56,11 +56,6 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         return .Upload
     }
     
-//    var videoUri: VideoUri?
-//    {
-//        return self.uploadTicket.video?.uri
-//    }
-    
     var progressDescriptor: ProgressDescriptor
     {
         return self
@@ -68,6 +63,11 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: - Initialization
     
+    required init()
+    {
+        fatalError("init() has not been implemented")
+    }
+
     init(url: NSURL, videoSettings: VideoSettings? = nil)
     {
         self.url = url
@@ -84,7 +84,7 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
 
         do
         {
-            try self.transitionToState(request: .Create, sessionManager: sessionManager) // TODO: fix this [AH]
+            try self.transitionToState(request: .Create, sessionManager: sessionManager)
         }
         catch let error as NSError
         {
@@ -99,21 +99,7 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     override func resume(sessionManager sessionManager: AFURLSessionManager)
     {
         super.resume(sessionManager: sessionManager)
-    
-        let _ = try? self.didLoadFromCache(sessionManager: sessionManager)
-    }
-
-    override func cancel(sessionManager sessionManager: AFURLSessionManager)
-    {
-        super.cancel(sessionManager: sessionManager)
         
-        NSFileManager.defaultManager().deleteFileAtURL(self.url) // TODO: is this working as expected [AH]
-    }
-    
-    // If necessary, resume the current task and re-connect progress objects
-
-    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
-    {
         if let identifier = self.currentTaskIdentifier,
             let task = sessionManager.uploadTaskForIdentifier(identifier),
             let progress = sessionManager.uploadProgressForTask(task)
@@ -122,6 +108,37 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
 
+    override func cancel(sessionManager sessionManager: AFURLSessionManager)
+    {
+        super.cancel(sessionManager: sessionManager)
+        
+        NSFileManager.defaultManager().deleteFileAtURL(self.url)
+    }
+    
+    // If necessary, resume the current task and re-connect progress objects
+
+    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    {
+        guard let identifier = self.currentTaskIdentifier,
+            let task = sessionManager.uploadTaskForIdentifier(identifier),
+            let progress = sessionManager.uploadProgressForTask(task) else
+        {
+            // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload
+            // Upon reopening the app, the descriptor is loaded but no longer has a task
+            
+            NSFileManager.defaultManager().deleteFileAtURL(self.url)
+            
+            let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
+            self.error = error // TODO: Whenever we set error delete local file? Same for download?
+            self.currentTaskIdentifier = nil
+            self.state = .Finished
+            
+            throw error
+        }
+
+        self.progress = progress
+    }
+    
     override func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
     {
         let sessionManager = sessionManager as! VimeoSessionManager
@@ -147,6 +164,8 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         catch let error as NSError
         {
             self.error = error
+            self.currentTaskIdentifier = nil
+            self.state = .Finished
         }
 
         return nil
@@ -186,10 +205,13 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             let sessionManager = sessionManager as! VimeoSessionManager
             try self.transitionToState(request: nextRequest!, sessionManager: sessionManager)
+            self.resume(sessionManager: sessionManager)
         }
         catch let error as NSError
         {
             self.error = error
+            self.currentTaskIdentifier = nil
+            self.state = .Finished
         }
     }
     
@@ -200,7 +222,6 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.currentRequest = request
         let task = try self.taskForRequest(request, sessionManager: sessionManager)
         self.currentTaskIdentifier = task.taskIdentifier
-        task.resume()
     }
     
     private func taskForRequest(request: OldUploadRequest, sessionManager: VimeoSessionManager) throws -> NSURLSessionTask
@@ -265,11 +286,6 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.currentRequest = OldUploadRequest(rawValue: aDecoder.decodeObjectForKey("currentRequest") as! String)!
 
         super.init(coder: aDecoder)
-    }
-    
-    required init()
-    {
-        fatalError("init() has not been implemented")
     }
     
     override func encodeWithCoder(aCoder: NSCoder)
