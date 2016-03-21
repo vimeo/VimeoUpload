@@ -77,7 +77,6 @@
 		AFFA3FF11C9CE42000C7B6F3 /* DailyQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3FA41C9CE41F00C7B6F3 /* DailyQuotaOperation.swift */; };
 		AFFA3FF21C9CE42000C7B6F3 /* DiskSpaceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3FA51C9CE41F00C7B6F3 /* DiskSpaceOperation.swift */; };
 		AFFA3FF31C9CE42000C7B6F3 /* WeeklyQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3FA61C9CE41F00C7B6F3 /* WeeklyQuotaOperation.swift */; };
-		AFFA3FF41C9CE42000C7B6F3 /* VimeoOldUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3FA71C9CE41F00C7B6F3 /* VimeoOldUpload.swift */; };
 		AFFA3FF51C9CE42000C7B6F3 /* VimeoUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3FA81C9CE41F00C7B6F3 /* VimeoUpload.swift */; };
 		AFFA3FF61C9CE42000C7B6F3 /* DemoCameraRollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3FAB1C9CE41F00C7B6F3 /* DemoCameraRollCell.swift */; };
 		AFFA3FF71C9CE42000C7B6F3 /* DemoCameraRollCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFFA3FAC1C9CE41F00C7B6F3 /* DemoCameraRollCell.xib */; };
@@ -191,7 +190,6 @@
 		AFFA3FA41C9CE41F00C7B6F3 /* DailyQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyQuotaOperation.swift; sourceTree = "<group>"; };
 		AFFA3FA51C9CE41F00C7B6F3 /* DiskSpaceOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskSpaceOperation.swift; sourceTree = "<group>"; };
 		AFFA3FA61C9CE41F00C7B6F3 /* WeeklyQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeeklyQuotaOperation.swift; sourceTree = "<group>"; };
-		AFFA3FA71C9CE41F00C7B6F3 /* VimeoOldUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoOldUpload.swift; sourceTree = "<group>"; };
 		AFFA3FA81C9CE41F00C7B6F3 /* VimeoUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoUpload.swift; sourceTree = "<group>"; };
 		AFFA3FAB1C9CE41F00C7B6F3 /* DemoCameraRollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoCameraRollCell.swift; sourceTree = "<group>"; };
 		AFFA3FAC1C9CE41F00C7B6F3 /* DemoCameraRollCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DemoCameraRollCell.xib; sourceTree = "<group>"; };
@@ -328,7 +326,6 @@
 				AFFA3F631C9CE41F00C7B6F3 /* Extensions */,
 				AFFA3F671C9CE41F00C7B6F3 /* Networking */,
 				AFFA3F6C1C9CE41F00C7B6F3 /* Upload */,
-				AFFA3FA71C9CE41F00C7B6F3 /* VimeoOldUpload.swift */,
 				AFFA3FA81C9CE41F00C7B6F3 /* VimeoUpload.swift */,
 			);
 			name = VimeoUpload;
@@ -871,7 +868,6 @@
 				AFFA40011C9CE42000C7B6F3 /* PHAssetHelper.swift in Sources */,
 				AFFA3FDB1C9CE42000C7B6F3 /* VimeoSessionManager+Upload.swift in Sources */,
 				AFFA3FDE1C9CE42000C7B6F3 /* VimeoSessionManager+OldUpload.swift in Sources */,
-				AFFA3FF41C9CE42000C7B6F3 /* VimeoOldUpload.swift in Sources */,
 				AFFA3FC21C9CE42000C7B6F3 /* ProgressDescriptor.swift in Sources */,
 				AFFA3FE81C9CE42000C7B6F3 /* MeQuotaOperation.swift in Sources */,
 				AFFA3F531C9CE34700C7B6F3 /* CameraRollViewController.swift in Sources */,
