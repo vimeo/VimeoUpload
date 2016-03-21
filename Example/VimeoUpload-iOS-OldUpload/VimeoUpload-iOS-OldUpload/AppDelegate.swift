@@ -44,7 +44,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         let uploadsViewController = UploadsViewController(nibName: UploadsViewController.NibName, bundle:NSBundle.mainBundle())
         
         let cameraNavController = UINavigationController(rootViewController: cameraRollViewController)
+        cameraNavController.tabBarItem.title = "Camera Roll"
+
         let uploadsNavController = UINavigationController(rootViewController: uploadsViewController)
+        uploadsNavController.tabBarItem.title = "Uploads"
         
         let tabBarController = UITabBarController()
         tabBarController.viewControllers = [cameraNavController, uploadsNavController]

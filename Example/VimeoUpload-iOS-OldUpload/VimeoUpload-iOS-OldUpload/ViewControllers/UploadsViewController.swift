@@ -51,9 +51,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     {
         super.viewDidLoad()
         
-        let title = "Uploads"
-        self.title = title
-        self.tabBarItem.title = title
+        self.title = "Uploads"
     
         self.addObservers()
         self.setupTableView()

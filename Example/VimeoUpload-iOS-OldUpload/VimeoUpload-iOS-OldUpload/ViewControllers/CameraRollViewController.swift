@@ -38,8 +38,6 @@ class CameraRollViewController: BaseCameraRollViewController
         super.viewDidLoad()
 
         self.title = "Camera Roll"
-
-        self.tabBarItem.title = "Camera Roll"
     }
         
     override func didFinishWithResult(result: UploadUserAndCameraRollAsset)
