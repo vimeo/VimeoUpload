@@ -32,7 +32,7 @@ class VideoSettings: NSObject
     {
         didSet
         {
-            self.title = trim(self.title)
+            self.title = self.trim(self.title)
         }
     }
     
@@ -40,7 +40,7 @@ class VideoSettings: NSObject
     {
         didSet
         {
-            self.desc = trim(self.desc)
+            self.desc = self.trim(self.desc)
         }
     }
     
@@ -55,8 +55,11 @@ class VideoSettings: NSObject
         self.privacy = privacy
         self.users = users
         self.password = password
-        self.title = self.trim(title)
-        self.desc = self.trim(description)
+        
+        ({
+            self.title = title
+            self.desc = description
+        })()
     }
     
     // MARK: Public API
