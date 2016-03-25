@@ -56,6 +56,7 @@ class VideoSettings: NSObject
         self.users = users
         self.password = password
         
+        // Wrap in closure so didSet gets called [CL] 3/25/16
         ({
             self.title = title
             self.desc = description
