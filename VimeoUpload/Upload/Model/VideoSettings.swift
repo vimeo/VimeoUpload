@@ -55,12 +55,8 @@ class VideoSettings: NSObject
         self.privacy = privacy
         self.users = users
         self.password = password
-        
-        // Wrap in closure so didSet gets called [CL] 3/25/16
-        ({
-            self.title = title
-            self.desc = description
-        })()
+        self.title = self.trim(title)
+        self.desc = self.trim(description)
     }
     
     // MARK: Public API
