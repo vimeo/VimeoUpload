@@ -52,7 +52,7 @@ class ExportOperation: ConcurrentOperation
     
     convenience init(asset: AVAsset)
     {
-        let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)!
+        let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetPassthrough)!
         
         self.init(exportSession: exportSession)
     }
@@ -115,6 +115,7 @@ class ExportOperation: ConcurrentOperation
         }
 
         // AVAssetExportSession does not do an internal check to see if there's ample disk space available to perform the export [AH] 12/06/2015
+        // However this check will not work with presetName "passthrough" since that preset reports estimatedOutputFileLength of zero always.
         
         let availableDiskSpace = try? NSFileManager.defaultManager().availableDiskSpace() // Double optional
         if let diskSpace = availableDiskSpace, let space = diskSpace where space.longLongValue < self.exportSession.estimatedOutputFileLength
