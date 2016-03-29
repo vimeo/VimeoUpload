@@ -46,7 +46,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
         self.cleanup()
     }
     
-    init(phAsset: PHAsset, exportPreset: String = AVAssetExportPresetHighestQuality)
+    init(phAsset: PHAsset, exportPreset: String = AVAssetExportPresetPassthrough)
     {
         self.phAsset = phAsset
         self.exportPreset = exportPreset
