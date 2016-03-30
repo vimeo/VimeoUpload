@@ -42,6 +42,6 @@ extension AFURLSessionManager
     @available(iOS 8.0, *)
     func taskForIdentifier(identifier: Int) -> NSURLSessionTask?
     {
-        return self.tasks.filter{ $0.taskIdentifier == identifier }.first as? NSURLSessionTask
+        return self.tasks.filter{ $0.taskIdentifier == identifier }.first as NSURLSessionTask!
     }
 }
