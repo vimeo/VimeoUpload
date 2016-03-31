@@ -19,7 +19,7 @@ PODS:
   - VIMObjectMapper (6.0.0)
 
 DEPENDENCIES:
-  - AFNetworking
+  - AFNetworking (~> 3.0)
   - VIMNetworking/Model (= 6.0.0)
 
 SPEC CHECKSUMS:

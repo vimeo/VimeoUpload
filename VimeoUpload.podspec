@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.9'
 
   s.source       = { :git => "https://github.com/vimeo/VimeoUpload.git", :tag => s.version.to_s }
-  s.source_files  = "VimeoUpload", "VimeoUpload/**/*.{swift}", "VimeoUpload/**/*.{h}"
+  s.source_files  = "*.{h}", "VimeoUpload", "VimeoUpload/**/*.{swift}", "VimeoUpload/**/*.{h}"
 
   s.prefix_header_contents = '#import "Bridge.h"'
 
@@ -35,9 +35,9 @@ Pod::Spec.new do |s|
     ss.dependency	'AFNetworking', '~> 3.0'
   end
   
-  #s.subspec 'VIMNetworking' do |ss|
-  #  ss.dependency	'VIMNetworking', '6.0.0'
-  #end
+  s.subspec 'VIMNetworking/Model' do |ss|
+    ss.dependency	'VIMNetworking/Model', '6.0.0'
+  end
 
   # s.exclude_files = "Classes/Exclude"
 
