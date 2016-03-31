@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 //
 
-#import <AFNetworking/AFNetworking.h>
+@import AFNetworking;
 
 #import "VIMObjectMapper.h"
 #import "VIMUser.h"

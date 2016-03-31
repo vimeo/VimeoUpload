@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/vimeo/VimeoUpload"
   s.license      = { :type => "MIT", :file => "LICENSE" }
 
-  s.authors = { "Alfie Hanssen" => "alfiehanssen@gmail.com",
+  s.authors = { "Alfie Hanssen" => "alfie@vimeo.com",
                 "Rob Huebner" => "robh@vimeo.com",
                 "Gavin King" => "gavin@vimeo.com",
                 "Nicole Lehrer" => "nicole@vimeo.com",
@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.social_media_url = "http://twitter.com/vimeo"
 
   s.ios.deployment_target = '8.0'
-  s.osx.deployment_target = '10.9'
+#  s.osx.deployment_target = '10.9'
 
   s.source       = { :git => "https://github.com/vimeo/VimeoUpload.git", :tag => s.version.to_s }
   s.source_files  = "VimeoUpload/**/*.{swift}", "VimeoUpload+UIKit/**/*.{swift}"
@@ -28,13 +28,10 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.ios.frameworks = "Foundation", "AVFoundation", "AssetsLibrary", "Photos", "MobileCoreServices", "UIKit", "CoreGraphics"
-  s.osx.frameworks = "Foundation", "AVFoundation", "CoreServices", "Cocoa"
+#  s.osx.frameworks = "Foundation", "AVFoundation", "CoreServices", "Cocoa"
 #  s.osx.exclude_files = "VimeoUpload/Operations/PHAssetOperation.swift"
 
-  s.subspec 'AFNetworking' do |ss|
-    ss.dependency	'AFNetworking', '2.6.3'
-  end
-
-  # s.exclude_files = "Classes/Exclude"
+  s.dependency 'AFNetworking', '2.6.3'
+  s.dependency 'VIMNetworking/Model', '6.0.0'
 
 end

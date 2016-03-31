@@ -24,7 +24,8 @@
 //  THE SOFTWARE.
 //
 
-import Foundation 
+import Foundation
+import AFNetworking
 
 extension AFURLSessionManager
 {

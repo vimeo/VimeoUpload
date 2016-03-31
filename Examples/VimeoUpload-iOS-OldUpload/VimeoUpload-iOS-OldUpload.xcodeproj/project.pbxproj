@@ -1,1130 +1,3202 @@
-// !$*UTF8*$!
-{
-	archiveVersion = 1;
-	classes = {
-	};
-	objectVersion = 46;
-	objects = {
-
-/* Begin PBXBuildFile section */
-		5073D6E01CAD66A600D08C5F /* DemoCameraRollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5073D6DB1CAD66A600D08C5F /* DemoCameraRollCell.swift */; };
-		5073D6E11CAD66A600D08C5F /* DemoCameraRollCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5073D6DC1CAD66A600D08C5F /* DemoCameraRollCell.xib */; };
-		5073D6E21CAD66A600D08C5F /* BaseCameraRollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5073D6DE1CAD66A600D08C5F /* BaseCameraRollViewController.swift */; };
-		5073D6E31CAD66A600D08C5F /* BaseCameraRollViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5073D6DF1CAD66A600D08C5F /* BaseCameraRollViewController.xib */; };
-		AFFA400F1C9CE8E000C7B6F3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA400E1C9CE8E000C7B6F3 /* AppDelegate.swift */; };
-		AFFA40161C9CE8E000C7B6F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AFFA40151C9CE8E000C7B6F3 /* Assets.xcassets */; };
-		AFFA40191C9CE8E000C7B6F3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AFFA40171C9CE8E000C7B6F3 /* LaunchScreen.storyboard */; };
-		AFFA40241C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40231C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadTests.swift */; };
-		AFFA402F1C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA402E1C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadUITests.swift */; };
-		AFFA40471C9CE9B600C7B6F3 /* UploadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA403E1C9CE9B600C7B6F3 /* UploadCell.swift */; };
-		AFFA40481C9CE9B600C7B6F3 /* UploadCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFFA403F1C9CE9B600C7B6F3 /* UploadCell.xib */; };
-		AFFA40491C9CE9B600C7B6F3 /* OldVimeoUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40401C9CE9B600C7B6F3 /* OldVimeoUpload.swift */; };
-		AFFA404A1C9CE9B600C7B6F3 /* CameraRollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40421C9CE9B600C7B6F3 /* CameraRollViewController.swift */; };
-		AFFA404B1C9CE9B600C7B6F3 /* UploadsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40431C9CE9B600C7B6F3 /* UploadsViewController.swift */; };
-		AFFA404C1C9CE9B600C7B6F3 /* UploadsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFFA40441C9CE9B600C7B6F3 /* UploadsViewController.xib */; };
-		AFFA404D1C9CE9B600C7B6F3 /* VideoSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40451C9CE9B600C7B6F3 /* VideoSettingsViewController.swift */; };
-		AFFA404E1C9CE9B600C7B6F3 /* VideoSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFFA40461C9CE9B600C7B6F3 /* VideoSettingsViewController.xib */; };
-		AFFA40B21C9CE9EB00C7B6F3 /* ArchiverProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40511C9CE9EB00C7B6F3 /* ArchiverProtocol.swift */; };
-		AFFA40B31C9CE9EB00C7B6F3 /* ConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40521C9CE9EB00C7B6F3 /* ConnectivityManager.swift */; };
-		AFFA40B41C9CE9EB00C7B6F3 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40531C9CE9EB00C7B6F3 /* Descriptor.swift */; };
-		AFFA40B51C9CE9EB00C7B6F3 /* DescriptorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40541C9CE9EB00C7B6F3 /* DescriptorManager.swift */; };
-		AFFA40B61C9CE9EB00C7B6F3 /* DescriptorManagerArchiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40551C9CE9EB00C7B6F3 /* DescriptorManagerArchiver.swift */; };
-		AFFA40B71C9CE9EB00C7B6F3 /* DescriptorManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40561C9CE9EB00C7B6F3 /* DescriptorManagerDelegate.swift */; };
-		AFFA40B81C9CE9EB00C7B6F3 /* KeyedArchiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40571C9CE9EB00C7B6F3 /* KeyedArchiver.swift */; };
-		AFFA40B91C9CE9EB00C7B6F3 /* ProgressDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40581C9CE9EB00C7B6F3 /* ProgressDescriptor.swift */; };
-		AFFA40BA1C9CE9EB00C7B6F3 /* ReachableDescriptorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40591C9CE9EB00C7B6F3 /* ReachableDescriptorManager.swift */; };
-		AFFA40BB1C9CE9EB00C7B6F3 /* AFURLSessionManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA405B1C9CE9EB00C7B6F3 /* AFURLSessionManager+Extensions.swift */; };
-		AFFA40BC1C9CE9EB00C7B6F3 /* NSError+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA405C1C9CE9EB00C7B6F3 /* NSError+Extensions.swift */; };
-		AFFA40BD1C9CE9EB00C7B6F3 /* NSFileManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA405D1C9CE9EB00C7B6F3 /* NSFileManager+Extensions.swift */; };
-		AFFA40BE1C9CE9EB00C7B6F3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA405F1C9CE9EB00C7B6F3 /* Constants.swift */; };
-		AFFA40BF1C9CE9EB00C7B6F3 /* VimeoRequestSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40601C9CE9EB00C7B6F3 /* VimeoRequestSerializer.swift */; };
-		AFFA40C01C9CE9EB00C7B6F3 /* VimeoResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40611C9CE9EB00C7B6F3 /* VimeoResponseSerializer.swift */; };
-		AFFA40C11C9CE9EB00C7B6F3 /* VimeoSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40621C9CE9EB00C7B6F3 /* VimeoSessionManager.swift */; };
-		AFFA40C21C9CE9EB00C7B6F3 /* VideoDeletionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40651C9CE9EB00C7B6F3 /* VideoDeletionManager.swift */; };
-		AFFA40C31C9CE9EB00C7B6F3 /* VideoRefreshManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40661C9CE9EB00C7B6F3 /* VideoRefreshManager.swift */; };
-		AFFA40C41C9CE9EB00C7B6F3 /* DescriptorManagerTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40681C9CE9EB00C7B6F3 /* DescriptorManagerTracker.swift */; };
-		AFFA40C51C9CE9EB00C7B6F3 /* UploadDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA406A1C9CE9EB00C7B6F3 /* UploadDescriptor.swift */; };
-		AFFA40C61C9CE9EB00C7B6F3 /* OldUploadDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA406C1C9CE9EB00C7B6F3 /* OldUploadDescriptor.swift */; };
-		AFFA40C71C9CE9EB00C7B6F3 /* OldUploadRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA406D1C9CE9EB00C7B6F3 /* OldUploadRequest.swift */; };
-		AFFA40C81C9CE9EB00C7B6F3 /* VideoDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA406E1C9CE9EB00C7B6F3 /* VideoDescriptor.swift */; };
-		AFFA40C91C9CE9EB00C7B6F3 /* VideoDescriptorFailureTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA406F1C9CE9EB00C7B6F3 /* VideoDescriptorFailureTracker.swift */; };
-		AFFA40CA1C9CE9EB00C7B6F3 /* AFURLSessionManager+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40711C9CE9EB00C7B6F3 /* AFURLSessionManager+Upload.swift */; };
-		AFFA40CB1C9CE9EB00C7B6F3 /* AVAsset+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40721C9CE9EB00C7B6F3 /* AVAsset+Extensions.swift */; };
-		AFFA40CC1C9CE9EB00C7B6F3 /* AVURLAsset+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40731C9CE9EB00C7B6F3 /* AVURLAsset+Extensions.swift */; };
-		AFFA40CD1C9CE9EB00C7B6F3 /* NSError+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40741C9CE9EB00C7B6F3 /* NSError+Upload.swift */; };
-		AFFA40CE1C9CE9EB00C7B6F3 /* NSURL+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40751C9CE9EB00C7B6F3 /* NSURL+Upload.swift */; };
-		AFFA40CF1C9CE9EB00C7B6F3 /* BlockTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40771C9CE9EB00C7B6F3 /* BlockTypes.swift */; };
-		AFFA40D01C9CE9EB00C7B6F3 /* VideoSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40781C9CE9EB00C7B6F3 /* VideoSettings.swift */; };
-		AFFA40D11C9CE9EB00C7B6F3 /* VimeoRequestSerializer+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA407B1C9CE9EB00C7B6F3 /* VimeoRequestSerializer+Upload.swift */; };
-		AFFA40D21C9CE9EB00C7B6F3 /* VimeoSessionManager+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA407C1C9CE9EB00C7B6F3 /* VimeoSessionManager+Upload.swift */; };
-		AFFA40D31C9CE9EB00C7B6F3 /* VimeoRequestSerializer+OldUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA407E1C9CE9EB00C7B6F3 /* VimeoRequestSerializer+OldUpload.swift */; };
-		AFFA40D41C9CE9EB00C7B6F3 /* VimeoResponseSerializer+OldUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA407F1C9CE9EB00C7B6F3 /* VimeoResponseSerializer+OldUpload.swift */; };
-		AFFA40D51C9CE9EB00C7B6F3 /* VimeoSessionManager+OldUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40801C9CE9EB00C7B6F3 /* VimeoSessionManager+OldUpload.swift */; };
-		AFFA40D61C9CE9EB00C7B6F3 /* ConcurrentOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40831C9CE9EB00C7B6F3 /* ConcurrentOperation.swift */; };
-		AFFA40D71C9CE9EB00C7B6F3 /* DeleteVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40841C9CE9EB00C7B6F3 /* DeleteVideoOperation.swift */; };
-		AFFA40D81C9CE9EB00C7B6F3 /* ExportOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40851C9CE9EB00C7B6F3 /* ExportOperation.swift */; };
-		AFFA40D91C9CE9EB00C7B6F3 /* ExportQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40861C9CE9EB00C7B6F3 /* ExportQuotaOperation.swift */; };
-		AFFA40DA1C9CE9EB00C7B6F3 /* ALAssetExportQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40881C9CE9EB00C7B6F3 /* ALAssetExportQuotaOperation.swift */; };
-		AFFA40DB1C9CE9EB00C7B6F3 /* PHAssetCloudExportQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA408A1C9CE9EB00C7B6F3 /* PHAssetCloudExportQuotaOperation.swift */; };
-		AFFA40DC1C9CE9EB00C7B6F3 /* PHAssetDownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA408B1C9CE9EB00C7B6F3 /* PHAssetDownloadOperation.swift */; };
-		AFFA40DD1C9CE9EB00C7B6F3 /* PHAssetExportSessionOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA408C1C9CE9EB00C7B6F3 /* PHAssetExportSessionOperation.swift */; };
-		AFFA40DE1C9CE9EB00C7B6F3 /* MeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA408D1C9CE9EB00C7B6F3 /* MeOperation.swift */; };
-		AFFA40DF1C9CE9EB00C7B6F3 /* MeQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA408E1C9CE9EB00C7B6F3 /* MeQuotaOperation.swift */; };
-		AFFA40E01C9CE9EB00C7B6F3 /* VideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA408F1C9CE9EB00C7B6F3 /* VideoOperation.swift */; };
-		AFFA40E11C9CE9EB00C7B6F3 /* CreateVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40911C9CE9EB00C7B6F3 /* CreateVideoOperation.swift */; };
-		AFFA40E21C9CE9EB00C7B6F3 /* ExportQuotaCreateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40921C9CE9EB00C7B6F3 /* ExportQuotaCreateOperation.swift */; };
-		AFFA40E31C9CE9EB00C7B6F3 /* ALAssetExportQuotaCreateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40941C9CE9EB00C7B6F3 /* ALAssetExportQuotaCreateOperation.swift */; };
-		AFFA40E41C9CE9EB00C7B6F3 /* ALAssetRetryUploadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40951C9CE9EB00C7B6F3 /* ALAssetRetryUploadOperation.swift */; };
-		AFFA40E51C9CE9EB00C7B6F3 /* PHAssetCloudExportQuotaCreateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40971C9CE9EB00C7B6F3 /* PHAssetCloudExportQuotaCreateOperation.swift */; };
-		AFFA40E61C9CE9EB00C7B6F3 /* PHAssetRetryUploadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40981C9CE9EB00C7B6F3 /* PHAssetRetryUploadOperation.swift */; };
-		AFFA40E71C9CE9EB00C7B6F3 /* RetryUploadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40991C9CE9EB00C7B6F3 /* RetryUploadOperation.swift */; };
-		AFFA40E81C9CE9EB00C7B6F3 /* DailyQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA409B1C9CE9EB00C7B6F3 /* DailyQuotaOperation.swift */; };
-		AFFA40E91C9CE9EB00C7B6F3 /* DiskSpaceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA409C1C9CE9EB00C7B6F3 /* DiskSpaceOperation.swift */; };
-		AFFA40EA1C9CE9EC00C7B6F3 /* WeeklyQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA409D1C9CE9EB00C7B6F3 /* WeeklyQuotaOperation.swift */; };
-		AFFA40EC1C9CE9EC00C7B6F3 /* VimeoUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA409F1C9CE9EB00C7B6F3 /* VimeoUpload.swift */; };
-		AFFA40F11C9CE9EC00C7B6F3 /* ALAssetHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40A81C9CE9EB00C7B6F3 /* ALAssetHelper.swift */; };
-		AFFA40F21C9CE9EC00C7B6F3 /* CameraRollAssetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40A91C9CE9EB00C7B6F3 /* CameraRollAssetCell.swift */; };
-		AFFA40F31C9CE9EC00C7B6F3 /* CameraRollAssetHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40AA1C9CE9EB00C7B6F3 /* CameraRollAssetHelper.swift */; };
-		AFFA40F41C9CE9EC00C7B6F3 /* NSString+Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40AC1C9CE9EB00C7B6F3 /* NSString+Conversions.swift */; };
-		AFFA40F51C9CE9EC00C7B6F3 /* CameraRollAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40AE1C9CE9EB00C7B6F3 /* CameraRollAsset.swift */; };
-		AFFA40F61C9CE9EC00C7B6F3 /* VIMALAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40AF1C9CE9EB00C7B6F3 /* VIMALAsset.swift */; };
-		AFFA40F71C9CE9EC00C7B6F3 /* VIMPHAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40B01C9CE9EB00C7B6F3 /* VIMPHAsset.swift */; };
-		AFFA40F81C9CE9EC00C7B6F3 /* PHAssetHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40B11C9CE9EB00C7B6F3 /* PHAssetHelper.swift */; };
-		D62B0737830FFDFB2C83D158 /* libPods-VimeoUpload-iOS-OldUpload.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CDA13E1C64C38371E76F2F7E /* libPods-VimeoUpload-iOS-OldUpload.a */; };
-/* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		AFFA40201C9CE8E000C7B6F3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AFFA40031C9CE8E000C7B6F3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AFFA400A1C9CE8E000C7B6F3;
-			remoteInfo = "VimeoUpload-iOS-OldUpload";
-		};
-		AFFA402B1C9CE8E000C7B6F3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AFFA40031C9CE8E000C7B6F3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AFFA400A1C9CE8E000C7B6F3;
-			remoteInfo = "VimeoUpload-iOS-OldUpload";
-		};
-/* End PBXContainerItemProxy section */
-
-/* Begin PBXFileReference section */
-		5073D6DB1CAD66A600D08C5F /* DemoCameraRollCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoCameraRollCell.swift; sourceTree = "<group>"; };
-		5073D6DC1CAD66A600D08C5F /* DemoCameraRollCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DemoCameraRollCell.xib; sourceTree = "<group>"; };
-		5073D6DE1CAD66A600D08C5F /* BaseCameraRollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseCameraRollViewController.swift; sourceTree = "<group>"; };
-		5073D6DF1CAD66A600D08C5F /* BaseCameraRollViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BaseCameraRollViewController.xib; sourceTree = "<group>"; };
-		9B8EBF50CBA80C187F8444F1 /* Pods-VimeoUpload-iOS-OldUpload.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-OldUpload.release.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUpload/Pods-VimeoUpload-iOS-OldUpload.release.xcconfig"; sourceTree = "<group>"; };
-		AFFA400B1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VimeoUpload-iOS-OldUpload.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AFFA400E1C9CE8E000C7B6F3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		AFFA40151C9CE8E000C7B6F3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		AFFA40181C9CE8E000C7B6F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		AFFA401A1C9CE8E000C7B6F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AFFA401F1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "VimeoUpload-iOS-OldUploadTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AFFA40231C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VimeoUpload_iOS_OldUploadTests.swift; sourceTree = "<group>"; };
-		AFFA40251C9CE8E000C7B6F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AFFA402A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "VimeoUpload-iOS-OldUploadUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AFFA402E1C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VimeoUpload_iOS_OldUploadUITests.swift; sourceTree = "<group>"; };
-		AFFA40301C9CE8E000C7B6F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AFFA403C1C9CE9B600C7B6F3 /* Bridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bridge.h; sourceTree = "<group>"; };
-		AFFA403E1C9CE9B600C7B6F3 /* UploadCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadCell.swift; sourceTree = "<group>"; };
-		AFFA403F1C9CE9B600C7B6F3 /* UploadCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadCell.xib; sourceTree = "<group>"; };
-		AFFA40401C9CE9B600C7B6F3 /* OldVimeoUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldVimeoUpload.swift; sourceTree = "<group>"; };
-		AFFA40421C9CE9B600C7B6F3 /* CameraRollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollViewController.swift; sourceTree = "<group>"; };
-		AFFA40431C9CE9B600C7B6F3 /* UploadsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadsViewController.swift; sourceTree = "<group>"; };
-		AFFA40441C9CE9B600C7B6F3 /* UploadsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadsViewController.xib; sourceTree = "<group>"; };
-		AFFA40451C9CE9B600C7B6F3 /* VideoSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoSettingsViewController.swift; sourceTree = "<group>"; };
-		AFFA40461C9CE9B600C7B6F3 /* VideoSettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoSettingsViewController.xib; sourceTree = "<group>"; };
-		AFFA40511C9CE9EB00C7B6F3 /* ArchiverProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiverProtocol.swift; sourceTree = "<group>"; };
-		AFFA40521C9CE9EB00C7B6F3 /* ConnectivityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectivityManager.swift; sourceTree = "<group>"; };
-		AFFA40531C9CE9EB00C7B6F3 /* Descriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
-		AFFA40541C9CE9EB00C7B6F3 /* DescriptorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorManager.swift; sourceTree = "<group>"; };
-		AFFA40551C9CE9EB00C7B6F3 /* DescriptorManagerArchiver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorManagerArchiver.swift; sourceTree = "<group>"; };
-		AFFA40561C9CE9EB00C7B6F3 /* DescriptorManagerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorManagerDelegate.swift; sourceTree = "<group>"; };
-		AFFA40571C9CE9EB00C7B6F3 /* KeyedArchiver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyedArchiver.swift; sourceTree = "<group>"; };
-		AFFA40581C9CE9EB00C7B6F3 /* ProgressDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressDescriptor.swift; sourceTree = "<group>"; };
-		AFFA40591C9CE9EB00C7B6F3 /* ReachableDescriptorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReachableDescriptorManager.swift; sourceTree = "<group>"; };
-		AFFA405B1C9CE9EB00C7B6F3 /* AFURLSessionManager+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AFURLSessionManager+Extensions.swift"; sourceTree = "<group>"; };
-		AFFA405C1C9CE9EB00C7B6F3 /* NSError+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+Extensions.swift"; sourceTree = "<group>"; };
-		AFFA405D1C9CE9EB00C7B6F3 /* NSFileManager+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+Extensions.swift"; sourceTree = "<group>"; };
-		AFFA405F1C9CE9EB00C7B6F3 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		AFFA40601C9CE9EB00C7B6F3 /* VimeoRequestSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoRequestSerializer.swift; sourceTree = "<group>"; };
-		AFFA40611C9CE9EB00C7B6F3 /* VimeoResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoResponseSerializer.swift; sourceTree = "<group>"; };
-		AFFA40621C9CE9EB00C7B6F3 /* VimeoSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoSessionManager.swift; sourceTree = "<group>"; };
-		AFFA40651C9CE9EB00C7B6F3 /* VideoDeletionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDeletionManager.swift; sourceTree = "<group>"; };
-		AFFA40661C9CE9EB00C7B6F3 /* VideoRefreshManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoRefreshManager.swift; sourceTree = "<group>"; };
-		AFFA40681C9CE9EB00C7B6F3 /* DescriptorManagerTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorManagerTracker.swift; sourceTree = "<group>"; };
-		AFFA406A1C9CE9EB00C7B6F3 /* UploadDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadDescriptor.swift; sourceTree = "<group>"; };
-		AFFA406C1C9CE9EB00C7B6F3 /* OldUploadDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldUploadDescriptor.swift; sourceTree = "<group>"; };
-		AFFA406D1C9CE9EB00C7B6F3 /* OldUploadRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldUploadRequest.swift; sourceTree = "<group>"; };
-		AFFA406E1C9CE9EB00C7B6F3 /* VideoDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDescriptor.swift; sourceTree = "<group>"; };
-		AFFA406F1C9CE9EB00C7B6F3 /* VideoDescriptorFailureTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoDescriptorFailureTracker.swift; sourceTree = "<group>"; };
-		AFFA40711C9CE9EB00C7B6F3 /* AFURLSessionManager+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AFURLSessionManager+Upload.swift"; sourceTree = "<group>"; };
-		AFFA40721C9CE9EB00C7B6F3 /* AVAsset+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVAsset+Extensions.swift"; sourceTree = "<group>"; };
-		AFFA40731C9CE9EB00C7B6F3 /* AVURLAsset+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVURLAsset+Extensions.swift"; sourceTree = "<group>"; };
-		AFFA40741C9CE9EB00C7B6F3 /* NSError+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+Upload.swift"; sourceTree = "<group>"; };
-		AFFA40751C9CE9EB00C7B6F3 /* NSURL+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+Upload.swift"; sourceTree = "<group>"; };
-		AFFA40771C9CE9EB00C7B6F3 /* BlockTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockTypes.swift; sourceTree = "<group>"; };
-		AFFA40781C9CE9EB00C7B6F3 /* VideoSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoSettings.swift; sourceTree = "<group>"; };
-		AFFA407B1C9CE9EB00C7B6F3 /* VimeoRequestSerializer+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoRequestSerializer+Upload.swift"; sourceTree = "<group>"; };
-		AFFA407C1C9CE9EB00C7B6F3 /* VimeoSessionManager+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoSessionManager+Upload.swift"; sourceTree = "<group>"; };
-		AFFA407E1C9CE9EB00C7B6F3 /* VimeoRequestSerializer+OldUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoRequestSerializer+OldUpload.swift"; sourceTree = "<group>"; };
-		AFFA407F1C9CE9EB00C7B6F3 /* VimeoResponseSerializer+OldUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoResponseSerializer+OldUpload.swift"; sourceTree = "<group>"; };
-		AFFA40801C9CE9EB00C7B6F3 /* VimeoSessionManager+OldUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoSessionManager+OldUpload.swift"; sourceTree = "<group>"; };
-		AFFA40831C9CE9EB00C7B6F3 /* ConcurrentOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentOperation.swift; sourceTree = "<group>"; };
-		AFFA40841C9CE9EB00C7B6F3 /* DeleteVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteVideoOperation.swift; sourceTree = "<group>"; };
-		AFFA40851C9CE9EB00C7B6F3 /* ExportOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportOperation.swift; sourceTree = "<group>"; };
-		AFFA40861C9CE9EB00C7B6F3 /* ExportQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportQuotaOperation.swift; sourceTree = "<group>"; };
-		AFFA40881C9CE9EB00C7B6F3 /* ALAssetExportQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAssetExportQuotaOperation.swift; sourceTree = "<group>"; };
-		AFFA408A1C9CE9EB00C7B6F3 /* PHAssetCloudExportQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetCloudExportQuotaOperation.swift; sourceTree = "<group>"; };
-		AFFA408B1C9CE9EB00C7B6F3 /* PHAssetDownloadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetDownloadOperation.swift; sourceTree = "<group>"; };
-		AFFA408C1C9CE9EB00C7B6F3 /* PHAssetExportSessionOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetExportSessionOperation.swift; sourceTree = "<group>"; };
-		AFFA408D1C9CE9EB00C7B6F3 /* MeOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeOperation.swift; sourceTree = "<group>"; };
-		AFFA408E1C9CE9EB00C7B6F3 /* MeQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeQuotaOperation.swift; sourceTree = "<group>"; };
-		AFFA408F1C9CE9EB00C7B6F3 /* VideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoOperation.swift; sourceTree = "<group>"; };
-		AFFA40911C9CE9EB00C7B6F3 /* CreateVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateVideoOperation.swift; sourceTree = "<group>"; };
-		AFFA40921C9CE9EB00C7B6F3 /* ExportQuotaCreateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportQuotaCreateOperation.swift; sourceTree = "<group>"; };
-		AFFA40941C9CE9EB00C7B6F3 /* ALAssetExportQuotaCreateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAssetExportQuotaCreateOperation.swift; sourceTree = "<group>"; };
-		AFFA40951C9CE9EB00C7B6F3 /* ALAssetRetryUploadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAssetRetryUploadOperation.swift; sourceTree = "<group>"; };
-		AFFA40971C9CE9EB00C7B6F3 /* PHAssetCloudExportQuotaCreateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetCloudExportQuotaCreateOperation.swift; sourceTree = "<group>"; };
-		AFFA40981C9CE9EB00C7B6F3 /* PHAssetRetryUploadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetRetryUploadOperation.swift; sourceTree = "<group>"; };
-		AFFA40991C9CE9EB00C7B6F3 /* RetryUploadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryUploadOperation.swift; sourceTree = "<group>"; };
-		AFFA409B1C9CE9EB00C7B6F3 /* DailyQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyQuotaOperation.swift; sourceTree = "<group>"; };
-		AFFA409C1C9CE9EB00C7B6F3 /* DiskSpaceOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskSpaceOperation.swift; sourceTree = "<group>"; };
-		AFFA409D1C9CE9EB00C7B6F3 /* WeeklyQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeeklyQuotaOperation.swift; sourceTree = "<group>"; };
-		AFFA409F1C9CE9EB00C7B6F3 /* VimeoUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoUpload.swift; sourceTree = "<group>"; };
-		AFFA40A81C9CE9EB00C7B6F3 /* ALAssetHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAssetHelper.swift; sourceTree = "<group>"; };
-		AFFA40A91C9CE9EB00C7B6F3 /* CameraRollAssetCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollAssetCell.swift; sourceTree = "<group>"; };
-		AFFA40AA1C9CE9EB00C7B6F3 /* CameraRollAssetHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollAssetHelper.swift; sourceTree = "<group>"; };
-		AFFA40AC1C9CE9EB00C7B6F3 /* NSString+Conversions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSString+Conversions.swift"; sourceTree = "<group>"; };
-		AFFA40AE1C9CE9EB00C7B6F3 /* CameraRollAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraRollAsset.swift; sourceTree = "<group>"; };
-		AFFA40AF1C9CE9EB00C7B6F3 /* VIMALAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VIMALAsset.swift; sourceTree = "<group>"; };
-		AFFA40B01C9CE9EB00C7B6F3 /* VIMPHAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VIMPHAsset.swift; sourceTree = "<group>"; };
-		AFFA40B11C9CE9EB00C7B6F3 /* PHAssetHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetHelper.swift; sourceTree = "<group>"; };
-		CDA13E1C64C38371E76F2F7E /* libPods-VimeoUpload-iOS-OldUpload.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VimeoUpload-iOS-OldUpload.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEE1B3D12A6927014E253022 /* Pods-VimeoUpload-iOS-OldUpload.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS-OldUpload.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUpload/Pods-VimeoUpload-iOS-OldUpload.debug.xcconfig"; sourceTree = "<group>"; };
-/* End PBXFileReference section */
-
-/* Begin PBXFrameworksBuildPhase section */
-		AFFA40081C9CE8E000C7B6F3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D62B0737830FFDFB2C83D158 /* libPods-VimeoUpload-iOS-OldUpload.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AFFA401C1C9CE8E000C7B6F3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AFFA40271C9CE8E000C7B6F3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
-
-/* Begin PBXGroup section */
-		28B7387BC89169C51D7C4578 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				CEE1B3D12A6927014E253022 /* Pods-VimeoUpload-iOS-OldUpload.debug.xcconfig */,
-				9B8EBF50CBA80C187F8444F1 /* Pods-VimeoUpload-iOS-OldUpload.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-		5073D6D91CAD66A600D08C5F /* VimeoUpload+Demos */ = {
-			isa = PBXGroup;
-			children = (
-				5073D6DA1CAD66A600D08C5F /* Cells */,
-				5073D6DD1CAD66A600D08C5F /* ViewControllers */,
-			);
-			name = "VimeoUpload+Demos";
-			path = "../../VimeoUpload+Demos";
-			sourceTree = "<group>";
-		};
-		5073D6DA1CAD66A600D08C5F /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				5073D6DB1CAD66A600D08C5F /* DemoCameraRollCell.swift */,
-				5073D6DC1CAD66A600D08C5F /* DemoCameraRollCell.xib */,
-			);
-			path = Cells;
-			sourceTree = "<group>";
-		};
-		5073D6DD1CAD66A600D08C5F /* ViewControllers */ = {
-			isa = PBXGroup;
-			children = (
-				5073D6DE1CAD66A600D08C5F /* BaseCameraRollViewController.swift */,
-				5073D6DF1CAD66A600D08C5F /* BaseCameraRollViewController.xib */,
-			);
-			path = ViewControllers;
-			sourceTree = "<group>";
-		};
-		AFFA40021C9CE8E000C7B6F3 = {
-			isa = PBXGroup;
-			children = (
-				AFFA400D1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload */,
-				AFFA40221C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadTests */,
-				AFFA402D1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests */,
-				AFFA400C1C9CE8E000C7B6F3 /* Products */,
-				28B7387BC89169C51D7C4578 /* Pods */,
-				BFAE01663A3415731065DAAA /* Frameworks */,
-			);
-			sourceTree = "<group>";
-		};
-		AFFA400C1C9CE8E000C7B6F3 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA400B1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload.app */,
-				AFFA401F1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadTests.xctest */,
-				AFFA402A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		AFFA400D1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA400E1C9CE8E000C7B6F3 /* AppDelegate.swift */,
-				AFFA40401C9CE9B600C7B6F3 /* OldVimeoUpload.swift */,
-				AFFA403D1C9CE9B600C7B6F3 /* Cells */,
-				AFFA40411C9CE9B600C7B6F3 /* ViewControllers */,
-				AFFA404F1C9CE9EB00C7B6F3 /* VimeoUpload */,
-				AFFA40A71C9CE9EB00C7B6F3 /* VimeoUpload+UIKit */,
-				5073D6D91CAD66A600D08C5F /* VimeoUpload+Demos */,
-				AFFA40151C9CE8E000C7B6F3 /* Assets.xcassets */,
-				AFFA40171C9CE8E000C7B6F3 /* LaunchScreen.storyboard */,
-				AFFA401A1C9CE8E000C7B6F3 /* Info.plist */,
-				AFFA403C1C9CE9B600C7B6F3 /* Bridge.h */,
-			);
-			path = "VimeoUpload-iOS-OldUpload";
-			sourceTree = "<group>";
-		};
-		AFFA40221C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadTests */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40231C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadTests.swift */,
-				AFFA40251C9CE8E000C7B6F3 /* Info.plist */,
-			);
-			path = "VimeoUpload-iOS-OldUploadTests";
-			sourceTree = "<group>";
-		};
-		AFFA402D1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA402E1C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadUITests.swift */,
-				AFFA40301C9CE8E000C7B6F3 /* Info.plist */,
-			);
-			path = "VimeoUpload-iOS-OldUploadUITests";
-			sourceTree = "<group>";
-		};
-		AFFA403D1C9CE9B600C7B6F3 /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA403E1C9CE9B600C7B6F3 /* UploadCell.swift */,
-				AFFA403F1C9CE9B600C7B6F3 /* UploadCell.xib */,
-			);
-			path = Cells;
-			sourceTree = "<group>";
-		};
-		AFFA40411C9CE9B600C7B6F3 /* ViewControllers */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40421C9CE9B600C7B6F3 /* CameraRollViewController.swift */,
-				AFFA40431C9CE9B600C7B6F3 /* UploadsViewController.swift */,
-				AFFA40441C9CE9B600C7B6F3 /* UploadsViewController.xib */,
-				AFFA40451C9CE9B600C7B6F3 /* VideoSettingsViewController.swift */,
-				AFFA40461C9CE9B600C7B6F3 /* VideoSettingsViewController.xib */,
-			);
-			path = ViewControllers;
-			sourceTree = "<group>";
-		};
-		AFFA404F1C9CE9EB00C7B6F3 /* VimeoUpload */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40501C9CE9EB00C7B6F3 /* Descriptor System */,
-				AFFA405A1C9CE9EB00C7B6F3 /* Extensions */,
-				AFFA405E1C9CE9EB00C7B6F3 /* Networking */,
-				AFFA40631C9CE9EB00C7B6F3 /* Upload */,
-				AFFA409F1C9CE9EB00C7B6F3 /* VimeoUpload.swift */,
-			);
-			name = VimeoUpload;
-			path = ../../../VimeoUpload;
-			sourceTree = "<group>";
-		};
-		AFFA40501C9CE9EB00C7B6F3 /* Descriptor System */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40511C9CE9EB00C7B6F3 /* ArchiverProtocol.swift */,
-				AFFA40521C9CE9EB00C7B6F3 /* ConnectivityManager.swift */,
-				AFFA40531C9CE9EB00C7B6F3 /* Descriptor.swift */,
-				AFFA40541C9CE9EB00C7B6F3 /* DescriptorManager.swift */,
-				AFFA40551C9CE9EB00C7B6F3 /* DescriptorManagerArchiver.swift */,
-				AFFA40561C9CE9EB00C7B6F3 /* DescriptorManagerDelegate.swift */,
-				AFFA40571C9CE9EB00C7B6F3 /* KeyedArchiver.swift */,
-				AFFA40581C9CE9EB00C7B6F3 /* ProgressDescriptor.swift */,
-				AFFA40591C9CE9EB00C7B6F3 /* ReachableDescriptorManager.swift */,
-			);
-			path = "Descriptor System";
-			sourceTree = "<group>";
-		};
-		AFFA405A1C9CE9EB00C7B6F3 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA405B1C9CE9EB00C7B6F3 /* AFURLSessionManager+Extensions.swift */,
-				AFFA405C1C9CE9EB00C7B6F3 /* NSError+Extensions.swift */,
-				AFFA405D1C9CE9EB00C7B6F3 /* NSFileManager+Extensions.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		AFFA405E1C9CE9EB00C7B6F3 /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA405F1C9CE9EB00C7B6F3 /* Constants.swift */,
-				AFFA40601C9CE9EB00C7B6F3 /* VimeoRequestSerializer.swift */,
-				AFFA40611C9CE9EB00C7B6F3 /* VimeoResponseSerializer.swift */,
-				AFFA40621C9CE9EB00C7B6F3 /* VimeoSessionManager.swift */,
-			);
-			path = Networking;
-			sourceTree = "<group>";
-		};
-		AFFA40631C9CE9EB00C7B6F3 /* Upload */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40641C9CE9EB00C7B6F3 /* Controllers */,
-				AFFA40671C9CE9EB00C7B6F3 /* Descriptor System */,
-				AFFA40701C9CE9EB00C7B6F3 /* Extensions */,
-				AFFA40761C9CE9EB00C7B6F3 /* Model */,
-				AFFA40791C9CE9EB00C7B6F3 /* Networking */,
-				AFFA40811C9CE9EB00C7B6F3 /* Operations */,
-			);
-			path = Upload;
-			sourceTree = "<group>";
-		};
-		AFFA40641C9CE9EB00C7B6F3 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40651C9CE9EB00C7B6F3 /* VideoDeletionManager.swift */,
-				AFFA40661C9CE9EB00C7B6F3 /* VideoRefreshManager.swift */,
-			);
-			path = Controllers;
-			sourceTree = "<group>";
-		};
-		AFFA40671C9CE9EB00C7B6F3 /* Descriptor System */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40681C9CE9EB00C7B6F3 /* DescriptorManagerTracker.swift */,
-				AFFA40691C9CE9EB00C7B6F3 /* New Upload (Private) */,
-				AFFA406B1C9CE9EB00C7B6F3 /* Old Upload */,
-				AFFA406E1C9CE9EB00C7B6F3 /* VideoDescriptor.swift */,
-				AFFA406F1C9CE9EB00C7B6F3 /* VideoDescriptorFailureTracker.swift */,
-			);
-			path = "Descriptor System";
-			sourceTree = "<group>";
-		};
-		AFFA40691C9CE9EB00C7B6F3 /* New Upload (Private) */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA406A1C9CE9EB00C7B6F3 /* UploadDescriptor.swift */,
-			);
-			path = "New Upload (Private)";
-			sourceTree = "<group>";
-		};
-		AFFA406B1C9CE9EB00C7B6F3 /* Old Upload */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA406C1C9CE9EB00C7B6F3 /* OldUploadDescriptor.swift */,
-				AFFA406D1C9CE9EB00C7B6F3 /* OldUploadRequest.swift */,
-			);
-			path = "Old Upload";
-			sourceTree = "<group>";
-		};
-		AFFA40701C9CE9EB00C7B6F3 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40711C9CE9EB00C7B6F3 /* AFURLSessionManager+Upload.swift */,
-				AFFA40721C9CE9EB00C7B6F3 /* AVAsset+Extensions.swift */,
-				AFFA40731C9CE9EB00C7B6F3 /* AVURLAsset+Extensions.swift */,
-				AFFA40741C9CE9EB00C7B6F3 /* NSError+Upload.swift */,
-				AFFA40751C9CE9EB00C7B6F3 /* NSURL+Upload.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		AFFA40761C9CE9EB00C7B6F3 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40771C9CE9EB00C7B6F3 /* BlockTypes.swift */,
-				AFFA40781C9CE9EB00C7B6F3 /* VideoSettings.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		AFFA40791C9CE9EB00C7B6F3 /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA407A1C9CE9EB00C7B6F3 /* New Upload (Private) */,
-				AFFA407D1C9CE9EB00C7B6F3 /* Old Upload */,
-			);
-			path = Networking;
-			sourceTree = "<group>";
-		};
-		AFFA407A1C9CE9EB00C7B6F3 /* New Upload (Private) */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA407B1C9CE9EB00C7B6F3 /* VimeoRequestSerializer+Upload.swift */,
-				AFFA407C1C9CE9EB00C7B6F3 /* VimeoSessionManager+Upload.swift */,
-			);
-			path = "New Upload (Private)";
-			sourceTree = "<group>";
-		};
-		AFFA407D1C9CE9EB00C7B6F3 /* Old Upload */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA407E1C9CE9EB00C7B6F3 /* VimeoRequestSerializer+OldUpload.swift */,
-				AFFA407F1C9CE9EB00C7B6F3 /* VimeoResponseSerializer+OldUpload.swift */,
-				AFFA40801C9CE9EB00C7B6F3 /* VimeoSessionManager+OldUpload.swift */,
-			);
-			path = "Old Upload";
-			sourceTree = "<group>";
-		};
-		AFFA40811C9CE9EB00C7B6F3 /* Operations */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40821C9CE9EB00C7B6F3 /* Async */,
-				AFFA40901C9CE9EB00C7B6F3 /* Private */,
-				AFFA409A1C9CE9EB00C7B6F3 /* Sync */,
-			);
-			path = Operations;
-			sourceTree = "<group>";
-		};
-		AFFA40821C9CE9EB00C7B6F3 /* Async */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40831C9CE9EB00C7B6F3 /* ConcurrentOperation.swift */,
-				AFFA40841C9CE9EB00C7B6F3 /* DeleteVideoOperation.swift */,
-				AFFA40851C9CE9EB00C7B6F3 /* ExportOperation.swift */,
-				AFFA40861C9CE9EB00C7B6F3 /* ExportQuotaOperation.swift */,
-				AFFA40871C9CE9EB00C7B6F3 /* iOS7 */,
-				AFFA40891C9CE9EB00C7B6F3 /* iOS8 */,
-				AFFA408D1C9CE9EB00C7B6F3 /* MeOperation.swift */,
-				AFFA408E1C9CE9EB00C7B6F3 /* MeQuotaOperation.swift */,
-				AFFA408F1C9CE9EB00C7B6F3 /* VideoOperation.swift */,
-			);
-			path = Async;
-			sourceTree = "<group>";
-		};
-		AFFA40871C9CE9EB00C7B6F3 /* iOS7 */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40881C9CE9EB00C7B6F3 /* ALAssetExportQuotaOperation.swift */,
-			);
-			path = iOS7;
-			sourceTree = "<group>";
-		};
-		AFFA40891C9CE9EB00C7B6F3 /* iOS8 */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA408A1C9CE9EB00C7B6F3 /* PHAssetCloudExportQuotaOperation.swift */,
-				AFFA408B1C9CE9EB00C7B6F3 /* PHAssetDownloadOperation.swift */,
-				AFFA408C1C9CE9EB00C7B6F3 /* PHAssetExportSessionOperation.swift */,
-			);
-			path = iOS8;
-			sourceTree = "<group>";
-		};
-		AFFA40901C9CE9EB00C7B6F3 /* Private */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40911C9CE9EB00C7B6F3 /* CreateVideoOperation.swift */,
-				AFFA40921C9CE9EB00C7B6F3 /* ExportQuotaCreateOperation.swift */,
-				AFFA40931C9CE9EB00C7B6F3 /* iOS7 */,
-				AFFA40961C9CE9EB00C7B6F3 /* iOS8 */,
-				AFFA40991C9CE9EB00C7B6F3 /* RetryUploadOperation.swift */,
-			);
-			path = Private;
-			sourceTree = "<group>";
-		};
-		AFFA40931C9CE9EB00C7B6F3 /* iOS7 */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40941C9CE9EB00C7B6F3 /* ALAssetExportQuotaCreateOperation.swift */,
-				AFFA40951C9CE9EB00C7B6F3 /* ALAssetRetryUploadOperation.swift */,
-			);
-			path = iOS7;
-			sourceTree = "<group>";
-		};
-		AFFA40961C9CE9EB00C7B6F3 /* iOS8 */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40971C9CE9EB00C7B6F3 /* PHAssetCloudExportQuotaCreateOperation.swift */,
-				AFFA40981C9CE9EB00C7B6F3 /* PHAssetRetryUploadOperation.swift */,
-			);
-			path = iOS8;
-			sourceTree = "<group>";
-		};
-		AFFA409A1C9CE9EB00C7B6F3 /* Sync */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA409B1C9CE9EB00C7B6F3 /* DailyQuotaOperation.swift */,
-				AFFA409C1C9CE9EB00C7B6F3 /* DiskSpaceOperation.swift */,
-				AFFA409D1C9CE9EB00C7B6F3 /* WeeklyQuotaOperation.swift */,
-			);
-			path = Sync;
-			sourceTree = "<group>";
-		};
-		AFFA40A71C9CE9EB00C7B6F3 /* VimeoUpload+UIKit */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40A81C9CE9EB00C7B6F3 /* ALAssetHelper.swift */,
-				AFFA40A91C9CE9EB00C7B6F3 /* CameraRollAssetCell.swift */,
-				AFFA40AA1C9CE9EB00C7B6F3 /* CameraRollAssetHelper.swift */,
-				AFFA40AB1C9CE9EB00C7B6F3 /* Extensions */,
-				AFFA40AD1C9CE9EB00C7B6F3 /* Model */,
-				AFFA40B11C9CE9EB00C7B6F3 /* PHAssetHelper.swift */,
-			);
-			name = "VimeoUpload+UIKit";
-			path = "../../../VimeoUpload+UIKit";
-			sourceTree = "<group>";
-		};
-		AFFA40AB1C9CE9EB00C7B6F3 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40AC1C9CE9EB00C7B6F3 /* NSString+Conversions.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		AFFA40AD1C9CE9EB00C7B6F3 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA40AE1C9CE9EB00C7B6F3 /* CameraRollAsset.swift */,
-				AFFA40AF1C9CE9EB00C7B6F3 /* VIMALAsset.swift */,
-				AFFA40B01C9CE9EB00C7B6F3 /* VIMPHAsset.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		BFAE01663A3415731065DAAA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				CDA13E1C64C38371E76F2F7E /* libPods-VimeoUpload-iOS-OldUpload.a */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-/* End PBXGroup section */
-
-/* Begin PBXNativeTarget section */
-		AFFA400A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AFFA40331C9CE8E000C7B6F3 /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-OldUpload" */;
-			buildPhases = (
-				0D46385E02854E71C1FDABFA /* Check Pods Manifest.lock */,
-				AFFA40071C9CE8E000C7B6F3 /* Sources */,
-				AFFA40081C9CE8E000C7B6F3 /* Frameworks */,
-				AFFA40091C9CE8E000C7B6F3 /* Resources */,
-				BE8817D04A5626F94A584168 /* Embed Pods Frameworks */,
-				4AA625097181A3EE21E48884 /* Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "VimeoUpload-iOS-OldUpload";
-			productName = "VimeoUpload-iOS-OldUpload";
-			productReference = AFFA400B1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload.app */;
-			productType = "com.apple.product-type.application";
-		};
-		AFFA401E1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AFFA40361C9CE8E000C7B6F3 /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-OldUploadTests" */;
-			buildPhases = (
-				AFFA401B1C9CE8E000C7B6F3 /* Sources */,
-				AFFA401C1C9CE8E000C7B6F3 /* Frameworks */,
-				AFFA401D1C9CE8E000C7B6F3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AFFA40211C9CE8E000C7B6F3 /* PBXTargetDependency */,
-			);
-			name = "VimeoUpload-iOS-OldUploadTests";
-			productName = "VimeoUpload-iOS-OldUploadTests";
-			productReference = AFFA401F1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		AFFA40291C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AFFA40391C9CE8E000C7B6F3 /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-OldUploadUITests" */;
-			buildPhases = (
-				AFFA40261C9CE8E000C7B6F3 /* Sources */,
-				AFFA40271C9CE8E000C7B6F3 /* Frameworks */,
-				AFFA40281C9CE8E000C7B6F3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AFFA402C1C9CE8E000C7B6F3 /* PBXTargetDependency */,
-			);
-			name = "VimeoUpload-iOS-OldUploadUITests";
-			productName = "VimeoUpload-iOS-OldUploadUITests";
-			productReference = AFFA402A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
-/* End PBXNativeTarget section */
-
-/* Begin PBXProject section */
-		AFFA40031C9CE8E000C7B6F3 /* Project object */ = {
-			isa = PBXProject;
-			attributes = {
-				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 0720;
-				ORGANIZATIONNAME = "Alfie Hanssen";
-				TargetAttributes = {
-					AFFA400A1C9CE8E000C7B6F3 = {
-						CreatedOnToolsVersion = 7.2;
-					};
-					AFFA401E1C9CE8E000C7B6F3 = {
-						CreatedOnToolsVersion = 7.2;
-						TestTargetID = AFFA400A1C9CE8E000C7B6F3;
-					};
-					AFFA40291C9CE8E000C7B6F3 = {
-						CreatedOnToolsVersion = 7.2;
-						TestTargetID = AFFA400A1C9CE8E000C7B6F3;
-					};
-				};
-			};
-			buildConfigurationList = AFFA40061C9CE8E000C7B6F3 /* Build configuration list for PBXProject "VimeoUpload-iOS-OldUpload" */;
-			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
-			hasScannedForEncodings = 0;
-			knownRegions = (
-				en,
-				Base,
-			);
-			mainGroup = AFFA40021C9CE8E000C7B6F3;
-			productRefGroup = AFFA400C1C9CE8E000C7B6F3 /* Products */;
-			projectDirPath = "";
-			projectRoot = "";
-			targets = (
-				AFFA400A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload */,
-				AFFA401E1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadTests */,
-				AFFA40291C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests */,
-			);
-		};
-/* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		AFFA40091C9CE8E000C7B6F3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AFFA40191C9CE8E000C7B6F3 /* LaunchScreen.storyboard in Resources */,
-				AFFA404C1C9CE9B600C7B6F3 /* UploadsViewController.xib in Resources */,
-				AFFA40481C9CE9B600C7B6F3 /* UploadCell.xib in Resources */,
-				AFFA404E1C9CE9B600C7B6F3 /* VideoSettingsViewController.xib in Resources */,
-				5073D6E11CAD66A600D08C5F /* DemoCameraRollCell.xib in Resources */,
-				AFFA40161C9CE8E000C7B6F3 /* Assets.xcassets in Resources */,
-				5073D6E31CAD66A600D08C5F /* BaseCameraRollViewController.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AFFA401D1C9CE8E000C7B6F3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AFFA40281C9CE8E000C7B6F3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		0D46385E02854E71C1FDABFA /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		4AA625097181A3EE21E48884 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUpload/Pods-VimeoUpload-iOS-OldUpload-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		BE8817D04A5626F94A584168 /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUpload/Pods-VimeoUpload-iOS-OldUpload-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
-		AFFA40071C9CE8E000C7B6F3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AFFA40E31C9CE9EB00C7B6F3 /* ALAssetExportQuotaCreateOperation.swift in Sources */,
-				AFFA40E51C9CE9EB00C7B6F3 /* PHAssetCloudExportQuotaCreateOperation.swift in Sources */,
-				AFFA40E61C9CE9EB00C7B6F3 /* PHAssetRetryUploadOperation.swift in Sources */,
-				AFFA40BD1C9CE9EB00C7B6F3 /* NSFileManager+Extensions.swift in Sources */,
-				AFFA40E01C9CE9EB00C7B6F3 /* VideoOperation.swift in Sources */,
-				AFFA40C11C9CE9EB00C7B6F3 /* VimeoSessionManager.swift in Sources */,
-				AFFA40C71C9CE9EB00C7B6F3 /* OldUploadRequest.swift in Sources */,
-				AFFA40D31C9CE9EB00C7B6F3 /* VimeoRequestSerializer+OldUpload.swift in Sources */,
-				AFFA40BE1C9CE9EB00C7B6F3 /* Constants.swift in Sources */,
-				AFFA40C61C9CE9EB00C7B6F3 /* OldUploadDescriptor.swift in Sources */,
-				AFFA40CB1C9CE9EB00C7B6F3 /* AVAsset+Extensions.swift in Sources */,
-				AFFA40B21C9CE9EB00C7B6F3 /* ArchiverProtocol.swift in Sources */,
-				AFFA40491C9CE9B600C7B6F3 /* OldVimeoUpload.swift in Sources */,
-				AFFA40C51C9CE9EB00C7B6F3 /* UploadDescriptor.swift in Sources */,
-				AFFA404D1C9CE9B600C7B6F3 /* VideoSettingsViewController.swift in Sources */,
-				AFFA40F11C9CE9EC00C7B6F3 /* ALAssetHelper.swift in Sources */,
-				AFFA40D41C9CE9EB00C7B6F3 /* VimeoResponseSerializer+OldUpload.swift in Sources */,
-				AFFA40DE1C9CE9EB00C7B6F3 /* MeOperation.swift in Sources */,
-				AFFA40D71C9CE9EB00C7B6F3 /* DeleteVideoOperation.swift in Sources */,
-				AFFA40F31C9CE9EC00C7B6F3 /* CameraRollAssetHelper.swift in Sources */,
-				AFFA40CD1C9CE9EB00C7B6F3 /* NSError+Upload.swift in Sources */,
-				AFFA40BB1C9CE9EB00C7B6F3 /* AFURLSessionManager+Extensions.swift in Sources */,
-				AFFA40F41C9CE9EC00C7B6F3 /* NSString+Conversions.swift in Sources */,
-				AFFA40BA1C9CE9EB00C7B6F3 /* ReachableDescriptorManager.swift in Sources */,
-				AFFA40C81C9CE9EB00C7B6F3 /* VideoDescriptor.swift in Sources */,
-				5073D6E21CAD66A600D08C5F /* BaseCameraRollViewController.swift in Sources */,
-				AFFA40E41C9CE9EB00C7B6F3 /* ALAssetRetryUploadOperation.swift in Sources */,
-				AFFA40B71C9CE9EB00C7B6F3 /* DescriptorManagerDelegate.swift in Sources */,
-				AFFA40471C9CE9B600C7B6F3 /* UploadCell.swift in Sources */,
-				AFFA40DD1C9CE9EB00C7B6F3 /* PHAssetExportSessionOperation.swift in Sources */,
-				AFFA40C91C9CE9EB00C7B6F3 /* VideoDescriptorFailureTracker.swift in Sources */,
-				AFFA404A1C9CE9B600C7B6F3 /* CameraRollViewController.swift in Sources */,
-				AFFA40B41C9CE9EB00C7B6F3 /* Descriptor.swift in Sources */,
-				AFFA40CC1C9CE9EB00C7B6F3 /* AVURLAsset+Extensions.swift in Sources */,
-				AFFA40E21C9CE9EB00C7B6F3 /* ExportQuotaCreateOperation.swift in Sources */,
-				AFFA40B51C9CE9EB00C7B6F3 /* DescriptorManager.swift in Sources */,
-				AFFA40E81C9CE9EB00C7B6F3 /* DailyQuotaOperation.swift in Sources */,
-				AFFA40C31C9CE9EB00C7B6F3 /* VideoRefreshManager.swift in Sources */,
-				5073D6E01CAD66A600D08C5F /* DemoCameraRollCell.swift in Sources */,
-				AFFA40EA1C9CE9EC00C7B6F3 /* WeeklyQuotaOperation.swift in Sources */,
-				AFFA40E71C9CE9EB00C7B6F3 /* RetryUploadOperation.swift in Sources */,
-				AFFA40D81C9CE9EB00C7B6F3 /* ExportOperation.swift in Sources */,
-				AFFA40B81C9CE9EB00C7B6F3 /* KeyedArchiver.swift in Sources */,
-				AFFA40C21C9CE9EB00C7B6F3 /* VideoDeletionManager.swift in Sources */,
-				AFFA40F61C9CE9EC00C7B6F3 /* VIMALAsset.swift in Sources */,
-				AFFA40BC1C9CE9EB00C7B6F3 /* NSError+Extensions.swift in Sources */,
-				AFFA40CE1C9CE9EB00C7B6F3 /* NSURL+Upload.swift in Sources */,
-				AFFA40D91C9CE9EB00C7B6F3 /* ExportQuotaOperation.swift in Sources */,
-				AFFA40F21C9CE9EC00C7B6F3 /* CameraRollAssetCell.swift in Sources */,
-				AFFA40BF1C9CE9EB00C7B6F3 /* VimeoRequestSerializer.swift in Sources */,
-				AFFA40D01C9CE9EB00C7B6F3 /* VideoSettings.swift in Sources */,
-				AFFA40F51C9CE9EC00C7B6F3 /* CameraRollAsset.swift in Sources */,
-				AFFA40C01C9CE9EB00C7B6F3 /* VimeoResponseSerializer.swift in Sources */,
-				AFFA40D11C9CE9EB00C7B6F3 /* VimeoRequestSerializer+Upload.swift in Sources */,
-				AFFA40DA1C9CE9EB00C7B6F3 /* ALAssetExportQuotaOperation.swift in Sources */,
-				AFFA40C41C9CE9EB00C7B6F3 /* DescriptorManagerTracker.swift in Sources */,
-				AFFA40E91C9CE9EB00C7B6F3 /* DiskSpaceOperation.swift in Sources */,
-				AFFA40F81C9CE9EC00C7B6F3 /* PHAssetHelper.swift in Sources */,
-				AFFA40D21C9CE9EB00C7B6F3 /* VimeoSessionManager+Upload.swift in Sources */,
-				AFFA40D51C9CE9EB00C7B6F3 /* VimeoSessionManager+OldUpload.swift in Sources */,
-				AFFA40B91C9CE9EB00C7B6F3 /* ProgressDescriptor.swift in Sources */,
-				AFFA40DF1C9CE9EB00C7B6F3 /* MeQuotaOperation.swift in Sources */,
-				AFFA404B1C9CE9B600C7B6F3 /* UploadsViewController.swift in Sources */,
-				AFFA40CF1C9CE9EB00C7B6F3 /* BlockTypes.swift in Sources */,
-				AFFA40DC1C9CE9EB00C7B6F3 /* PHAssetDownloadOperation.swift in Sources */,
-				AFFA40EC1C9CE9EC00C7B6F3 /* VimeoUpload.swift in Sources */,
-				AFFA40B61C9CE9EB00C7B6F3 /* DescriptorManagerArchiver.swift in Sources */,
-				AFFA40B31C9CE9EB00C7B6F3 /* ConnectivityManager.swift in Sources */,
-				AFFA40D61C9CE9EB00C7B6F3 /* ConcurrentOperation.swift in Sources */,
-				AFFA40F71C9CE9EC00C7B6F3 /* VIMPHAsset.swift in Sources */,
-				AFFA40DB1C9CE9EB00C7B6F3 /* PHAssetCloudExportQuotaOperation.swift in Sources */,
-				AFFA40CA1C9CE9EB00C7B6F3 /* AFURLSessionManager+Upload.swift in Sources */,
-				AFFA400F1C9CE8E000C7B6F3 /* AppDelegate.swift in Sources */,
-				AFFA40E11C9CE9EB00C7B6F3 /* CreateVideoOperation.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AFFA401B1C9CE8E000C7B6F3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AFFA40241C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AFFA40261C9CE8E000C7B6F3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AFFA402F1C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadUITests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		AFFA40211C9CE8E000C7B6F3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AFFA400A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload */;
-			targetProxy = AFFA40201C9CE8E000C7B6F3 /* PBXContainerItemProxy */;
-		};
-		AFFA402C1C9CE8E000C7B6F3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AFFA400A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload */;
-			targetProxy = AFFA402B1C9CE8E000C7B6F3 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		AFFA40171C9CE8E000C7B6F3 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AFFA40181C9CE8E000C7B6F3 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
-/* Begin XCBuildConfiguration section */
-		AFFA40311C9CE8E000C7B6F3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		AFFA40321C9CE8E000C7B6F3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = iphoneos;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		AFFA40341C9CE8E000C7B6F3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = CEE1B3D12A6927014E253022 /* Pods-VimeoUpload-iOS-OldUpload.debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = "VimeoUpload-iOS-OldUpload/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUpload";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/VimeoUpload-iOS-OldUpload/Bridge.h";
-			};
-			name = Debug;
-		};
-		AFFA40351C9CE8E000C7B6F3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9B8EBF50CBA80C187F8444F1 /* Pods-VimeoUpload-iOS-OldUpload.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = "VimeoUpload-iOS-OldUpload/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUpload";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/VimeoUpload-iOS-OldUpload/Bridge.h";
-			};
-			name = Release;
-		};
-		AFFA40371C9CE8E000C7B6F3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = "VimeoUpload-iOS-OldUploadTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUploadTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VimeoUpload-iOS-OldUpload.app/VimeoUpload-iOS-OldUpload";
-			};
-			name = Debug;
-		};
-		AFFA40381C9CE8E000C7B6F3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = "VimeoUpload-iOS-OldUploadTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUploadTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VimeoUpload-iOS-OldUpload.app/VimeoUpload-iOS-OldUpload";
-			};
-			name = Release;
-		};
-		AFFA403A1C9CE8E000C7B6F3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "VimeoUpload-iOS-OldUploadUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUploadUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = "VimeoUpload-iOS-OldUpload";
-				USES_XCTRUNNER = YES;
-			};
-			name = Debug;
-		};
-		AFFA403B1C9CE8E000C7B6F3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "VimeoUpload-iOS-OldUploadUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUploadUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_TARGET_NAME = "VimeoUpload-iOS-OldUpload";
-				USES_XCTRUNNER = YES;
-			};
-			name = Release;
-		};
-/* End XCBuildConfiguration section */
-
-/* Begin XCConfigurationList section */
-		AFFA40061C9CE8E000C7B6F3 /* Build configuration list for PBXProject "VimeoUpload-iOS-OldUpload" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AFFA40311C9CE8E000C7B6F3 /* Debug */,
-				AFFA40321C9CE8E000C7B6F3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AFFA40331C9CE8E000C7B6F3 /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-OldUpload" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AFFA40341C9CE8E000C7B6F3 /* Debug */,
-				AFFA40351C9CE8E000C7B6F3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AFFA40361C9CE8E000C7B6F3 /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-OldUploadTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AFFA40371C9CE8E000C7B6F3 /* Debug */,
-				AFFA40381C9CE8E000C7B6F3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AFFA40391C9CE8E000C7B6F3 /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-OldUploadUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AFFA403A1C9CE8E000C7B6F3 /* Debug */,
-				AFFA403B1C9CE8E000C7B6F3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-/* End XCConfigurationList section */
-	};
-	rootObject = AFFA40031C9CE8E000C7B6F3 /* Project object */;
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>archiveVersion</key>
+	<string>1</string>
+	<key>classes</key>
+	<dict/>
+	<key>objectVersion</key>
+	<string>46</string>
+	<key>objects</key>
+	<dict>
+		<key>0D46385E02854E71C1FDABFA</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputPaths</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>Check Pods Manifest.lock</string>
+			<key>outputPaths</key>
+			<array/>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>diff "${PODS_ROOT}/../Podfile.lock" "${PODS_ROOT}/Manifest.lock" &gt; /dev/null
+if [[ $? != 0 ]] ; then
+    cat &lt;&lt; EOM
+error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.
+EOM
+    exit 1
+fi
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>28B7387BC89169C51D7C4578</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>CEE1B3D12A6927014E253022</string>
+				<string>9B8EBF50CBA80C187F8444F1</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Pods</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>4AA625097181A3EE21E48884</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputPaths</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>Copy Pods Resources</string>
+			<key>outputPaths</key>
+			<array/>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUpload/Pods-VimeoUpload-iOS-OldUpload-resources.sh"
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>5073D6D91CAD66A600D08C5F</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>5073D6DA1CAD66A600D08C5F</string>
+				<string>5073D6DD1CAD66A600D08C5F</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>VimeoUpload+Demos</string>
+			<key>path</key>
+			<string>../../VimeoUpload+Demos</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>5073D6DA1CAD66A600D08C5F</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>5073D6DB1CAD66A600D08C5F</string>
+				<string>5073D6DC1CAD66A600D08C5F</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Cells</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>5073D6DB1CAD66A600D08C5F</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>DemoCameraRollCell.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>5073D6DC1CAD66A600D08C5F</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>file.xib</string>
+			<key>path</key>
+			<string>DemoCameraRollCell.xib</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>5073D6DD1CAD66A600D08C5F</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>5073D6DE1CAD66A600D08C5F</string>
+				<string>5073D6DF1CAD66A600D08C5F</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>ViewControllers</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>5073D6DE1CAD66A600D08C5F</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>BaseCameraRollViewController.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>5073D6DF1CAD66A600D08C5F</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>file.xib</string>
+			<key>path</key>
+			<string>BaseCameraRollViewController.xib</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>5073D6E01CAD66A600D08C5F</key>
+		<dict>
+			<key>fileRef</key>
+			<string>5073D6DB1CAD66A600D08C5F</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>5073D6E11CAD66A600D08C5F</key>
+		<dict>
+			<key>fileRef</key>
+			<string>5073D6DC1CAD66A600D08C5F</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>5073D6E21CAD66A600D08C5F</key>
+		<dict>
+			<key>fileRef</key>
+			<string>5073D6DE1CAD66A600D08C5F</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>5073D6E31CAD66A600D08C5F</key>
+		<dict>
+			<key>fileRef</key>
+			<string>5073D6DF1CAD66A600D08C5F</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>9B8EBF50CBA80C187F8444F1</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>name</key>
+			<string>Pods-VimeoUpload-iOS-OldUpload.release.xcconfig</string>
+			<key>path</key>
+			<string>../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUpload/Pods-VimeoUpload-iOS-OldUpload.release.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40021C9CE8E000C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA400D1C9CE8E000C7B6F3</string>
+				<string>AFFA40221C9CE8E000C7B6F3</string>
+				<string>AFFA402D1C9CE8E000C7B6F3</string>
+				<string>AFFA400C1C9CE8E000C7B6F3</string>
+				<string>28B7387BC89169C51D7C4578</string>
+				<string>BFAE01663A3415731065DAAA</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40031C9CE8E000C7B6F3</key>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>LastSwiftUpdateCheck</key>
+				<string>0720</string>
+				<key>LastUpgradeCheck</key>
+				<string>0720</string>
+				<key>ORGANIZATIONNAME</key>
+				<string>Alfie Hanssen</string>
+				<key>TargetAttributes</key>
+				<dict>
+					<key>AFFA400A1C9CE8E000C7B6F3</key>
+					<dict>
+						<key>CreatedOnToolsVersion</key>
+						<string>7.2</string>
+					</dict>
+					<key>AFFA401E1C9CE8E000C7B6F3</key>
+					<dict>
+						<key>CreatedOnToolsVersion</key>
+						<string>7.2</string>
+						<key>TestTargetID</key>
+						<string>AFFA400A1C9CE8E000C7B6F3</string>
+					</dict>
+					<key>AFFA40291C9CE8E000C7B6F3</key>
+					<dict>
+						<key>CreatedOnToolsVersion</key>
+						<string>7.2</string>
+						<key>TestTargetID</key>
+						<string>AFFA400A1C9CE8E000C7B6F3</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>buildConfigurationList</key>
+			<string>AFFA40061C9CE8E000C7B6F3</string>
+			<key>compatibilityVersion</key>
+			<string>Xcode 3.2</string>
+			<key>developmentRegion</key>
+			<string>English</string>
+			<key>hasScannedForEncodings</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXProject</string>
+			<key>knownRegions</key>
+			<array>
+				<string>en</string>
+				<string>Base</string>
+			</array>
+			<key>mainGroup</key>
+			<string>AFFA40021C9CE8E000C7B6F3</string>
+			<key>productRefGroup</key>
+			<string>AFFA400C1C9CE8E000C7B6F3</string>
+			<key>projectDirPath</key>
+			<string></string>
+			<key>projectReferences</key>
+			<array/>
+			<key>projectRoot</key>
+			<string></string>
+			<key>targets</key>
+			<array>
+				<string>AFFA400A1C9CE8E000C7B6F3</string>
+				<string>AFFA401E1C9CE8E000C7B6F3</string>
+				<string>AFFA40291C9CE8E000C7B6F3</string>
+			</array>
+		</dict>
+		<key>AFFA40061C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>AFFA40311C9CE8E000C7B6F3</string>
+				<string>AFFA40321C9CE8E000C7B6F3</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>AFFA40071C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>AFFA40E31C9CE9EB00C7B6F3</string>
+				<string>AFFA40E51C9CE9EB00C7B6F3</string>
+				<string>AFFA40E61C9CE9EB00C7B6F3</string>
+				<string>AFFA40BD1C9CE9EB00C7B6F3</string>
+				<string>AFFA40E01C9CE9EB00C7B6F3</string>
+				<string>AFFA40C11C9CE9EB00C7B6F3</string>
+				<string>AFFA40C71C9CE9EB00C7B6F3</string>
+				<string>AFFA40D31C9CE9EB00C7B6F3</string>
+				<string>AFFA40BE1C9CE9EB00C7B6F3</string>
+				<string>AFFA40C61C9CE9EB00C7B6F3</string>
+				<string>AFFA40CB1C9CE9EB00C7B6F3</string>
+				<string>AFFA40B21C9CE9EB00C7B6F3</string>
+				<string>AFFA40491C9CE9B600C7B6F3</string>
+				<string>AFFA40C51C9CE9EB00C7B6F3</string>
+				<string>AFFA404D1C9CE9B600C7B6F3</string>
+				<string>AFFA40F11C9CE9EC00C7B6F3</string>
+				<string>AFFA40D41C9CE9EB00C7B6F3</string>
+				<string>AFFA40DE1C9CE9EB00C7B6F3</string>
+				<string>AFFA40D71C9CE9EB00C7B6F3</string>
+				<string>AFFA40F31C9CE9EC00C7B6F3</string>
+				<string>AFFA40CD1C9CE9EB00C7B6F3</string>
+				<string>AFFA40BB1C9CE9EB00C7B6F3</string>
+				<string>AFFA40F41C9CE9EC00C7B6F3</string>
+				<string>AFFA40BA1C9CE9EB00C7B6F3</string>
+				<string>AFFA40C81C9CE9EB00C7B6F3</string>
+				<string>5073D6E21CAD66A600D08C5F</string>
+				<string>AFFA40E41C9CE9EB00C7B6F3</string>
+				<string>AFFA40B71C9CE9EB00C7B6F3</string>
+				<string>AFFA40471C9CE9B600C7B6F3</string>
+				<string>AFFA40DD1C9CE9EB00C7B6F3</string>
+				<string>AFFA40C91C9CE9EB00C7B6F3</string>
+				<string>AFFA404A1C9CE9B600C7B6F3</string>
+				<string>AFFA40B41C9CE9EB00C7B6F3</string>
+				<string>AFFA40CC1C9CE9EB00C7B6F3</string>
+				<string>AFFA40E21C9CE9EB00C7B6F3</string>
+				<string>AFFA40B51C9CE9EB00C7B6F3</string>
+				<string>AFFA40E81C9CE9EB00C7B6F3</string>
+				<string>AFFA40C31C9CE9EB00C7B6F3</string>
+				<string>5073D6E01CAD66A600D08C5F</string>
+				<string>AFFA40EA1C9CE9EC00C7B6F3</string>
+				<string>AFFA40E71C9CE9EB00C7B6F3</string>
+				<string>AFFA40D81C9CE9EB00C7B6F3</string>
+				<string>AFFA40B81C9CE9EB00C7B6F3</string>
+				<string>AFFA40C21C9CE9EB00C7B6F3</string>
+				<string>AFFA40F61C9CE9EC00C7B6F3</string>
+				<string>AFFA40BC1C9CE9EB00C7B6F3</string>
+				<string>AFFA40CE1C9CE9EB00C7B6F3</string>
+				<string>AFFA40D91C9CE9EB00C7B6F3</string>
+				<string>AFFA40F21C9CE9EC00C7B6F3</string>
+				<string>AFFA40BF1C9CE9EB00C7B6F3</string>
+				<string>AFFA40D01C9CE9EB00C7B6F3</string>
+				<string>AFFA40F51C9CE9EC00C7B6F3</string>
+				<string>AFFA40C01C9CE9EB00C7B6F3</string>
+				<string>AFFA40D11C9CE9EB00C7B6F3</string>
+				<string>AFFA40DA1C9CE9EB00C7B6F3</string>
+				<string>AFFA40C41C9CE9EB00C7B6F3</string>
+				<string>AFFA40E91C9CE9EB00C7B6F3</string>
+				<string>AFFA40F81C9CE9EC00C7B6F3</string>
+				<string>AFFA40D21C9CE9EB00C7B6F3</string>
+				<string>AFFA40D51C9CE9EB00C7B6F3</string>
+				<string>AFFA40B91C9CE9EB00C7B6F3</string>
+				<string>AFFA40DF1C9CE9EB00C7B6F3</string>
+				<string>AFFA404B1C9CE9B600C7B6F3</string>
+				<string>AFFA40CF1C9CE9EB00C7B6F3</string>
+				<string>AFFA40DC1C9CE9EB00C7B6F3</string>
+				<string>AFFA40EC1C9CE9EC00C7B6F3</string>
+				<string>AFFA40B61C9CE9EB00C7B6F3</string>
+				<string>AFFA40B31C9CE9EB00C7B6F3</string>
+				<string>AFFA40D61C9CE9EB00C7B6F3</string>
+				<string>AFFA40F71C9CE9EC00C7B6F3</string>
+				<string>AFFA40DB1C9CE9EB00C7B6F3</string>
+				<string>AFFA40CA1C9CE9EB00C7B6F3</string>
+				<string>AFFA400F1C9CE8E000C7B6F3</string>
+				<string>AFFA40E11C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXSourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>AFFA40081C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>EE903C6C2E0B8154F94AC869</string>
+			</array>
+			<key>isa</key>
+			<string>PBXFrameworksBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>AFFA40091C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>AFFA40191C9CE8E000C7B6F3</string>
+				<string>AFFA404C1C9CE9B600C7B6F3</string>
+				<string>AFFA40481C9CE9B600C7B6F3</string>
+				<string>AFFA404E1C9CE9B600C7B6F3</string>
+				<string>5073D6E11CAD66A600D08C5F</string>
+				<string>AFFA40161C9CE8E000C7B6F3</string>
+				<string>5073D6E31CAD66A600D08C5F</string>
+			</array>
+			<key>isa</key>
+			<string>PBXResourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>AFFA400A1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildConfigurationList</key>
+			<string>AFFA40331C9CE8E000C7B6F3</string>
+			<key>buildPhases</key>
+			<array>
+				<string>0D46385E02854E71C1FDABFA</string>
+				<string>AFFA40071C9CE8E000C7B6F3</string>
+				<string>AFFA40081C9CE8E000C7B6F3</string>
+				<string>AFFA40091C9CE8E000C7B6F3</string>
+				<string>BE8817D04A5626F94A584168</string>
+				<string>4AA625097181A3EE21E48884</string>
+			</array>
+			<key>buildRules</key>
+			<array/>
+			<key>dependencies</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXNativeTarget</string>
+			<key>name</key>
+			<string>VimeoUpload-iOS-OldUpload</string>
+			<key>productName</key>
+			<string>VimeoUpload-iOS-OldUpload</string>
+			<key>productReference</key>
+			<string>AFFA400B1C9CE8E000C7B6F3</string>
+			<key>productType</key>
+			<string>com.apple.product-type.application</string>
+		</dict>
+		<key>AFFA400B1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>wrapper.application</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>VimeoUpload-iOS-OldUpload.app</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>AFFA400C1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA400B1C9CE8E000C7B6F3</string>
+				<string>AFFA401F1C9CE8E000C7B6F3</string>
+				<string>AFFA402A1C9CE8E000C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Products</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA400D1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA400E1C9CE8E000C7B6F3</string>
+				<string>AFFA40401C9CE9B600C7B6F3</string>
+				<string>AFFA403D1C9CE9B600C7B6F3</string>
+				<string>AFFA40411C9CE9B600C7B6F3</string>
+				<string>AFFA404F1C9CE9EB00C7B6F3</string>
+				<string>AFFA40A71C9CE9EB00C7B6F3</string>
+				<string>5073D6D91CAD66A600D08C5F</string>
+				<string>AFFA40151C9CE8E000C7B6F3</string>
+				<string>AFFA40171C9CE8E000C7B6F3</string>
+				<string>AFFA401A1C9CE8E000C7B6F3</string>
+				<string>AFFA403C1C9CE9B600C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>VimeoUpload-iOS-OldUpload</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA400E1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>AppDelegate.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA400F1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA400E1C9CE8E000C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40151C9CE8E000C7B6F3</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>folder.assetcatalog</string>
+			<key>path</key>
+			<string>Assets.xcassets</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40161C9CE8E000C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40151C9CE8E000C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40171C9CE8E000C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40181C9CE8E000C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXVariantGroup</string>
+			<key>name</key>
+			<string>LaunchScreen.storyboard</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40181C9CE8E000C7B6F3</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>file.storyboard</string>
+			<key>name</key>
+			<string>Base</string>
+			<key>path</key>
+			<string>Base.lproj/LaunchScreen.storyboard</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40191C9CE8E000C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40171C9CE8E000C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA401A1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.xml</string>
+			<key>path</key>
+			<string>Info.plist</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA401B1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>AFFA40241C9CE8E000C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXSourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>AFFA401C1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXFrameworksBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>AFFA401D1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXResourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>AFFA401E1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildConfigurationList</key>
+			<string>AFFA40361C9CE8E000C7B6F3</string>
+			<key>buildPhases</key>
+			<array>
+				<string>AFFA401B1C9CE8E000C7B6F3</string>
+				<string>AFFA401C1C9CE8E000C7B6F3</string>
+				<string>AFFA401D1C9CE8E000C7B6F3</string>
+			</array>
+			<key>buildRules</key>
+			<array/>
+			<key>dependencies</key>
+			<array>
+				<string>AFFA40211C9CE8E000C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXNativeTarget</string>
+			<key>name</key>
+			<string>VimeoUpload-iOS-OldUploadTests</string>
+			<key>productName</key>
+			<string>VimeoUpload-iOS-OldUploadTests</string>
+			<key>productReference</key>
+			<string>AFFA401F1C9CE8E000C7B6F3</string>
+			<key>productType</key>
+			<string>com.apple.product-type.bundle.unit-test</string>
+		</dict>
+		<key>AFFA401F1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>wrapper.cfbundle</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>VimeoUpload-iOS-OldUploadTests.xctest</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>AFFA40201C9CE8E000C7B6F3</key>
+		<dict>
+			<key>containerPortal</key>
+			<string>AFFA40031C9CE8E000C7B6F3</string>
+			<key>isa</key>
+			<string>PBXContainerItemProxy</string>
+			<key>proxyType</key>
+			<string>1</string>
+			<key>remoteGlobalIDString</key>
+			<string>AFFA400A1C9CE8E000C7B6F3</string>
+			<key>remoteInfo</key>
+			<string>VimeoUpload-iOS-OldUpload</string>
+		</dict>
+		<key>AFFA40211C9CE8E000C7B6F3</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXTargetDependency</string>
+			<key>target</key>
+			<string>AFFA400A1C9CE8E000C7B6F3</string>
+			<key>targetProxy</key>
+			<string>AFFA40201C9CE8E000C7B6F3</string>
+		</dict>
+		<key>AFFA40221C9CE8E000C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40231C9CE8E000C7B6F3</string>
+				<string>AFFA40251C9CE8E000C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>VimeoUpload-iOS-OldUploadTests</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40231C9CE8E000C7B6F3</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VimeoUpload_iOS_OldUploadTests.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40241C9CE8E000C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40231C9CE8E000C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40251C9CE8E000C7B6F3</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.xml</string>
+			<key>path</key>
+			<string>Info.plist</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40261C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>AFFA402F1C9CE8E000C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXSourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>AFFA40271C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXFrameworksBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>AFFA40281C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXResourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>AFFA40291C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildConfigurationList</key>
+			<string>AFFA40391C9CE8E000C7B6F3</string>
+			<key>buildPhases</key>
+			<array>
+				<string>AFFA40261C9CE8E000C7B6F3</string>
+				<string>AFFA40271C9CE8E000C7B6F3</string>
+				<string>AFFA40281C9CE8E000C7B6F3</string>
+			</array>
+			<key>buildRules</key>
+			<array/>
+			<key>dependencies</key>
+			<array>
+				<string>AFFA402C1C9CE8E000C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXNativeTarget</string>
+			<key>name</key>
+			<string>VimeoUpload-iOS-OldUploadUITests</string>
+			<key>productName</key>
+			<string>VimeoUpload-iOS-OldUploadUITests</string>
+			<key>productReference</key>
+			<string>AFFA402A1C9CE8E000C7B6F3</string>
+			<key>productType</key>
+			<string>com.apple.product-type.bundle.ui-testing</string>
+		</dict>
+		<key>AFFA402A1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>wrapper.cfbundle</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>VimeoUpload-iOS-OldUploadUITests.xctest</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>AFFA402B1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>containerPortal</key>
+			<string>AFFA40031C9CE8E000C7B6F3</string>
+			<key>isa</key>
+			<string>PBXContainerItemProxy</string>
+			<key>proxyType</key>
+			<string>1</string>
+			<key>remoteGlobalIDString</key>
+			<string>AFFA400A1C9CE8E000C7B6F3</string>
+			<key>remoteInfo</key>
+			<string>VimeoUpload-iOS-OldUpload</string>
+		</dict>
+		<key>AFFA402C1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXTargetDependency</string>
+			<key>target</key>
+			<string>AFFA400A1C9CE8E000C7B6F3</string>
+			<key>targetProxy</key>
+			<string>AFFA402B1C9CE8E000C7B6F3</string>
+		</dict>
+		<key>AFFA402D1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA402E1C9CE8E000C7B6F3</string>
+				<string>AFFA40301C9CE8E000C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>VimeoUpload-iOS-OldUploadUITests</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA402E1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VimeoUpload_iOS_OldUploadUITests.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA402F1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA402E1C9CE8E000C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40301C9CE8E000C7B6F3</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.xml</string>
+			<key>path</key>
+			<string>Info.plist</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40311C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildSettings</key>
+			<dict>
+				<key>ALWAYS_SEARCH_USER_PATHS</key>
+				<string>NO</string>
+				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
+				<string>gnu++0x</string>
+				<key>CLANG_CXX_LIBRARY</key>
+				<string>libc++</string>
+				<key>CLANG_ENABLE_MODULES</key>
+				<string>YES</string>
+				<key>CLANG_ENABLE_OBJC_ARC</key>
+				<string>YES</string>
+				<key>CLANG_WARN_BOOL_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
+				<string>YES_ERROR</string>
+				<key>CLANG_WARN_EMPTY_BODY</key>
+				<string>YES</string>
+				<key>CLANG_WARN_ENUM_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_INT_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
+				<string>YES_ERROR</string>
+				<key>CLANG_WARN_UNREACHABLE_CODE</key>
+				<string>YES</string>
+				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
+				<string>YES</string>
+				<key>CODE_SIGN_IDENTITY[sdk=iphoneos*]</key>
+				<string>iPhone Developer</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>NO</string>
+				<key>DEBUG_INFORMATION_FORMAT</key>
+				<string>dwarf</string>
+				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
+				<string>YES</string>
+				<key>ENABLE_TESTABILITY</key>
+				<string>YES</string>
+				<key>GCC_C_LANGUAGE_STANDARD</key>
+				<string>gnu99</string>
+				<key>GCC_DYNAMIC_NO_PIC</key>
+				<string>NO</string>
+				<key>GCC_NO_COMMON_BLOCKS</key>
+				<string>YES</string>
+				<key>GCC_OPTIMIZATION_LEVEL</key>
+				<string>0</string>
+				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
+				<array>
+					<string>DEBUG=1</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
+				<string>YES</string>
+				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
+				<string>YES_ERROR</string>
+				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
+				<string>YES</string>
+				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
+				<string>YES_AGGRESSIVE</string>
+				<key>GCC_WARN_UNUSED_FUNCTION</key>
+				<string>YES</string>
+				<key>GCC_WARN_UNUSED_VARIABLE</key>
+				<string>YES</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>9.2</string>
+				<key>MTL_ENABLE_DEBUG_INFO</key>
+				<string>YES</string>
+				<key>ONLY_ACTIVE_ARCH</key>
+				<string>YES</string>
+				<key>SDKROOT</key>
+				<string>iphoneos</string>
+				<key>SWIFT_OPTIMIZATION_LEVEL</key>
+				<string>-Onone</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Debug</string>
+		</dict>
+		<key>AFFA40321C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildSettings</key>
+			<dict>
+				<key>ALWAYS_SEARCH_USER_PATHS</key>
+				<string>NO</string>
+				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
+				<string>gnu++0x</string>
+				<key>CLANG_CXX_LIBRARY</key>
+				<string>libc++</string>
+				<key>CLANG_ENABLE_MODULES</key>
+				<string>YES</string>
+				<key>CLANG_ENABLE_OBJC_ARC</key>
+				<string>YES</string>
+				<key>CLANG_WARN_BOOL_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
+				<string>YES_ERROR</string>
+				<key>CLANG_WARN_EMPTY_BODY</key>
+				<string>YES</string>
+				<key>CLANG_WARN_ENUM_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_INT_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
+				<string>YES_ERROR</string>
+				<key>CLANG_WARN_UNREACHABLE_CODE</key>
+				<string>YES</string>
+				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
+				<string>YES</string>
+				<key>CODE_SIGN_IDENTITY[sdk=iphoneos*]</key>
+				<string>iPhone Developer</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>NO</string>
+				<key>DEBUG_INFORMATION_FORMAT</key>
+				<string>dwarf-with-dsym</string>
+				<key>ENABLE_NS_ASSERTIONS</key>
+				<string>NO</string>
+				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
+				<string>YES</string>
+				<key>GCC_C_LANGUAGE_STANDARD</key>
+				<string>gnu99</string>
+				<key>GCC_NO_COMMON_BLOCKS</key>
+				<string>YES</string>
+				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
+				<string>YES</string>
+				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
+				<string>YES_ERROR</string>
+				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
+				<string>YES</string>
+				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
+				<string>YES_AGGRESSIVE</string>
+				<key>GCC_WARN_UNUSED_FUNCTION</key>
+				<string>YES</string>
+				<key>GCC_WARN_UNUSED_VARIABLE</key>
+				<string>YES</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>9.2</string>
+				<key>MTL_ENABLE_DEBUG_INFO</key>
+				<string>NO</string>
+				<key>SDKROOT</key>
+				<string>iphoneos</string>
+				<key>VALIDATE_PRODUCT</key>
+				<string>YES</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Release</string>
+		</dict>
+		<key>AFFA40331C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>AFFA40341C9CE8E000C7B6F3</string>
+				<string>AFFA40351C9CE8E000C7B6F3</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>AFFA40341C9CE8E000C7B6F3</key>
+		<dict>
+			<key>baseConfigurationReference</key>
+			<string>CEE1B3D12A6927014E253022</string>
+			<key>buildSettings</key>
+			<dict>
+				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
+				<string>AppIcon</string>
+				<key>INFOPLIST_FILE</key>
+				<string>VimeoUpload-iOS-OldUpload/Info.plist</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>8.0</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<string>$(inherited) @executable_path/Frameworks</string>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>com.alfiehanssen.VimeoUpload-iOS-OldUpload</string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>SWIFT_OBJC_BRIDGING_HEADER</key>
+				<string>${SRCROOT}/VimeoUpload-iOS-OldUpload/Bridge.h</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Debug</string>
+		</dict>
+		<key>AFFA40351C9CE8E000C7B6F3</key>
+		<dict>
+			<key>baseConfigurationReference</key>
+			<string>9B8EBF50CBA80C187F8444F1</string>
+			<key>buildSettings</key>
+			<dict>
+				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
+				<string>AppIcon</string>
+				<key>INFOPLIST_FILE</key>
+				<string>VimeoUpload-iOS-OldUpload/Info.plist</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>8.0</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<string>$(inherited) @executable_path/Frameworks</string>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>com.alfiehanssen.VimeoUpload-iOS-OldUpload</string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>SWIFT_OBJC_BRIDGING_HEADER</key>
+				<string>${SRCROOT}/VimeoUpload-iOS-OldUpload/Bridge.h</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Release</string>
+		</dict>
+		<key>AFFA40361C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>AFFA40371C9CE8E000C7B6F3</string>
+				<string>AFFA40381C9CE8E000C7B6F3</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>AFFA40371C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildSettings</key>
+			<dict>
+				<key>BUNDLE_LOADER</key>
+				<string>$(TEST_HOST)</string>
+				<key>INFOPLIST_FILE</key>
+				<string>VimeoUpload-iOS-OldUploadTests/Info.plist</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<string>$(inherited) @executable_path/Frameworks @loader_path/Frameworks</string>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>com.alfiehanssen.VimeoUpload-iOS-OldUploadTests</string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>TEST_HOST</key>
+				<string>$(BUILT_PRODUCTS_DIR)/VimeoUpload-iOS-OldUpload.app/VimeoUpload-iOS-OldUpload</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Debug</string>
+		</dict>
+		<key>AFFA40381C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildSettings</key>
+			<dict>
+				<key>BUNDLE_LOADER</key>
+				<string>$(TEST_HOST)</string>
+				<key>INFOPLIST_FILE</key>
+				<string>VimeoUpload-iOS-OldUploadTests/Info.plist</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<string>$(inherited) @executable_path/Frameworks @loader_path/Frameworks</string>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>com.alfiehanssen.VimeoUpload-iOS-OldUploadTests</string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>TEST_HOST</key>
+				<string>$(BUILT_PRODUCTS_DIR)/VimeoUpload-iOS-OldUpload.app/VimeoUpload-iOS-OldUpload</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Release</string>
+		</dict>
+		<key>AFFA40391C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>AFFA403A1C9CE8E000C7B6F3</string>
+				<string>AFFA403B1C9CE8E000C7B6F3</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>AFFA403A1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildSettings</key>
+			<dict>
+				<key>INFOPLIST_FILE</key>
+				<string>VimeoUpload-iOS-OldUploadUITests/Info.plist</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<string>$(inherited) @executable_path/Frameworks @loader_path/Frameworks</string>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>com.alfiehanssen.VimeoUpload-iOS-OldUploadUITests</string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>TEST_TARGET_NAME</key>
+				<string>VimeoUpload-iOS-OldUpload</string>
+				<key>USES_XCTRUNNER</key>
+				<string>YES</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Debug</string>
+		</dict>
+		<key>AFFA403B1C9CE8E000C7B6F3</key>
+		<dict>
+			<key>buildSettings</key>
+			<dict>
+				<key>INFOPLIST_FILE</key>
+				<string>VimeoUpload-iOS-OldUploadUITests/Info.plist</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<string>$(inherited) @executable_path/Frameworks @loader_path/Frameworks</string>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>com.alfiehanssen.VimeoUpload-iOS-OldUploadUITests</string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>TEST_TARGET_NAME</key>
+				<string>VimeoUpload-iOS-OldUpload</string>
+				<key>USES_XCTRUNNER</key>
+				<string>YES</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Release</string>
+		</dict>
+		<key>AFFA403C1C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>path</key>
+			<string>Bridge.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA403D1C9CE9B600C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA403E1C9CE9B600C7B6F3</string>
+				<string>AFFA403F1C9CE9B600C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Cells</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA403E1C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>UploadCell.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA403F1C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>file.xib</string>
+			<key>path</key>
+			<string>UploadCell.xib</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40401C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>OldVimeoUpload.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40411C9CE9B600C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40421C9CE9B600C7B6F3</string>
+				<string>AFFA40431C9CE9B600C7B6F3</string>
+				<string>AFFA40441C9CE9B600C7B6F3</string>
+				<string>AFFA40451C9CE9B600C7B6F3</string>
+				<string>AFFA40461C9CE9B600C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>ViewControllers</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40421C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>CameraRollViewController.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40431C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>UploadsViewController.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40441C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>file.xib</string>
+			<key>path</key>
+			<string>UploadsViewController.xib</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40451C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VideoSettingsViewController.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40461C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>file.xib</string>
+			<key>path</key>
+			<string>VideoSettingsViewController.xib</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40471C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA403E1C9CE9B600C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40481C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA403F1C9CE9B600C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40491C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40401C9CE9B600C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA404A1C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40421C9CE9B600C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA404B1C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40431C9CE9B600C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA404C1C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40441C9CE9B600C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA404D1C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40451C9CE9B600C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA404E1C9CE9B600C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40461C9CE9B600C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA404F1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40501C9CE9EB00C7B6F3</string>
+				<string>AFFA405A1C9CE9EB00C7B6F3</string>
+				<string>AFFA405E1C9CE9EB00C7B6F3</string>
+				<string>AFFA40631C9CE9EB00C7B6F3</string>
+				<string>AFFA409F1C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>VimeoUpload</string>
+			<key>path</key>
+			<string>../../../VimeoUpload</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40501C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40511C9CE9EB00C7B6F3</string>
+				<string>AFFA40521C9CE9EB00C7B6F3</string>
+				<string>AFFA40531C9CE9EB00C7B6F3</string>
+				<string>AFFA40541C9CE9EB00C7B6F3</string>
+				<string>AFFA40551C9CE9EB00C7B6F3</string>
+				<string>AFFA40561C9CE9EB00C7B6F3</string>
+				<string>AFFA40571C9CE9EB00C7B6F3</string>
+				<string>AFFA40581C9CE9EB00C7B6F3</string>
+				<string>AFFA40591C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Descriptor System</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40511C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>ArchiverProtocol.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40521C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>ConnectivityManager.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40531C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>Descriptor.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40541C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>DescriptorManager.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40551C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>DescriptorManagerArchiver.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40561C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>DescriptorManagerDelegate.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40571C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>KeyedArchiver.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40581C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>ProgressDescriptor.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40591C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>ReachableDescriptorManager.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA405A1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA405B1C9CE9EB00C7B6F3</string>
+				<string>AFFA405C1C9CE9EB00C7B6F3</string>
+				<string>AFFA405D1C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Extensions</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA405B1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>AFURLSessionManager+Extensions.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA405C1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>NSError+Extensions.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA405D1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>NSFileManager+Extensions.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA405E1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA405F1C9CE9EB00C7B6F3</string>
+				<string>AFFA40601C9CE9EB00C7B6F3</string>
+				<string>AFFA40611C9CE9EB00C7B6F3</string>
+				<string>AFFA40621C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Networking</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA405F1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>Constants.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40601C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VimeoRequestSerializer.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40611C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VimeoResponseSerializer.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40621C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VimeoSessionManager.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40631C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40641C9CE9EB00C7B6F3</string>
+				<string>AFFA40671C9CE9EB00C7B6F3</string>
+				<string>AFFA40701C9CE9EB00C7B6F3</string>
+				<string>AFFA40761C9CE9EB00C7B6F3</string>
+				<string>AFFA40791C9CE9EB00C7B6F3</string>
+				<string>AFFA40811C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Upload</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40641C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40651C9CE9EB00C7B6F3</string>
+				<string>AFFA40661C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Controllers</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40651C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VideoDeletionManager.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40661C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VideoRefreshManager.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40671C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40681C9CE9EB00C7B6F3</string>
+				<string>AFFA40691C9CE9EB00C7B6F3</string>
+				<string>AFFA406B1C9CE9EB00C7B6F3</string>
+				<string>AFFA406E1C9CE9EB00C7B6F3</string>
+				<string>AFFA406F1C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Descriptor System</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40681C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>DescriptorManagerTracker.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40691C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA406A1C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>New Upload (Private)</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA406A1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>UploadDescriptor.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA406B1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA406C1C9CE9EB00C7B6F3</string>
+				<string>AFFA406D1C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Old Upload</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA406C1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>OldUploadDescriptor.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA406D1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>OldUploadRequest.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA406E1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VideoDescriptor.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA406F1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VideoDescriptorFailureTracker.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40701C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40711C9CE9EB00C7B6F3</string>
+				<string>AFFA40721C9CE9EB00C7B6F3</string>
+				<string>AFFA40731C9CE9EB00C7B6F3</string>
+				<string>AFFA40741C9CE9EB00C7B6F3</string>
+				<string>AFFA40751C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Extensions</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40711C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>AFURLSessionManager+Upload.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40721C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>AVAsset+Extensions.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40731C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>AVURLAsset+Extensions.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40741C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>NSError+Upload.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40751C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>NSURL+Upload.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40761C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40771C9CE9EB00C7B6F3</string>
+				<string>AFFA40781C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Model</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40771C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>BlockTypes.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40781C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VideoSettings.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40791C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA407A1C9CE9EB00C7B6F3</string>
+				<string>AFFA407D1C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Networking</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA407A1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA407B1C9CE9EB00C7B6F3</string>
+				<string>AFFA407C1C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>New Upload (Private)</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA407B1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VimeoRequestSerializer+Upload.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA407C1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VimeoSessionManager+Upload.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA407D1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA407E1C9CE9EB00C7B6F3</string>
+				<string>AFFA407F1C9CE9EB00C7B6F3</string>
+				<string>AFFA40801C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Old Upload</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA407E1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VimeoRequestSerializer+OldUpload.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA407F1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VimeoResponseSerializer+OldUpload.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40801C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VimeoSessionManager+OldUpload.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40811C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40821C9CE9EB00C7B6F3</string>
+				<string>AFFA40901C9CE9EB00C7B6F3</string>
+				<string>AFFA409A1C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Operations</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40821C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40831C9CE9EB00C7B6F3</string>
+				<string>AFFA40841C9CE9EB00C7B6F3</string>
+				<string>AFFA40851C9CE9EB00C7B6F3</string>
+				<string>AFFA40861C9CE9EB00C7B6F3</string>
+				<string>AFFA40871C9CE9EB00C7B6F3</string>
+				<string>AFFA40891C9CE9EB00C7B6F3</string>
+				<string>AFFA408D1C9CE9EB00C7B6F3</string>
+				<string>AFFA408E1C9CE9EB00C7B6F3</string>
+				<string>AFFA408F1C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Async</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40831C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>ConcurrentOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40841C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>DeleteVideoOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40851C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>ExportOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40861C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>ExportQuotaOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40871C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40881C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>iOS7</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40881C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>ALAssetExportQuotaOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40891C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA408A1C9CE9EB00C7B6F3</string>
+				<string>AFFA408B1C9CE9EB00C7B6F3</string>
+				<string>AFFA408C1C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>iOS8</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA408A1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>PHAssetCloudExportQuotaOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA408B1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>PHAssetDownloadOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA408C1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>PHAssetExportSessionOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA408D1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>MeOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA408E1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>MeQuotaOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA408F1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VideoOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40901C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40911C9CE9EB00C7B6F3</string>
+				<string>AFFA40921C9CE9EB00C7B6F3</string>
+				<string>AFFA40931C9CE9EB00C7B6F3</string>
+				<string>AFFA40961C9CE9EB00C7B6F3</string>
+				<string>AFFA40991C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Private</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40911C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>CreateVideoOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40921C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>ExportQuotaCreateOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40931C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40941C9CE9EB00C7B6F3</string>
+				<string>AFFA40951C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>iOS7</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40941C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>ALAssetExportQuotaCreateOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40951C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>ALAssetRetryUploadOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40961C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40971C9CE9EB00C7B6F3</string>
+				<string>AFFA40981C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>iOS8</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40971C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>PHAssetCloudExportQuotaCreateOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40981C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>PHAssetRetryUploadOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40991C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>RetryUploadOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA409A1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA409B1C9CE9EB00C7B6F3</string>
+				<string>AFFA409C1C9CE9EB00C7B6F3</string>
+				<string>AFFA409D1C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Sync</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA409B1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>DailyQuotaOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA409C1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>DiskSpaceOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA409D1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>WeeklyQuotaOperation.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA409F1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VimeoUpload.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40A71C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40A81C9CE9EB00C7B6F3</string>
+				<string>AFFA40A91C9CE9EB00C7B6F3</string>
+				<string>AFFA40AA1C9CE9EB00C7B6F3</string>
+				<string>AFFA40AB1C9CE9EB00C7B6F3</string>
+				<string>AFFA40AD1C9CE9EB00C7B6F3</string>
+				<string>AFFA40B11C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>VimeoUpload+UIKit</string>
+			<key>path</key>
+			<string>../../../VimeoUpload+UIKit</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40A81C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>ALAssetHelper.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40A91C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>CameraRollAssetCell.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40AA1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>CameraRollAssetHelper.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40AB1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40AC1C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Extensions</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40AC1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>NSString+Conversions.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40AD1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>AFFA40AE1C9CE9EB00C7B6F3</string>
+				<string>AFFA40AF1C9CE9EB00C7B6F3</string>
+				<string>AFFA40B01C9CE9EB00C7B6F3</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Model</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40AE1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>CameraRollAsset.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40AF1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VIMALAsset.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40B01C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>VIMPHAsset.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40B11C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>path</key>
+			<string>PHAssetHelper.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>AFFA40B21C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40511C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40B31C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40521C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40B41C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40531C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40B51C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40541C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40B61C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40551C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40B71C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40561C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40B81C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40571C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40B91C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40581C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40BA1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40591C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40BB1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA405B1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40BC1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA405C1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40BD1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA405D1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40BE1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA405F1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40BF1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40601C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40C01C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40611C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40C11C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40621C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40C21C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40651C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40C31C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40661C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40C41C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40681C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40C51C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA406A1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40C61C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA406C1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40C71C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA406D1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40C81C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA406E1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40C91C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA406F1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40CA1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40711C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40CB1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40721C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40CC1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40731C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40CD1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40741C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40CE1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40751C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40CF1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40771C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40D01C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40781C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40D11C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA407B1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40D21C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA407C1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40D31C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA407E1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40D41C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA407F1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40D51C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40801C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40D61C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40831C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40D71C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40841C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40D81C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40851C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40D91C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40861C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40DA1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40881C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40DB1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA408A1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40DC1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA408B1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40DD1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA408C1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40DE1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA408D1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40DF1C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA408E1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40E01C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA408F1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40E11C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40911C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40E21C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40921C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40E31C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40941C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40E41C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40951C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40E51C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40971C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40E61C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40981C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40E71C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40991C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40E81C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA409B1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40E91C9CE9EB00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA409C1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40EA1C9CE9EC00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA409D1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40EC1C9CE9EC00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA409F1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40F11C9CE9EC00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40A81C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40F21C9CE9EC00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40A91C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40F31C9CE9EC00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40AA1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40F41C9CE9EC00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40AC1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40F51C9CE9EC00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40AE1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40F61C9CE9EC00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40AF1C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40F71C9CE9EC00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40B01C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>AFFA40F81C9CE9EC00C7B6F3</key>
+		<dict>
+			<key>fileRef</key>
+			<string>AFFA40B11C9CE9EB00C7B6F3</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>BE8817D04A5626F94A584168</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputPaths</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>Embed Pods Frameworks</string>
+			<key>outputPaths</key>
+			<array/>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUpload/Pods-VimeoUpload-iOS-OldUpload-frameworks.sh"
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>BFAE01663A3415731065DAAA</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>E25A6E69B66D0B98D9CD6D4B</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Frameworks</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>CEE1B3D12A6927014E253022</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>name</key>
+			<string>Pods-VimeoUpload-iOS-OldUpload.debug.xcconfig</string>
+			<key>path</key>
+			<string>../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUpload/Pods-VimeoUpload-iOS-OldUpload.debug.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>E25A6E69B66D0B98D9CD6D4B</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>wrapper.framework</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Pods_VimeoUpload_iOS_OldUpload.framework</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>EE903C6C2E0B8154F94AC869</key>
+		<dict>
+			<key>fileRef</key>
+			<string>E25A6E69B66D0B98D9CD6D4B</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+	</dict>
+	<key>rootObject</key>
+	<string>AFFA40031C9CE8E000C7B6F3</string>
+</dict>
+</plist>
