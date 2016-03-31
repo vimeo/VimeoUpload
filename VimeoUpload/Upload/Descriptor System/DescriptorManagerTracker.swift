@@ -25,7 +25,12 @@
 //
 
 import Foundation
-import UIKit
+
+#if os(iOS)
+    import UIKit
+#elseif os(OSX)
+
+#endif
 
 // We use this class purely to report lifecycle events via print statements and local notifications [AH] 10/28/2015
 

@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
 
   s.ios.frameworks = "Foundation", "AVFoundation", "AssetsLibrary", "Photos", "MobileCoreServices", "UIKit", "CoreGraphics"
   s.osx.frameworks = "Foundation", "AVFoundation", "CoreServices", "Cocoa"
-  s.osx.exclude_files = "VimeoUpload/Operations/PHAssetOperation.swift"
+#  s.osx.exclude_files = "VimeoUpload/Operations/PHAssetOperation.swift"
 
   s.subspec 'AFNetworking' do |ss|
     ss.dependency	'AFNetworking', '2.6.3'

@@ -26,5 +26,6 @@ end
 target :'VimeoUpload-OSX' do
     platform :osx, '10.9'
     shared_pods
+#    pod 'VIMNetworking/Model', '6.0.0'
     xcodeproj 'Examples/VimeoUpload-OSX/VimeoUpload-OSX.xcodeproj'
 end
