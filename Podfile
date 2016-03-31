@@ -1,4 +1,4 @@
-workspace 'VimeoUpload1'
+workspace 'VimeoUpload'
 xcodeproj 'Example/VimeoUpload-iOS/VimeoUpload-iOS.xcodeproj'
 xcodeproj 'Example/VimeoUpload-iOS-OldUpload/VimeoUpload-iOS-OldUpload.xcodeproj'
 xcodeproj 'Example/VimeoUpload-OSX/VimeoUpload-OSX.xcodeproj'
