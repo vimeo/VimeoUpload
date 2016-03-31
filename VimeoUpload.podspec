@@ -35,8 +35,8 @@ Pod::Spec.new do |s|
     ss.dependency	'AFNetworking', '~> 3.0'
   end
   
-  s.subspec 'VIMNetworking/Model' do |ss|
-    ss.dependency	'VIMNetworking/Model', '6.0.0'
+  s.subspec 'VIMNetworking' do |ss|
+    ss.dependency	'VIMNetworking', '6.0.0'
   end
 
   # s.exclude_files = "Classes/Exclude"
