@@ -92,6 +92,8 @@ class VimeoSessionManager: AFHTTPSessionManager
     {
         let sessionConfiguration: NSURLSessionConfiguration
         
+        // We need this check for projects that include the library and support iOS7 
+        
         if #available(iOS 8.0, OSX 10.10, *)
         {
             sessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(identifier)
