@@ -24,8 +24,11 @@
 //  THE SOFTWARE.
 //
 
-import AssetsLibrary
 import AVFoundation
+
+#if os(iOS)
+    import AssetsLibrary
+#endif
 
 // This flow encapsulates the following steps:
 // 1. Export (check disk space within this step)

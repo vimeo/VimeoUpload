@@ -28,9 +28,9 @@ import Foundation
 
 extension NSString
 {
-    static func stringFromFileSize(var bytes bytes: Float64) -> NSString
+    static func stringFromFileSize(bytes bytes: Float64) -> NSString
     {
-        bytes = max(bytes, 0)
+        let bytes = max(bytes, 0)
 
         let kilobyte: Float64 = 1024
         let megabyte = kilobyte * 1024
@@ -69,9 +69,9 @@ extension NSString
         return string
     }
     
-    static func stringFromDurationInSeconds(var duration: Float64) -> NSString
+    static func stringFromDurationInSeconds(duration: Float64) -> NSString
     {
-        duration = max(duration, 0)
+        let duration = max(duration, 0)
         
         let hours = Int(floor(duration / (60 * 60)))
         let minutes = hours > 0 ? Int(floor((duration % (60 * 60)) / 60)) : Int(floor(duration / 60))

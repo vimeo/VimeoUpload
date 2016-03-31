@@ -1,7 +1,7 @@
 workspace 'VimeoUpload'
-xcodeproj 'Example/VimeoUpload-iOS/VimeoUpload-iOS.xcodeproj'
-xcodeproj 'Example/VimeoUpload-iOS-OldUpload/VimeoUpload-iOS-OldUpload.xcodeproj'
-xcodeproj 'Example/VimeoUpload-OSX/VimeoUpload-OSX.xcodeproj'
+xcodeproj 'Examples/VimeoUpload-iOS/VimeoUpload-iOS.xcodeproj'
+xcodeproj 'Examples/VimeoUpload-iOS-OldUpload/VimeoUpload-iOS-OldUpload.xcodeproj'
+xcodeproj 'Examples/VimeoUpload-OSX/VimeoUpload-OSX.xcodeproj'
 
 def shared_pods
     pod 'AFNetworking', '2.6.3'
@@ -12,7 +12,7 @@ target :'VimeoUpload-iOS' do
     #use_frameworks!
     shared_pods
     pod 'VIMNetworking/Model', '6.0.0'
-    xcodeproj 'Example/VimeoUpload-iOS/VimeoUpload-iOS.xcodeproj'
+    xcodeproj 'Examples/VimeoUpload-iOS/VimeoUpload-iOS.xcodeproj'
 end
 
 target :'VimeoUpload-iOS-OldUpload' do
@@ -20,11 +20,12 @@ target :'VimeoUpload-iOS-OldUpload' do
     #use_frameworks!
     shared_pods
     pod 'VIMNetworking/Model', '6.0.0'
-    xcodeproj 'Example/VimeoUpload-iOS-OldUpload/VimeoUpload-iOS-OldUpload.xcodeproj'
+    xcodeproj 'Examples/VimeoUpload-iOS-OldUpload/VimeoUpload-iOS-OldUpload.xcodeproj'
 end
 
 target :'VimeoUpload-OSX' do
     platform :osx, '10.9'
     shared_pods
-    xcodeproj 'Example/VimeoUpload-OSX/VimeoUpload-OSX.xcodeproj'
+#    pod 'VIMNetworking/Model', '6.0.0'
+    xcodeproj 'Examples/VimeoUpload-OSX/VimeoUpload-OSX.xcodeproj'
 end
