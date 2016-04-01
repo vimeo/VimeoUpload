@@ -425,6 +425,31 @@ Or by using the `identifier` of the `OldUploadDescriptor` in question:
 
 TODO
 
+## Found an Issue?
+
+Please file it in the git [issue tracker](https://github.com/vimeo/VimeoUpload/issues).
+
+## Want to Contribute?
+
+If you'd like to contribute, please follow our guidelines found in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+`VimeoUpload` is available under the MIT license. See the [LICENSE](LICENSE.md) file for more info.
+
+## Questions?
+
+Tweet at us here: [@vimeoapi](https://twitter.com/vimeoapi).
+
+Post on [Stackoverflow](http://stackoverflow.com/questions/tagged/vimeo-ios) with the tag `vimeo-ios`.
+
+Get in touch [here](https://vimeo.com/help/contact).
+
+Interested in working at Vimeo? We're [hiring](https://vimeo.com/jobs)!
+
+
+
+
 ## Want to Contribute?
 
 If you'd like to contribute, please follow our guidelines found in [CONTRIBUTING](CONTRIBUTING.md).
