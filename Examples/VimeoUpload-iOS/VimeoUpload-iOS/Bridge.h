@@ -25,15 +25,4 @@
 //
 
 @import AFNetworking;
-
-#import "VIMObjectMapper.h"
-#import "VIMUser.h"
-#import "VIMUploadQuota.h"
-#import "VIMQuantityQuota.h"
-#import "VIMSizeQuota.h"
-#import "VIMVideo.h"
-#import "VIMUploadTicket.h"
-#import "VIMPrivacy.h"
-#import "VIMPictureCollection.h"
-#import "VIMPicture.h"
-#import "UIImageView+AFNetworking.h"
+@import VIMNetworking;
