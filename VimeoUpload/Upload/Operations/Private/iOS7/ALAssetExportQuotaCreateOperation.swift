@@ -26,7 +26,6 @@
 
 import Foundation
 import AssetsLibrary
-import VIMNetworking
 
 // This flow encapsulates the following steps:
 

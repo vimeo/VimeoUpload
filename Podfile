@@ -9,14 +9,14 @@ xcodeproj 'Examples/VimeoUpload-OSX/VimeoUpload-OSX.xcodeproj'
 target :'VimeoUpload-iOS' do
     platform :ios, '8.0'
     use_frameworks!
-    pod 'VIMNetworking', '6.0.4'
+    pod 'VIMNetworking/Model', '6.0.4'
     xcodeproj 'Examples/VimeoUpload-iOS/VimeoUpload-iOS.xcodeproj'
 end
 
 target :'VimeoUpload-iOS-OldUpload' do
     platform :ios, '8.0'
     use_frameworks!
-    pod 'VIMNetworking', '6.0.4'
+    pod 'VIMNetworking/Model', '6.0.4'
     xcodeproj 'Examples/VimeoUpload-iOS-OldUpload/VimeoUpload-iOS-OldUpload.xcodeproj'
 end
 

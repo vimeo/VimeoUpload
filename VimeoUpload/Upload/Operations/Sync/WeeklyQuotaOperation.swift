@@ -26,7 +26,6 @@
 
 import Foundation
 import AVFoundation
-import VIMNetworking
 
 class WeeklyQuotaOperation: NSOperation
 {    

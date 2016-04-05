@@ -26,7 +26,6 @@
 
 import Foundation
 import AVFoundation
-import VIMNetworking
 
 // This flow encapsulates the following steps:
 // 1. Request me

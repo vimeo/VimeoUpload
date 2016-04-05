@@ -25,7 +25,6 @@
 //
 
 import Foundation
-import VIMNetworking
 
 @objc protocol VideoRefreshManagerDelegate
 {

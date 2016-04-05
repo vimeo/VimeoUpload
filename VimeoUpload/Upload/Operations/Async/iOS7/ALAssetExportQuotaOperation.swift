@@ -25,7 +25,6 @@
 //
 
 import AVFoundation
-import VIMNetworking
 
 #if os(iOS)
     import AssetsLibrary

@@ -25,7 +25,6 @@
 //
 
 import Foundation
-import VIMNetworking
 
 class VideoDeletionManager: NSObject
 {
