@@ -25,7 +25,6 @@
 //
 
 import Foundation
-import AFNetworking
 
 extension AFURLSessionManager
 {
