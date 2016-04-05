@@ -32,5 +32,6 @@ Pod::Spec.new do |s|
 #  s.osx.exclude_files = "VimeoUpload/Operations/PHAssetOperation.swift"
 
   s.dependency 'VIMNetworking', '6.0.4'
+  s.compiler_flags = '-D COCOAPOD_VERSION'
 
 end

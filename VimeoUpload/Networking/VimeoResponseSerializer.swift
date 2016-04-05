@@ -26,6 +26,10 @@
 
 import Foundation
 
+#if COCOAPOD_VERSION
+    import AFNetworking
+#endif
+
 class VimeoResponseSerializer: AFJSONResponseSerializer
 {
     private static let ErrorDomain = "VimeoResponseSerializerErrorDomain"
