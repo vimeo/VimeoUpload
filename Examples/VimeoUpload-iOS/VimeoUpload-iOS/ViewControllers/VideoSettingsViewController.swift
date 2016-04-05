@@ -27,6 +27,7 @@
 import UIKit
 import Photos
 import AssetsLibrary
+import VIMNetworking
 
 /*
     This viewController provides an interface for the user to modify a video's settings (title, description, privacy) before upload.

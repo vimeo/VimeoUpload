@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "VimeoUpload"
-  s.version      = "0.9.1"
+  s.version      = "0.9.2"
   s.summary      = "The Vimeo iOS/OSX Upload SDK."
   s.description  = <<-DESC
                             An iOS/OSX library for uploading videos to Vimeo. The library supports the existing server-side upload flow. It also supports a new private server-side upload flow that will soon be made public. VimeoUpload's core can be extended to support any NSURLSession(background)Task workflow.'
@@ -31,6 +31,6 @@ Pod::Spec.new do |s|
 #  s.osx.frameworks = "Foundation", "AVFoundation", "CoreServices", "Cocoa"
 #  s.osx.exclude_files = "VimeoUpload/Operations/PHAssetOperation.swift"
 
-  s.dependency 'VIMNetworking', '6.0.4'
+  s.dependency 'VIMNetworking/Model', '6.0.4'
 
 end

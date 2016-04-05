@@ -28,6 +28,7 @@ import UIKit
 import AVFoundation
 import Photos
 import AssetsLibrary
+import VIMNetworking
 
 class MyVideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, VideoCellDelegate, VideoRefreshManagerDelegate
 {
