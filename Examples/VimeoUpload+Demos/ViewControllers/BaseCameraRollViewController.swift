@@ -27,6 +27,7 @@
 import UIKit
 import AVFoundation
 import Photos
+import VIMNetworking
 
 typealias UploadUserAndCameraRollAsset = (user: VIMUser, cameraRollAsset: CameraRollAsset)
 

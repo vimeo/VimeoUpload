@@ -25,6 +25,7 @@
 //
 
 import Foundation
+import VIMNetworking
 
 class CreateVideoOperation: ConcurrentOperation
 {

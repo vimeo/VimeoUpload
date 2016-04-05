@@ -25,6 +25,8 @@
 //
 
 import Foundation
+import AFNetworking
+import VIMNetworking
 
 class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
 {

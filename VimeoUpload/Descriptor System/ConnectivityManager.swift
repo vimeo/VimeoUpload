@@ -25,6 +25,7 @@
 //
 
 import Foundation
+import AFNetworking
 
 protocol ConnectivityManagerDelegate: class
 {
