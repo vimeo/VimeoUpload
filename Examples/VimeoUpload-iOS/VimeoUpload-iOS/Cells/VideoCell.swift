@@ -25,6 +25,7 @@
 //
 
 import UIKit
+import VIMNetworking
 
 protocol VideoCellDelegate: class
 {

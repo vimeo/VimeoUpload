@@ -20,28 +20,14 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - VIMNetworking (6.0.4):
-    - AFNetworking (= 2.6.3)
-    - VIMNetworking/Cache (= 6.0.4)
-    - VIMNetworking/Keychain (= 6.0.4)
-    - VIMNetworking/Model (= 6.0.4)
-    - VIMNetworking/ObjectMapper (= 6.0.4)
-    - VIMNetworking/Private (= 6.0.4)
-  - VIMNetworking/Cache (6.0.4):
-    - AFNetworking (= 2.6.3)
-  - VIMNetworking/Keychain (6.0.4):
-    - AFNetworking (= 2.6.3)
   - VIMNetworking/Model (6.0.4):
     - AFNetworking (= 2.6.3)
     - VIMNetworking/ObjectMapper
   - VIMNetworking/ObjectMapper (6.0.4):
     - AFNetworking (= 2.6.3)
-  - VIMNetworking/Private (6.0.4):
-    - AFNetworking (= 2.6.3)
-    - VIMNetworking/Model
 
 DEPENDENCIES:
-  - VIMNetworking (= 6.0.4)
+  - VIMNetworking/Model (= 6.0.4)
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60

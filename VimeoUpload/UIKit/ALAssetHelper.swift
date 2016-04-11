@@ -27,6 +27,7 @@
 import Foundation
 import AssetsLibrary
 import AVFoundation
+import UIKit
 
 @objc class ALAssetHelper: NSObject, CameraRollAssetHelper
 {
