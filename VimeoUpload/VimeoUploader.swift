@@ -45,18 +45,20 @@ public class VimeoUploader<T: VideoDescriptor>
 
     // MARK: - Initialization
 
-    convenience init(backgroundSessionIdentifier: String, authToken: String)
+    convenience init(backgroundSessionIdentifier: String, accessToken: String)
     {
-        self.init(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: { () -> String? in
-            return authToken
+        self.init(backgroundSessionIdentifier: backgroundSessionIdentifier, accessTokenProvider: { () -> String? in
+            return accessToken
         })
     }
 
-    init(backgroundSessionIdentifier: String, authTokenBlock: AuthTokenBlock)
+    init(backgroundSessionIdentifier: String, accessTokenProvider: VimeoRequestSerializer.AccessTokenProvider)
     {
-        self.foregroundSessionManager = VimeoSessionManager.defaultSessionManager(authTokenBlock: authTokenBlock)
+        self.foregroundSessionManager = VimeoSessionManager.defaultSessionManager(accessTokenProvider: accessTokenProvider)
+        
         self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager)
-        self.descriptorManager = ReachableDescriptorManager(name: self.dynamicType.Name, backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: authTokenBlock)
+        
+        self.descriptorManager = ReachableDescriptorManager(name: self.dynamicType.Name, backgroundSessionIdentifier: backgroundSessionIdentifier, accessTokenProvider: accessTokenProvider)
     }
     
     // MARK: Public API - Starting

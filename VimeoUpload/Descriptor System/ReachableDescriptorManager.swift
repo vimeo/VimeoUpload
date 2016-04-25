@@ -25,6 +25,7 @@
 //
 
 import Foundation
+import VimeoNetworking
 
 @objc class ReachableDescriptorManager: DescriptorManager, ConnectivityManagerDelegate
 {
@@ -46,9 +47,9 @@ import Foundation
     
     // MARK: - Initialization
     
-    init(name: String, backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, authTokenBlock: AuthTokenBlock)
+    init(name: String, backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: VimeoRequestSerializer.AccessTokenProvider)
     {
-        let backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, authTokenBlock: authTokenBlock)
+        let backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, accessTokenProvider: accessTokenProvider)
         
         super.init(sessionManager: backgroundSessionManager, name: name, delegate: descriptorManagerDelegate)
         
