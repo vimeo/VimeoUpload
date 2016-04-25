@@ -26,6 +26,7 @@
 
 import Foundation
 import AFNetworking
+import VimeoNetworking
 
 public class VideoDeletionManager: NSObject
 {
