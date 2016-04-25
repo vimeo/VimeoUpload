@@ -117,8 +117,12 @@ extension VimeoSessionManager
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadVideoRequestWithSource(source, destination: destination)
         
-        let task = self.uploadTaskWithRequest(request, fromFile: source, progress: progress, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+        let task = self.uploadTaskWithRequest(request, fromFile: source, progress: {(progress) -> Void in
             
+            // TODO: Do something with progress block [AH] 4/25/2016
+            
+        }, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+
             guard let strongSelf = self, let completionHandler = completionHandler else
             {
                 return
@@ -133,8 +137,9 @@ extension VimeoSessionManager
             {
                 completionHandler(error: error)
             }
-        })
 
+        })
+        
         task.taskDescription = UploadTaskDescription.UploadVideo.rawValue
         
         return task
