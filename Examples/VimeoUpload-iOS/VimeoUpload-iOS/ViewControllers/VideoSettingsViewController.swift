@@ -27,7 +27,7 @@
 import UIKit
 import Photos
 import AssetsLibrary
-import VIMNetworking
+import VimeoNetworking
 
 /*
     This viewController provides an interface for the user to modify a video's settings (title, description, privacy) before upload.
@@ -111,7 +111,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let me = self.input!.user
         let cameraRollAsset = self.input!.cameraRollAsset
-        let sessionManager = NewVimeoUpload.sharedInstance.foregroundSessionManager
+        let sessionManager = NewVimeoUploader.sharedInstance.foregroundSessionManager
         let videoSettings = self.videoSettings
         
         let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
@@ -184,7 +184,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket)
         descriptor.identifier = assetIdentifier
         
-        NewVimeoUpload.sharedInstance.uploadVideo(descriptor: descriptor)
+        NewVimeoUploader.sharedInstance.uploadVideo(descriptor: descriptor)
     }
 
     // MARK: Actions
@@ -197,7 +197,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         if let videoUri = self.uploadTicket?.video?.uri
         {
-            NewVimeoUpload.sharedInstance.cancelUpload(videoUri: videoUri)
+            NewVimeoUploader.sharedInstance.cancelUpload(videoUri: videoUri)
         }
     }
 
@@ -289,7 +289,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         do
         {
-            self.task = try NewVimeoUpload.sharedInstance.foregroundSessionManager.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+            self.task = try NewVimeoUploader.sharedInstance.foregroundSessionManager.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 self?.task = nil
                 

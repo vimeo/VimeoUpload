@@ -1,5 +1,5 @@
 //
-//  VimeoUpload.swift
+//  VimeoUploader.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 3/9/16.
@@ -26,7 +26,7 @@
 
 import Foundation
 
-class VimeoUpload<T: VideoDescriptor>
+class VimeoUploader<T: VideoDescriptor>
 {
     static var Name: String
     {

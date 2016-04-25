@@ -28,7 +28,7 @@ import UIKit
 import AVFoundation
 import Photos
 import AssetsLibrary
-import VIMNetworking
+import VimeoNetworking
 
 class MyVideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, VideoCellDelegate, VideoRefreshManagerDelegate
 {
@@ -80,7 +80,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func setupVideoRefreshManager()
     {
-        self.videoRefreshManager = VideoRefreshManager(sessionManager: NewVimeoUpload.sharedInstance.foregroundSessionManager, delegate: self)
+        self.videoRefreshManager = VideoRefreshManager(sessionManager: NewVimeoUploader.sharedInstance.foregroundSessionManager, delegate: self)
     }
     
     // MARK: Notifications
@@ -144,7 +144,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
     {
-        NewVimeoUpload.sharedInstance.cancelUpload(videoUri: videoUri)
+        NewVimeoUploader.sharedInstance.cancelUpload(videoUri: videoUri)
 
         if let indexPath = self.indexPathForVideoUri(videoUri)
         {
@@ -208,7 +208,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     {
         self.refreshControl?.beginRefreshing()
 
-        let sessionManager = NewVimeoUpload.sharedInstance.foregroundSessionManager
+        let sessionManager = NewVimeoUploader.sharedInstance.foregroundSessionManager
         
         do
         {

@@ -25,7 +25,7 @@
 //
 
 import UIKit
-import VIMNetworking
+import VimeoNetworking
 
 protocol VideoCellDelegate: class
 {
@@ -90,7 +90,7 @@ class VideoCell: UITableViewCell
             {
                 self.setupImageView(video: video)
                 self.setupStatusLabel(video: video)
-                self.descriptor = NewVimeoUpload.sharedInstance.descriptorForVideo(videoUri: uri)
+                self.descriptor = NewVimeoUploader.sharedInstance.descriptorForVideo(videoUri: uri)
             }
         }
     }

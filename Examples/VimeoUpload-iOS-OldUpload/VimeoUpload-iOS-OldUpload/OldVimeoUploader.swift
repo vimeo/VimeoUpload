@@ -1,5 +1,5 @@
 //
-//  UploadManager.swift
+//  OldVimeoUploader.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 10/18/15.
@@ -26,9 +26,9 @@
 
 import Foundation
 
-class OldVimeoUpload: VimeoUpload<OldUploadDescriptor>
+class OldVimeoUploader: VimeoUploader<OldUploadDescriptor>
 {
-    static let sharedInstance = OldVimeoUpload(backgroundSessionIdentifier: "com.vimeo.upload") { () -> String? in
+    static let sharedInstance = OldVimeoUploader(backgroundSessionIdentifier: "com.vimeo.upload") { () -> String? in
         return "YOUR_OAUTH_TOKEN" // See README for details on how to obtain and OAuth token
     }
     

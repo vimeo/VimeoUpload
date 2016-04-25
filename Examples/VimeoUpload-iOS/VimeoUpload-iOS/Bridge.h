@@ -25,4 +25,4 @@
 //
 
 @import AFNetworking;
-@import VIMNetworking;
+@import VimeoNetworking;

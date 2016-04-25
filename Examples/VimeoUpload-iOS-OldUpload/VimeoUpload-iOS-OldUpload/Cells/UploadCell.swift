@@ -77,7 +77,7 @@ class UploadCell: UITableViewCell
         {
             if let assetIdentifier = self.assetIdentifier
             {
-                self.descriptor = OldVimeoUpload.sharedInstance.descriptorForIdentifier(assetIdentifier)
+                self.descriptor = OldVimeoUploader.sharedInstance.descriptorForIdentifier(assetIdentifier)
             }
         }
     }
@@ -113,7 +113,7 @@ class UploadCell: UITableViewCell
     {
         if let descriptor = self.descriptor
         {
-            OldVimeoUpload.sharedInstance.cancelUpload(descriptor: descriptor)
+            OldVimeoUploader.sharedInstance.cancelUpload(descriptor: descriptor)
         }
     }
     

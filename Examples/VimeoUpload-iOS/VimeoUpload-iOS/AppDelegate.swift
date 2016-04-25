@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
     {
         AFNetworkReachabilityManager.sharedManager().startMonitoring()
-        NewVimeoUpload.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
+        NewVimeoUploader.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
 
         let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
         application.registerUserNotificationSettings(settings)
@@ -53,7 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     
     func application(application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: () -> Void)
     {
-        if NewVimeoUpload.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
+        if NewVimeoUploader.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
         {
             assertionFailure("Unhandled background events")
         }

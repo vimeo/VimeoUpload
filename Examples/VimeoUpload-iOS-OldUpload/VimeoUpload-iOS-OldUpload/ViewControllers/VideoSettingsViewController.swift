@@ -149,7 +149,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let descriptor = OldUploadDescriptor(url: url, videoSettings: self.videoSettings)
         descriptor.identifier = assetIdentifier
 
-        OldVimeoUpload.sharedInstance.uploadVideo(descriptor: descriptor)
+        OldVimeoUploader.sharedInstance.uploadVideo(descriptor: descriptor)
     }
 
     // MARK: Actions
