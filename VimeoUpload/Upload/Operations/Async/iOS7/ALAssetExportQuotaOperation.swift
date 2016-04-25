@@ -35,7 +35,7 @@ import VimeoNetworking
 // 1. Export (check disk space within this step)
 // 2. Check weekly quota
 
-class ALAssetExportQuotaOperation: ExportQuotaOperation
+public class ALAssetExportQuotaOperation: ExportQuotaOperation
 {
     let alAsset: ALAsset
     

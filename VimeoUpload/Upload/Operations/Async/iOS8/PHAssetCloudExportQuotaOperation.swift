@@ -33,11 +33,11 @@ import VimeoNetworking
 // 3. Check weekly quota
 
 @available(iOS 8.0, *)
-class PHAssetCloudExportQuotaOperation: ExportQuotaOperation
+public class PHAssetCloudExportQuotaOperation: ExportQuotaOperation
 {    
     let phAsset: PHAsset
 
-    init(me: VIMUser, phAsset: PHAsset)
+    public init(me: VIMUser, phAsset: PHAsset)
     {
         self.phAsset = phAsset
 

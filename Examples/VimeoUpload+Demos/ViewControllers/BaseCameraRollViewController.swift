@@ -29,6 +29,7 @@ import AVFoundation
 import Photos
 import VimeoNetworking
 import AFNetworking
+import VimeoUpload
 
 typealias UploadUserAndCameraRollAsset = (user: VIMUser, cameraRollAsset: CameraRollAsset)
 
@@ -99,7 +100,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     private func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationWillEnterForeground:", name: UIApplicationWillEnterForegroundNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
     
     private func removeObservers()

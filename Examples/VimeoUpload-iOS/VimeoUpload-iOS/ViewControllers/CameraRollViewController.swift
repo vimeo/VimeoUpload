@@ -42,7 +42,7 @@ class CameraRollViewController: BaseCameraRollViewController
     {
         super.setupNavigationBar()
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(CameraRollViewController.didTapCancel(_:)))
     }
     
     override func didFinishWithResult(result: UploadUserAndCameraRollAsset)

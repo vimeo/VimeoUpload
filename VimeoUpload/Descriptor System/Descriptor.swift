@@ -45,7 +45,7 @@ public class Descriptor: NSObject, NSCoding
     // MARK:
     
     dynamic private(set) var stateObservable: String = DescriptorState.Ready.rawValue
-    var state = DescriptorState.Ready
+    public var state = DescriptorState.Ready
     {
         didSet
         {
@@ -55,9 +55,9 @@ public class Descriptor: NSObject, NSCoding
     
     // MARK:
     
-    var identifier: String?
-    var currentTaskIdentifier: Int?
-    var error: NSError?
+    public var identifier: String?
+    public var currentTaskIdentifier: Int?
+    public var error: NSError?
     
     var isCancelled = false
     

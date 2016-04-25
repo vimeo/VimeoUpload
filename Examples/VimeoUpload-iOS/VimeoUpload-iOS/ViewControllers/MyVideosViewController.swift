@@ -29,6 +29,7 @@ import AVFoundation
 import Photos
 import AssetsLibrary
 import VimeoNetworking
+import VimeoUpload
 
 class MyVideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, VideoCellDelegate, VideoRefreshManagerDelegate
 {
@@ -73,7 +74,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     private func setupRefreshControl()
     {
         self.refreshControl = UIRefreshControl()
-        self.refreshControl!.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        self.refreshControl!.addTarget(self, action: #selector(MyVideosViewController.refresh), forControlEvents: .ValueChanged)
         
         self.tableView.addSubview(self.refreshControl!)
     }
@@ -87,7 +88,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "uploadInitiated:", name: VideoSettingsViewController.UploadInitiatedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyVideosViewController.uploadInitiated(_:)), name: VideoSettingsViewController.UploadInitiatedNotification, object: nil)
     }
     
     private func removeObservers()

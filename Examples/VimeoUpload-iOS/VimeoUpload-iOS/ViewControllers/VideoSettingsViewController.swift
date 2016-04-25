@@ -28,6 +28,7 @@ import UIKit
 import Photos
 import AssetsLibrary
 import VimeoNetworking
+import VimeoUpload
 
 /*
     This viewController provides an interface for the user to modify a video's settings (title, description, privacy) before upload.
@@ -102,9 +103,9 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         self.title = "Video Settings"
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(VideoSettingsViewController.didTapCancel(_:)))
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.Done, target: self, action: "didTapUpload:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.Done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
     }
 
     private func setupAndStartOperation()

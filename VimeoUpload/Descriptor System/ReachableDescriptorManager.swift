@@ -27,13 +27,13 @@
 import Foundation
 import VimeoNetworking
 
-@objc class ReachableDescriptorManager: DescriptorManager, ConnectivityManagerDelegate
+@objc public class ReachableDescriptorManager: DescriptorManager, ConnectivityManagerDelegate
 {
     private let connectivityManager = ConnectivityManager()
     
     // MARK:
     
-    var allowsCellularUsage: Bool
+    public var allowsCellularUsage: Bool
     {
         get
         {
@@ -58,7 +58,7 @@ import VimeoNetworking
     
     // MARK: Public API - Background Session
     
-    func applicationDidFinishLaunching()
+    public func applicationDidFinishLaunching()
     {
         // No-op
     }

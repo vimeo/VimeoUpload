@@ -28,7 +28,7 @@ import Foundation
 import Photos
 
 @available(iOS 8, *)
-class PHAssetDownloadOperation: ConcurrentOperation
+public class PHAssetDownloadOperation: ConcurrentOperation
 {    
     private let phAsset: PHAsset
     
@@ -54,7 +54,7 @@ class PHAssetDownloadOperation: ConcurrentOperation
     
     // MARK: Overrides
 
-    override func main()
+    override public func main()
     {
         if self.cancelled
         {            
@@ -147,7 +147,7 @@ class PHAssetDownloadOperation: ConcurrentOperation
         }
     }
     
-    override func cancel()
+    override public func cancel()
     {
         super.cancel()
 

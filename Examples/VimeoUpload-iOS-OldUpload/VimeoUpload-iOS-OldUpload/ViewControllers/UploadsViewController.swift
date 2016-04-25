@@ -25,6 +25,7 @@
 //
 
 import UIKit
+import VimeoUpload
 
 typealias AssetIdentifier = String
 
@@ -91,9 +92,9 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     private func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "descriptorAdded:", name: DescriptorManagerNotification.DescriptorAdded.rawValue, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(DescriptorManagerDelegate.descriptorAdded(_:)), name: DescriptorManagerNotification.DescriptorAdded.rawValue, object: nil)
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "descriptorDidCancel:", name: DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(DescriptorManagerDelegate.descriptorDidCancel(_:)), name: DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: nil)
     }
     
     private func removeObservers()

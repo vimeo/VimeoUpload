@@ -41,7 +41,7 @@ enum UploadTaskDescription: String
 
 extension VimeoSessionManager
 {
-    func meDataTask(completionHandler completionHandler: UserCompletionHandler) throws -> NSURLSessionDataTask
+    public func meDataTask(completionHandler completionHandler: UserCompletionHandler) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).meRequest()
 
@@ -72,7 +72,7 @@ extension VimeoSessionManager
         return task
     }
 
-    func myVideosDataTask(completionHandler completionHandler: VideosCompletionHandler) throws -> NSURLSessionDataTask
+    public func myVideosDataTask(completionHandler completionHandler: VideosCompletionHandler) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).myVideosRequest()
         
@@ -103,7 +103,7 @@ extension VimeoSessionManager
         return task
     }
 
-    func createVideoDownloadTask(url url: NSURL) throws -> NSURLSessionDownloadTask
+    public func createVideoDownloadTask(url url: NSURL) throws -> NSURLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url)
 
@@ -170,7 +170,7 @@ extension VimeoSessionManager
         return task
     }
 
-    func videoSettingsDataTask(videoUri videoUri: String, videoSettings: VideoSettings, completionHandler: VideoCompletionHandler) throws -> NSURLSessionDataTask
+    public func videoSettingsDataTask(videoUri videoUri: String, videoSettings: VideoSettings, completionHandler: VideoCompletionHandler) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequestWithUri(videoUri, videoSettings: videoSettings)
         

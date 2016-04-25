@@ -38,37 +38,37 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
 {
     // MARK: DescriptorManagerDelegate
     
-    @objc func didLoadDescriptors(descriptors descriptors: Set<Descriptor>)
+    @objc public func didLoadDescriptors(descriptors descriptors: Set<Descriptor>)
     {
         self.printMessageAndPostLocalNotification("Loaded \(descriptors.count)")
     }
 
-    @objc func didSaveDescriptors(count count: Int)
+    @objc public func didSaveDescriptors(count count: Int)
     {
         self.printMessageAndPostLocalNotification("Saved \(count)")
     }
 
-    @objc func didFailToLoadDescriptor(error error: NSError)
+    @objc public func didFailToLoadDescriptor(error error: NSError)
     {
         self.printMessageAndPostLocalNotification("Load failed: \(error.localizedDescription)")
     }
     
-    @objc func sessionDidBecomeInvalid(error error: NSError)
+    @objc public func sessionDidBecomeInvalid(error error: NSError)
     {
         self.printMessageAndPostLocalNotification("Session invalidated: \(error.localizedDescription)")
     }
     
-    @objc func willHandleEventsForBackgroundSession()
+    @objc public func willHandleEventsForBackgroundSession()
     {
         self.printMessageAndPostLocalNotification("Will handle background events")
     }
     
-    @objc func didFinishEventsForBackgroundSession()
+    @objc public func didFinishEventsForBackgroundSession()
     {
         self.printMessageAndPostLocalNotification("Did handle background events")
     }
     
-    @objc func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
+    @objc public func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -76,7 +76,7 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
         }
     }
     
-    @objc func taskDidComplete(task task: NSURLSessionTask, descriptor: Descriptor, error: NSError?)
+    @objc public func taskDidComplete(task task: NSURLSessionTask, descriptor: Descriptor, error: NSError?)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -91,7 +91,7 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
         }
     }
     
-    @objc func descriptorAdded(descriptor: Descriptor)
+    @objc public func descriptorAdded(descriptor: Descriptor)
     {
         if let identifier = descriptor.identifier
         {
@@ -99,7 +99,7 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
         }
     }
 
-    @objc func descriptorDidSucceed(descriptor: Descriptor)
+    @objc public func descriptorDidSucceed(descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -107,7 +107,7 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
         }
     }
 
-    @objc func descriptorDidCancel(descriptor: Descriptor)
+    @objc public func descriptorDidCancel(descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -115,7 +115,7 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
         }
     }
 
-    @objc func descriptorDidFail(descriptor: Descriptor)
+    @objc public func descriptorDidFail(descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -123,7 +123,7 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
         }
     }
     
-    @objc func descriptorForTaskNotFound(task: NSURLSessionTask)
+    @objc public func descriptorForTaskNotFound(task: NSURLSessionTask)
     {
         self.printMessageAndPostLocalNotification("Descriptor for task not found")
     }

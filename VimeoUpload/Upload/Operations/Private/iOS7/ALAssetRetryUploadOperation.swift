@@ -33,7 +33,7 @@ import VimeoNetworking
 // 1. Perorm a MeQuotaOperation
 // 2. Perform a ALAssetExportQuotaOperation
 
-class ALAssetRetryUploadOperation: RetryUploadOperation
+public class ALAssetRetryUploadOperation: RetryUploadOperation
 {
     private let alAsset: ALAsset
     

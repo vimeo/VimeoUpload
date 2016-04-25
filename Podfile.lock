@@ -33,7 +33,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   VimeoNetworking:
-    :commit: ec4f11c3bb66a5468fc863f92d0b867f9ed8e439
+    :commit: c751491bb7d12c5b4aa2aa80dff28ec996bf08b9
     :git: git@github.com:vimeo/VimeoNetworking.git
 
 SPEC CHECKSUMS:

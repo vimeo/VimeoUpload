@@ -36,8 +36,8 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: 
     
-    var url: NSURL
-    var uploadTicket: VIMUploadTicket
+    public var url: NSURL
+    public var uploadTicket: VIMUploadTicket
     
     // MARK: VideoDescriptor
     
@@ -63,7 +63,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         fatalError("init() has not been implemented")
     }
 
-    init(url: NSURL, uploadTicket: VIMUploadTicket)
+    public init(url: NSURL, uploadTicket: VIMUploadTicket)
     {
         self.url = url
         self.uploadTicket = uploadTicket

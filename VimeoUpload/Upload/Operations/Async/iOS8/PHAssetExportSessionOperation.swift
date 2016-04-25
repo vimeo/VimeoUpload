@@ -56,7 +56,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override func main()
+    override internal func main()
     {
         if self.cancelled
         {
@@ -136,7 +136,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
         })
     }
     
-    override func cancel()
+    override internal func cancel()
     {
         super.cancel()
                 

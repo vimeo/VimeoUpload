@@ -36,8 +36,8 @@ public class VimeoUploader<T: VideoDescriptor>
     
     // MARK:
     
-    let descriptorManager: ReachableDescriptorManager
-    let foregroundSessionManager: VimeoSessionManager
+    public let descriptorManager: ReachableDescriptorManager
+    public let foregroundSessionManager: VimeoSessionManager
     
     // MARK: 
     
@@ -45,14 +45,14 @@ public class VimeoUploader<T: VideoDescriptor>
 
     // MARK: - Initialization
 
-    convenience init(backgroundSessionIdentifier: String, accessToken: String)
+    public convenience init(backgroundSessionIdentifier: String, accessToken: String)
     {
         self.init(backgroundSessionIdentifier: backgroundSessionIdentifier, accessTokenProvider: { () -> String? in
             return accessToken
         })
     }
 
-    init(backgroundSessionIdentifier: String, accessTokenProvider: VimeoRequestSerializer.AccessTokenProvider)
+    public init(backgroundSessionIdentifier: String, accessTokenProvider: VimeoRequestSerializer.AccessTokenProvider)
     {
         self.foregroundSessionManager = VimeoSessionManager.defaultSessionManager(accessTokenProvider: accessTokenProvider)
         
@@ -63,19 +63,19 @@ public class VimeoUploader<T: VideoDescriptor>
     
     // MARK: Public API - Starting
 
-    func applicationDidFinishLaunching()
+    public func applicationDidFinishLaunching()
     {
         // No-op
     }
     
-    func uploadVideo(descriptor descriptor: T)
+    public func uploadVideo(descriptor descriptor: T)
     {
         self.descriptorManager.addDescriptor(descriptor.progressDescriptor)
     }
 
     // MARK: Public API - Canceling
 
-    func cancelUpload(videoUri videoUri: VideoUri)
+    public func cancelUpload(videoUri videoUri: VideoUri)
     {
         self.deletionManager.deleteVideoWithUri(videoUri)
         
@@ -85,7 +85,7 @@ public class VimeoUploader<T: VideoDescriptor>
         }
     }
 
-    func cancelUpload(descriptor descriptor: VideoDescriptor)
+    public func cancelUpload(descriptor descriptor: VideoDescriptor)
     {
         if let videoUri = descriptor.videoUri
         {
@@ -95,7 +95,7 @@ public class VimeoUploader<T: VideoDescriptor>
         self.descriptorManager.cancelDescriptor(descriptor.progressDescriptor)
     }
 
-    func cancelUpload(identifier identifier: String)
+    public func cancelUpload(identifier identifier: String)
     {
         if let descriptor = self.descriptorForIdentifier(identifier)
         {
@@ -110,7 +110,7 @@ public class VimeoUploader<T: VideoDescriptor>
     
     // MARK: Public API - Accessing
 
-    func descriptorForVideo(videoUri videoUri: VideoUri) -> T?
+    public func descriptorForVideo(videoUri videoUri: VideoUri) -> T?
     {
         let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
             
@@ -125,7 +125,7 @@ public class VimeoUploader<T: VideoDescriptor>
         return descriptor as? T
     }
     
-    func descriptorForIdentifier(identifier: String) -> T?
+    public func descriptorForIdentifier(identifier: String) -> T?
     {
         let descriptor = self.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
             

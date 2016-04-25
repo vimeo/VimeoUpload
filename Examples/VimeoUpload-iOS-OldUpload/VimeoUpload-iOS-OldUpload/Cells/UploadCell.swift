@@ -25,6 +25,7 @@
 //
 
 import UIKit
+import VimeoUpload
 
 class UploadCell: UITableViewCell
 {

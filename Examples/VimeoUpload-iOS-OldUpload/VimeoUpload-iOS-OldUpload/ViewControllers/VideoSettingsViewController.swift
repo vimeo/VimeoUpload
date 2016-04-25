@@ -25,6 +25,7 @@
 //
 
 import UIKit
+import VimeoUpload
 
 class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
@@ -81,9 +82,9 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         self.title = "Video Settings"
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(VideoSettingsViewController.didTapCancel(_:)))
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.Done, target: self, action: "didTapUpload:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.Done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
     }
 
     private func setupAndStartOperation()

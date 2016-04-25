@@ -70,7 +70,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         fatalError("init() has not been implemented")
     }
 
-    init(url: NSURL, videoSettings: VideoSettings? = nil)
+    public init(url: NSURL, videoSettings: VideoSettings? = nil)
     {
         self.url = url
         self.videoSettings = videoSettings

@@ -28,7 +28,7 @@ import Foundation
 import VimeoNetworking
 import AFNetworking
 
-@objc protocol VideoRefreshManagerDelegate
+@objc public protocol VideoRefreshManagerDelegate
 {
     func uploadingStateDidChangeForVideo(video: VIMVideo)
 }
@@ -55,7 +55,7 @@ import AFNetworking
         self.removeObservers()
     }
     
-    init(sessionManager: VimeoSessionManager, delegate: VideoRefreshManagerDelegate)
+    public init(sessionManager: VimeoSessionManager, delegate: VideoRefreshManagerDelegate)
     {
         self.sessionManager = sessionManager
         self.delegate = delegate
@@ -71,18 +71,18 @@ import AFNetworking
     
     // MARK: Public API
     
-    func cancelAll()
+    public func cancelAll()
     {
         self.videos.removeAll()
         self.operationQueue.cancelAllOperations()
     }
     
-    func cancelRefreshForVideoWithUri(uri: VideoUri)
+    public func cancelRefreshForVideoWithUri(uri: VideoUri)
     {
         self.videos.removeValueForKey(uri)
     }
 
-    func refreshVideo(video: VIMVideo)
+    public func refreshVideo(video: VIMVideo)
     {
         guard let uri = video.uri else
         {

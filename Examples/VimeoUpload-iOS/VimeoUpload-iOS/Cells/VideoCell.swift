@@ -26,6 +26,7 @@
 
 import UIKit
 import VimeoNetworking
+import VimeoUpload
 
 protocol VideoCellDelegate: class
 {

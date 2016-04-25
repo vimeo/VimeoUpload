@@ -25,6 +25,7 @@
 //
 
 import Foundation
+import VimeoUpload
 
 class OldVimeoUploader: VimeoUploader<OldUploadDescriptor>
 {
@@ -34,8 +35,8 @@ class OldVimeoUploader: VimeoUploader<OldUploadDescriptor>
     
     // MARK: - Initialization
     
-    override init(backgroundSessionIdentifier: String, authTokenBlock: AuthTokenBlock)
+    override init(backgroundSessionIdentifier: String, accessTokenProvider: VimeoRequestSerializer.AccessTokenProvider)
     {
-        super.init(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: authTokenBlock)
+        super.init(backgroundSessionIdentifier: backgroundSessionIdentifier, accessTokenProvider: accessTokenProvider)
     }
 }
