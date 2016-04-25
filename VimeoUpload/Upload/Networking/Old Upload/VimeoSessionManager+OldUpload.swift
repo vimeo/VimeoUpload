@@ -25,6 +25,7 @@
 //
 
 import Foundation
+import VimeoNetworking
 
 enum UploadTaskDescription: String
 {
