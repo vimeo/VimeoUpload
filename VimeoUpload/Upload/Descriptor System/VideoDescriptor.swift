@@ -26,13 +26,13 @@
 
 import Foundation
 
-@objc enum VideoDescriptorType: Int
+@objc public enum VideoDescriptorType: Int
 {
     case Upload
     case Download
 }
 
-@objc protocol VideoDescriptor
+@objc public protocol VideoDescriptor
 {
     var type: VideoDescriptorType { get }
     

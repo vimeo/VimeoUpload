@@ -28,7 +28,7 @@ import Foundation
 import VimeoNetworking
 import AFNetworking
 
-class UploadDescriptor: ProgressDescriptor, VideoDescriptor
+public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
     private static let FileNameCoderKey = "fileName"
     private static let FileExtensionCoderKey = "fileExtension"
@@ -41,24 +41,24 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: VideoDescriptor
     
-    var type: VideoDescriptorType
+    public var type: VideoDescriptorType
     {
         return .Upload
     }
     
-    var videoUri: VideoUri?
+    public var videoUri: VideoUri?
     {
         return self.uploadTicket.video?.uri
     }
     
-    var progressDescriptor: ProgressDescriptor
+    public var progressDescriptor: ProgressDescriptor
     {
         return self
     }
     
     // MARK: - Initialization
     
-    required init()
+    required public init()
     {
         fatalError("init() has not been implemented")
     }
@@ -178,7 +178,7 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: NSCoding
     
-    required init(coder aDecoder: NSCoder)
+    required public init(coder aDecoder: NSCoder)
     {
         let fileName = aDecoder.decodeObjectForKey(self.dynamicType.FileNameCoderKey) as! String 
         let fileExtension = aDecoder.decodeObjectForKey(self.dynamicType.FileExtensionCoderKey) as! String
@@ -190,7 +190,7 @@ class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         super.init(coder: aDecoder)
     }
 
-    override func encodeWithCoder(aCoder: NSCoder)
+    override public func encodeWithCoder(aCoder: NSCoder)
     {
         let fileName = self.url.URLByDeletingPathExtension!.lastPathComponent
         let ext = self.url.pathExtension

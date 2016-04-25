@@ -26,7 +26,7 @@
 
 import Foundation
 
-class VimeoUploader<T: VideoDescriptor>
+public class VimeoUploader<T: VideoDescriptor>
 {
     static var Name: String
     {

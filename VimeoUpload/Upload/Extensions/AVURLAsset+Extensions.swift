@@ -27,7 +27,7 @@
 import Foundation
 import AVFoundation
 
-extension AVURLAsset
+public extension AVURLAsset
 {
     func fileSize() throws -> NSNumber
     {

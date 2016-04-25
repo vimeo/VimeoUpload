@@ -27,7 +27,7 @@
 import Foundation
 import AFNetworking
 
-enum DescriptorState: String
+public enum DescriptorState: String
 {
     case Ready = "Ready"
     case Executing = "Executing"
@@ -35,7 +35,7 @@ enum DescriptorState: String
     case Finished = "Finished"
 }
 
-class Descriptor: NSObject, NSCoding
+public class Descriptor: NSObject, NSCoding
 {
     private static let StateCoderKey = "state"
     private static let IdentifierCoderKey = "identifier"
@@ -63,7 +63,7 @@ class Descriptor: NSObject, NSCoding
     
     // MARK: - Initialization
 
-    required override init()
+    required override public init()
     {
         super.init()
     }
@@ -195,7 +195,7 @@ class Descriptor: NSObject, NSCoding
     
     // MARK: NSCoding
     
-    required init(coder aDecoder: NSCoder)
+    required public init(coder aDecoder: NSCoder)
     {
         self.state = DescriptorState(rawValue: aDecoder.decodeObjectForKey(self.dynamicType.StateCoderKey) as! String)!
         self.identifier = aDecoder.decodeObjectForKey(self.dynamicType.IdentifierCoderKey) as? String
@@ -203,7 +203,7 @@ class Descriptor: NSObject, NSCoding
         self.currentTaskIdentifier = aDecoder.decodeIntegerForKey(self.dynamicType.CurrentTaskIdentifierCoderKey)
     }
     
-    func encodeWithCoder(aCoder: NSCoder)
+    public func encodeWithCoder(aCoder: NSCoder)
     {
         aCoder.encodeObject(self.state.rawValue, forKey: self.dynamicType.StateCoderKey)
         aCoder.encodeObject(self.identifier, forKey: self.dynamicType.IdentifierCoderKey)

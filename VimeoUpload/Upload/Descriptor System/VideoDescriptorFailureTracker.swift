@@ -26,7 +26,7 @@
 
 import Foundation
 
-@objc class VideoDescriptorFailureTracker: NSObject
+@objc public class VideoDescriptorFailureTracker: NSObject
 {
     private static let ArchiveKey = "descriptors_failed"
 

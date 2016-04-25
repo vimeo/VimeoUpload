@@ -33,7 +33,7 @@ import AFNetworking
     func uploadingStateDidChangeForVideo(video: VIMVideo)
 }
 
-@objc class VideoRefreshManager: NSObject
+@objc public class VideoRefreshManager: NSObject
 {
     private static let RetryDelayInSeconds: Double = 3
     

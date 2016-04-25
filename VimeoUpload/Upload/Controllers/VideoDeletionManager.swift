@@ -27,7 +27,7 @@
 import Foundation
 import AFNetworking
 
-class VideoDeletionManager: NSObject
+public class VideoDeletionManager: NSObject
 {
     private static let DeletionsArchiveKey = "deletions"
     private static let DefaultRetryCount = 3

@@ -27,7 +27,7 @@
 import Foundation
 import AFNetworking
 
-extension AFURLSessionManager
+public extension AFURLSessionManager
 {
     func uploadTaskForIdentifier(identifier: Int) -> NSURLSessionUploadTask?
     {

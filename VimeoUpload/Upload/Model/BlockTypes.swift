@@ -27,15 +27,15 @@
 import Foundation
 import VimeoNetworking
 
-typealias ProgressBlock = (progress: Double) -> Void
-typealias ErrorBlock = (error: NSError?) -> Void
-typealias StringErrorBlock = (value: String?, error: NSError?) -> Void
-typealias FloatBlock = (value: Float64) -> Void
+public typealias ProgressBlock = (progress: Double) -> Void
+public typealias ErrorBlock = (error: NSError?) -> Void
+public typealias StringErrorBlock = (value: String?, error: NSError?) -> Void
+public typealias FloatBlock = (value: Float64) -> Void
 
-typealias UserCompletionHandler = (user: VIMUser?, error: NSError?) -> Void
-typealias VideoCompletionHandler = (video: VIMVideo?, error: NSError?) -> Void
-typealias VideosCompletionHandler = (videos: [VIMVideo]?, error: NSError?) -> Void
-typealias UploadTicketCompletionHandler = (uploadTicket: VIMUploadTicket?, error: NSError?) -> Void
+public typealias UserCompletionHandler = (user: VIMUser?, error: NSError?) -> Void
+public typealias VideoCompletionHandler = (video: VIMVideo?, error: NSError?) -> Void
+public typealias VideosCompletionHandler = (videos: [VIMVideo]?, error: NSError?) -> Void
+public typealias UploadTicketCompletionHandler = (uploadTicket: VIMUploadTicket?, error: NSError?) -> Void
 
-typealias VideoUri = String
-typealias FileSizeCheckResult = (fileSize: Float64, availableSpace: Float64, success: Bool)
+public typealias VideoUri = String
+public typealias FileSizeCheckResult = (fileSize: Float64, availableSpace: Float64, success: Bool)
