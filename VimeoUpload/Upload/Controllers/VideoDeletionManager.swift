@@ -25,6 +25,7 @@
 //
 
 import Foundation
+import AFNetworking
 
 class VideoDeletionManager: NSObject
 {

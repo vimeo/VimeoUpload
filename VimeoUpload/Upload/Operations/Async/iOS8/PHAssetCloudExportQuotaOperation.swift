@@ -25,6 +25,7 @@
 //
 
 import Photos
+import VimeoNetworking
 
 // This flow encapsulates the following steps:
 // 1. If inCloud, download

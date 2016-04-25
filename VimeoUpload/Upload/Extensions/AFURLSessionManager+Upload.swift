@@ -25,11 +25,12 @@
 //
 
 import Foundation
+import AFNetworking
 
 extension AFURLSessionManager
 {
     func uploadTaskForIdentifier(identifier: Int) -> NSURLSessionUploadTask?
     {
-        return self.uploadTasks.filter{ $0.taskIdentifier == identifier }.first as? NSURLSessionUploadTask
+        return self.uploadTasks.filter{ $0.taskIdentifier == identifier }.first
     }
 }

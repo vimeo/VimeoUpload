@@ -26,6 +26,7 @@
 
 import Foundation
 import AVFoundation
+import VimeoNetworking
 
 // This flow encapsulates the following steps:
 // 1. Request me

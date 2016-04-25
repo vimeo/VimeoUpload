@@ -26,6 +26,7 @@
 
 import Foundation
 import Photos
+import VimeoNetworking
 
 // This flow encapsulates the following steps:
 

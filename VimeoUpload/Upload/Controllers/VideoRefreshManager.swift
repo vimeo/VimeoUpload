@@ -25,6 +25,8 @@
 //
 
 import Foundation
+import VimeoNetworking
+import AFNetworking
 
 @objc protocol VideoRefreshManagerDelegate
 {

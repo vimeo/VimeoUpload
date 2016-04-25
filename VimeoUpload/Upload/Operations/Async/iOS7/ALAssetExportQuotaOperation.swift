@@ -25,6 +25,7 @@
 //
 
 import AVFoundation
+import VimeoNetworking
 
 #if os(iOS)
     import AssetsLibrary

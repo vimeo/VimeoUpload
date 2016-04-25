@@ -25,6 +25,7 @@
 //
 
 import Foundation
+import VimeoNetworking
 
 typealias ProgressBlock = (progress: Double) -> Void
 typealias ErrorBlock = (error: NSError?) -> Void

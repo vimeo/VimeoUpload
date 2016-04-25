@@ -26,6 +26,7 @@
 
 import Foundation
 import AVFoundation
+import VimeoNetworking
 
 class DailyQuotaOperation: NSOperation
 {    
