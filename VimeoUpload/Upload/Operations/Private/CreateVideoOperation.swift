@@ -35,12 +35,12 @@ public class CreateVideoOperation: ConcurrentOperation
     
     private var task: NSURLSessionDataTask?
 
-    private(set) var result: VIMUploadTicket?
-    private(set) var error: NSError?
+    public var result: VIMUploadTicket?
+    public var error: NSError?
     
     // MARK: - Initialization
 
-    init(sessionManager: VimeoSessionManager, url: NSURL, videoSettings: VideoSettings?)
+    public required init(sessionManager: VimeoSessionManager, url: NSURL, videoSettings: VideoSettings?)
     {
         self.sessionManager = sessionManager
         self.url = url
