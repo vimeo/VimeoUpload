@@ -31,12 +31,12 @@ import Photos
 public class PHAssetDownloadOperation: ConcurrentOperation
 {    
     private let phAsset: PHAsset
-    
     private var requestID: PHImageRequestID?
-    var progressBlock: ProgressBlock?
 
-    private(set) var result: AVAsset?
-    private(set) var error: NSError?
+    public var progressBlock: ProgressBlock?
+
+    public var result: AVAsset?
+    public var error: NSError?
 
     // MARK: - Initialization
 
@@ -45,7 +45,7 @@ public class PHAssetDownloadOperation: ConcurrentOperation
         self.cleanup()
     }
     
-    init(phAsset: PHAsset)
+    public required init(phAsset: PHAsset)
     {
         self.phAsset = phAsset
         
