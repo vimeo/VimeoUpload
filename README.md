@@ -410,6 +410,8 @@ Or use KVO to observe changes to its state and progress:
     }
 ```
 
+Check out the `DescriptorKVObserver` class. It's a small utility that makes KVO'ing a Descriptor's `state` and `progress` properties easier.
+
 ### Canceling an Upload
 
 Canceling an upload will cancel the file upload itself as well as delete the video object from Vimeo servers. You can cancel an upload using the `OldUploadDescriptor` instance in question:
