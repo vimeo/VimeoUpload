@@ -29,7 +29,7 @@ import VimeoNetworking
 
 public class VimeoUploader<T: VideoDescriptor>
 {
-    static var Name: String
+    public static var Name: String
     {
         return "vimeo_upload" // Generic types don't yet support static properties [AH] 3/19/2016
     }
