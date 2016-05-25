@@ -42,7 +42,7 @@ import Foundation
         self.removeObservers()
     }
     
-    init(name: String)
+    public init(name: String)
     {
         self.archiver = self.dynamicType.setupArchiver(name: name)
 
@@ -82,13 +82,13 @@ import Foundation
     
     // MARK: Public API
     
-    func removeAllFailures()
+    public func removeAllFailures()
     {
         self.failedDescriptors.removeAll()
         self.save()
     }
     
-    func removeFailedDescriptorForKey(key: VideoUri) -> Descriptor?
+    public func removeFailedDescriptorForKey(key: VideoUri) -> Descriptor?
     {
         guard let descriptor = self.failedDescriptors.removeValueForKey(key) else
         {
@@ -100,7 +100,7 @@ import Foundation
         return descriptor
     }
     
-    func failedDescriptorForKey(key: VideoUri) -> Descriptor?
+    public func failedDescriptorForKey(key: VideoUri) -> Descriptor?
     {
         return self.failedDescriptors[key]
     }

@@ -52,7 +52,7 @@ public class VideoDeletionManager: NSObject
         self.removeObservers()
     }
         
-    init(sessionManager: VimeoSessionManager, retryCount: Int = VideoDeletionManager.DefaultRetryCount)
+    public init(sessionManager: VimeoSessionManager, retryCount: Int = VideoDeletionManager.DefaultRetryCount)
     {
         self.sessionManager = sessionManager
         self.retryCount = retryCount
@@ -115,7 +115,7 @@ public class VideoDeletionManager: NSObject
     
     // MARK: Public API
     
-    func deleteVideoWithUri(uri: String)
+    public func deleteVideoWithUri(uri: String)
     {
         self.deleteVideoWithUri(uri, retryCount: self.retryCount)
     }
