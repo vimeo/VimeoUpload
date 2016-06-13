@@ -28,7 +28,7 @@ import Foundation
 
 public class VideoSettings: NSObject
 {
-    var title: String?
+    public var title: String?
     {
         didSet
         {
@@ -36,7 +36,7 @@ public class VideoSettings: NSObject
         }
     }
     
-    var desc: String?
+    public var desc: String?
     {
         didSet
         {
@@ -44,9 +44,9 @@ public class VideoSettings: NSObject
         }
     }
     
-    var privacy: String?
-    var users: [String]? // List of uris of users who can view this video
-    var password: String?
+    public var privacy: String?
+    public var users: [String]? // List of uris of users who can view this video
+    public var password: String?
 
     public init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
     {
