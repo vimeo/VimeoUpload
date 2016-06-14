@@ -27,16 +27,16 @@
 import AssetsLibrary
 import AVFoundation
 
-@objc class VIMALAsset: NSObject, CameraRollAsset
+@objc public class VIMALAsset: NSObject, CameraRollAsset
 {
-    let alAsset: ALAsset
+    public let alAsset: ALAsset
 
-    init(alAsset: ALAsset)
+    public init(alAsset: ALAsset)
     {
         self.alAsset = alAsset
     }
 
-    var identifier: String
+    public var identifier: String
     {
         get
         {
@@ -44,7 +44,7 @@ import AVFoundation
         }
     }
     
-    var inCloud: Bool = false
-    var avAsset: AVAsset?
-    var error: NSError?
+    public var inCloud: Bool = false
+    public var avAsset: AVAsset?
+    public var error: NSError?
 }
