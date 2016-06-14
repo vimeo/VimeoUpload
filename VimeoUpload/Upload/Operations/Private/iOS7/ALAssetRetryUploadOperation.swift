@@ -26,13 +26,14 @@
 
 import Foundation
 import AssetsLibrary
+import VimeoNetworking
 
 // This flow encapsulates the following steps:
 
 // 1. Perorm a MeQuotaOperation
 // 2. Perform a ALAssetExportQuotaOperation
 
-class ALAssetRetryUploadOperation: RetryUploadOperation
+public class ALAssetRetryUploadOperation: RetryUploadOperation
 {
     private let alAsset: ALAsset
     

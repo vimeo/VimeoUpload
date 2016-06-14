@@ -28,11 +28,11 @@ import Foundation
 
 // This class is a minimally modified version of this gist: https://gist.github.com/calebd/93fa347397cec5f88233
 
-class ConcurrentOperation: NSOperation
+public class ConcurrentOperation: NSOperation
 {
     // MARK: Types
     
-    enum State
+    public enum State
     {
         case Ready, Executing, Finished
         
@@ -54,7 +54,7 @@ class ConcurrentOperation: NSOperation
     
     // MARK: Properties
     
-    var state = State.Ready
+    public var state = State.Ready
     {
         willSet
         {
@@ -70,29 +70,29 @@ class ConcurrentOperation: NSOperation
     
     // MARK: NSOperation Property Overrides
     
-    override var ready: Bool
+    override public var ready: Bool
     {
         return super.ready && self.state == .Ready
     }
     
-    override var executing: Bool
+    override public var executing: Bool
     {
         return self.state == .Executing
     }
     
-    override var finished: Bool
+    override public var finished: Bool
     {
         return self.state == .Finished
     }
     
-    override var asynchronous: Bool
+    override public var asynchronous: Bool
     {
         return true
     }
     
     // MARK: NSOperation Method Overrides
     
-    override func start()
+    override public func start()
     {
         if self.cancelled
         {            
@@ -110,12 +110,12 @@ class ConcurrentOperation: NSOperation
         self.main()
     }
     
-    override func main()
+    override public func main()
     {
         fatalError("Subclasses must override main()")
     }
     
-    override func cancel()
+    override public func cancel()
     {
         super.cancel()
         

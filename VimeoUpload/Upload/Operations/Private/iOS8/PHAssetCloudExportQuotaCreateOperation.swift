@@ -26,6 +26,7 @@
 
 import Foundation
 import Photos
+import VimeoNetworking
 
 // This flow encapsulates the following steps:
 
@@ -33,13 +34,13 @@ import Photos
 // 2. Create video record
 
 @available(iOS 8.0, *)
-class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
+public class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
 {    
     let phAsset: PHAsset
 
     // MARK: - Initialization
     
-    init(me: VIMUser, phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    public init(me: VIMUser, phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {
         self.phAsset = phAsset
 

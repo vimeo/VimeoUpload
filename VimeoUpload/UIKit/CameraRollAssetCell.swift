@@ -28,7 +28,7 @@ import Foundation
 import CoreGraphics
 import UIKit
 
-@objc protocol CameraRollAssetCell
+@objc public protocol CameraRollAssetCell
 {
     var bounds: CGRect { get }
     func setImage(image: UIImage)

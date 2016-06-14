@@ -28,7 +28,8 @@ import UIKit
 import AVFoundation
 import Photos
 import AssetsLibrary
-import VIMNetworking
+import VimeoNetworking
+import VimeoUpload
 
 class MyVideosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, VideoCellDelegate, VideoRefreshManagerDelegate
 {
@@ -73,21 +74,21 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     private func setupRefreshControl()
     {
         self.refreshControl = UIRefreshControl()
-        self.refreshControl!.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        self.refreshControl!.addTarget(self, action: #selector(MyVideosViewController.refresh), forControlEvents: .ValueChanged)
         
         self.tableView.addSubview(self.refreshControl!)
     }
     
     private func setupVideoRefreshManager()
     {
-        self.videoRefreshManager = VideoRefreshManager(sessionManager: NewVimeoUpload.sharedInstance.foregroundSessionManager, delegate: self)
+        self.videoRefreshManager = VideoRefreshManager(sessionManager: NewVimeoUploader.sharedInstance.foregroundSessionManager, delegate: self)
     }
     
     // MARK: Notifications
     
     private func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "uploadInitiated:", name: VideoSettingsViewController.UploadInitiatedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyVideosViewController.uploadInitiated(_:)), name: VideoSettingsViewController.UploadInitiatedNotification, object: nil)
     }
     
     private func removeObservers()
@@ -144,7 +145,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
     {
-        NewVimeoUpload.sharedInstance.cancelUpload(videoUri: videoUri)
+        NewVimeoUploader.sharedInstance.cancelUpload(videoUri: videoUri)
 
         if let indexPath = self.indexPathForVideoUri(videoUri)
         {
@@ -208,7 +209,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     {
         self.refreshControl?.beginRefreshing()
 
-        let sessionManager = NewVimeoUpload.sharedInstance.foregroundSessionManager
+        let sessionManager = NewVimeoUploader.sharedInstance.foregroundSessionManager
         
         do
         {

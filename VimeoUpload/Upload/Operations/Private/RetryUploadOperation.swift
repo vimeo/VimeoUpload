@@ -25,8 +25,9 @@
 //
 
 import Foundation
+import VimeoNetworking
 
-class RetryUploadOperation: ConcurrentOperation
+public class RetryUploadOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
     let operationQueue: NSOperationQueue
@@ -66,7 +67,7 @@ class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override func main()
+    override public func main()
     {
         if self.cancelled
         {
@@ -76,7 +77,7 @@ class RetryUploadOperation: ConcurrentOperation
         self.performMeQuotaOperation()
     }
     
-    override func cancel()
+    override public func cancel()
     {
         super.cancel()
         

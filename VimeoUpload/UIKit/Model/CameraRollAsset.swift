@@ -27,7 +27,7 @@
 import Foundation
 import AVFoundation
 
-@objc protocol CameraRollAsset
+@objc public protocol CameraRollAsset
 {
     var identifier: String { get }
     var inCloud: Bool { get set }

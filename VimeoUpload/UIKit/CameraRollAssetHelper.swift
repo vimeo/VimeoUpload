@@ -26,7 +26,7 @@
 
 import Foundation
 
-@objc protocol CameraRollAssetHelper
+@objc public protocol CameraRollAssetHelper
 {
     func requestImage(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)
     func requestAsset(cell cell: CameraRollAssetCell, cameraRollAsset: CameraRollAsset)

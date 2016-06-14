@@ -28,16 +28,16 @@ import Photos
 import AVFoundation
 
 @available(iOS 8.0, *)
-@objc class VIMPHAsset: NSObject, CameraRollAsset
+@objc public class VIMPHAsset: NSObject, CameraRollAsset
 {
-    let phAsset: PHAsset
+    public let phAsset: PHAsset
     
-    init(phAsset: PHAsset)
+    public init(phAsset: PHAsset)
     {
         self.phAsset = phAsset
     }
 
-    var identifier: String
+    public var identifier: String
     {
         get
         {
@@ -45,7 +45,7 @@ import AVFoundation
         }
     }
     
-    var inCloud: Bool = false
-    var avAsset: AVAsset?
-    var error: NSError?
+    public var inCloud: Bool = false
+    public var avAsset: AVAsset?
+    public var error: NSError?
 }
