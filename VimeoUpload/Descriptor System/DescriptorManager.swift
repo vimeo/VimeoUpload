@@ -35,10 +35,10 @@ enum DescriptorManagerNotification: String
     case SessionDidBecomeInvalid = "SessionDidBecomeInvalidNotification"
 }
 
-typealias TestBlock = (descriptor: Descriptor) -> Bool
-typealias VoidBlock = () -> Void
+typealias TestClosure = (descriptor: Descriptor) -> Bool
+typealias VoidClosure = () -> Void
 
-class DescriptorManager
+class DescriptorManager: NSObject
 {
     private static let QueueName = "descriptor_manager.synchronization_queue"
     
@@ -62,7 +62,7 @@ class DescriptorManager
     
     // MARK:
     
-    var backgroundEventsCompletionHandler: VoidBlock?
+    var backgroundEventsCompletionHandler: VoidClosure?
 
     // MARK: - Initialization
     
@@ -76,6 +76,8 @@ class DescriptorManager
         self.delegate = delegate
         self.archiver = DescriptorManagerArchiver(name: name)
         
+        super.init()
+
         self.setupDescriptors()
         self.setupSessionBlocks()
         self.setupSuspendedState()
@@ -223,16 +225,11 @@ class DescriptorManager
 
                     return
                 }
-
-                // This case should not be necessary, isNetworkTaskCancellationError should always be covered by the .Suspended case above.
-                // This needs testing to deem if necessary. [AH] 2/22/2016
-                let isNetworkCancellationError = (task.error?.isNetworkTaskCancellationError() == true || error?.isNetworkTaskCancellationError() == true)
                 
                 // These types of errors can occur when connection drops and before suspend() is called,
                 // Or when connection drop is slow -> timeouts etc. [AH] 2/22/2016
                 let isConnectionError = (task.error?.isConnectionError() == true || error?.isConnectionError() == true)
-                
-                if isNetworkCancellationError || isConnectionError
+                if isConnectionError
                 {
                     do
                     {
@@ -257,15 +254,26 @@ class DescriptorManager
                 
                 if descriptor.state == .Finished
                 {
-                    strongSelf.archiver.remove(descriptor)
-                    
-                    if descriptor.error != nil
+                    if let error = descriptor.error
                     {
+                        // When a user initiates a descriptor and then kills the app from multitasking we will receive a networkTaskCancellation error
+                        // In this case we don't want to disappear the descriptor, instead we want to flag it as an error
+                        // However, the code below that would track/persist that type of failure does not always execute when the app is killed
+                        // So we're intentionally not removing the descriptor from the list, 
+                        // So that the error is tracked/persisted on next launch via loadFromCache above [AH] 3/15/2016
+                        
+                        if error.isNetworkTaskCancellationError() == false
+                        {
+                            strongSelf.archiver.remove(descriptor)
+                        }
+                        
                         strongSelf.delegate?.descriptorDidFail?(descriptor)
                         NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
                     }
                     else
                     {
+                        strongSelf.archiver.remove(descriptor)
+
                         strongSelf.delegate?.descriptorDidSucceed?(descriptor)
                         NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidSucceed.rawValue, object: descriptor)
                     }
@@ -308,7 +316,7 @@ class DescriptorManager
     
     // MARK: Public API
     
-    func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidBlock) -> Bool
+    func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidClosure) -> Bool
     {
         guard identifier == self.sessionManager.session.configuration.identifier else
         {
@@ -433,7 +441,7 @@ class DescriptorManager
         })
     }
     
-    func descriptorPassingTest(test: TestBlock) -> Descriptor?
+    func descriptorPassingTest(test: TestClosure) -> Descriptor?
     {
         var descriptor: Descriptor?
         

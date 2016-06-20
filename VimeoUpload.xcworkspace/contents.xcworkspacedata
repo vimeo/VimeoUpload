@@ -2,13 +2,13 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Example/VimeoUpload-iOS-2Step/VimeoUpload-iOS-2Step.xcodeproj">
+      location = "group:Examples/VimeoUpload-iOS/VimeoUpload-iOS.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Example/VimeoUpload-iOS-Example/VimeoUpload-iOS-Example.xcodeproj">
+      location = "group:Examples/VimeoUpload-iOS-OldUpload/VimeoUpload-iOS-OldUpload.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Example/VimeoUpload-OSX-Example/VimeoUpload-OSX-Example.xcodeproj">
+      location = "group:Examples/VimeoUpload-OSX/VimeoUpload-OSX.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

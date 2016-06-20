@@ -75,7 +75,7 @@ class PHAssetCloudExportQuotaOperation: ExportQuotaOperation
                 }
             })
         }
-        
+
         self.operationQueue.addOperation(operation)
     }
 }

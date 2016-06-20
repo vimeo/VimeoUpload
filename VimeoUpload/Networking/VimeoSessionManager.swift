@@ -39,7 +39,7 @@ class VimeoSessionManager: AFHTTPSessionManager
         return VimeoSessionManager(sessionConfiguration: sessionConfiguration, authToken: authToken)
     }
 
-    static func defaultSessionManagerWithAuthTokenBlock(authTokenBlock authTokenBlock: AuthTokenBlock) -> VimeoSessionManager
+    static func defaultSessionManager(authTokenBlock authTokenBlock: AuthTokenBlock) -> VimeoSessionManager
     {
         let sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
         
@@ -91,6 +91,8 @@ class VimeoSessionManager: AFHTTPSessionManager
     private static func backgroundSessionConfiguration(identifier identifier: String) -> NSURLSessionConfiguration
     {
         let sessionConfiguration: NSURLSessionConfiguration
+        
+        // We need this check for projects that include the library and support iOS7 
         
         if #available(iOS 8.0, OSX 10.10, *)
         {
