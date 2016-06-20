@@ -26,6 +26,7 @@
 
 import Foundation
 import Photos
+import VimeoNetworking
 
 // This flow encapsulates the following steps:
 
@@ -33,7 +34,7 @@ import Photos
 // 2. Perform a PHAssetCloudExportQuotaOperation
 
 @available(iOS 8.0, *)
-class PHAssetRetryUploadOperation: RetryUploadOperation
+public class PHAssetRetryUploadOperation: RetryUploadOperation
 {
     private let phAsset: PHAsset
     

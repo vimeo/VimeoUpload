@@ -26,7 +26,7 @@
 
 import Foundation
 
-class ProgressDescriptor: Descriptor
+public class ProgressDescriptor: Descriptor
 {
     // MARK:
     
@@ -84,7 +84,7 @@ class ProgressDescriptor: Descriptor
         }
     }
 
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
     {
         if let keyPath = keyPath
         {

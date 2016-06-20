@@ -1,36 +1,44 @@
 PODS:
-  - AFNetworking (2.6.3):
-    - AFNetworking/NSURLConnection (= 2.6.3)
-    - AFNetworking/NSURLSession (= 2.6.3)
-    - AFNetworking/Reachability (= 2.6.3)
-    - AFNetworking/Security (= 2.6.3)
-    - AFNetworking/Serialization (= 2.6.3)
-    - AFNetworking/UIKit (= 2.6.3)
-  - AFNetworking/NSURLConnection (2.6.3):
+  - AFNetworking (3.1.0):
+    - AFNetworking/NSURLSession (= 3.1.0)
+    - AFNetworking/Reachability (= 3.1.0)
+    - AFNetworking/Security (= 3.1.0)
+    - AFNetworking/Serialization (= 3.1.0)
+    - AFNetworking/UIKit (= 3.1.0)
+  - AFNetworking/NSURLSession (3.1.0):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.6.3):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.6.3)
-  - AFNetworking/Security (2.6.3)
-  - AFNetworking/Serialization (2.6.3)
-  - AFNetworking/UIKit (2.6.3):
-    - AFNetworking/NSURLConnection
+  - AFNetworking/Reachability (3.1.0)
+  - AFNetworking/Security (3.1.0)
+  - AFNetworking/Serialization (3.1.0)
+  - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - VIMNetworking/Model (6.0.4):
-    - AFNetworking (= 2.6.3)
-    - VIMNetworking/ObjectMapper
-  - VIMNetworking/ObjectMapper (6.0.4):
-    - AFNetworking (= 2.6.3)
+  - VimeoNetworking (0.0.1):
+    - AFNetworking (= 3.1.0)
+    - VimeoNetworking/Model (= 0.0.1)
+    - VIMObjectMapper
+  - VimeoNetworking/Model (0.0.1):
+    - AFNetworking (= 3.1.0)
+    - VIMObjectMapper
+  - VIMObjectMapper (6.0.1)
 
 DEPENDENCIES:
-  - VIMNetworking/Model (= 6.0.4)
+  - VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, branch `master`)
+
+EXTERNAL SOURCES:
+  VimeoNetworking:
+    :branch: master
+    :git: git@github.com:vimeo/VimeoNetworking.git
+
+CHECKOUT OPTIONS:
+  VimeoNetworking:
+    :commit: 24ec11a054dffd1d7ff9275241b10c9f9052094a
+    :git: git@github.com:vimeo/VimeoNetworking.git
 
 SPEC CHECKSUMS:
-  AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
-  VIMNetworking: 0f21c1cee2d8feb91150362f659a5e819b1c2a8e
+  AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
+  VimeoNetworking: 77501bf0b9584fc509e5b34afdf8375b8aac9fa2
+  VIMObjectMapper: f4dcba63848dff29f40708926358294448b00abb
 
 COCOAPODS: 0.39.0

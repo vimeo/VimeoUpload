@@ -26,7 +26,7 @@
 
 import Foundation
 
-@objc class VideoDescriptorFailureTracker: NSObject
+@objc public class VideoDescriptorFailureTracker: NSObject
 {
     private static let ArchiveKey = "descriptors_failed"
 
@@ -42,7 +42,7 @@ import Foundation
         self.removeObservers()
     }
     
-    init(name: String)
+    public init(name: String)
     {
         self.archiver = self.dynamicType.setupArchiver(name: name)
 
@@ -82,13 +82,13 @@ import Foundation
     
     // MARK: Public API
     
-    func removeAllFailures()
+    public func removeAllFailures()
     {
         self.failedDescriptors.removeAll()
         self.save()
     }
     
-    func removeFailedDescriptorForKey(key: VideoUri) -> Descriptor?
+    public func removeFailedDescriptorForKey(key: VideoUri) -> Descriptor?
     {
         guard let descriptor = self.failedDescriptors.removeValueForKey(key) else
         {
@@ -100,7 +100,7 @@ import Foundation
         return descriptor
     }
     
-    func failedDescriptorForKey(key: VideoUri) -> Descriptor?
+    public func failedDescriptorForKey(key: VideoUri) -> Descriptor?
     {
         return self.failedDescriptors[key]
     }
@@ -109,9 +109,9 @@ import Foundation
     
     private func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "descriptorDidFail:", name: DescriptorManagerNotification.DescriptorDidFail.rawValue, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(VideoDescriptorFailureTracker.descriptorDidFail(_:)), name: DescriptorManagerNotification.DescriptorDidFail.rawValue, object: nil)
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "descriptorDidCancel:", name: DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(VideoDescriptorFailureTracker.descriptorDidCancel(_:)), name: DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: nil)
     }
     
     private func removeObservers()

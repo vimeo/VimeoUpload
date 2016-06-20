@@ -26,9 +26,9 @@
 
 import Foundation
 
-class VideoSettings: NSObject
+public class VideoSettings: NSObject
 {
-    var title: String?
+    public var title: String?
     {
         didSet
         {
@@ -36,7 +36,7 @@ class VideoSettings: NSObject
         }
     }
     
-    var desc: String?
+    public var desc: String?
     {
         didSet
         {
@@ -44,11 +44,11 @@ class VideoSettings: NSObject
         }
     }
     
-    var privacy: String?
-    var users: [String]? // List of uris of users who can view this video
-    var password: String?
+    public var privacy: String?
+    public var users: [String]? // List of uris of users who can view this video
+    public var password: String?
 
-    init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
+    public init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
     {
         super.init()
         
@@ -61,7 +61,7 @@ class VideoSettings: NSObject
     
     // MARK: Public API
     
-    func parameterDictionary() -> [String: AnyObject]
+    public func parameterDictionary() -> [String: AnyObject]
     {
         var parameters: [String: AnyObject] = [:]
         
@@ -95,7 +95,7 @@ class VideoSettings: NSObject
     
     // MARK: NSCoding
     
-    required init(coder aDecoder: NSCoder)
+    required public init(coder aDecoder: NSCoder)
     {
         self.title = aDecoder.decodeObjectForKey("title") as? String
         self.desc = aDecoder.decodeObjectForKey("desc") as? String

@@ -25,8 +25,9 @@
 //
 
 import Foundation
+import AFNetworking
 
-enum DescriptorManagerNotification: String
+public enum DescriptorManagerNotification: String
 {
     case DescriptorAdded = "DescriptorAddedNotification"
     case DescriptorDidFail = "DescriptorDidFailNotification"
@@ -35,10 +36,10 @@ enum DescriptorManagerNotification: String
     case SessionDidBecomeInvalid = "SessionDidBecomeInvalidNotification"
 }
 
-typealias TestClosure = (descriptor: Descriptor) -> Bool
-typealias VoidClosure = () -> Void
+public typealias TestClosure = (descriptor: Descriptor) -> Bool
+public typealias VoidClosure = () -> Void
 
-class DescriptorManager: NSObject
+public class DescriptorManager: NSObject
 {
     private static let QueueName = "descriptor_manager.synchronization_queue"
     
@@ -55,14 +56,14 @@ class DescriptorManager: NSObject
 
     // MARK:
     
-    var suspended: Bool
+    public var suspended: Bool
     {
         return self.archiver.suspended
     }
     
     // MARK:
     
-    var backgroundEventsCompletionHandler: VoidClosure?
+    public var backgroundEventsCompletionHandler: VoidClosure?
 
     // MARK: - Initialization
     
@@ -316,7 +317,7 @@ class DescriptorManager: NSObject
     
     // MARK: Public API
     
-    func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidClosure) -> Bool
+    public func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidClosure) -> Bool
     {
         guard identifier == self.sessionManager.session.configuration.identifier else
         {
@@ -330,7 +331,7 @@ class DescriptorManager: NSObject
         return true
     }
     
-    func suspend()
+    public func suspend()
     {
         if self.archiver.suspended == true
         {
@@ -340,7 +341,7 @@ class DescriptorManager: NSObject
         self.doSuspend()
     }
     
-    func resume()
+    public func resume()
     {
         if self.archiver.suspended == false
         {
@@ -350,7 +351,7 @@ class DescriptorManager: NSObject
         self.doResume()
     }
     
-    func addDescriptor(descriptor: Descriptor)
+    public func addDescriptor(descriptor: Descriptor)
     {
         dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
             
@@ -391,7 +392,7 @@ class DescriptorManager: NSObject
         })
     }
     
-    func cancelDescriptor(descriptor: Descriptor)
+    public func cancelDescriptor(descriptor: Descriptor)
     {
         dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
 
@@ -410,7 +411,7 @@ class DescriptorManager: NSObject
         })
     }
     
-    func killAllDescriptors(completion completion: VoidClosure)
+    public func killAllDescriptors(completion completion: VoidClosure)
     {
         dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
             
@@ -441,7 +442,7 @@ class DescriptorManager: NSObject
         })
     }
     
-    func descriptorPassingTest(test: TestClosure) -> Descriptor?
+    public func descriptorPassingTest(test: TestClosure) -> Descriptor?
     {
         var descriptor: Descriptor?
         

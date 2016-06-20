@@ -25,6 +25,7 @@
 //
 
 import Photos
+import VimeoNetworking
 
 // This flow encapsulates the following steps:
 // 1. If inCloud, download
@@ -32,11 +33,11 @@ import Photos
 // 3. Check weekly quota
 
 @available(iOS 8.0, *)
-class PHAssetCloudExportQuotaOperation: ExportQuotaOperation
+public class PHAssetCloudExportQuotaOperation: ExportQuotaOperation
 {    
     let phAsset: PHAsset
 
-    init(me: VIMUser, phAsset: PHAsset)
+    public init(me: VIMUser, phAsset: PHAsset)
     {
         self.phAsset = phAsset
 

@@ -26,7 +26,7 @@
 
 import Foundation
 
-enum UploadErrorDomain: String
+public enum UploadErrorDomain: String
 {
     case PHAssetExportSession = "PHAssetExportSessionErrorDomain"
     case DailyQuota = "DailyQuotaErrorDomain"

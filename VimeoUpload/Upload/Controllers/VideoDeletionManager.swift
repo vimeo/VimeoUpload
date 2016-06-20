@@ -25,8 +25,10 @@
 //
 
 import Foundation
+import AFNetworking
+import VimeoNetworking
 
-class VideoDeletionManager: NSObject
+public class VideoDeletionManager: NSObject
 {
     private static let DeletionsArchiveKey = "deletions"
     private static let DefaultRetryCount = 3
@@ -50,7 +52,7 @@ class VideoDeletionManager: NSObject
         self.removeObservers()
     }
         
-    init(sessionManager: VimeoSessionManager, retryCount: Int = VideoDeletionManager.DefaultRetryCount)
+    public init(sessionManager: VimeoSessionManager, retryCount: Int = VideoDeletionManager.DefaultRetryCount)
     {
         self.sessionManager = sessionManager
         self.retryCount = retryCount
@@ -113,7 +115,7 @@ class VideoDeletionManager: NSObject
     
     // MARK: Public API
     
-    func deleteVideoWithUri(uri: String)
+    public func deleteVideoWithUri(uri: String)
     {
         self.deleteVideoWithUri(uri, retryCount: self.retryCount)
     }
@@ -176,11 +178,11 @@ class VideoDeletionManager: NSObject
     
     private func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationWillEnterForeground:", name: UIApplicationWillEnterForegroundNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "applicationDidEnterBackground:", name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityDidChange:", name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(VideoDeletionManager.reachabilityDidChange(_:)), name: AFNetworkingReachabilityDidChangeNotification, object: nil)
     }
     
     private func removeObservers()

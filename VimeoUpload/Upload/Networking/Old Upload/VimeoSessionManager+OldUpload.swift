@@ -25,6 +25,7 @@
 //
 
 import Foundation
+import VimeoNetworking
 
 enum UploadTaskDescription: String
 {
@@ -40,7 +41,7 @@ enum UploadTaskDescription: String
 
 extension VimeoSessionManager
 {
-    func meDataTask(completionHandler completionHandler: UserCompletionHandler) throws -> NSURLSessionDataTask
+    public func meDataTask(completionHandler completionHandler: UserCompletionHandler) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).meRequest()
 
@@ -71,7 +72,7 @@ extension VimeoSessionManager
         return task
     }
 
-    func myVideosDataTask(completionHandler completionHandler: VideosCompletionHandler) throws -> NSURLSessionDataTask
+    public func myVideosDataTask(completionHandler completionHandler: VideosCompletionHandler) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).myVideosRequest()
         
@@ -102,7 +103,7 @@ extension VimeoSessionManager
         return task
     }
 
-    func createVideoDownloadTask(url url: NSURL) throws -> NSURLSessionDownloadTask
+    public func createVideoDownloadTask(url url: NSURL) throws -> NSURLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url)
 
@@ -117,8 +118,12 @@ extension VimeoSessionManager
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadVideoRequestWithSource(source, destination: destination)
         
-        let task = self.uploadTaskWithRequest(request, fromFile: source, progress: progress, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+        let task = self.uploadTaskWithRequest(request, fromFile: source, progress: {(progress) -> Void in
             
+            // TODO: Do something with progress block [AH] 4/25/2016
+            
+        }, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+
             guard let strongSelf = self, let completionHandler = completionHandler else
             {
                 return
@@ -133,8 +138,9 @@ extension VimeoSessionManager
             {
                 completionHandler(error: error)
             }
-        })
 
+        })
+        
         task.taskDescription = UploadTaskDescription.UploadVideo.rawValue
         
         return task
@@ -164,7 +170,7 @@ extension VimeoSessionManager
         return task
     }
 
-    func videoSettingsDataTask(videoUri videoUri: String, videoSettings: VideoSettings, completionHandler: VideoCompletionHandler) throws -> NSURLSessionDataTask
+    public func videoSettingsDataTask(videoUri videoUri: String, videoSettings: VideoSettings, completionHandler: VideoCompletionHandler) throws -> NSURLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequestWithUri(videoUri, videoSettings: videoSettings)
         

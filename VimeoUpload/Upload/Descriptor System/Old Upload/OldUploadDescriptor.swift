@@ -25,8 +25,10 @@
 //
 
 import Foundation
+import AFNetworking
+import VimeoNetworking
 
-class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
+public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
     // MARK:
     
@@ -36,7 +38,7 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     // MARK:
     
     private(set) var uploadTicket: VIMUploadTicket? // Create response
-    private(set) var videoUri: String? // Activate response
+    public var videoUri: String? // Activate response
     private(set) var video: VIMVideo? // Settings response
 
     // MARK:
@@ -51,24 +53,24 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: VideoDescriptor
     
-    var type: VideoDescriptorType
+    public var type: VideoDescriptorType
     {
         return .Upload
     }
     
-    var progressDescriptor: ProgressDescriptor
+    public var progressDescriptor: ProgressDescriptor
     {
         return self
     }
 
     // MARK: - Initialization
     
-    required init()
+    required public init()
     {
         fatalError("init() has not been implemented")
     }
 
-    init(url: NSURL, videoSettings: VideoSettings? = nil)
+    public init(url: NSURL, videoSettings: VideoSettings? = nil)
     {
         self.url = url
         self.videoSettings = videoSettings
@@ -277,7 +279,7 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: NSCoding
     
-    required init(coder aDecoder: NSCoder)
+    required public init(coder aDecoder: NSCoder)
     {
         self.url = aDecoder.decodeObjectForKey("url") as! NSURL // If force unwrap fails we have a big problem
         self.videoSettings = aDecoder.decodeObjectForKey("videoSettings") as? VideoSettings
@@ -288,7 +290,7 @@ class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         super.init(coder: aDecoder)
     }
     
-    override func encodeWithCoder(aCoder: NSCoder)
+    override public func encodeWithCoder(aCoder: NSCoder)
     {
         aCoder.encodeObject(self.url, forKey: "url")
         aCoder.encodeObject(self.videoSettings, forKey: "videoSettings")

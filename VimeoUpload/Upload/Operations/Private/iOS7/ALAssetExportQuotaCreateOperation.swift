@@ -26,13 +26,14 @@
 
 import Foundation
 import AssetsLibrary
+import VimeoNetworking
 
 // This flow encapsulates the following steps:
 
 // 1. Perorm a ALAssetExportQuotaOperation
 // 2. Create video record
 
-class ALAssetExportQuotaCreateOperation: ExportQuotaCreateOperation
+public class ALAssetExportQuotaCreateOperation: ExportQuotaCreateOperation
 {
     let alAsset: ALAsset
     
