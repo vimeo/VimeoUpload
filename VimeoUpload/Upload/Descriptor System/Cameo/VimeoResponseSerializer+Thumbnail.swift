@@ -8,12 +8,9 @@
 
 import Foundation
 import VimeoNetworking
-import VimeoUpload
 
 extension VimeoResponseSerializer
 {
-    private static let LocationKey = "Location"
-    
     func processCreateThumbnailResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> VIMThumbnailUploadTicket
     {
         let responseObject: [String: AnyObject]?
@@ -23,7 +20,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain("CreateThumbnailErrorDomain")
+            throw error.errorByAddingDomain(UploadErrorDomain.CreateThumbnail.rawValue)
         }
         
         return try self.processCreateThumbnailResponse(response, responseObject: responseObject, error: error)
@@ -37,7 +34,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain("CreateThumbnailErrorDomain")
+            throw error.errorByAddingDomain(UploadErrorDomain.CreateThumbnail.rawValue)
         }
         
         do
@@ -46,7 +43,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain("CreateThumbnailErrorDomain")
+            throw error.errorByAddingDomain(UploadErrorDomain.CreateThumbnail.rawValue)
         }
     }
     
@@ -58,7 +55,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain("UploadThumbnailErrorDomain")
+            throw error.errorByAddingDomain(UploadErrorDomain.UploadThumbnail.rawValue)
         }
     }
     
@@ -71,7 +68,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain("ActivateThumbnailErrorDomain")
+            throw error.errorByAddingDomain(UploadErrorDomain.ActivateThumbnail.rawValue)
         }
         
         return try self.processActivateThumbnailResponse(response, responseObject: responseObject, error: error)
@@ -85,7 +82,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain("ActivateThumbnailErrorDomain")
+            throw error.errorByAddingDomain(UploadErrorDomain.ActivateThumbnail.rawValue)
         }
         
         do
@@ -94,7 +91,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain("CreateThumbnailErrorDomain")
+            throw error.errorByAddingDomain(UploadErrorDomain.CreateThumbnail.rawValue)
         }
     }
     

@@ -10,7 +10,6 @@ import Foundation
 import AVFoundation
 import VimeoNetworking
 
-
 extension VimeoRequestSerializer
 {
     func createThumbnailRequestWithUri(uri: String) throws -> NSMutableURLRequest
@@ -22,7 +21,7 @@ extension VimeoRequestSerializer
         
         if let error = error
         {
-            throw error.errorByAddingDomain("CreateThumbnailOperationErrorDomain")
+            throw error.errorByAddingDomain(UploadErrorDomain.CreateThumbnail.rawValue)
         }
         
         return request
@@ -38,7 +37,7 @@ extension VimeoRequestSerializer
         
         if let error = error
         {
-            throw error.errorByAddingDomain("ActivateThumbnailOperationErrorDomain")
+            throw error.errorByAddingDomain(UploadErrorDomain.ActivateThumbnail.rawValue)
         }
         
         return request
@@ -53,7 +52,7 @@ extension VimeoRequestSerializer
         var error: NSError?
         let request = self.requestWithMethod("PUT", URLString: destination, parameters: nil, error: &error)
         if let error = error {
-            throw error.errorByAddingDomain("UploadThumbnailErrorDomain")
+            throw error.errorByAddingDomain(UploadErrorDomain.UploadThumbnail.rawValue)
         }
         
         let asset = AVURLAsset(URL: source)
@@ -62,7 +61,7 @@ extension VimeoRequestSerializer
         do {
             fileSize = try asset.fileSize()
         } catch let error as NSError {
-            throw error.errorByAddingDomain("UploadThumbnailErrorDomain")
+            throw error.errorByAddingDomain(UploadErrorDomain.UploadThumbnail.rawValue)
         }
         
         request.setValue("\(fileSize)", forHTTPHeaderField: "Content-Length")
