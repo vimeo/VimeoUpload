@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AFNetworking
 import VimeoNetworking
 
 //TODO: Once this class is moved into VimeoUpload, we can remove this import.  [MW] 6/27/16
@@ -16,10 +17,12 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
     let videoUrl: NSURL
     let videoSettings: VideoSettings?
-    let thumbnailUrl: NSURL
+    let thumbnailFileUrl: NSURL?
     
     private(set) var uploadTicket: VIMUploadTicket?
     private(set) var video: VIMVideo?
+    private(set) var thumbnailTicket: VIMThumbnailUploadTicket?
+    private(set) var thumbnail: VIMPicture?
     
     private (set) var currentRequest = CAMUploadRequest.CreateVideo
     {
@@ -37,9 +40,6 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     }
     
     public var videoUri: VideoUri?
-    {
-        return self.uploadTicket?.video?.uri
-    }
     
     public var progressDescriptor: ProgressDescriptor
     {
@@ -53,11 +53,11 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         fatalError("default init() should not be used, use init(videoUrl:videoSettings:thumbnailUrl:) instead")
     }
     
-    public init(videoUrl: NSURL, videoSettings: VideoSettings? = nil, thumbnailUrl: NSURL)
+    public init(videoUrl: NSURL, videoSettings: VideoSettings? = nil, thumbnailFileUrl: NSURL?)
     {
         self.videoUrl = videoUrl
         self.videoSettings = videoSettings
-        self.thumbnailUrl = thumbnailUrl
+        self.thumbnailFileUrl = thumbnailFileUrl
         
         super.init()
     }
@@ -82,6 +82,164 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
+    //TODO: need to figure out how this method changes to include the thumbnail upload [MW] 6/27/16
+    override func resume(sessionManager sessionManager: AFURLSessionManager)
+    {
+        super.resume(sessionManager: sessionManager)
+        
+        if let identifier = self.currentTaskIdentifier,
+            task = sessionManager.uploadTaskForIdentifier(identifier),
+            progress = sessionManager.uploadProgressForTask(task)
+        {
+            self.progress = progress
+        }
+    }
+    
+    override func cancel(sessionManager sessionManager: AFURLSessionManager)
+    {
+        super.cancel(sessionManager: sessionManager)
+        
+        NSFileManager.defaultManager().deleteFileAtURL(self.videoUrl)
+        
+        if let thumbnailFileUrl = self.thumbnailFileUrl {
+            NSFileManager.defaultManager().deleteFileAtURL(thumbnailFileUrl)
+        }
+    }
+    
+    //TODO: need to figure out how this method changes to include the thumbnail upload [MW] 6/27/16
+    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    {
+        guard let identifier = self.currentTaskIdentifier,
+            task = sessionManager.uploadTaskForIdentifier(identifier),
+            progress = sessionManager.uploadProgressForTask(task) else
+        {
+            NSFileManager.defaultManager().deleteFileAtURL(self.videoUrl)
+            
+            if let thumbnailFileUrl = self.thumbnailFileUrl {
+                NSFileManager.defaultManager().deleteFileAtURL(thumbnailFileUrl)
+            }
+            
+            let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
+            self.error = error // TODO: Whenever we set error delete local file? Same for download?
+            self.currentTaskIdentifier = nil
+            self.state = .Finished
+            
+            throw error
+        }
+        
+        self.progress = progress
+    }
+    
+    override func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    {
+        let sessionManager = sessionManager as! VimeoSessionManager
+        let responseSerializer = sessionManager.responseSerializer as! VimeoResponseSerializer
+        
+        do
+        {
+            switch self.currentRequest
+            {
+            case .CreateVideo:
+                self.uploadTicket = try responseSerializer.processCreateVideoResponse(task.response, url: url, error: error)
+                
+            case .UploadVideo:
+                break
+                
+            case .ActivateVideo:
+                self.videoUri = try responseSerializer.processActivateVideoResponse(task.response, url: url, error: error)
+                
+            case .VideoSettings:
+                self.video = try responseSerializer.processVideoSettingsResponse(task.response, url: url, error: error)
+                
+            case .CreateThumbnail:
+                self.thumbnailTicket = try responseSerializer.processCreateThumbnailResponse(task.response, url: url, error: error)
+                
+            case .UploadThumbnail:
+                break
+                
+            case .ActivateThumbnail:
+                self.thumbnail = try responseSerializer.processActivateThumbnailResponse(task.response, url: url, error: error)
+            }
+        }
+        catch let error as NSError
+        {
+            self.error = error
+            self.currentTaskIdentifier = nil
+            self.state = .Finished
+        }
+        
+        return nil
+    }
+    
+    //TODO: need to figure out how this method changes to include the thumbnail upload [MW] 6/27/16
+    override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    {
+        if self.currentRequest == .UploadVideo
+        {
+            NSFileManager.defaultManager().deleteFileAtURL(self.videoUrl)
+        }
+        else if self.currentRequest == .UploadThumbnail
+        {
+            if let thumbnailFileUrl = self.thumbnailFileUrl {
+                NSFileManager.defaultManager().deleteFileAtURL(thumbnailFileUrl)
+            }
+        }
+        
+        if self.error == nil
+        {
+            if let taskError = task.error // task.error is reserved for client-side errors, so check it first
+            {
+                let domain = self.errorDomainForRequest(self.currentRequest)
+                self.error = taskError.errorByAddingDomain(domain)
+            }
+            else if let error = error
+            {
+                let domain = self.errorDomainForRequest(self.currentRequest)
+                self.error = error.errorByAddingDomain(domain)
+            }
+        }
+        
+        var nextRequest = CAMUploadRequest.nextRequest(self.currentRequest)
+        if self.error != nil || nextRequest == nil
+        {
+            self.currentTaskIdentifier = nil
+            self.state = .Finished
+            
+            return
+        }
+        else if nextRequest == .VideoSettings && self.videoSettings == nil
+        {
+            nextRequest = CAMUploadRequest.nextRequest(nextRequest!)
+            if nextRequest == nil
+            {
+                self.currentTaskIdentifier = nil
+                self.state = .Finished
+                
+                return
+            }
+        }
+        else if nextRequest == .CreateThumbnail && self.thumbnailFileUrl == nil
+        {
+            self.currentTaskIdentifier = nil
+            self.state = .Finished
+            
+            return
+        }
+        
+        do
+        {
+            let sessionManager = sessionManager as! VimeoSessionManager
+            try self.transitionToState(request: nextRequest!, sessionManager: sessionManager)
+            self.resume(sessionManager: sessionManager)
+        }
+        catch let error as NSError
+        {
+            self.error = error
+            self.currentTaskIdentifier = nil
+            self.state = .Finished
+        }
+    }
+    
     // MARK: Private API
     
     private func transitionToState(request request: CAMUploadRequest, sessionManager: VimeoSessionManager) throws
@@ -100,12 +258,65 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         case .UploadVideo:
             guard let uploadUri = self.uploadTicket?.uploadLinkSecure else
             {
-                throw NSError(domain: UploadErrorDomain.Activate.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
+                throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
             
-            return try sessionManager.UploadVideoTask(source: self.videoUrl, destination: uploadUri, progress: &self.progress, completionHandler: nil)
+            return try sessionManager.uploadVideoTask(source: self.videoUrl, destination: uploadUri, progress: &self.progress, completionHandler: nil)
+            
         case .ActivateVideo:
-            break
+            guard let activationUri = self.uploadTicket?.completeUri else
+            {
+                throw NSError(domain: UploadErrorDomain.Activate.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Activate response did not contain the required values."])
+            }
+            
+            return try sessionManager.activateVideoDownloadTask(uri: activationUri)
+            
+        case .VideoSettings:
+            guard let videoUri = self.videoUri, let videoSettings = self.videoSettings else
+            {
+                throw NSError(domain: UploadErrorDomain.VideoSettings.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Video settings response did not contain the required values."])
+            }
+            
+            return try sessionManager.videoSettingsDownloadTask(videoUri: videoUri, videoSettings: videoSettings)
+            
+        case .CreateThumbnail:
+            guard let videoUri = self.videoUri else
+            {
+                throw NSError(domain: "CreateVideoThumbnailErrorDomain", code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to create thumbnail resource, but videoUri is nil"])
+            }
+            
+            return try sessionManager.createThumbnailDownloadTask(uri: videoUri)
+            
+        case .UploadThumbnail:
+            guard let thumbnailUploadLink = self.thumbnailTicket?.link, thumbnailFileUrl = self.thumbnailFileUrl else
+            {
+                throw NSError(domain: "UploadVideoThumbnailErrorDomain", code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate thumbnail upload, but thumbnailUploadLink is nil"])
+            }
+            
+            return try sessionManager.uploadThumbnailTask(source: thumbnailFileUrl, destination: thumbnailUploadLink, progress: &self.progress, completionHandler: nil)
+            
+        case .ActivateThumbnail:
+            guard let thumbnailUri = self.thumbnailTicket?.uri else
+            {
+                throw NSError(domain: "ActivateVideoThumbnailErrorDomain", code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to activate thumbnail, but thumbnailUri is nil"])
+            }
+            
+            return try sessionManager.activateThumbnailTask(activationUri: thumbnailUri)
+        }
+    }
+    
+    private func errorDomainForRequest(request: CAMUploadRequest) -> String
+    {
+        switch request
+        {
+        case .CreateVideo:
+            return UploadErrorDomain.Create.rawValue
+        case .UploadVideo:
+            return UploadErrorDomain.Upload.rawValue
+        case .ActivateVideo:
+            return UploadErrorDomain.Activate.rawValue
+        case .VideoSettings:
+            return UploadErrorDomain.VideoSettings.rawValue
         case .CreateThumbnail:
             break
         case .UploadThumbnail:
@@ -113,6 +324,8 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         case .ActivateThumbnail:
             break
         }
+        
+        return ""
     }
     
     //MARK: NSCoding
@@ -120,7 +333,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     required public init(coder aDecoder: NSCoder)
     {
         self.videoUrl = aDecoder.decodeObjectForKey("videoUrl") as! NSURL
-        self.thumbnailUrl = aDecoder.decodeObjectForKey("thumbnailUrl") as! NSURL
+        self.thumbnailFileUrl = aDecoder.decodeObjectForKey("thumbnailFileUrl") as? NSURL
         self.videoSettings = aDecoder.decodeObjectForKey("videoSettings") as? VideoSettings
         self.uploadTicket = aDecoder.decodeObjectForKey("uploadTicket") as? VIMUploadTicket
         self.currentRequest = CAMUploadRequest(rawValue: aDecoder.decodeObjectForKey("currentRequest") as! String)!
@@ -131,7 +344,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     override public func encodeWithCoder(aCoder: NSCoder)
     {
         aCoder.encodeObject(self.videoUrl, forKey: "videoUrl")
-        aCoder.encodeObject(self.thumbnailUrl, forKey: "thumbnailUrl")
+        aCoder.encodeObject(self.thumbnailFileUrl, forKey: "thumbnailFileUrl")
         aCoder.encodeObject(self.videoSettings, forKey: "videoSettings")
         aCoder.encodeObject(self.uploadTicket, forKey: "uploadTicket")
         aCoder.encodeObject(self.currentRequest.rawValue, forKey: "currentRequest")

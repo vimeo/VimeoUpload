@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import AVFoundation
 import VimeoNetworking
-import VimeoUpload
+
 
 extension VimeoRequestSerializer
 {
@@ -27,6 +28,22 @@ extension VimeoRequestSerializer
         return request
     }
     
+    func activateThumbnailRequestWithUri(uri: String) throws -> NSMutableURLRequest
+    {
+        let url = NSURL(string: "\(uri)", relativeToURL: VimeoBaseURLString)!
+        
+        var error: NSError?
+        let activationParams = ["active" : "true"]
+        let request = self.requestWithMethod("PATCH", URLString: url.absoluteString, parameters: activationParams, error: &error)
+        
+        if let error = error
+        {
+            throw error.errorByAddingDomain("ActivateThumbnailOperationErrorDomain")
+        }
+        
+        return request
+    }
+    
     func uploadThumbnailRequestWithSource(source: NSURL, destination: String) throws -> NSMutableURLRequest {
         
         guard let path = source.path where NSFileManager.defaultManager().fileExistsAtPath(path) else {
@@ -36,7 +53,7 @@ extension VimeoRequestSerializer
         var error: NSError?
         let request = self.requestWithMethod("PUT", URLString: destination, parameters: nil, error: &error)
         if let error = error {
-            throw error.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
+            throw error.errorByAddingDomain("UploadThumbnailErrorDomain")
         }
         
         let asset = AVURLAsset(URL: source)
@@ -45,7 +62,7 @@ extension VimeoRequestSerializer
         do {
             fileSize = try asset.fileSize()
         } catch let error as NSError {
-            throw error.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
+            throw error.errorByAddingDomain("UploadThumbnailErrorDomain")
         }
         
         request.setValue("\(fileSize)", forHTTPHeaderField: "Content-Length")

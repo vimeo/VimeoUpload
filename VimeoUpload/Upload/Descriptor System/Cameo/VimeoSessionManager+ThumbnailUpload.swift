@@ -7,13 +7,12 @@
 //
 
 import Foundation
-
-//typealias ThumbnailTicketCompletionHandler = (thumbnailTicket: VIMThumbnailTicket?, error: NSError?) -> Void
+import VimeoNetworking
 
 extension VimeoSessionManager
 {
-    func createThumbnailDownloadTask(uri uri: String, completionHandler: ErrorBlock) throws -> NSURLSessionDownloadTask {
-
+    func createThumbnailDownloadTask(uri uri: VideoUri) throws -> NSURLSessionDownloadTask
+    {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createThumbnailRequestWithUri(uri)
         
         let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
@@ -22,7 +21,7 @@ extension VimeoSessionManager
         return task
     }
     
-    func uploadThumbnailTask(source source: NSURL, destination: String, progress: AutoreleasingUnsafeMutablePointer<NSProgress>?, completionHandler: ErrorBlock?) throws -> NSURLSessionUploadTask
+    func uploadThumbnailTask(source source: NSURL, destination: String, progress: AutoreleasingUnsafeMutablePointer<NSProgress?>, completionHandler: ErrorBlock?) throws -> NSURLSessionUploadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadThumbnailRequestWithSource(source, destination: destination)
 
@@ -43,6 +42,16 @@ extension VimeoSessionManager
         }
         
         task.taskDescription = "UploadThumbnail"
+        
+        return task
+    }
+    
+    func activateThumbnailTask(activationUri activationUri: String) throws -> NSURLSessionDownloadTask
+    {
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).activateThumbnailRequestWithUri(activationUri)
+        
+        let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
+        task.taskDescription = "ActivateThumbnail"
         
         return task
     }
