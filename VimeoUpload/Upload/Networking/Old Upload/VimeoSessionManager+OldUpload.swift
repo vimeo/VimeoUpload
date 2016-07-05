@@ -37,6 +37,9 @@ enum UploadTaskDescription: String
     case VideoSettings = "VideoSettings"
     case DeleteVideo = "DeleteVideo"
     case Video = "Video"
+    case CreateThumbnail = "CreateThumbnail"
+    case UploadThumbnail = "UploadThumbnail"
+    case ActivateThumbnail = "ActivateThumbnail"
 }
 
 extension VimeoSessionManager
