@@ -12,15 +12,13 @@ public enum CAMUploadRequest: String
 {
     case CreateVideo
     case UploadVideo
-    case ActivateVideo
-    case VideoSettings
     case CreateThumbnail
     case UploadThumbnail
     case ActivateThumbnail
     
     static func orderedRequests() -> [CAMUploadRequest]
     {
-        return [.CreateVideo, .UploadVideo, .ActivateVideo, .VideoSettings, .CreateThumbnail, .UploadThumbnail, .ActivateThumbnail]
+        return [.CreateVideo, .UploadVideo, .CreateThumbnail, .UploadThumbnail, .ActivateThumbnail]
     }
     
     static func nextRequest(currentRequest: CAMUploadRequest) -> CAMUploadRequest?
