@@ -16,8 +16,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     let videoSettings: VideoSettings?
     let thumbnailUrl: NSURL?
     
-    private(set) var uploadTicket: VIMUploadTicket?
-    private(set) var video: VIMVideo?
+    public private(set) var uploadTicket: VIMUploadTicket?
     private(set) var pictureTicket: VIMThumbnailUploadTicket?
     private(set) var picture: VIMPicture?
     
@@ -148,12 +147,6 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
             case .UploadVideo:
                 break
                 
-            case .ActivateVideo:
-                self.videoUri = try responseSerializer.processActivateVideoResponse(task.response, url: url, error: error)
-                
-            case .VideoSettings:
-                self.video = try responseSerializer.processVideoSettingsResponse(task.response, url: url, error: error)
-                
             case .CreateThumbnail:
                 self.pictureTicket = try responseSerializer.processCreateThumbnailResponse(task.response, url: url, error: error)
                 
@@ -223,18 +216,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
         
         // 4. Perform any necessary state transition checks
-        if nextRequest == .VideoSettings && self.videoSettings == nil
-        {
-            // 4.a If we're trying to transition to the VideoSettings state, but we don't have any video settings to upload,
-            // skip ahead to the next state
-            nextRequest = CAMUploadRequest.nextRequest(nextRequest!)
-            if nextRequest == nil
-            {
-                setFinishedState()
-                return
-            }
-        }
-        else if nextRequest == .CreateThumbnail && self.thumbnailUrl == nil
+        if nextRequest == .CreateThumbnail && self.thumbnailUrl == nil
         {
             // 4.b If we're trying to transition to the Thumbnail Upload state and we don't have a thumbnail to upload,
             // there's no need to continue with the state machine, clean up and exit.
@@ -270,7 +252,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         switch request
         {
         case .CreateVideo:
-            return try sessionManager.createVideoDownloadTask(url: self.videoUrl)
+            return try sessionManager.createVideoDownloadTask(url: self.videoUrl, videoSettings: self.videoSettings)
         case .UploadVideo:
             guard let uploadUri = self.uploadTicket?.uploadLinkSecure else
             {
@@ -279,24 +261,8 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
             
             return try sessionManager.uploadVideoTask(source: self.videoUrl, destination: uploadUri, progress: &self.progress, completionHandler: nil)
             
-        case .ActivateVideo:
-            guard let activationUri = self.uploadTicket?.completeUri else
-            {
-                throw NSError(domain: UploadErrorDomain.Activate.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Activate response did not contain the required values."])
-            }
-            
-            return try sessionManager.activateVideoDownloadTask(uri: activationUri)
-            
-        case .VideoSettings:
-            guard let videoUri = self.videoUri, let videoSettings = self.videoSettings else
-            {
-                throw NSError(domain: UploadErrorDomain.VideoSettings.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Video settings response did not contain the required values."])
-            }
-            
-            return try sessionManager.videoSettingsDownloadTask(videoUri: videoUri, videoSettings: videoSettings)
-            
         case .CreateThumbnail:
-            guard let videoUri = self.videoUri else
+            guard let videoUri = self.uploadTicket?.video?.uri else
             {
                 throw NSError(domain: UploadErrorDomain.CreateThumbnail.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to create thumbnail resource, but videoUri is nil"])
             }
@@ -329,10 +295,6 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
             return UploadErrorDomain.Create.rawValue
         case .UploadVideo:
             return UploadErrorDomain.Upload.rawValue
-        case .ActivateVideo:
-            return UploadErrorDomain.Activate.rawValue
-        case .VideoSettings:
-            return UploadErrorDomain.VideoSettings.rawValue
         case .CreateThumbnail:
             return UploadErrorDomain.CreateThumbnail.rawValue
         case .UploadThumbnail:
