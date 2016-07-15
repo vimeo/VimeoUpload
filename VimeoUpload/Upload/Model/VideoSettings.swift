@@ -77,7 +77,7 @@ public class VideoSettings: NSObject
         
         if let privacy = self.privacy where privacy.characters.count > 0
         {
-            parameters["privacy"] = ["view": privacy]
+            parameters["privacy.view"] = privacy
         }
         
         if let users = self.users
