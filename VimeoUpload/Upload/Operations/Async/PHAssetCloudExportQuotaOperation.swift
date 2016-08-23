@@ -31,7 +31,6 @@ import Photos
 // 2. Export (check disk space within this step)
 // 3. Check weekly quota
 
-@available(iOS 8.0, *)
 class PHAssetCloudExportQuotaOperation: ExportQuotaOperation
 {    
     let phAsset: PHAsset
