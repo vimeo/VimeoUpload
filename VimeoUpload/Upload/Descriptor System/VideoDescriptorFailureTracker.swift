@@ -26,14 +26,14 @@
 
 import Foundation
 
-@objc class VideoDescriptorFailureTracker: NSObject
+@objc public class VideoDescriptorFailureTracker: NSObject
 {
     private static let ArchiveKey = "descriptors_failed"
 
     // MARK: 
     
     private let archiver: KeyedArchiver
-    private var failedDescriptors: [VideoUri: Descriptor] = [:]
+    private var failedDescriptors: [String: Descriptor] = [:]
 
     // MARK: - Initialization
     
@@ -42,7 +42,7 @@ import Foundation
         self.removeObservers()
     }
     
-    init(name: String)
+    public init(name: String)
     {
         self.archiver = self.dynamicType.setupArchiver(name: name)
 
@@ -70,9 +70,9 @@ import Foundation
         return KeyedArchiver(basePath: documentsURL.path!)
     }
     
-    private func load() -> [VideoUri: Descriptor]
+    private func load() -> [String: Descriptor]
     {
-        return self.archiver.loadObjectForKey(self.dynamicType.ArchiveKey) as? [VideoUri: Descriptor] ?? [:]
+        return self.archiver.loadObjectForKey(self.dynamicType.ArchiveKey) as? [String: Descriptor] ?? [:]
     }
     
     private func save()
@@ -82,13 +82,13 @@ import Foundation
     
     // MARK: Public API
     
-    func removeAllFailures()
+    public func removeAllFailures()
     {
         self.failedDescriptors.removeAll()
         self.save()
     }
     
-    func removeFailedDescriptorForKey(key: VideoUri) -> Descriptor?
+    public func removeFailedDescriptorForKey(key: String) -> Descriptor?
     {
         guard let descriptor = self.failedDescriptors.removeValueForKey(key) else
         {
@@ -100,7 +100,7 @@ import Foundation
         return descriptor
     }
     
-    func failedDescriptorForKey(key: VideoUri) -> Descriptor?
+    public func failedDescriptorForKey(key: String) -> Descriptor?
     {
         return self.failedDescriptors[key]
     }
@@ -123,7 +123,7 @@ import Foundation
     func descriptorDidFail(notification: NSNotification)
     {
         if let descriptor = notification.object as? Descriptor,
-            let key = (descriptor as? VideoDescriptor)?.videoUri
+            let key = descriptor.identifier
             where descriptor.error != nil
         {
             dispatch_async(dispatch_get_main_queue()) { () -> Void in
@@ -135,7 +135,8 @@ import Foundation
     
     func descriptorDidCancel(notification: NSNotification)
     {
-        if let descriptor = notification.object as? Descriptor, let key = (descriptor as? VideoDescriptor)?.videoUri
+        if let descriptor = notification.object as? Descriptor,
+            let key = descriptor.identifier
         {
             dispatch_async(dispatch_get_main_queue()) { () -> Void in
                 self.removeFailedDescriptorForKey(key)

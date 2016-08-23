@@ -26,8 +26,9 @@
 
 import Foundation
 import AVFoundation
+import VimeoNetworking
 
-class DailyQuotaOperation: NSOperation
+public class DailyQuotaOperation: NSOperation
 {    
     private let user: VIMUser
     
@@ -43,7 +44,7 @@ class DailyQuotaOperation: NSOperation
     
     // MARK: Overrides
 
-    override func main()
+    override public func main()
     {
         if let sd = self.user.uploadQuota?.quantityQuota?.canUploadSd, let hd = self.user.uploadQuota?.quantityQuota?.canUploadHd
         {

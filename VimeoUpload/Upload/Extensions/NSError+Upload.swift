@@ -26,7 +26,7 @@
 
 import Foundation
 
-enum UploadErrorDomain: String
+public enum UploadErrorDomain: String
 {
     case PHAssetExportSession = "PHAssetExportSessionErrorDomain"
     case DailyQuota = "DailyQuotaErrorDomain"
@@ -59,6 +59,10 @@ enum UploadErrorDomain: String
     case DeleteVideoOperation = "DeleteVideoOperationErrorDomain"
     
     case VimeoResponseSerializer = "VimeoResponseSerializerErrorDomain"
+    
+    case CreateThumbnail = "CreateVideoThumbnailErrorDomain"
+    case UploadThumbnail = "UploadVideoThumbnailErrorDomain"
+    case ActivateThumbnail = "ActivateVideoThumbnailErrorDomain"
 }
 
 @objc enum UploadLocalErrorCode: Int

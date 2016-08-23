@@ -28,7 +28,7 @@ import Foundation
 
 // Append the "class" keyword to allow weak references to objects that implement this protocol [AH] 10/28/2015
 
-@objc protocol DescriptorManagerDelegate: class
+@objc public protocol DescriptorManagerDelegate: class
 {
     optional func didLoadDescriptors(descriptors descriptors: Set<Descriptor>)
     optional func didSaveDescriptors(count count: Int)

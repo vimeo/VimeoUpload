@@ -26,7 +26,7 @@
 
 import Foundation
 
-enum OldUploadRequest: String
+public enum OldUploadRequest: String
 {
     case Create = "Create"
     case Upload = "Upload"

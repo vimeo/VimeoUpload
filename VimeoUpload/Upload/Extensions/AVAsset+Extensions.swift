@@ -27,7 +27,7 @@
 import Foundation
 import AVFoundation
 
-extension AVAsset
+public extension AVAsset
 {    
     func approximateFileSize(completion: FloatBlock)
     {

@@ -27,7 +27,7 @@
 import Foundation
 import Photos
 
-@objc class PHAssetHelper: NSObject
+@objc public class PHAssetHelper: NSObject
 {
     static let ErrorDomain = "PHAssetHelperErrorDomain"
     
@@ -52,7 +52,7 @@ import Photos
         self.activeAssetRequests.removeAll()
     }
     
-    func requestImage(cell cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset)
+    public func requestImage(cell cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset)
     {
         let phAsset = cameraRollAsset.phAsset
         let size = cell.bounds.size
@@ -104,7 +104,7 @@ import Photos
         self.activeImageRequests[phAsset.localIdentifier] = requestID
     }
     
-    func requestAsset(cell cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset)
+    public func requestAsset(cell cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset)
     {
         let phAsset = cameraRollAsset.phAsset
 
@@ -160,7 +160,7 @@ import Photos
         self.activeAssetRequests[phAsset.localIdentifier] = requestID
     }
     
-    func cancelRequests(cameraRollAsset: VIMPHAsset)
+    public func cancelRequests(cameraRollAsset: VIMPHAsset)
     {
         self.cancelImageRequest(cameraRollAsset: cameraRollAsset)
         self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)

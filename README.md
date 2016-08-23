@@ -7,11 +7,12 @@ This library is under active development. We're shooting for a v1.0 release soon
       * [Old Upload, New Upload 👴👶](#old-upload-new-upload)
       * [Constraints](#constraints)
       * [Goals](#goals)
-* [Getting Started](#getting-started)
       * [Anatomy](#anatomy)
           * [NSURLSession](#nsurlsession)
           * [AFNetworking](#afnetworking)
           * [VimeoUpload](#vimeoupload)
+* [Getting Started](#getting-started)
+      * [Prerequisites](#prerequisites)
       * [Example Projects](#example-projects)
       * [CocoaPods](#cocoapods)
       * [Submodule](#submodule)
@@ -113,7 +114,6 @@ The VimeoUpload APIs for New and Old Upload are very similar. The Old Upload API
 
 1. An upload system that accommodates as many UX futures as possible
 
-## Getting Started
 ### Anatomy
 
 #### NSURLSession
@@ -127,6 +127,14 @@ TODO
 #### VimeoUpload
 
 TODO
+
+## Getting Started
+
+### Prerequisites
+
+1. Ensure that you've verified your Vimeo account. When you create an account, you'll receive an email asking that you verify your account. Until you verify your account you will not be able to upload videos using the API. 
+2. Ensure you have been granted permission to use the "upload" scope. This permission must explicitly be granted by Vimeo API admins. You can request this permission on your app page under "Request upload access". Visit [developer.vimeo.com](https://developer.vimeo.com/).
+3. Ensure that the OAuth token that you're using to make your requests has the "upload" scope included.
 
 ### Example Projects
 
@@ -401,6 +409,8 @@ Or use KVO to observe changes to its state and progress:
         }
     }
 ```
+
+Check out the `DescriptorKVObserver` class. It's a small utility that makes KVO'ing a Descriptor's `state` and `progress` properties easier.
 
 ### Canceling an Upload
 

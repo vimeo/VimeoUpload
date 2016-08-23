@@ -25,6 +25,7 @@
 //
 
 import Foundation
+import VimeoNetworking
 
 extension VimeoSessionManager
 {
@@ -53,6 +54,17 @@ extension VimeoSessionManager
                 }
             })
         })
+        
+        task.taskDescription = UploadTaskDescription.CreateVideo.rawValue
+        
+        return task
+    }
+    
+    func createVideoDownloadTask(url url: NSURL, videoSettings: VideoSettings?) throws -> NSURLSessionDownloadTask
+    {
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url, videoSettings: videoSettings)
+        
+        let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
         
         task.taskDescription = UploadTaskDescription.CreateVideo.rawValue
         

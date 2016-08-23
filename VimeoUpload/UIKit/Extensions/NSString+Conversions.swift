@@ -26,7 +26,7 @@
 
 import Foundation
 
-extension NSString
+public extension NSString
 {
     static func stringFromFileSize(bytes bytes: Float64) -> NSString
     {

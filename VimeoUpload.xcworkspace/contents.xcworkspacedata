@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Framework/VimeoUpload/VimeoUpload.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Examples/VimeoUpload-iOS/VimeoUpload-iOS.xcodeproj">
    </FileRef>
    <FileRef

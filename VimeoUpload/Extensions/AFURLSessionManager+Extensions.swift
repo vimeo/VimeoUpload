@@ -25,11 +25,12 @@
 //
 
 import Foundation
+import AFNetworking
 
 extension AFURLSessionManager
 {
     func taskForIdentifier(identifier: Int) -> NSURLSessionTask?
     {
-        return self.tasks.filter{ $0.taskIdentifier == identifier }.first as? NSURLSessionTask
+        return self.tasks.filter{ $0.taskIdentifier == identifier }.first
     }
 }
