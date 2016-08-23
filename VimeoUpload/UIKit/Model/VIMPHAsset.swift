@@ -27,8 +27,7 @@
 import Photos
 import AVFoundation
 
-@available(iOS 8.0, *)
-@objc public class VIMPHAsset: NSObject, CameraRollAsset
+@objc public class VIMPHAsset: NSObject
 {
     public let phAsset: PHAsset
     

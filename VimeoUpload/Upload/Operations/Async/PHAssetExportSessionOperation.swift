@@ -27,7 +27,6 @@
 import Foundation
 import Photos
 
-@available(iOS 8, *)
 class PHAssetExportSessionOperation: ConcurrentOperation
 {
     private let phAsset: PHAsset
