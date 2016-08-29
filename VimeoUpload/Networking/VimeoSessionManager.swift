@@ -50,14 +50,14 @@ class VimeoSessionManager: AFHTTPSessionManager
     
     static func backgroundSessionManager(identifier identifier: String, authToken: String) -> VimeoSessionManager
     {
-        let sessionConfiguration = VimeoSessionManager.backgroundSessionConfiguration(identifier: identifier)
+        let sessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(identifier)
         
         return VimeoSessionManager(sessionConfiguration: sessionConfiguration, authToken: authToken)
     }
 
     static func backgroundSessionManager(identifier identifier: String, authTokenBlock: AuthTokenBlock) -> VimeoSessionManager
     {
-        let sessionConfiguration = VimeoSessionManager.backgroundSessionConfiguration(identifier: identifier)
+        let sessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(identifier)
         
         return VimeoSessionManager(sessionConfiguration: sessionConfiguration, authTokenBlock: authTokenBlock)
     }
@@ -82,27 +82,5 @@ class VimeoSessionManager: AFHTTPSessionManager
     required init?(coder aDecoder: NSCoder)
     {
         fatalError("init(coder:) has not been implemented")
-    }
-        
-    // MARK: Private API
-    
-    // Would prefer that this live in a NSURLSessionConfiguration extension but the method name would conflict [AH] 2/5/2016
-    
-    private static func backgroundSessionConfiguration(identifier identifier: String) -> NSURLSessionConfiguration
-    {
-        let sessionConfiguration: NSURLSessionConfiguration
-        
-        // We need this check for projects that include the library and support iOS7 
-        
-        if #available(iOS 8.0, OSX 10.10, *)
-        {
-            sessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(identifier)
-        }
-        else
-        {
-            sessionConfiguration = NSURLSessionConfiguration.backgroundSessionConfiguration(identifier)
-        }
-
-        return sessionConfiguration
     }
 }

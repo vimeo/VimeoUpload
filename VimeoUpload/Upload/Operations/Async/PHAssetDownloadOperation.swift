@@ -1,8 +1,8 @@
 //
-//  PHAssetExportSessionOperation.swift
+//  PHAssetDownloadOperation.swift
 //  VimeoUpload
 //
-//  Created by Hanssen, Alfie on 11/10/15.
+//  Created by Hanssen, Alfie on 10/13/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,42 +27,39 @@
 import Foundation
 import Photos
 
-@available(iOS 8, *)
-class PHAssetExportSessionOperation: ConcurrentOperation
-{
+class PHAssetDownloadOperation: ConcurrentOperation
+{    
     private let phAsset: PHAsset
-    private let exportPreset: String
     
     private var requestID: PHImageRequestID?
     var progressBlock: ProgressBlock?
-    
-    private(set) var result: AVAssetExportSession?
+
+    private(set) var result: AVAsset?
     private(set) var error: NSError?
-    
+
     // MARK: - Initialization
-    
+
     deinit
     {
         self.cleanup()
     }
     
-    init(phAsset: PHAsset, exportPreset: String = AVAssetExportPresetPassthrough)
+    init(phAsset: PHAsset)
     {
         self.phAsset = phAsset
-        self.exportPreset = exportPreset
         
         super.init()
     }
     
     // MARK: Overrides
-    
+
     override func main()
     {
         if self.cancelled
-        {
+        {            
             return
         }
-        
+                
         let options = PHVideoRequestOptions()
         options.networkAccessAllowed = true
         options.deliveryMode = .HighQualityFormat
@@ -72,27 +69,35 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             {
                 return
             }
-            
+
             strongSelf.requestID = nil
-            
+
             if strongSelf.cancelled
             {
                 return
             }
-            
+
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
             {
                 return
             }
             
-            // We don't need to handle errors here, the same error will be delivered to the resultHandler below
-            if let _ = error
+            if strongSelf.state == .Finished // Just in case
             {
-                strongSelf.progressBlock = nil
+                return
             }
-            else if let info = info, let _ = info[PHImageErrorKey] as? NSError
+
+            if let error = error
             {
                 strongSelf.progressBlock = nil
+                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue)
+                strongSelf.state = .Finished
+            }
+            else if let info = info, let error = info[PHImageErrorKey] as? NSError
+            {
+                strongSelf.progressBlock = nil
+                strongSelf.error = error
+                strongSelf.state = .Finished
             }
             else
             {
@@ -100,7 +105,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             }
         }
         
-        self.requestID = PHImageManager.defaultManager().requestExportSessionForVideo(self.phAsset, options: options, exportPreset: self.exportPreset, resultHandler: { [weak self] (exportSession, info) -> Void in
+        self.requestID = PHImageManager.defaultManager().requestAVAssetForVideo(self.phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
             
             guard let strongSelf = self else
             {
@@ -108,7 +113,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             }
             
             strongSelf.requestID = nil
-            
+
             if strongSelf.cancelled
             {
                 return
@@ -118,28 +123,33 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             {
                 return
             }
-            
+
+            if strongSelf.state == .Finished // In case the state is changed to .Finished in the progressHandler above
+            {
+                return
+            }
+
             if let info = info, let error = info[PHImageErrorKey] as? NSError
             {
-                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAssetExportSessionOperation.rawValue)
+                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue)
             }
-            else if let exportSession = exportSession
+            else if let asset = asset
             {
-                strongSelf.result = exportSession
+                strongSelf.result = asset
             }
             else
             {
-                strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetExportSessionOperation.rawValue, code: nil, description: "Request for export session returned no error and no export session")
+                strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue, code: nil, description: "Request for AVAsset returned no error and no asset.")
             }
             
             strongSelf.state = .Finished
-        })
+        }
     }
     
     override func cancel()
     {
         super.cancel()
-                
+
         self.cleanup()
     }
     

@@ -28,18 +28,6 @@ import Foundation
 
 extension AFURLSessionManager
 {
-    // Workaround for iOS7 / iPod bug
-    // On iOS7 taskForIdentifier returns nil when casting the identified task to NSURLSessionTask
-    // On iOS8 and above the result is non-nil
-    // Modifying this method to return AnyObject and cast in the calling class to NSURLSessionData/Download/UploadTask [AH] 1/24/2016
-
-    @available(iOS 7.0, *)
-    func taskForIdentifierWorkaround(identifier: Int) -> AnyObject?
-    {
-        return self.tasks.filter{ $0.taskIdentifier == identifier }.first
-    }
-
-    @available(iOS 8.0, *)
     func taskForIdentifier(identifier: Int) -> NSURLSessionTask?
     {
         return self.tasks.filter{ $0.taskIdentifier == identifier }.first as? NSURLSessionTask
