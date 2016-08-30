@@ -40,7 +40,7 @@ import AVFoundation
     {
         get
         {
-            return self.alAsset.defaultRepresentation().url().absoluteString
+            return self.alAsset.defaultRepresentation().url().absoluteString!
         }
     }
     
