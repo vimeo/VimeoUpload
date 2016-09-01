@@ -62,7 +62,7 @@ class DescriptorManagerArchiver
         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
         var documentsURL = NSURL(string: documentsPath)!
         
-        documentsURL = documentsURL.URLByAppendingPathComponent(name)
+        documentsURL = documentsURL.URLByAppendingPathComponent(name)!
 
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
         {
