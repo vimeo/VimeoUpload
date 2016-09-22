@@ -165,6 +165,25 @@ import Photos
         self.cancelImageRequest(cameraRollAsset: cameraRollAsset)
         self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
     }
+    
+    // MARK: Static Helpers
+    
+    static func requestPlayerItem(cameraRollAsset: VIMPHAsset, completionHandler: (AVPlayerItem?, NSDictionary?) -> Void)
+    {
+        let phAsset = cameraRollAsset.phAsset
+        
+        let options = PHVideoRequestOptions()
+        options.networkAccessAllowed = true // We do not check for inCloud in resultHandler because we allow network access
+        options.deliveryMode = .HighQualityFormat
+        
+        PHImageManager.defaultManager().requestPlayerItemForVideo(phAsset, options: options, resultHandler: { (playerItem, info) -> Void  in
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                completionHandler(playerItem, info)
+            })
+        })
+    }
 
     // MARK: Private API
 
