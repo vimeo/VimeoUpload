@@ -27,13 +27,15 @@
 import Foundation
 import AVFoundation
 
+typealias ExportProgressBlock = (exportSession: AVAssetExportSession, progress: Double) -> Void
+
 class ExportQuotaOperation: ConcurrentOperation
 {
     let me: VIMUser
     let operationQueue: NSOperationQueue
     
     var downloadProgressBlock: ProgressBlock?
-    var exportProgressBlock: ProgressBlock?
+    var exportProgressBlock: ExportProgressBlock?
     
     var error: NSError?
         {
@@ -97,7 +99,7 @@ class ExportQuotaOperation: ConcurrentOperation
             if let progressBlock = self?.exportProgressBlock
             {
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    progressBlock(progress: progress)
+                    progressBlock(exportSession: exportOperation.exportSession, progress: progress)
                 })
             }
         }
