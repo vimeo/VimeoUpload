@@ -37,7 +37,7 @@ class ExportQuotaCreateOperation: ConcurrentOperation
     // MARK:
     
     var downloadProgressBlock: ProgressBlock?
-    var exportProgressBlock: ProgressBlock?
+    var exportProgressBlock: ExportProgressBlock?
     
     // MARK:
     
@@ -113,8 +113,8 @@ class ExportQuotaCreateOperation: ConcurrentOperation
             self?.downloadProgressBlock?(progress: progress)
         }
         
-        operation.exportProgressBlock = { [weak self] (progress: Double) -> Void in
-            self?.exportProgressBlock?(progress: progress)
+        operation.exportProgressBlock = { [weak self] (exportSession: AVAssetExportSession, progress: Double) -> Void in
+            self?.exportProgressBlock?(exportSession: exportSession, progress: progress)
         }
         
         operation.completionBlock = { [weak self] () -> Void in
