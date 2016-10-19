@@ -38,22 +38,22 @@ extension NSURL
     {
         let url = NSURL.uploadDirectory()
         
-        if NSFileManager.defaultManager().fileExistsAtPath(url.absoluteString) == false
+        if NSFileManager.defaultManager().fileExistsAtPath(url.absoluteString!) == false
         {
-            try NSFileManager.defaultManager().createDirectoryAtPath(url.absoluteString, withIntermediateDirectories: true, attributes: nil)
+            try NSFileManager.defaultManager().createDirectoryAtPath(url.absoluteString!, withIntermediateDirectories: true, attributes: nil)
         }
         
         let unmanagedTag = UTTypeCopyPreferredTagWithClass(fileType, kUTTagClassFilenameExtension)!
         let ext = unmanagedTag.takeRetainedValue() as String
-        let path = url.URLByAppendingPathComponent(filename).URLByAppendingPathExtension(ext).absoluteString
+        let path = url.URLByAppendingPathComponent(filename)!.URLByAppendingPathExtension(ext)!.absoluteString
         
-        return NSURL.fileURLWithPath(path)
+        return NSURL.fileURLWithPath(path!)
     }
     
     static func uploadDirectory() -> NSURL
     {
         let documentsURL = NSURL(string: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])!
         
-        return documentsURL.URLByAppendingPathComponent("uploader").URLByAppendingPathComponent("videos")
+        return documentsURL.URLByAppendingPathComponent("uploader")!.URLByAppendingPathComponent("videos")!
     }
 }
