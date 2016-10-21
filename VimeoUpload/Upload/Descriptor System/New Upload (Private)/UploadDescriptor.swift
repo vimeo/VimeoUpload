@@ -182,9 +182,9 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         let fileName = aDecoder.decodeObjectForKey(self.dynamicType.FileNameCoderKey) as! String 
         let fileExtension = aDecoder.decodeObjectForKey(self.dynamicType.FileExtensionCoderKey) as! String
-        let path = NSURL.uploadDirectory().URLByAppendingPathComponent(fileName).URLByAppendingPathExtension(fileExtension).absoluteString
+        let path = NSURL.uploadDirectory().URLByAppendingPathComponent(fileName)!.URLByAppendingPathExtension(fileExtension)!.absoluteString
         
-        self.url = NSURL.fileURLWithPath(path)
+        self.url = NSURL.fileURLWithPath(path!)
         self.uploadTicket = aDecoder.decodeObjectForKey(self.dynamicType.UploadTicketCoderKey) as! VIMUploadTicket
 
         super.init(coder: aDecoder)

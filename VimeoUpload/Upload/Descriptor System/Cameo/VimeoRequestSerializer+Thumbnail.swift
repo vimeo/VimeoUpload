@@ -17,7 +17,7 @@ extension VimeoRequestSerializer
         let url = NSURL(string: "\(uri)/pictures", relativeToURL: VimeoBaseURLString)!
         
         var error: NSError?
-        let request = self.requestWithMethod("POST", URLString: url.absoluteString, parameters: nil, error: &error)
+        let request = self.requestWithMethod("POST", URLString: url.absoluteString!, parameters: nil, error: &error)
         
         if let error = error
         {
@@ -33,7 +33,7 @@ extension VimeoRequestSerializer
         
         var error: NSError?
         let activationParams = ["active" : "true"]
-        let request = self.requestWithMethod("PATCH", URLString: url.absoluteString, parameters: activationParams, error: &error)
+        let request = self.requestWithMethod("PATCH", URLString: url.absoluteString!, parameters: activationParams, error: &error)
         
         if let error = error
         {
