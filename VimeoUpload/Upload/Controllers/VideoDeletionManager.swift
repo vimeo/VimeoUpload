@@ -77,8 +77,8 @@ public class VideoDeletionManager: NSObject
         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
         var documentsURL = NSURL(string: documentsPath)!
         
-        documentsURL = documentsURL.URLByAppendingPathComponent(name)
-        documentsURL = documentsURL.URLByAppendingPathComponent(VideoDeletionManager.DeletionsArchiveKey)
+        documentsURL = documentsURL.URLByAppendingPathComponent(name)!
+        documentsURL = documentsURL.URLByAppendingPathComponent(VideoDeletionManager.DeletionsArchiveKey)!
         
         if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
         {

@@ -27,9 +27,8 @@
 import Foundation
 import Photos
 
-@available(iOS 8, *)
 public class PHAssetDownloadOperation: ConcurrentOperation
-{    
+{
     private let phAsset: PHAsset
     private var requestID: PHImageRequestID?
 

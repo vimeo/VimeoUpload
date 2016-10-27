@@ -79,37 +79,10 @@ public class Descriptor: NSObject, NSCoding
     {
         self.state = .Executing
         
-        if #available(iOS 8, *)
+        if let identifier = self.currentTaskIdentifier,
+            let task = sessionManager.taskForIdentifier(identifier)
         {
-            if let identifier = self.currentTaskIdentifier,
-                let task = sessionManager.taskForIdentifier(identifier)
-            {
-                task.resume()
-            }
-        }
-        else
-        {
-            // See note above taskForIdentifierWorkaround for details on why this is necessary (iOS7 bug) [AH] 2/5/2016
-            if let identifier = self.currentTaskIdentifier,
-                let task = sessionManager.taskForIdentifierWorkaround(identifier)
-            {
-                if let dataTask = task as? NSURLSessionDataTask
-                {
-                    dataTask.resume()
-                }
-                else if let uploadTask = task as? NSURLSessionUploadTask
-                {
-                    uploadTask.resume()
-                }
-                else if let downloadTask = task as? NSURLSessionDownloadTask
-                {
-                    downloadTask.resume()
-                }
-                else
-                {
-                    assertionFailure("Unable to cast task to proper class, therefore unable to resume")
-                }
-            }
+            task.resume()
         }
     }
     
@@ -163,33 +136,10 @@ public class Descriptor: NSObject, NSCoding
 
     private func doCancel(sessionManager sessionManager: AFURLSessionManager)
     {
-        if #available(iOS 8, *)
+        if let identifier = self.currentTaskIdentifier,
+            let task = sessionManager.taskForIdentifier(identifier)
         {
-            if let identifier = self.currentTaskIdentifier,
-                let task = sessionManager.taskForIdentifier(identifier)
-            {
-                task.cancel()
-            }
-        }
-        else
-        {
-            // See note above taskForIdentifierWorkaround for details on why this is necessary (iOS7 bug) [AH] 2/5/2016
-            if let identifier = self.currentTaskIdentifier,
-                let task = sessionManager.taskForIdentifierWorkaround(identifier)
-            {
-                if let dataTask = task as? NSURLSessionDataTask
-                {
-                    dataTask.cancel()
-                }
-                else if let uploadTask = task as? NSURLSessionUploadTask
-                {
-                    uploadTask.cancel()
-                }
-                else if let downloadTask = task as? NSURLSessionDownloadTask
-                {
-                    downloadTask.cancel()
-                }
-            }
+            task.cancel()
         }
     }
     

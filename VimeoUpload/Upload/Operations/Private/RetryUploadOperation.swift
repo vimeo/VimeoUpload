@@ -127,7 +127,7 @@ public class RetryUploadOperation: ConcurrentOperation
             self?.downloadProgressBlock?(progress: progress)
         }
         
-        operation.exportProgressBlock = { [weak self] (progress: Double) -> Void in
+        operation.exportProgressBlock = { [weak self] (exportSession: AVAssetExportSession, progress: Double) -> Void in
             self?.exportProgressBlock?(progress: progress)
         }
         
