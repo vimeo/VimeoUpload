@@ -36,6 +36,8 @@ import Foundation
 
 public class DescriptorManagerTracker: DescriptorManagerDelegate
 {
+    public init() {}
+    
     // MARK: DescriptorManagerDelegate
     
     @objc public func didLoadDescriptors(descriptors descriptors: Set<Descriptor>)

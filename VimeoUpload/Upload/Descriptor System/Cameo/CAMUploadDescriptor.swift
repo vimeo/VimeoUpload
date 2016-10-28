@@ -68,7 +68,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     //MARK: Overrides
     
-    override func prepare(sessionManager sessionManager: AFURLSessionManager) throws
+    override public func prepare(sessionManager sessionManager: AFURLSessionManager) throws
     {
         let sessionManager = sessionManager as! VimeoSessionManager
         
@@ -86,19 +86,17 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override func resume(sessionManager sessionManager: AFURLSessionManager)
+    override public func resume(sessionManager sessionManager: AFURLSessionManager)
     {
         super.resume(sessionManager: sessionManager)
         
-        if let identifier = self.currentTaskIdentifier,
-            task = sessionManager.uploadTaskForIdentifier(identifier),
-            progress = sessionManager.uploadProgressForTask(task)
+        if let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTaskForIdentifier(identifier), let progress = sessionManager.uploadProgressForTask(task)
         {
             self.progress = progress
         }
     }
     
-    override func cancel(sessionManager sessionManager: AFURLSessionManager)
+    override public func cancel(sessionManager sessionManager: AFURLSessionManager)
     {
         super.cancel(sessionManager: sessionManager)
         
@@ -109,11 +107,9 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    override public func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
-        guard let identifier = self.currentTaskIdentifier,
-            task = sessionManager.uploadTaskForIdentifier(identifier),
-            progress = sessionManager.uploadProgressForTask(task) else
+        guard let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTaskForIdentifier(identifier), let progress = sessionManager.uploadProgressForTask(task) else
         {
             NSFileManager.defaultManager().deleteFileAtURL(self.videoUrl)
             
@@ -132,7 +128,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.progress = progress
     }
     
-    override func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    override public func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
     {
         let sessionManager = sessionManager as! VimeoSessionManager
         let responseSerializer = sessionManager.responseSerializer as! VimeoResponseSerializer
@@ -167,7 +163,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         return nil
     }
     
-    override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    override public func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
         let setFinishedState = {
             self.currentTaskIdentifier = nil

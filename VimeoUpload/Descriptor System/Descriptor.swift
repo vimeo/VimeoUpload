@@ -59,7 +59,7 @@ public class Descriptor: NSObject, NSCoding
     public var currentTaskIdentifier: Int?
     public var error: NSError?
     
-    var isCancelled = false
+    private(set) public var isCancelled = false
     
     // MARK: - Initialization
 
@@ -70,12 +70,12 @@ public class Descriptor: NSObject, NSCoding
     
     // MARK: Subclass Overrides
 
-    func prepare(sessionManager sessionManager: AFURLSessionManager) throws
+    public func prepare(sessionManager sessionManager: AFURLSessionManager) throws
     {
         fatalError("prepare(sessionManager:) has not been implemented")
     }
 
-    func resume(sessionManager sessionManager: AFURLSessionManager)
+    public func resume(sessionManager sessionManager: AFURLSessionManager)
     {
         self.state = .Executing
         
@@ -86,7 +86,7 @@ public class Descriptor: NSObject, NSCoding
         }
     }
     
-    func suspend(sessionManager sessionManager: AFURLSessionManager)
+    public func suspend(sessionManager sessionManager: AFURLSessionManager)
     {
         let originalState = self.state
         
@@ -107,7 +107,7 @@ public class Descriptor: NSObject, NSCoding
         self.doCancel(sessionManager: sessionManager)
     }
 
-    func cancel(sessionManager sessionManager: AFURLSessionManager)
+    public func cancel(sessionManager sessionManager: AFURLSessionManager)
     {
         self.isCancelled = true
         self.state = .Finished
@@ -115,17 +115,17 @@ public class Descriptor: NSObject, NSCoding
         self.doCancel(sessionManager: sessionManager)
     }
     
-    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    public func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
         fatalError("didLoadFromCache(sessionManager:) has not been implemented")
     }
     
-    func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    public func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
     {
         return nil
     }
 
-    func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    public func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
         fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
     }

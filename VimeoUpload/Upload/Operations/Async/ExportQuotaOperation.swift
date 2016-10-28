@@ -28,7 +28,7 @@ import Foundation
 import AVFoundation
 import VimeoNetworking
 
-typealias ExportProgressBlock = (exportSession: AVAssetExportSession, progress: Double) -> Void
+public typealias ExportProgressBlock = (exportSession: AVAssetExportSession, progress: Double) -> Void
 
 public class ExportQuotaOperation: ConcurrentOperation
 {

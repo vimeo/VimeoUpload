@@ -39,7 +39,7 @@ public class PHAssetRetryUploadOperation: RetryUploadOperation
     
     // MARK: - Initialization
     
-    init(sessionManager: VimeoSessionManager, phAsset: PHAsset)
+    public init(sessionManager: VimeoSessionManager, phAsset: PHAsset)
     {
         self.phAsset = phAsset
         
