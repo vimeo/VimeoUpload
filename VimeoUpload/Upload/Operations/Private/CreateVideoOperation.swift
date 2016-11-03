@@ -25,8 +25,9 @@
 //
 
 import Foundation
+import VimeoNetworking
 
-class CreateVideoOperation: ConcurrentOperation
+public class CreateVideoOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
     private let url: NSURL
@@ -34,12 +35,12 @@ class CreateVideoOperation: ConcurrentOperation
     
     private var task: NSURLSessionDataTask?
 
-    private(set) var result: VIMUploadTicket?
-    private(set) var error: NSError?
+    public var result: VIMUploadTicket?
+    public var error: NSError?
     
     // MARK: - Initialization
 
-    init(sessionManager: VimeoSessionManager, url: NSURL, videoSettings: VideoSettings?)
+    public required init(sessionManager: VimeoSessionManager, url: NSURL, videoSettings: VideoSettings?)
     {
         self.sessionManager = sessionManager
         self.url = url
@@ -55,7 +56,7 @@ class CreateVideoOperation: ConcurrentOperation
     
     // MARK: Overrides
 
-    override func main()
+    override public func main()
     {
         if self.cancelled
         {
@@ -103,7 +104,7 @@ class CreateVideoOperation: ConcurrentOperation
         }
     }
     
-    override func cancel()
+    override public func cancel()
     {
         super.cancel()
         

@@ -26,24 +26,25 @@
 
 import Foundation
 import AVFoundation
+import VimeoNetworking
 
-class ExportQuotaCreateOperation: ConcurrentOperation
+public class ExportQuotaCreateOperation: ConcurrentOperation
 {
     let me: VIMUser
     let sessionManager: VimeoSessionManager
-    var videoSettings: VideoSettings?
+    public var videoSettings: VideoSettings?
     let operationQueue: NSOperationQueue
     
     // MARK:
-    
-    var downloadProgressBlock: ProgressBlock?
-    var exportProgressBlock: ExportProgressBlock?
+
+    public var downloadProgressBlock: ProgressBlock?
+    public var exportProgressBlock: ExportProgressBlock?
     
     // MARK:
     
-    var url: NSURL?
-    var uploadTicket: VIMUploadTicket?
-    var error: NSError?
+    public var url: NSURL?
+    public var uploadTicket: VIMUploadTicket?
+    public var error: NSError?
     {
         didSet
         {
@@ -56,7 +57,7 @@ class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
-    init(me: VIMUser, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    public init(me: VIMUser, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {
         self.me = me
         self.sessionManager = sessionManager
@@ -73,7 +74,7 @@ class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override func main()
+    override public func main()
     {
         if self.cancelled
         {
@@ -84,7 +85,7 @@ class ExportQuotaCreateOperation: ConcurrentOperation
         self.performExportQuotaOperation(operation)
     }
     
-    override func cancel()
+    override public func cancel()
     {
         super.cancel()
         

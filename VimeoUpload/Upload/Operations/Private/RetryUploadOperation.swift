@@ -25,21 +25,24 @@
 //
 
 import Foundation
+import VimeoNetworking
+import AVFoundation
 
-class RetryUploadOperation: ConcurrentOperation
+public class RetryUploadOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
     let operationQueue: NSOperationQueue
     
     // MARK:
     
-    var downloadProgressBlock: ProgressBlock?
-    var exportProgressBlock: ProgressBlock?
+    public var downloadProgressBlock: ProgressBlock?
+    public var exportProgressBlock: ProgressBlock?
     
     // MARK:
     
-    var url: NSURL?
-    var error: NSError?
+    private(set) public var url: NSURL?
+    
+    private(set) public var error: NSError?
     {
         didSet
         {
@@ -66,7 +69,7 @@ class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override func main()
+    override public func main()
     {
         if self.cancelled
         {
@@ -76,7 +79,7 @@ class RetryUploadOperation: ConcurrentOperation
         self.performMeQuotaOperation()
     }
     
-    override func cancel()
+    override public func cancel()
     {
         super.cancel()
         

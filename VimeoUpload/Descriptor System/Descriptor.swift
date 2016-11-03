@@ -25,8 +25,9 @@
 //
 
 import Foundation
+import AFNetworking
 
-enum DescriptorState: String
+public enum DescriptorState: String
 {
     case Ready = "Ready"
     case Executing = "Executing"
@@ -34,7 +35,7 @@ enum DescriptorState: String
     case Finished = "Finished"
 }
 
-class Descriptor: NSObject, NSCoding
+public class Descriptor: NSObject, NSCoding
 {
     private static let StateCoderKey = "state"
     private static let IdentifierCoderKey = "identifier"
@@ -44,7 +45,7 @@ class Descriptor: NSObject, NSCoding
     // MARK:
     
     dynamic private(set) var stateObservable: String = DescriptorState.Ready.rawValue
-    var state = DescriptorState.Ready
+    public var state = DescriptorState.Ready
     {
         didSet
         {
@@ -54,27 +55,27 @@ class Descriptor: NSObject, NSCoding
     
     // MARK:
     
-    var identifier: String?
-    var currentTaskIdentifier: Int?
-    var error: NSError?
+    public var identifier: String?
+    public var currentTaskIdentifier: Int?
+    public var error: NSError?
     
-    var isCancelled = false
+    private(set) public var isCancelled = false
     
     // MARK: - Initialization
 
-    required override init()
+    required override public init()
     {
         super.init()
     }
     
     // MARK: Subclass Overrides
 
-    func prepare(sessionManager sessionManager: AFURLSessionManager) throws
+    public func prepare(sessionManager sessionManager: AFURLSessionManager) throws
     {
         fatalError("prepare(sessionManager:) has not been implemented")
     }
 
-    func resume(sessionManager sessionManager: AFURLSessionManager)
+    public func resume(sessionManager sessionManager: AFURLSessionManager)
     {
         self.state = .Executing
         
@@ -85,7 +86,7 @@ class Descriptor: NSObject, NSCoding
         }
     }
     
-    func suspend(sessionManager sessionManager: AFURLSessionManager)
+    public func suspend(sessionManager sessionManager: AFURLSessionManager)
     {
         let originalState = self.state
         
@@ -106,7 +107,7 @@ class Descriptor: NSObject, NSCoding
         self.doCancel(sessionManager: sessionManager)
     }
 
-    func cancel(sessionManager sessionManager: AFURLSessionManager)
+    public func cancel(sessionManager sessionManager: AFURLSessionManager)
     {
         self.isCancelled = true
         self.state = .Finished
@@ -114,17 +115,17 @@ class Descriptor: NSObject, NSCoding
         self.doCancel(sessionManager: sessionManager)
     }
     
-    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    public func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
         fatalError("didLoadFromCache(sessionManager:) has not been implemented")
     }
     
-    func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    public func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
     {
         return nil
     }
 
-    func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    public func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
         fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
     }
@@ -144,7 +145,7 @@ class Descriptor: NSObject, NSCoding
     
     // MARK: NSCoding
     
-    required init(coder aDecoder: NSCoder)
+    required public init(coder aDecoder: NSCoder)
     {
         self.state = DescriptorState(rawValue: aDecoder.decodeObjectForKey(self.dynamicType.StateCoderKey) as! String)!
         self.identifier = aDecoder.decodeObjectForKey(self.dynamicType.IdentifierCoderKey) as? String
@@ -152,7 +153,7 @@ class Descriptor: NSObject, NSCoding
         self.currentTaskIdentifier = aDecoder.decodeIntegerForKey(self.dynamicType.CurrentTaskIdentifierCoderKey)
     }
     
-    func encodeWithCoder(aCoder: NSCoder)
+    public func encodeWithCoder(aCoder: NSCoder)
     {
         aCoder.encodeObject(self.state.rawValue, forKey: self.dynamicType.StateCoderKey)
         aCoder.encodeObject(self.identifier, forKey: self.dynamicType.IdentifierCoderKey)

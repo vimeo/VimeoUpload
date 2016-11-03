@@ -26,19 +26,20 @@
 
 import Foundation
 import Photos
+import VimeoNetworking
 
 // This flow encapsulates the following steps:
 
 // 1. Perorm a MeQuotaOperation
 // 2. Perform a PHAssetCloudExportQuotaOperation
 
-class PHAssetRetryUploadOperation: RetryUploadOperation
+public class PHAssetRetryUploadOperation: RetryUploadOperation
 {
     private let phAsset: PHAsset
     
     // MARK: - Initialization
     
-    init(sessionManager: VimeoSessionManager, phAsset: PHAsset)
+    public init(sessionManager: VimeoSessionManager, phAsset: PHAsset)
     {
         self.phAsset = phAsset
         

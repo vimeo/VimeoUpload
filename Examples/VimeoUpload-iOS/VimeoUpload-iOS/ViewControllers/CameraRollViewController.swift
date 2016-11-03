@@ -31,7 +31,7 @@ class CameraRollViewController: BaseCameraRollViewController
 {
     override func viewDidLoad()
     {
-        self.sessionManager = NewVimeoUpload.sharedInstance.foregroundSessionManager
+        self.sessionManager = NewVimeoUploader.sharedInstance.foregroundSessionManager
 
         super.viewDidLoad()
     }
@@ -42,7 +42,7 @@ class CameraRollViewController: BaseCameraRollViewController
     {
         super.setupNavigationBar()
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "didTapCancel:")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(CameraRollViewController.didTapCancel(_:)))
     }
     
     override func didFinishWithResult(result: UploadUserAndCameraRollAsset)

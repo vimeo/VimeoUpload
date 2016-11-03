@@ -32,7 +32,7 @@ import Foundation
     import CoreServices
 #endif
 
-extension NSURL
+public extension NSURL
 {
     static func uploadURLWithFilename(filename: String, fileType: String) throws -> NSURL
     {

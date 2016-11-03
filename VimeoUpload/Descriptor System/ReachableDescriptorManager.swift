@@ -25,14 +25,15 @@
 //
 
 import Foundation
+import VimeoNetworking
 
-@objc class ReachableDescriptorManager: DescriptorManager, ConnectivityManagerDelegate
+@objc public class ReachableDescriptorManager: DescriptorManager, ConnectivityManagerDelegate
 {
     private let connectivityManager = ConnectivityManager()
     
     // MARK:
     
-    var allowsCellularUsage: Bool
+    public var allowsCellularUsage: Bool
     {
         get
         {
@@ -46,9 +47,9 @@ import Foundation
     
     // MARK: - Initialization
     
-    init(name: String, backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, authTokenBlock: AuthTokenBlock)
+    public init(name: String, backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: VimeoRequestSerializer.AccessTokenProvider)
     {
-        let backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, authTokenBlock: authTokenBlock)
+        let backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, accessTokenProvider: accessTokenProvider)
         
         super.init(sessionManager: backgroundSessionManager, name: name, delegate: descriptorManagerDelegate)
         
@@ -57,7 +58,7 @@ import Foundation
     
     // MARK: Public API - Background Session
     
-    func applicationDidFinishLaunching()
+    public func applicationDidFinishLaunching()
     {
         // No-op
     }

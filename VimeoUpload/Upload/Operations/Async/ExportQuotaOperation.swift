@@ -26,19 +26,20 @@
 
 import Foundation
 import AVFoundation
+import VimeoNetworking
 
-typealias ExportProgressBlock = (exportSession: AVAssetExportSession, progress: Double) -> Void
+public typealias ExportProgressBlock = (exportSession: AVAssetExportSession, progress: Double) -> Void
 
-class ExportQuotaOperation: ConcurrentOperation
+public class ExportQuotaOperation: ConcurrentOperation
 {
     let me: VIMUser
     let operationQueue: NSOperationQueue
+
+    public var downloadProgressBlock: ProgressBlock?
+    public var exportProgressBlock: ExportProgressBlock?
     
-    var downloadProgressBlock: ProgressBlock?
-    var exportProgressBlock: ExportProgressBlock?
-    
-    var error: NSError?
-        {
+    public var error: NSError?
+    {
         didSet
         {
             if self.error != nil
@@ -47,7 +48,7 @@ class ExportQuotaOperation: ConcurrentOperation
             }
         }
     }
-    private(set) var result: NSURL?
+    public var result: NSURL?
     
     init(me: VIMUser)
     {
@@ -63,7 +64,7 @@ class ExportQuotaOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override func main()
+    override public func main()
     {
         if self.cancelled
         {
@@ -73,7 +74,7 @@ class ExportQuotaOperation: ConcurrentOperation
         self.requestExportSession()
     }
     
-    override func cancel()
+    override public func cancel()
     {
         super.cancel()
         

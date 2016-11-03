@@ -26,6 +26,7 @@
 
 import Foundation
 import AVFoundation
+import VimeoNetworking
 
 extension VimeoRequestSerializer
 {    
