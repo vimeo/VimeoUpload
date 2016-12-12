@@ -233,12 +233,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AFFA40331C9CE8E000C7B6F3 /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-OldUpload" */;
 			buildPhases = (
-				0D46385E02854E71C1FDABFA /* Check Pods Manifest.lock */,
+				0D46385E02854E71C1FDABFA /* [CP] Check Pods Manifest.lock */,
 				AFFA40071C9CE8E000C7B6F3 /* Sources */,
 				AFFA40081C9CE8E000C7B6F3 /* Frameworks */,
 				AFFA40091C9CE8E000C7B6F3 /* Resources */,
-				BE8817D04A5626F94A584168 /* Embed Pods Frameworks */,
-				4AA625097181A3EE21E48884 /* Copy Pods Resources */,
+				BE8817D04A5626F94A584168 /* [CP] Embed Pods Frameworks */,
+				4AA625097181A3EE21E48884 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -360,29 +360,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0D46385E02854E71C1FDABFA /* Check Pods Manifest.lock */ = {
+		0D46385E02854E71C1FDABFA /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		4AA625097181A3EE21E48884 /* Copy Pods Resources */ = {
+		4AA625097181A3EE21E48884 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -390,14 +390,14 @@
 			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUpload/Pods-VimeoUpload-iOS-OldUpload-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BE8817D04A5626F94A584168 /* Embed Pods Frameworks */ = {
+		BE8817D04A5626F94A584168 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
