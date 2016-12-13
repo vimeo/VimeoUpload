@@ -255,7 +255,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
             
-            return try sessionManager.uploadVideoTask(source: self.videoUrl, destination: uploadUri, progress: &self.progress, completionHandler: nil)
+            return try sessionManager.uploadVideoTask(source: self.videoUrl, destination: uploadUri, completionHandler: nil)
             
         case .CreateThumbnail:
             guard let videoUri = self.uploadTicket?.video?.uri else
@@ -271,7 +271,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
                 throw NSError(domain: UploadErrorDomain.UploadThumbnail.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate thumbnail upload, but thumbnailUploadLink is nil"])
             }
             
-            return try sessionManager.uploadThumbnailTask(source: thumbnailUrl, destination: thumbnailUploadLink, progress: &self.progress, completionHandler: nil)
+            return try sessionManager.uploadThumbnailTask(source: thumbnailUrl, destination: thumbnailUploadLink, completionHandler: nil)
             
         case .ActivateThumbnail:
             guard let thumbnailUri = self.pictureTicket?.uri else
