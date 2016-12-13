@@ -2,7 +2,6 @@ workspace 'VimeoUpload'
 xcodeproj 'Framework/VimeoUpload/VimeoUpload.xcodeproj'
 xcodeproj 'Examples/VimeoUpload-iOS/VimeoUpload-iOS.xcodeproj'
 xcodeproj 'Examples/VimeoUpload-iOS-OldUpload/VimeoUpload-iOS-OldUpload.xcodeproj'
-xcodeproj 'Examples/VimeoUpload-OSX/VimeoUpload-OSX.xcodeproj'
 
 #install! 'cocoapods', :deterministic_uuids => false # This suppresses the duplicate UUID warnings, introduced in Cocoapods 1.0
 # https://github.com/CocoaPods/CocoaPods/issues/4370#issuecomment-183205691
@@ -26,10 +25,4 @@ target :'VimeoUpload-iOS-OldUpload' do
     use_frameworks!
     pod 'VimeoNetworking', :git => 'git@github.com:vimeo/VimeoNetworking.git', :commit => 'be393b925c3fb523c54b0c59a659e5b3c959858d'
     xcodeproj 'Examples/VimeoUpload-iOS-OldUpload/VimeoUpload-iOS-OldUpload.xcodeproj'
-end
-
-target :'VimeoUpload-OSX' do
-    platform :osx, '10.9'
-    use_frameworks!
-    xcodeproj 'Examples/VimeoUpload-OSX/VimeoUpload-OSX.xcodeproj'
 end
