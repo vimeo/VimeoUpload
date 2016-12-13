@@ -297,13 +297,16 @@
 				TargetAttributes = {
 					AFFA400A1C9CE8E000C7B6F3 = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0810;
 					};
 					AFFA401E1C9CE8E000C7B6F3 = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0810;
 						TestTargetID = AFFA400A1C9CE8E000C7B6F3;
 					};
 					AFFA40291C9CE8E000C7B6F3 = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0810;
 						TestTargetID = AFFA400A1C9CE8E000C7B6F3;
 					};
 				};
@@ -558,6 +561,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUpload";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/VimeoUpload-iOS-OldUpload/Bridge.h";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -572,6 +576,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUpload";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/VimeoUpload-iOS-OldUpload/Bridge.h";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
@@ -583,6 +588,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUploadTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VimeoUpload-iOS-OldUpload.app/VimeoUpload-iOS-OldUpload";
 			};
 			name = Debug;
@@ -595,6 +601,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUploadTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VimeoUpload-iOS-OldUpload.app/VimeoUpload-iOS-OldUpload";
 			};
 			name = Release;
@@ -606,6 +613,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUploadUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_TARGET_NAME = "VimeoUpload-iOS-OldUpload";
 				USES_XCTRUNNER = YES;
 			};
@@ -618,6 +626,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUploadUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_TARGET_NAME = "VimeoUpload-iOS-OldUpload";
 				USES_XCTRUNNER = YES;
 			};
