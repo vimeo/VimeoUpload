@@ -25,7 +25,6 @@ platform :ios do
 
     type = options[:type]
     types = {
-      "osx" => ["VimeoUpload-OSX", "generic/platform=OS X"],
       "ios" => ["VimeoUpload-iOS", "generic/platform=iOS"],
       "iosold" => ["VimeoUpload-iOS-OldUpload", "generic/platform=iOS"],
     }
@@ -49,11 +48,6 @@ platform :ios do
 
   end
 
-  desc "build osx"
-  lane :osx do |options|
-    build_example(type:"osx")
-  end
-
   desc "build ios"
   lane :ios do |options|
     build_example(type:"ios")
@@ -67,7 +61,6 @@ platform :ios do
   desc "build all"
   lane :all do |options|
     
-    osx
     ios
     iosold
     
