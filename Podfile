@@ -3,9 +3,6 @@ xcodeproj 'Framework/VimeoUpload/VimeoUpload.xcodeproj'
 xcodeproj 'Examples/VimeoUpload-iOS/VimeoUpload-iOS.xcodeproj'
 xcodeproj 'Examples/VimeoUpload-iOS-OldUpload/VimeoUpload-iOS-OldUpload.xcodeproj'
 
-#install! 'cocoapods', :deterministic_uuids => false # This suppresses the duplicate UUID warnings, introduced in Cocoapods 1.0
-# https://github.com/CocoaPods/CocoaPods/issues/4370#issuecomment-183205691
-
 target 'VimeoUpload' do
     platform :ios, '8.0'
     use_frameworks!
