@@ -65,7 +65,7 @@ public enum UploadErrorDomain: String
     case ActivateThumbnail = "ActivateVideoThumbnailErrorDomain"
 }
 
-@objc enum UploadLocalErrorCode: Int
+public enum UploadLocalErrorCode: Int
 {
     case CannotEvaluateDailyQuota = 0 // "User object did not contain uploadQuota.quota information"
     case CannotCalculateDiskSpace = 1 // "File system information did not contain NSFileSystemFreeSize key:value pair"
@@ -77,7 +77,7 @@ public enum UploadErrorDomain: String
     case WeeklyQuotaException = 6
 }
 
-enum UploadErrorKey: String
+public enum UploadErrorKey: String
 {
     case AvailableSpace = "AvailableSpace"
     case FileSize = "FileSize"

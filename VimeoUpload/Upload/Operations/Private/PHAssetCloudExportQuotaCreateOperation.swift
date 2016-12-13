@@ -1,8 +1,8 @@
 //
-//  CameraRollAsset.swift
+//  PHAssetCloudExportQuotaCreateOperation.swift
 //  VimeoUpload
 //
-//  Created by Hanssen, Alfie on 12/17/15.
+//  Created by Alfred Hanssen on 11/9/15.
 //  Copyright © 2015 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,12 +25,31 @@
 //
 
 import Foundation
-import AVFoundation
+import Photos
+import VimeoNetworking
 
-@objc public protocol CameraRollAsset
+// This flow encapsulates the following steps:
+
+// 1. Perorm a PHAssetCloudExportQuotaOperation
+// 2. Create video record
+
+public class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
 {
-    var identifier: String { get }
-    var inCloud: Bool { get set }
-    var avAsset: AVAsset? { get set }
-    var error: NSError? { get set }
+    let phAsset: PHAsset
+
+    // MARK: - Initialization
+    
+    public init(me: VIMUser, phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    {
+        self.phAsset = phAsset
+
+        super.init(me: me, sessionManager: sessionManager, videoSettings: videoSettings)
+    }
+    
+    // MARK: Overrides
+
+    override func makeExportQuotaOperation(me: VIMUser) -> ExportQuotaOperation?
+    {
+        return PHAssetCloudExportQuotaOperation(me: me, phAsset: self.phAsset)
+    }
 }

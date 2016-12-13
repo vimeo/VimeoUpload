@@ -80,7 +80,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: Overrides
     
-    override func prepare(sessionManager sessionManager: AFURLSessionManager) throws
+    override public func prepare(sessionManager sessionManager: AFURLSessionManager) throws
     {
         let sessionManager = sessionManager as! VimeoSessionManager
 
@@ -98,7 +98,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override func resume(sessionManager sessionManager: AFURLSessionManager)
+    override public func resume(sessionManager sessionManager: AFURLSessionManager)
     {
         super.resume(sessionManager: sessionManager)
         
@@ -110,7 +110,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
 
-    override func cancel(sessionManager sessionManager: AFURLSessionManager)
+    override public func cancel(sessionManager sessionManager: AFURLSessionManager)
     {
         super.cancel(sessionManager: sessionManager)
         
@@ -119,7 +119,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // If necessary, resume the current task and re-connect progress objects
 
-    override func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    override public func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
             let task = sessionManager.uploadTaskForIdentifier(identifier),
@@ -141,7 +141,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.progress = progress
     }
     
-    override func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    override public func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
     {
         let sessionManager = sessionManager as! VimeoSessionManager
         let responseSerializer = sessionManager.responseSerializer as! VimeoResponseSerializer
@@ -173,7 +173,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         return nil
     }
     
-    override func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    override public func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
         if self.currentRequest == .Upload
         {

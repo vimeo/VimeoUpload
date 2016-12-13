@@ -38,7 +38,7 @@ public class ExportOperation: ConcurrentOperation
     private static let ProgressKeyPath = "progress"
     private static let FileType = AVFileTypeMPEG4
 
-    private var exportSession: AVAssetExportSession
+    private(set) var exportSession: AVAssetExportSession
     
     // We KVO on this internally in order to call the progressBlock, see note below as to why [AH] 10/22/2015
     private dynamic var progress: Float = 0

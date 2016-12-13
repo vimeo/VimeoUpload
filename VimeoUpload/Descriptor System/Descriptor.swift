@@ -59,7 +59,7 @@ public class Descriptor: NSObject, NSCoding
     public var currentTaskIdentifier: Int?
     public var error: NSError?
     
-    var isCancelled = false
+    private(set) public var isCancelled = false
     
     // MARK: - Initialization
 
@@ -70,50 +70,23 @@ public class Descriptor: NSObject, NSCoding
     
     // MARK: Subclass Overrides
 
-    func prepare(sessionManager sessionManager: AFURLSessionManager) throws
+    public func prepare(sessionManager sessionManager: AFURLSessionManager) throws
     {
         fatalError("prepare(sessionManager:) has not been implemented")
     }
 
-    func resume(sessionManager sessionManager: AFURLSessionManager)
+    public func resume(sessionManager sessionManager: AFURLSessionManager)
     {
         self.state = .Executing
         
-        if #available(iOS 8, *)
+        if let identifier = self.currentTaskIdentifier,
+            let task = sessionManager.taskForIdentifier(identifier)
         {
-            if let identifier = self.currentTaskIdentifier,
-                let task = sessionManager.taskForIdentifier(identifier)
-            {
-                task.resume()
-            }
-        }
-        else
-        {
-            // See note above taskForIdentifierWorkaround for details on why this is necessary (iOS7 bug) [AH] 2/5/2016
-            if let identifier = self.currentTaskIdentifier,
-                let task = sessionManager.taskForIdentifierWorkaround(identifier)
-            {
-                if let dataTask = task as? NSURLSessionDataTask
-                {
-                    dataTask.resume()
-                }
-                else if let uploadTask = task as? NSURLSessionUploadTask
-                {
-                    uploadTask.resume()
-                }
-                else if let downloadTask = task as? NSURLSessionDownloadTask
-                {
-                    downloadTask.resume()
-                }
-                else
-                {
-                    assertionFailure("Unable to cast task to proper class, therefore unable to resume")
-                }
-            }
+            task.resume()
         }
     }
     
-    func suspend(sessionManager sessionManager: AFURLSessionManager)
+    public func suspend(sessionManager sessionManager: AFURLSessionManager)
     {
         let originalState = self.state
         
@@ -134,7 +107,7 @@ public class Descriptor: NSObject, NSCoding
         self.doCancel(sessionManager: sessionManager)
     }
 
-    func cancel(sessionManager sessionManager: AFURLSessionManager)
+    public func cancel(sessionManager sessionManager: AFURLSessionManager)
     {
         self.isCancelled = true
         self.state = .Finished
@@ -142,17 +115,17 @@ public class Descriptor: NSObject, NSCoding
         self.doCancel(sessionManager: sessionManager)
     }
     
-    func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    public func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
     {
         fatalError("didLoadFromCache(sessionManager:) has not been implemented")
     }
     
-    func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    public func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
     {
         return nil
     }
 
-    func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    public func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
     {
         fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
     }
@@ -163,33 +136,10 @@ public class Descriptor: NSObject, NSCoding
 
     private func doCancel(sessionManager sessionManager: AFURLSessionManager)
     {
-        if #available(iOS 8, *)
+        if let identifier = self.currentTaskIdentifier,
+            let task = sessionManager.taskForIdentifier(identifier)
         {
-            if let identifier = self.currentTaskIdentifier,
-                let task = sessionManager.taskForIdentifier(identifier)
-            {
-                task.cancel()
-            }
-        }
-        else
-        {
-            // See note above taskForIdentifierWorkaround for details on why this is necessary (iOS7 bug) [AH] 2/5/2016
-            if let identifier = self.currentTaskIdentifier,
-                let task = sessionManager.taskForIdentifierWorkaround(identifier)
-            {
-                if let dataTask = task as? NSURLSessionDataTask
-                {
-                    dataTask.cancel()
-                }
-                else if let uploadTask = task as? NSURLSessionUploadTask
-                {
-                    uploadTask.cancel()
-                }
-                else if let downloadTask = task as? NSURLSessionDownloadTask
-                {
-                    downloadTask.cancel()
-                }
-            }
+            task.cancel()
         }
     }
     

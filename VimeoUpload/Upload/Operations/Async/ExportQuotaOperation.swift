@@ -28,13 +28,15 @@ import Foundation
 import AVFoundation
 import VimeoNetworking
 
+public typealias ExportProgressBlock = (exportSession: AVAssetExportSession, progress: Double) -> Void
+
 public class ExportQuotaOperation: ConcurrentOperation
 {
     let me: VIMUser
     let operationQueue: NSOperationQueue
-    
+
     public var downloadProgressBlock: ProgressBlock?
-    public var exportProgressBlock: ProgressBlock?
+    public var exportProgressBlock: ExportProgressBlock?
     
     public var error: NSError?
     {
@@ -98,7 +100,7 @@ public class ExportQuotaOperation: ConcurrentOperation
             if let progressBlock = self?.exportProgressBlock
             {
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    progressBlock(progress: progress)
+                    progressBlock(exportSession: exportOperation.exportSession, progress: progress)
                 })
             }
         }

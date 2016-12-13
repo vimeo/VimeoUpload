@@ -38,7 +38,7 @@ public class ProgressDescriptor: Descriptor
     private var progressKVOContext = UInt8()
     dynamic private(set) var progressObservable: Double = 0
     
-    var progress: NSProgress?
+    public var progress: NSProgress?
     {
         willSet
         {

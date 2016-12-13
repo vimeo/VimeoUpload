@@ -26,6 +26,7 @@
 
 import Foundation
 import VimeoNetworking
+import AVFoundation
 
 public class RetryUploadOperation: ConcurrentOperation
 {
@@ -34,13 +35,14 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK:
     
-    var downloadProgressBlock: ProgressBlock?
-    var exportProgressBlock: ProgressBlock?
+    public var downloadProgressBlock: ProgressBlock?
+    public var exportProgressBlock: ProgressBlock?
     
     // MARK:
     
-    var url: NSURL?
-    var error: NSError?
+    private(set) public var url: NSURL?
+    
+    private(set) public var error: NSError?
     {
         didSet
         {
@@ -127,7 +129,7 @@ public class RetryUploadOperation: ConcurrentOperation
             self?.downloadProgressBlock?(progress: progress)
         }
         
-        operation.exportProgressBlock = { [weak self] (progress: Double) -> Void in
+        operation.exportProgressBlock = { [weak self] (exportSession: AVAssetExportSession, progress: Double) -> Void in
             self?.exportProgressBlock?(progress: progress)
         }
         

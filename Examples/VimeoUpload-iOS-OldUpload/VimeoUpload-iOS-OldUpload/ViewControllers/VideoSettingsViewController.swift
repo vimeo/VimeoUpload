@@ -26,6 +26,7 @@
 
 import UIKit
 import VimeoUpload
+import AVFoundation
 
 class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
@@ -90,14 +91,14 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func setupAndStartOperation()
     {
         let me = self.input!.user
-        let phAsset = (self.input!.cameraRollAsset as! VIMPHAsset).phAsset
+        let phAsset = (self.input!.cameraRollAsset ).phAsset
         let operation = PHAssetCloudExportQuotaOperation(me: me, phAsset: phAsset)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print(String(format: "Download progress: %.2f", progress)) // TODO: Dispatch to main thread
         }
         
-        operation.exportProgressBlock = { (progress: Double) -> Void in
+        operation.exportProgressBlock = { (exportSession: AVAssetExportSession, progress: Double) -> Void in
             print(String(format: "Export progress: %.2f", progress))
         }
         
@@ -144,7 +145,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func startUpload()
     {
         let url = self.url!
-        let phAsset = (self.input!.cameraRollAsset as! VIMPHAsset).phAsset
+        let phAsset = (self.input!.cameraRollAsset ).phAsset
         let assetIdentifier = phAsset.localIdentifier
         
         let descriptor = OldUploadDescriptor(url: url, videoSettings: self.videoSettings)
