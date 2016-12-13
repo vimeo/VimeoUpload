@@ -117,15 +117,11 @@ extension VimeoSessionManager
         return task
     }
     
-    func uploadVideoTask(source source: NSURL, destination: String, progress: AutoreleasingUnsafeMutablePointer<NSProgress?>, completionHandler: ErrorBlock?) throws -> NSURLSessionUploadTask
+    func uploadVideoTask(source source: NSURL, destination: String, completionHandler: ErrorBlock?) throws -> NSURLSessionUploadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadVideoRequestWithSource(source, destination: destination)
         
-        let task = self.uploadTaskWithRequest(request, fromFile: source, progress: {(progress) -> Void in
-            
-            // TODO: Do something with progress block [AH] 4/25/2016
-            
-        }, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+        let task = self.uploadTaskWithRequest(request, fromFile: source, progress: nil, completionHandler: { [weak self] (response, responseObject, error) -> Void in
 
             guard let strongSelf = self, let completionHandler = completionHandler else
             {
