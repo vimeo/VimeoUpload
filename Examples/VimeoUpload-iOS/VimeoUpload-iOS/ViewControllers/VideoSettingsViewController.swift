@@ -115,14 +115,14 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let sessionManager = NewVimeoUploader.sharedInstance.foregroundSessionManager
         let videoSettings = self.videoSettings
         
-        let phAsset = (cameraRollAsset as! VIMPHAsset).phAsset
+        let phAsset = cameraRollAsset.phAsset
         let operation = PHAssetCloudExportQuotaCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print(String(format: "Download progress: %.2f", progress)) // TODO: Dispatch to main thread
         }
         
-        operation.exportProgressBlock = { (progress: Double) -> Void in
+        operation.exportProgressBlock = { (exportSession: AVAssetExportSession, progress: Double) -> Void in
             print(String(format: "Export progress: %.2f", progress))
         }
         

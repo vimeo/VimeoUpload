@@ -31,7 +31,7 @@ import VimeoNetworking
 import AFNetworking
 import VimeoUpload
 
-typealias UploadUserAndCameraRollAsset = (user: VIMUser, cameraRollAsset: CameraRollAsset)
+typealias UploadUserAndCameraRollAsset = (user: VIMUser, cameraRollAsset: VIMPHAsset)
 
 /*
     This viewController displays the device camera roll video contents. 
@@ -57,8 +57,8 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     // MARK: 
     
-    private var assets: [CameraRollAsset] = []
-    private var cameraRollAssetHelper: CameraRollAssetHelper?
+    private var assets: [VIMPHAsset] = []
+    private var cameraRollAssetHelper: PHAssetHelper?
     private var operation: MeQuotaOperation?
     private var me: VIMUser? // We store this in a property instead of on the operation itself, so that we can refresh it independent of the operation [AH]
     private var meOperation: MeOperation?
@@ -150,9 +150,9 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     // MARK: Setup
     
-    private func loadAssets() -> [CameraRollAsset]
+    private func loadAssets() -> [VIMPHAsset]
     {
-        var assets = [CameraRollAsset]()
+        var assets = [VIMPHAsset]()
 
         let options = PHFetchOptions()
         options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
@@ -246,7 +246,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     {
         let cameraRollAsset = self.assets[indexPath.item] 
         
-        self.cameraRollAssetHelper?.cancelRequests?(cameraRollAsset)
+        self.cameraRollAssetHelper?.cancelRequests(cameraRollAsset)
     }
     
     // MARK: UICollectionViewFlowLayoutDelegate
@@ -347,7 +347,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    private func finish(cameraRollAsset cameraRollAsset: CameraRollAsset)
+    private func finish(cameraRollAsset cameraRollAsset: VIMPHAsset)
     {
         let me = self.me!
 

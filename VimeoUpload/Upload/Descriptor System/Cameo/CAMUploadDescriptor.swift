@@ -204,7 +204,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
         
         // 3. Get the next state in the state machine
-        var nextRequest = CAMUploadRequest.nextRequest(self.currentRequest)
+        let nextRequest = CAMUploadRequest.nextRequest(self.currentRequest)
         if nextRequest == nil
         {
             setFinishedState()
@@ -298,8 +298,6 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         case .ActivateThumbnail:
             return UploadErrorDomain.ActivateThumbnail.rawValue
         }
-        
-        return ""
     }
     
     //MARK: NSCoding
