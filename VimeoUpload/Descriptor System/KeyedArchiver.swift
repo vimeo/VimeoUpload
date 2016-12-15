@@ -25,6 +25,7 @@
 //
 
 import Foundation
+import VimeoNetworking
 
 public class KeyedArchiver: ArchiverProtocol
 {
@@ -37,6 +38,8 @@ public class KeyedArchiver: ArchiverProtocol
         assert(NSFileManager.defaultManager().fileExistsAtPath(basePath, isDirectory: nil), "Invalid basePath")
         
         self.basePath = basePath
+        
+        self.setLegacyClassNameMigrations()
     }
     
     public func loadObjectForKey(key: String) -> AnyObject?
@@ -63,5 +66,25 @@ public class KeyedArchiver: ArchiverProtocol
         URL = URL.URLByAppendingPathExtension(self.dynamicType.ArchiveExtension)!
         
         return URL.absoluteString! as String
+    }
+}
+
+// MARK: NSKeyedArchiver Migration
+
+private extension KeyedArchiver
+{
+    private func setLegacyClassNameMigrations()
+    {
+        // This appeared to only be necessary for downloaded videos with archived VIMVideoFile's that persisted in a failed state. [NL] 05/15/16
+        // E.g. a user has at least one failed download with our legacy VIMVideoFile model, then upgrades to this version.
+        // After launch, we must force unwrap the video file in NewDownloadDescriptor as a VIMVideoPlayFile to be in sync with our current model.
+        // The following allows us to do so by unarchiving VIMVideoFile as VIMVideoPlayFile.
+        
+        NSKeyedUnarchiver.setClass(VIMVideoPlayFile.self, forClassName: "VIMVideoFile")
+        
+        // UploadDescriptor used to be included in the Vimeo project (this compiled because VimeoUpload was included as files rather than as a framework).
+        // Now that UploadDescriptor is within the framework, the class is simply "UploadDescriptor" rather than "Vimeo.UploadDescriptor" [ghking] 12/15/16
+        
+        NSKeyedUnarchiver.setClass(UploadDescriptor.self, forClassName: "Vimeo.UploadDescriptor")
     }
 }
