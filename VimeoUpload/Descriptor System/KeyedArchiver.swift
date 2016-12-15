@@ -35,11 +35,11 @@ public class KeyedArchiver: ArchiverProtocol
 
     public init(basePath: String)
     {
+        self.dynamicType.setLegacyClassNameMigrations()
+
         assert(NSFileManager.defaultManager().fileExistsAtPath(basePath, isDirectory: nil), "Invalid basePath")
         
         self.basePath = basePath
-        
-        self.setLegacyClassNameMigrations()
     }
     
     public func loadObjectForKey(key: String) -> AnyObject?
@@ -73,7 +73,7 @@ public class KeyedArchiver: ArchiverProtocol
 
 private extension KeyedArchiver
 {
-    private func setLegacyClassNameMigrations()
+    private static func setLegacyClassNameMigrations()
     {
         // This appeared to only be necessary for downloaded videos with archived VIMVideoFile's that persisted in a failed state. [NL] 05/15/16
         // E.g. a user has at least one failed download with our legacy VIMVideoFile model, then upgrades to this version.
