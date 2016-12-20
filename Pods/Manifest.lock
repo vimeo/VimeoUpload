@@ -1,0 +1,42 @@
+PODS:
+  - AFNetworking (3.1.0):
+    - AFNetworking/NSURLSession (= 3.1.0)
+    - AFNetworking/Reachability (= 3.1.0)
+    - AFNetworking/Security (= 3.1.0)
+    - AFNetworking/Serialization (= 3.1.0)
+    - AFNetworking/UIKit (= 3.1.0)
+  - AFNetworking/NSURLSession (3.1.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.1.0)
+  - AFNetworking/Security (3.1.0)
+  - AFNetworking/Serialization (3.1.0)
+  - AFNetworking/UIKit (3.1.0):
+    - AFNetworking/NSURLSession
+  - VimeoNetworking (0.0.1):
+    - AFNetworking (= 3.1.0)
+    - VimeoNetworking/Model (= 0.0.1)
+  - VimeoNetworking/Model (0.0.1):
+    - AFNetworking (= 3.1.0)
+
+DEPENDENCIES:
+  - VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, commit `be393b925c3fb523c54b0c59a659e5b3c959858d`)
+
+EXTERNAL SOURCES:
+  VimeoNetworking:
+    :commit: be393b925c3fb523c54b0c59a659e5b3c959858d
+    :git: git@github.com:vimeo/VimeoNetworking.git
+
+CHECKOUT OPTIONS:
+  VimeoNetworking:
+    :commit: be393b925c3fb523c54b0c59a659e5b3c959858d
+    :git: git@github.com:vimeo/VimeoNetworking.git
+
+SPEC CHECKSUMS:
+  AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
+  VimeoNetworking: dac22e43aff60cfbc8cb93af745196bf9856604d
+
+PODFILE CHECKSUM: 146fd1976b672b1ae21dc4df68c9a5c57b3a48aa
+
+COCOAPODS: 1.1.1
