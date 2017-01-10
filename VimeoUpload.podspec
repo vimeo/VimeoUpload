@@ -32,6 +32,5 @@ Pod::Spec.new do |s|
 #  s.osx.exclude_files = "VimeoUpload/Operations/PHAssetOperation.swift"
 
   s.dependency 'VimeoNetworking'
-  s.dependency 'AFNetworking'
 
 end

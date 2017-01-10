@@ -21,7 +21,6 @@ PODS:
     - AFNetworking (= 3.1.0)
 
 DEPENDENCIES:
-  - AFNetworking (= 3.1.0)
   - VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, commit `be393b925c3fb523c54b0c59a659e5b3c959858d`)
 
 EXTERNAL SOURCES:
@@ -38,6 +37,6 @@ SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   VimeoNetworking: dac22e43aff60cfbc8cb93af745196bf9856604d
 
-PODFILE CHECKSUM: 51925e18f9c69944ad195c7eb92bc3a6bdf2b8ca
+PODFILE CHECKSUM: 146fd1976b672b1ae21dc4df68c9a5c57b3a48aa
 
 COCOAPODS: 1.1.1
