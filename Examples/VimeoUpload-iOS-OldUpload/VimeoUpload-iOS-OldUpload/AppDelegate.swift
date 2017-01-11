@@ -59,7 +59,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         self.window?.rootViewController = tabBarController
         self.window?.makeKeyAndVisible()
         
-        self.requestCameraRollAccessIfNecessary()
+        // Adding this here as work-around to stop system notifications from fuxing with
+        // unit tests, which launch the app, and hang until the notification is addressed.
+        if NSClassFromString("XCTestCase") == nil
+        {
+            self.requestCameraRollAccessIfNecessary()
+        }
         
         return true
     }
