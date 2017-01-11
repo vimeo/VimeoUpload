@@ -11,4 +11,5 @@ dependencies:
 
 test:
   override:
-    - bundle exec fastlane all
+    - bundle exec fastlane test
+    - cp -a ./fastlane/test_output-* $CIRCLE_TEST_REPORTS/
