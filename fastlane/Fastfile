@@ -28,8 +28,6 @@ platform :ios do
       "ios" => ["VimeoUpload-iOS", "generic/platform=iOS"],
       "iosold" => ["VimeoUpload-iOS-OldUpload", "generic/platform=iOS"],
     }
-    
-    cocoapods
 
     # cant use gym: https://github.com/fastlane/fastlane/issues/1816
     xcodebuild(
