@@ -48,8 +48,6 @@ platform :ios do
 
   desc "run test"
   lane :run_test do |options|
-    cocoapods
-
     # Work-around to hanging simulators
     ENV['FASTLANE_EXPLICIT_OPEN_SIMULATOR'] = "1"
     scan(
