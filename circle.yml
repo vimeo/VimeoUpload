@@ -11,4 +11,4 @@ dependencies:
 
 test:
   override:
-    - bundle exec fastlane all
+    - bundle exec fastlane test
