@@ -13,4 +13,3 @@ test:
   override:
     - bundle exec fastlane test
     - cp -a ./fastlane/test_output-* $CIRCLE_TEST_REPORTS/
-    - mv $CIRCLE_TEST_REPORTS/test_output-VimeoUpload-iOS/report.junit $CIRCLE_TEST_REPORTS/test_output-VimeoUpload-iOS/junit.xml
