@@ -78,6 +78,10 @@ platform :ios do
     
     ios
     iosold
+
+    if is_ci?
+      danger(use_bundle_exec: false)
+    end
     
   end
 
