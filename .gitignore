@@ -29,7 +29,9 @@ Carthage/Build
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
-fastlane/test_output
+fastlane/test_output*
 
 # Exclude fastlane xcode log
 xcodebuild.log
+
+VimeoUpload-iOS-*.log

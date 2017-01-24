@@ -18,7 +18,6 @@
 		AFFA40161C9CE8E000C7B6F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AFFA40151C9CE8E000C7B6F3 /* Assets.xcassets */; };
 		AFFA40191C9CE8E000C7B6F3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AFFA40171C9CE8E000C7B6F3 /* LaunchScreen.storyboard */; };
 		AFFA40241C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40231C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadTests.swift */; };
-		AFFA402F1C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA402E1C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadUITests.swift */; };
 		AFFA40471C9CE9B600C7B6F3 /* UploadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA403E1C9CE9B600C7B6F3 /* UploadCell.swift */; };
 		AFFA40481C9CE9B600C7B6F3 /* UploadCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AFFA403F1C9CE9B600C7B6F3 /* UploadCell.xib */; };
 		AFFA40491C9CE9B600C7B6F3 /* OldVimeoUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA40401C9CE9B600C7B6F3 /* OldVimeoUploader.swift */; };
@@ -32,13 +31,6 @@
 
 /* Begin PBXContainerItemProxy section */
 		AFFA40201C9CE8E000C7B6F3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AFFA40031C9CE8E000C7B6F3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AFFA400A1C9CE8E000C7B6F3;
-			remoteInfo = "VimeoUpload-iOS-OldUpload";
-		};
-		AFFA402B1C9CE8E000C7B6F3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AFFA40031C9CE8E000C7B6F3 /* Project object */;
 			proxyType = 1;
@@ -76,9 +68,6 @@
 		AFFA401F1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "VimeoUpload-iOS-OldUploadTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFFA40231C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VimeoUpload_iOS_OldUploadTests.swift; sourceTree = "<group>"; };
 		AFFA40251C9CE8E000C7B6F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AFFA402A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "VimeoUpload-iOS-OldUploadUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AFFA402E1C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VimeoUpload_iOS_OldUploadUITests.swift; sourceTree = "<group>"; };
-		AFFA40301C9CE8E000C7B6F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AFFA403C1C9CE9B600C7B6F3 /* Bridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bridge.h; sourceTree = "<group>"; };
 		AFFA403E1C9CE9B600C7B6F3 /* UploadCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadCell.swift; sourceTree = "<group>"; };
 		AFFA403F1C9CE9B600C7B6F3 /* UploadCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadCell.xib; sourceTree = "<group>"; };
@@ -110,13 +99,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4855524B70D6851D40A4A4F7 /* Pods_VimeoUpload_iOS_OldUploadTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AFFA40271C9CE8E000C7B6F3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,7 +149,6 @@
 			children = (
 				AFFA400D1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload */,
 				AFFA40221C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadTests */,
-				AFFA402D1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests */,
 				AFFA400C1C9CE8E000C7B6F3 /* Products */,
 				28B7387BC89169C51D7C4578 /* Pods */,
 				BFAE01663A3415731065DAAA /* Frameworks */,
@@ -179,7 +160,6 @@
 			children = (
 				AFFA400B1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload.app */,
 				AFFA401F1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadTests.xctest */,
-				AFFA402A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -207,15 +187,6 @@
 				AFFA40251C9CE8E000C7B6F3 /* Info.plist */,
 			);
 			path = "VimeoUpload-iOS-OldUploadTests";
-			sourceTree = "<group>";
-		};
-		AFFA402D1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests */ = {
-			isa = PBXGroup;
-			children = (
-				AFFA402E1C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadUITests.swift */,
-				AFFA40301C9CE8E000C7B6F3 /* Info.plist */,
-			);
-			path = "VimeoUpload-iOS-OldUploadUITests";
 			sourceTree = "<group>";
 		};
 		AFFA403D1C9CE9B600C7B6F3 /* Cells */ = {
@@ -294,24 +265,6 @@
 			productReference = AFFA401F1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		AFFA40291C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AFFA40391C9CE8E000C7B6F3 /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-OldUploadUITests" */;
-			buildPhases = (
-				AFFA40261C9CE8E000C7B6F3 /* Sources */,
-				AFFA40271C9CE8E000C7B6F3 /* Frameworks */,
-				AFFA40281C9CE8E000C7B6F3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AFFA402C1C9CE8E000C7B6F3 /* PBXTargetDependency */,
-			);
-			name = "VimeoUpload-iOS-OldUploadUITests";
-			productName = "VimeoUpload-iOS-OldUploadUITests";
-			productReference = AFFA402A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -328,11 +281,6 @@
 						LastSwiftMigration = 0810;
 					};
 					AFFA401E1C9CE8E000C7B6F3 = {
-						CreatedOnToolsVersion = 7.2;
-						LastSwiftMigration = 0810;
-						TestTargetID = AFFA400A1C9CE8E000C7B6F3;
-					};
-					AFFA40291C9CE8E000C7B6F3 = {
 						CreatedOnToolsVersion = 7.2;
 						LastSwiftMigration = 0810;
 						TestTargetID = AFFA400A1C9CE8E000C7B6F3;
@@ -354,7 +302,6 @@
 			targets = (
 				AFFA400A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload */,
 				AFFA401E1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadTests */,
-				AFFA40291C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUploadUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -375,13 +322,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AFFA401D1C9CE8E000C7B6F3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AFFA40281C9CE8E000C7B6F3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -507,14 +447,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AFFA40261C9CE8E000C7B6F3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AFFA402F1C9CE8E000C7B6F3 /* VimeoUpload_iOS_OldUploadUITests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -522,11 +454,6 @@
 			isa = PBXTargetDependency;
 			target = AFFA400A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload */;
 			targetProxy = AFFA40201C9CE8E000C7B6F3 /* PBXContainerItemProxy */;
-		};
-		AFFA402C1C9CE8E000C7B6F3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AFFA400A1C9CE8E000C7B6F3 /* VimeoUpload-iOS-OldUpload */;
-			targetProxy = AFFA402B1C9CE8E000C7B6F3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -690,32 +617,6 @@
 			};
 			name = Release;
 		};
-		AFFA403A1C9CE8E000C7B6F3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "VimeoUpload-iOS-OldUploadUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUploadUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
-				TEST_TARGET_NAME = "VimeoUpload-iOS-OldUpload";
-				USES_XCTRUNNER = YES;
-			};
-			name = Debug;
-		};
-		AFFA403B1C9CE8E000C7B6F3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "VimeoUpload-iOS-OldUploadUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS-OldUploadUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
-				TEST_TARGET_NAME = "VimeoUpload-iOS-OldUpload";
-				USES_XCTRUNNER = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -742,15 +643,6 @@
 			buildConfigurations = (
 				AFFA40371C9CE8E000C7B6F3 /* Debug */,
 				AFFA40381C9CE8E000C7B6F3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AFFA40391C9CE8E000C7B6F3 /* Build configuration list for PBXNativeTarget "VimeoUpload-iOS-OldUploadUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AFFA403A1C9CE8E000C7B6F3 /* Debug */,
-				AFFA403B1C9CE8E000C7B6F3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
