@@ -46,21 +46,42 @@ platform :ios do
 
   end
 
-  desc "build ios"
+  desc "run test"
+  lane :run_test do |options|
+    # Work-around to hanging simulators
+    ENV['FASTLANE_EXPLICIT_OPEN_SIMULATOR'] = "1"
+    scan(
+      workspace: "VimeoUpload.xcworkspace",
+      scheme: options[:scheme],
+      configuration: "Debug",
+      buildlog_path: ".",
+      output_directory: "./fastlane/test_output-#{options[:scheme]}",
+      derived_data_path: "build/",
+      formatter: 'xcpretty-json-formatter',
+    )
+
+    pretty_junit(file_pattern: "./fastlane/test_output-#{options[:scheme]}/report.junit")
+  end
+
+  desc "test ios"
   lane :ios do |options|
-    build_example(type:"ios")
+    run_test(scheme: "VimeoUpload-iOS")
   end
 
-  desc "build ios old"
+  desc "test ios old"
   lane :iosold do |options|
-    build_example(type:"iosold")
+    run_test(scheme: "VimeoUpload-iOS-OldUpload")
   end
 
-  desc "build all"
-  lane :all do |options|
+  desc "test all"
+  lane :test do |options|
     
     ios
     iosold
+
+    if is_ci?
+      danger(use_bundle_exec: false)
+    end
     
   end
 
