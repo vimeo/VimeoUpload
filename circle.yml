@@ -4,9 +4,8 @@ machine:
 
 dependencies:
     override:
-        - bundle install
+        - bundle install --deployment
     cache_directories:
-        - "Pods"
         - "vendor/bundle"
 
 test:
