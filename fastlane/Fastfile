@@ -50,6 +50,8 @@ platform :ios do
   lane :run_test do |options|
     # Work-around to hanging simulators
     ENV['FASTLANE_EXPLICIT_OPEN_SIMULATOR'] = "1"
+    # custom paths for xcpretty-formatter; see Dangerfile
+    ENV['XCPRETTY_JSON_FILE_OUTPUT'] = "build/reports/errors-#{options[:scheme]}.json"
     scan(
       workspace: "VimeoUpload.xcworkspace",
       scheme: options[:scheme],
