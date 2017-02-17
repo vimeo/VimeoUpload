@@ -38,16 +38,6 @@
                ReferencedContainer = "container:VimeoUpload-iOS-OldUpload.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AFFA40291C9CE8E000C7B6F3"
-               BuildableName = "VimeoUpload-iOS-OldUploadUITests.xctest"
-               BlueprintName = "VimeoUpload-iOS-OldUploadUITests"
-               ReferencedContainer = "container:VimeoUpload-iOS-OldUpload.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
