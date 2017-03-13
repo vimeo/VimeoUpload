@@ -57,8 +57,8 @@ open class VideoDeletionManager: NSObject
         self.sessionManager = sessionManager
         self.retryCount = retryCount
      
-        self.operationQueue = NSOperationQueue()
-        self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
+        self.operationQueue = OperationQueue()
+        self.operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
         self.archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey)
         
         super.init()
@@ -110,7 +110,7 @@ open class VideoDeletionManager: NSObject
     
     fileprivate func save()
     {
-        self.archiver.saveObject(self.deletions, key: type(of: self).DeletionsArchiveKey)
+        self.archiver.saveObject(self.deletions as AnyObject, key: type(of: self).DeletionsArchiveKey)
     }
     
     // MARK: Public API
@@ -137,16 +137,16 @@ open class VideoDeletionManager: NSObject
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
                 
                 if let error = operation.error
                 {
-                    if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? NSHTTPURLResponse, response.statusCode == 404
+                    if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse, response.statusCode == 404
                     {
-                        strongSelf.deletions.removeValueForKey(uri) // The video has already been deleted
+                        strongSelf.deletions.removeValue(forKey: uri) // The video has already been deleted
                         strongSelf.save()
 
                         return
@@ -159,13 +159,13 @@ open class VideoDeletionManager: NSObject
                     }
                     else
                     {
-                        strongSelf.deletions.removeValueForKey(uri) // We retried the required number of times, nothing more to do
+                        strongSelf.deletions.removeValue(forKey: uri) // We retried the required number of times, nothing more to do
                         strongSelf.save()
                     }
                 }
                 else
                 {
-                    strongSelf.deletions.removeValueForKey(uri)
+                    strongSelf.deletions.removeValue(forKey: uri)
                     strongSelf.save()
                 }
             })
@@ -192,17 +192,17 @@ open class VideoDeletionManager: NSObject
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    func applicationWillEnterForeground(_ notification: Notification)
+    func applicationWillEnterForeground(_ notification: NSNotification)
     {
         self.operationQueue.isSuspended = false
     }
 
-    func applicationDidEnterBackground(_ notification: Notification)
+    func applicationDidEnterBackground(_ notification: NSNotification)
     {
         self.operationQueue.isSuspended = true
     }
 
-    func reachabilityDidChange(_ notification: Notification?)
+    func reachabilityDidChange(_ notification: NSNotification?)
     {
         let currentlyReachable = AFNetworkReachabilityManager.shared().isReachable
         
