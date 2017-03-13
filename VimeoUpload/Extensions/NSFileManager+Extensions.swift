@@ -38,11 +38,11 @@ public extension FileManager
     
     public func deleteFileAtURL(_ url: URL)
     {
-        if let path = url.path, self.fileExists(atPath: path)
+        if self.fileExists(atPath: url.path)
         {
             do
             {
-                try self.removeItem(atPath: path)
+                try self.removeItem(atPath: url.path)
             }
             catch let error as NSError
             {
