@@ -65,7 +65,7 @@ open class CreateVideoOperation: ConcurrentOperation
         
         do
         {
-            self.task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, completionHandler: { [weak self] (uploadTicket, error) -> Void in
+            self.task = try self.sessionManager.createVideoDataTask(url: url as NSURL, videoSettings: videoSettings, completionHandler: { [weak self] (uploadTicket, error) -> Void in
                 
                 guard let strongSelf = self else
                 {
@@ -74,7 +74,7 @@ open class CreateVideoOperation: ConcurrentOperation
                 
                 strongSelf.task = nil
                 
-                if strongSelf.cancelled
+                if strongSelf.isCancelled
                 {
                     return
                 }
@@ -92,7 +92,7 @@ open class CreateVideoOperation: ConcurrentOperation
                     fatalError("Execution should never reach this point")
                 }
                 
-                strongSelf.state = .Finished
+                strongSelf.state = .finished
             })
             
             self.task?.resume()
