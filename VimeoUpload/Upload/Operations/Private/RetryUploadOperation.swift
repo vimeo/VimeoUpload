@@ -58,7 +58,7 @@ open class RetryUploadOperation: ConcurrentOperation
     init(sessionManager: VimeoSessionManager)
     {
         self.sessionManager = sessionManager
-        self.operationQueue = NSOperationQueue()
+        self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
     }
     
@@ -100,7 +100,7 @@ open class RetryUploadOperation: ConcurrentOperation
                     return
                 }
                 
-                if strongSelf.cancelled
+                if strongSelf.isCancelled
                 {
                     return
                 }
