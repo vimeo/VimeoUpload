@@ -77,12 +77,12 @@ open class VideoSettings: NSObject
         
         if let privacy = self.privacy, privacy.characters.count > 0
         {
-            parameters["privacy"] = ["view": privacy]
+            parameters["privacy"] = (["view": privacy] as AnyObject)
         }
         
         if let users = self.users
         {
-            parameters["users"] = users.map { ["uri": $0] }
+            parameters["users"] = (users.map { ["uri": $0] } as AnyObject)
         }
         
         if let password = self.password
