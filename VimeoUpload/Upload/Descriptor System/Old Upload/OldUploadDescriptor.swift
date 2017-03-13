@@ -151,16 +151,16 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
             switch self.currentRequest
             {
             case .Create:
-                self.uploadTicket = try responseSerializer.processCreateVideoResponse(task.response, url: url, error: error)
+                self.uploadTicket = try responseSerializer.processCreateVideoResponse(task.response, url: url as NSURL?, error: error)
                 
             case .Upload:
                 break
                 
             case .Activate:
-                self.videoUri = try responseSerializer.processActivateVideoResponse(task.response, url: url, error: error)
+                self.videoUri = try responseSerializer.processActivateVideoResponse(task.response, url: url as NSURL?, error: error)
                 
             case .Settings:
-                self.video = try responseSerializer.processVideoSettingsResponse(task.response, url: url, error: error)
+                self.video = try responseSerializer.processVideoSettingsResponse(task.response, url: url as NSURL?, error: error)
             }
         }
         catch let error as NSError
@@ -185,7 +185,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first
             {
                 let domain = self.errorDomainForRequest(self.currentRequest)
-                self.error = taskError.errorByAddingDomain(domain)
+                self.error = (taskError as NSError).errorByAddingDomain(domain)
             }
             else if let error = error
             {
@@ -231,7 +231,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         switch request
         {
         case .Create:
-            return try sessionManager.createVideoDownloadTask(url: self.url)
+            return try sessionManager.createVideoDownloadTask(url: self.url as NSURL)
             
         case .Upload:
             guard let uploadUri = self.uploadTicket?.uploadLinkSecure else
@@ -239,7 +239,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
 
-            return try sessionManager.uploadVideoTask(source: self.url, destination: uploadUri, completionHandler: nil)
+            return try sessionManager.uploadVideoTask(source: self.url as NSURL, destination: uploadUri, completionHandler: nil)
             
         case .Activate:
             guard let activationUri = self.uploadTicket?.completeUri else
@@ -283,7 +283,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         self.url = aDecoder.decodeObject(forKey: "url") as! URL // If force unwrap fails we have a big problem
         self.videoSettings = aDecoder.decodeObject(forKey: "videoSettings") as? VideoSettings
-        self.uploadTicket = aDecoder.decodeObjectForKey("uploadTicket") as? VIMUploadTicket
+        self.uploadTicket = aDecoder.decodeObject(forKey: "uploadTicket") as? VIMUploadTicket
         self.videoUri = aDecoder.decodeObject(forKey: "videoUri") as? String
         self.currentRequest = OldUploadRequest(rawValue: aDecoder.decodeObject(forKey: "currentRequest") as! String)!
 
@@ -294,7 +294,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         aCoder.encode(self.url, forKey: "url")
         aCoder.encode(self.videoSettings, forKey: "videoSettings")
-        aCoder.encodeObject(self.uploadTicket, forKey: "uploadTicket")
+        aCoder.encode(self.uploadTicket, forKey: "uploadTicket")
         aCoder.encode(self.videoUri, forKey: "videoUri")
         aCoder.encode(self.currentRequest.rawValue, forKey: "currentRequest")
         
