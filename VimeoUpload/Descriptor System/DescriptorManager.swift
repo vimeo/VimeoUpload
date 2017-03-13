@@ -250,8 +250,8 @@ open class DescriptorManager: NSObject
                     return
                 }
                 
-                strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error)
-                descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error)
+                strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error as NSError?)
+                descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error as NSError?)
                 
                 if descriptor.state == .Finished
                 {
