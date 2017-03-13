@@ -46,7 +46,7 @@ typealias UploadUserAndCameraRollAsset = (user: VIMUser, cameraRollAsset: VIMPHA
 class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
     static let NibName = "BaseCameraRollViewController"
-    private static let CollectionViewSpacing: CGFloat = 2
+    fileprivate static let CollectionViewSpacing: CGFloat = 2
     
     var sessionManager: VimeoSessionManager!
     
@@ -57,12 +57,12 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     // MARK: 
     
-    private var assets: [VIMPHAsset] = []
-    private var cameraRollAssetHelper: PHAssetHelper?
-    private var operation: MeQuotaOperation?
-    private var me: VIMUser? // We store this in a property instead of on the operation itself, so that we can refresh it independent of the operation [AH]
-    private var meOperation: MeOperation?
-    private var selectedIndexPath: NSIndexPath?
+    fileprivate var assets: [VIMPHAsset] = []
+    fileprivate var cameraRollAssetHelper: PHAssetHelper?
+    fileprivate var operation: MeQuotaOperation?
+    fileprivate var me: VIMUser? // We store this in a property instead of on the operation itself, so that we can refresh it independent of the operation [AH]
+    fileprivate var meOperation: MeOperation?
+    fileprivate var selectedIndexPath: IndexPath?
     
     // MARK: Lifecycle
     
@@ -86,32 +86,32 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         self.setupAndStartOperation()
     }
     
-    override func viewDidAppear(animated: Bool)
+    override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
         
         if let indexPath = self.selectedIndexPath // Deselect the previously selected item upon return from video settings
         {
-            self.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+            self.collectionView.deselectItem(at: indexPath, animated: true)
         }
     }
     
     // MARK: Observers
     
-    private func addObservers()
+    fileprivate func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }
     
-    private func removeObservers()
+    fileprivate func removeObservers()
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillEnterForegroundNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }
     
     // Ensure that we refresh the me object on return from background
     // In the event that a user modified their upload quota while the app was backgrounded [AH] 12/06/2015
     
-    func applicationWillEnterForeground(notification: NSNotification)
+    func applicationWillEnterForeground(_ notification: Notification)
     {
         if self.meOperation != nil
         {
@@ -121,7 +121,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         let operation = MeOperation(sessionManager: self.sessionManager)
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
@@ -130,7 +130,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
                 
                 strongSelf.meOperation = nil
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -150,16 +150,16 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     // MARK: Setup
     
-    private func loadAssets() -> [VIMPHAsset]
+    fileprivate func loadAssets() -> [VIMPHAsset]
     {
         var assets = [VIMPHAsset]()
 
         let options = PHFetchOptions()
         options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
-        let fetchResult = PHAsset.fetchAssetsWithMediaType(.Video, options: options)
+        let fetchResult = PHAsset.fetchAssets(with: .video, options: options)
 
-        fetchResult.enumerateObjectsUsingBlock{ (object: AnyObject?, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+        fetchResult.enumerateObjects{ (object: AnyObject?, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
 
             if let phAsset = object as? PHAsset
             {
@@ -171,29 +171,29 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         return assets
     }
 
-    private func setupCollectionView()
+    fileprivate func setupCollectionView()
     {
         let nib = UINib(nibName: DemoCameraRollCell.NibName, bundle: nil)
-        self.collectionView.registerNib(nib, forCellWithReuseIdentifier: DemoCameraRollCell.CellIdentifier)
+        self.collectionView.register(nib, forCellWithReuseIdentifier: DemoCameraRollCell.CellIdentifier)
         
         let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout
         layout?.minimumInteritemSpacing = BaseCameraRollViewController.CollectionViewSpacing
         layout?.minimumLineSpacing = BaseCameraRollViewController.CollectionViewSpacing
     }
     
-    private func setupAndStartOperation()
+    fileprivate func setupAndStartOperation()
     {
         let operation = MeQuotaOperation(sessionManager: self.sessionManager, me: self.me)
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -225,14 +225,14 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     // MARK: UICollectionViewDataSource
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         return self.assets.count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(DemoCameraRollCell.CellIdentifier, forIndexPath: indexPath) as! DemoCameraRollCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DemoCameraRollCell.CellIdentifier, for: indexPath) as! DemoCameraRollCell
         
         let cameraRollAsset = self.assets[indexPath.item]
         
@@ -242,7 +242,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath)
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
     {
         let cameraRollAsset = self.assets[indexPath.item] 
         
@@ -251,23 +251,23 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     // MARK: UICollectionViewFlowLayoutDelegate
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
         let dimension = (collectionView.bounds.size.width - BaseCameraRollViewController.CollectionViewSpacing) / 2
 
-        return CGSizeMake(dimension, dimension)
+        return CGSize(width: dimension, height: dimension)
     }
     
     // MARK: UICollectionViewDelegate
     
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath)
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         self.didSelectIndexPath(indexPath)
     }
     
     // MARK: Private API
         
-    private func didSelectIndexPath(indexPath: NSIndexPath)
+    fileprivate func didSelectIndexPath(_ indexPath: IndexPath)
     {
         let cameraRollAsset = self.assets[indexPath.item]
         
@@ -287,7 +287,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         }
         else
         {
-            if AFNetworkReachabilityManager.sharedManager().reachable == false
+            if AFNetworkReachabilityManager.shared().isReachable == false
             {
                 let error = NSError(domain: NSURLErrorDomain, code: NSURLErrorNotConnectedToInternet, userInfo: [NSLocalizedDescriptionKey: "The internet connection appears to be offline."])
                 self.presentErrorAlert(indexPath, error: error)
@@ -308,20 +308,20 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     // MARK: UI Presentation
 
-    private func presentAssetErrorAlert(indexPath: NSIndexPath, error: NSError)
+    fileprivate func presentAssetErrorAlert(_ indexPath: IndexPath, error: NSError)
     {
-        let alert = UIAlertController(title: "Asset Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.collectionView.reloadItemsAtIndexPaths([indexPath]) // Let the user manually reselect the cell since reload is async
+        let alert = UIAlertController(title: "Asset Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+            self?.collectionView.reloadItems(at: [indexPath]) // Let the user manually reselect the cell since reload is async
         }))
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
-    private func presentErrorAlert(indexPath: NSIndexPath, error: NSError)
+    fileprivate func presentErrorAlert(_ indexPath: IndexPath, error: NSError)
     {
-        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
             
             guard let strongSelf = self else
             {
@@ -329,11 +329,11 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
             }
             
             strongSelf.selectedIndexPath = nil
-            strongSelf.collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+            strongSelf.collectionView.deselectItem(at: indexPath, animated: true)
             strongSelf.setupAndStartOperation()
         }))
 
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
         
             guard let strongSelf = self else
             {
@@ -344,10 +344,10 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
             strongSelf.didSelectIndexPath(indexPath)
         }))
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
 
-    private func finish(cameraRollAsset cameraRollAsset: VIMPHAsset)
+    fileprivate func finish(cameraRollAsset: VIMPHAsset)
     {
         let me = self.me!
 
@@ -365,7 +365,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         self.title = "Camera Roll"
     }
 
-    func didFinishWithResult(result: UploadUserAndCameraRollAsset)
+    func didFinishWithResult(_ result: UploadUserAndCameraRollAsset)
     {
         assertionFailure("Subclasses must override")
     }

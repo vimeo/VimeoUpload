@@ -30,7 +30,7 @@ import VimeoUpload
 
 protocol VideoCellDelegate: class
 {
-    func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
+    func cellDidDeleteVideoWithUri(cell: VideoCell, videoUri: String)
 }
 
 class VideoCell: UITableViewCell
@@ -55,14 +55,14 @@ class VideoCell: UITableViewCell
 
     // MARK: 
     
-    private static let ProgressKeyPath = "progressObservable"
-    private static let StateKeyPath = "stateObservable"
-    private var progressKVOContext = UInt8()
-    private var stateKVOContext = UInt8()
+    fileprivate static let ProgressKeyPath = "progressObservable"
+    fileprivate static let StateKeyPath = "stateObservable"
+    fileprivate var progressKVOContext = UInt8()
+    fileprivate var stateKVOContext = UInt8()
     
-    private var observersAdded = false
+    fileprivate var observersAdded = false
 
-    private var descriptor: UploadDescriptor?
+    fileprivate var descriptor: UploadDescriptor?
     {
         willSet
         {
@@ -125,7 +125,7 @@ class VideoCell: UITableViewCell
     
     // MARK: Actions
     
-    @IBAction func didTapDeleteButton(sender: UIButton)
+    @IBAction func didTapDeleteButton(_ sender: UIButton)
     {
         if let videoUri = self.video?.uri
         {
@@ -138,53 +138,53 @@ class VideoCell: UITableViewCell
 
     // MARK: Video Setup
     
-    private func setupImageView(video video: VIMVideo)
+    fileprivate func setupImageView(video: VIMVideo)
     {
-        let width = Float(self.thumbnailImageView.frame.size.width * UIScreen.mainScreen().scale)
-        if let picture = video.pictureCollection?.pictureForWidth(width), let link = picture.link, let url = NSURL(string: link)
+        let width = Float(self.thumbnailImageView.frame.size.width * UIScreen.main.scale)
+        if let picture = video.pictureCollection?.picture(forWidth: width), let link = picture.link, let url = URL(string: link)
         {
-            self.thumbnailImageView.setImageWithURL(url)
+            self.thumbnailImageView.setImageWith(url)
         }
     }
     
-    private func setupStatusLabel(video video: VIMVideo)
+    fileprivate func setupStatusLabel(video: VIMVideo)
     {
         self.statusLabel.text = video.status
     }
 
     // MARK: Descriptor Setup
 
-    private func updateProgress(progress: Double)
+    fileprivate func updateProgress(_ progress: Double)
     {
         let width = self.contentView.frame.size.width
         let constant = CGFloat(1 - progress) * width
         self.progressConstraint.constant = constant
     }
 
-    private func updateState(state: DescriptorState)
+    fileprivate func updateState(_ state: DescriptorState)
     {
         switch state
         {
         case .Ready:
             self.updateProgress(0)
-            self.progressView.hidden = false
-            self.deleteButton.setTitle("Cancel", forState: .Normal)
+            self.progressView.isHidden = false
+            self.deleteButton.setTitle("Cancel", for: UIControlState())
             self.errorLabel.text = "Ready"
             
         case .Executing:
-            self.progressView.hidden = false
-            self.deleteButton.setTitle("Cancel", forState: .Normal)
+            self.progressView.isHidden = false
+            self.deleteButton.setTitle("Cancel", for: UIControlState())
             self.errorLabel.text = "Executing"
 
         case .Suspended:
             self.updateProgress(0)
-            self.progressView.hidden = true
+            self.progressView.isHidden = true
             self.errorLabel.text = "Suspended"
 
         case .Finished:
             self.updateProgress(0) // Reset the progress bar to 0
-            self.progressView.hidden = true
-            self.deleteButton.setTitle("Delete", forState: .Normal)
+            self.progressView.isHidden = true
+            self.deleteButton.setTitle("Delete", for: UIControlState())
 
             if let error = self.descriptor?.error
             {
@@ -199,62 +199,62 @@ class VideoCell: UITableViewCell
 
     // MARK: KVO
     
-    private func addObserversIfNecessary()
+    fileprivate func addObserversIfNecessary()
     {
-        if let descriptor = self.descriptor where self.observersAdded == false
+        if let descriptor = self.descriptor, self.observersAdded == false
         {
-            descriptor.addObserver(self, forKeyPath: self.dynamicType.StateKeyPath, options: .New, context: &self.stateKVOContext)
-            descriptor.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: .New, context: &self.progressKVOContext)
+            descriptor.addObserver(self, forKeyPath: type(of: self).StateKeyPath, options: .new, context: &self.stateKVOContext)
+            descriptor.addObserver(self, forKeyPath: type(of: self).ProgressKeyPath, options: .new, context: &self.progressKVOContext)
             
             self.observersAdded = true
         }
     }
     
-    private func removeObserversIfNecessary()
+    fileprivate func removeObserversIfNecessary()
     {
-        if let descriptor = self.descriptor where self.observersAdded == true
+        if let descriptor = self.descriptor, self.observersAdded == true
         {
-            descriptor.removeObserver(self, forKeyPath: self.dynamicType.StateKeyPath, context: &self.stateKVOContext)
-            descriptor.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
+            descriptor.removeObserver(self, forKeyPath: type(of: self).StateKeyPath, context: &self.stateKVOContext)
+            descriptor.removeObserver(self, forKeyPath: type(of: self).ProgressKeyPath, context: &self.progressKVOContext)
             
             self.observersAdded = false
         }
     }
 
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
     {
         if let keyPath = keyPath
         {
             switch (keyPath, context)
             {
-            case(self.dynamicType.ProgressKeyPath, &self.progressKVOContext):
+            case(type(of: self).ProgressKeyPath, self.progressKVOContext):
                 
-                let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
+                let progress = (change?[NSKeyValueChangeKey.newKey] as AnyObject).doubleValue ?? 0;
                 
-                dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                DispatchQueue.main.async(execute: { [weak self] () -> Void in
                     // Set the progress view to visible here so that the view has already been laid out
                     // And therefore the initial state is calculated based on the laid out width of the cell
                     // Doing this in awakeFromNib is too early, the width is incorrect [AH] 11/25/2015
-                    self?.progressView.hidden = false
+                    self?.progressView.isHidden = false
                     self?.updateProgress(progress)
                 })
 
-            case(self.dynamicType.StateKeyPath, &self.stateKVOContext):
+            case(type(of: self).StateKeyPath, self.stateKVOContext):
                 
-                let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? DescriptorState.Ready.rawValue;
+                let stateRaw = (change?[NSKeyValueChangeKey.newKey] as? String) ?? DescriptorState.Ready.rawValue;
                 let state = DescriptorState(rawValue: stateRaw)!
 
-                dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                DispatchQueue.main.async(execute: { [weak self] () -> Void in
                     self?.updateState(state)
                 })
 
             default:
-                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+                super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             }
         }
         else
         {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
 }

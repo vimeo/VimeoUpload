@@ -36,11 +36,11 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
     @IBOutlet weak var fileSizeLabel: UILabel!
     @IBOutlet weak var durationlabel: UILabel!
     
-    override var selected: Bool
+    override var isSelected: Bool
     {
         didSet
         {
-            if selected == true
+            if isSelected == true
             {
                 self.imageView.alpha = 0.5
             }
@@ -69,7 +69,7 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
     
     // MARK: Private API
     
-    private func clear()
+    fileprivate func clear()
     {
         self.imageView.image = nil
         self.fileSizeLabel.text = ""
@@ -78,24 +78,24 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
     
     // MARK: CameraRollAssetCell Protocol
     
-    func setImage(image: UIImage)
+    func setImage(_ image: UIImage)
     {
         self.imageView.image = image
     }
     
-    func setDuration(seconds seconds: Float64)
+    func setDuration(seconds: Float64)
     {
         var string: NSString = ""
 
         if seconds > 0
         {
-            string = String.stringFromDurationInSeconds(seconds) as String
+            string = String.stringFromDurationInSeconds(seconds) as String as String as NSString
         }
 
         self.durationlabel?.text = string as String
     }
     
-    func setFileSize(bytes bytes: Float64)
+    func setFileSize(bytes: Float64)
     {
         var string: NSString = ""
         

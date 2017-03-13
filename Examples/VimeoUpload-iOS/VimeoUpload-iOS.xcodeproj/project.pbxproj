@@ -278,11 +278,11 @@
 					AFFA3F131C9CE22500C7B6F3 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = 35R365FS4Q;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0820;
 					};
 					AFFA3F271C9CE22500C7B6F3 = {
 						CreatedOnToolsVersion = 7.2;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0820;
 					};
 				};
 			};
@@ -572,7 +572,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/VimeoUpload-iOS/Bridge.h";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -589,7 +589,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/VimeoUpload-iOS/Bridge.h";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -601,7 +601,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -613,7 +613,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alfiehanssen.VimeoUpload-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

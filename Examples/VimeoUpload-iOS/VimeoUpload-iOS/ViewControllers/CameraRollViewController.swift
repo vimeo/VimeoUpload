@@ -42,12 +42,12 @@ class CameraRollViewController: BaseCameraRollViewController
     {
         super.setupNavigationBar()
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(CameraRollViewController.didTapCancel(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(CameraRollViewController.didTapCancel(_:)))
     }
     
-    override func didFinishWithResult(result: UploadUserAndCameraRollAsset)
+    override func didFinishWithResult(_ result: UploadUserAndCameraRollAsset)
     {
-        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
+        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:Bundle.main)
         viewController.input = result
         
         self.navigationController?.pushViewController(viewController, animated: true)
@@ -55,8 +55,8 @@ class CameraRollViewController: BaseCameraRollViewController
     
     // MARK: Actions
     
-    func didTapCancel(sender: UIBarButtonItem)
+    func didTapCancel(_ sender: UIBarButtonItem)
     {
-        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        self.navigationController?.dismiss(animated: true, completion: nil)
     }
 }
