@@ -100,6 +100,6 @@ extension NSError
             augmentedInfo.addEntries(from: userInfo)
         }
         
-        return NSError(domain: self.domain, code: self.code, userInfo: augmentedInfo as? [AnyHashable: Any])
+        return NSError(domain: self.domain, code: self.code, userInfo: (augmentedInfo as NSDictionary) as? [AnyHashable: Any])
     }
 }
