@@ -125,7 +125,7 @@ extension VimeoResponseSerializer
     {
         do
         {
-            try responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)
+            _ = try responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)
         }
         catch let error as NSError
         {
