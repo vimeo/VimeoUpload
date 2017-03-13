@@ -32,10 +32,10 @@ extension VimeoRequestSerializer
 {    
     func meRequest() throws -> NSMutableURLRequest
     {
-        let url = NSURL(string: "/me", relativeToURL: VimeoBaseURLString)!
+        let url = NSURL(string: "/me", relativeTo: VimeoBaseURLString)!
         var error: NSError?
         
-        let request = self.requestWithMethod("GET", URLString: url.absoluteString!, parameters: nil, error: &error)
+        let request = self.request(withMethod: "GET", urlString: url.absoluteString!, parameters: nil, error: &error)
         if let error = error
         {
             throw error.errorByAddingDomain(UploadErrorDomain.Me.rawValue)
@@ -46,10 +46,10 @@ extension VimeoRequestSerializer
 
     func myVideosRequest() throws -> NSMutableURLRequest
     {
-        let url = NSURL(string: "/me/videos", relativeToURL: VimeoBaseURLString)!
+        let url = NSURL(string: "/me/videos", relativeTo: VimeoBaseURLString)!
         var error: NSError?
         
-        let request = self.requestWithMethod("GET", URLString: url.absoluteString!, parameters: nil, error: &error)
+        let request = self.request(withMethod: "GET", urlString: url.absoluteString!, parameters: nil, error: &error)
         if let error = error
         {
             throw error.errorByAddingDomain(UploadErrorDomain.MyVideos.rawValue)
@@ -62,7 +62,7 @@ extension VimeoRequestSerializer
     {
         let parameters = try self.createVideoRequestBaseParameters(url: url)
         
-        let url = NSURL(string: "/me/videos", relativeToURL: VimeoBaseURLString)!
+        let url = NSURL(string: "/me/videos", relativeTo: VimeoBaseURLString)!
 
         return try self.createVideoRequestWithUrl(url, parameters: parameters)
     }
@@ -70,7 +70,7 @@ extension VimeoRequestSerializer
     func createVideoRequestWithUrl(_ url: NSURL, parameters: [String: AnyObject]) throws -> NSMutableURLRequest
     {
         var error: NSError?
-        let request = self.requestWithMethod("POST", URLString: url.absoluteString!, parameters: parameters, error: &error)
+        let request = self.request(withMethod: "POST", urlString: url.absoluteString!, parameters: parameters, error: &error)
 
         if let error = error
         {
@@ -94,7 +94,7 @@ extension VimeoRequestSerializer
             throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
         }
         
-        return ["type": "streaming", "size": fileSize]
+        return ["type": "streaming" as AnyObject, "size": fileSize]
     }
 
     func uploadVideoRequestWithSource(_ source: NSURL, destination: String) throws -> NSMutableURLRequest
@@ -105,7 +105,7 @@ extension VimeoRequestSerializer
         }
         
         var error: NSError?
-        let request = self.requestWithMethod("PUT", URLString: destination, parameters: nil, error: &error)
+        let request = self.request(withMethod: "PUT", urlString: destination, parameters: nil, error: &error)
         if let error = error
         {
             throw error.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
@@ -134,10 +134,10 @@ extension VimeoRequestSerializer
     
     func activateVideoRequestWithUri(_ uri: String) throws -> NSMutableURLRequest
     {
-        let url = NSURL(string: uri, relativeToURL: VimeoBaseURLString)!
+        let url = NSURL(string: uri, relativeTo: VimeoBaseURLString)!
         var error: NSError?
         
-        let request = self.requestWithMethod("DELETE", URLString: url.absoluteString!, parameters: nil, error: &error)
+        let request = self.request(withMethod: "DELETE", urlString: url.absoluteString!, parameters: nil, error: &error)
         if let error = error
         {
             throw error.errorByAddingDomain(UploadErrorDomain.Activate.rawValue)
@@ -153,7 +153,7 @@ extension VimeoRequestSerializer
             throw NSError(domain: UploadErrorDomain.VideoSettings.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "videoUri has length of 0."])
         }
         
-        let url = NSURL(string: videoUri, relativeToURL: VimeoBaseURLString)!
+        let url = NSURL(string: videoUri, relativeTo: VimeoBaseURLString)!
         var error: NSError?
 
         let parameters = videoSettings.parameterDictionary()
@@ -162,7 +162,7 @@ extension VimeoRequestSerializer
             throw NSError(domain: UploadErrorDomain.VideoSettings.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Parameters dictionary is empty."])
         }
         
-        let request = self.requestWithMethod("PATCH", URLString: url.absoluteString!, parameters: parameters, error: &error)
+        let request = self.request(withMethod: "PATCH", urlString: url.absoluteString!, parameters: parameters, error: &error)
         if let error = error
         {
             throw error.errorByAddingDomain(UploadErrorDomain.VideoSettings.rawValue)
@@ -178,10 +178,10 @@ extension VimeoRequestSerializer
             throw NSError(domain: UploadErrorDomain.Delete.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "videoUri has length of 0."])
         }
         
-        let url = NSURL(string: videoUri, relativeToURL: VimeoBaseURLString)!
+        let url = NSURL(string: videoUri, relativeTo: VimeoBaseURLString)!
         var error: NSError?
         
-        let request = self.requestWithMethod("DELETE", URLString: url.absoluteString!, parameters: nil, error: &error)
+        let request = self.request(withMethod: "DELETE", urlString: url.absoluteString!, parameters: nil, error: &error)
         if let error = error
         {
             throw error.errorByAddingDomain(UploadErrorDomain.Delete.rawValue)
@@ -197,10 +197,10 @@ extension VimeoRequestSerializer
             throw NSError(domain: UploadErrorDomain.Video.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "videoUri has length of 0."])
         }
         
-        let url = NSURL(string: videoUri, relativeToURL: VimeoBaseURLString)!
+        let url = NSURL(string: videoUri, relativeTo: VimeoBaseURLString)!
         var error: NSError?
         
-        let request = self.requestWithMethod("GET", URLString: url.absoluteString!, parameters: nil, error: &error)
+        let request = self.request(withMethod: "GET", urlString: url.absoluteString!, parameters: nil, error: &error)
         if let error = error
         {
             throw error.errorByAddingDomain(UploadErrorDomain.Video.rawValue)
