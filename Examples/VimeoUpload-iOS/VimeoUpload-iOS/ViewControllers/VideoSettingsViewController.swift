@@ -44,7 +44,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
     static let UploadInitiatedNotification = "VideoSettingsViewControllerUploadInitiatedNotification"
     static let NibName = "VideoSettingsViewController"
-    private static let PreUploadViewPrivacy = "pre_upload"
+    fileprivate static let PreUploadViewPrivacy = "pre_upload"
     
     // MARK: 
     
@@ -58,18 +58,18 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK:
     
-    private var operation: ConcurrentOperation?
-    private var task: NSURLSessionDataTask?
+    fileprivate var operation: ConcurrentOperation?
+    fileprivate var task: URLSessionDataTask?
     
     // MARK:
     
-    private var url: NSURL?
-    private var uploadTicket: VIMUploadTicket?
-    private var videoSettings: VideoSettings?
+    fileprivate var url: URL?
+    fileprivate var uploadTicket: VIMUploadTicket?
+    fileprivate var videoSettings: VideoSettings?
 
     // MARK:
 
-    private var hasTappedUpload: Bool
+    fileprivate var hasTappedUpload: Bool
     {
         get
         {
@@ -91,7 +91,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         assert(self.input != nil, "self.input cannot be nil")
         
-        self.edgesForExtendedLayout = .None
+        self.edgesForExtendedLayout = UIRectEdge()
         
         self.setupNavigationBar()
         self.setupAndStartOperation()
@@ -99,16 +99,16 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: Setup
     
-    private func setupNavigationBar()
+    fileprivate func setupNavigationBar()
     {
         self.title = "Video Settings"
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(VideoSettingsViewController.didTapCancel(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(VideoSettingsViewController.didTapCancel(_:)))
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.Done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
     }
 
-    private func setupAndStartOperation()
+    fileprivate func setupAndStartOperation()
     {
         let me = self.input!.user
         let cameraRollAsset = self.input!.cameraRollAsset
@@ -128,14 +128,14 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -156,12 +156,12 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     }
                     else
                     {
-                        if let video = strongSelf.uploadTicket?.video, let viewPrivacy = video.privacy?.view where viewPrivacy != strongSelf.dynamicType.PreUploadViewPrivacy
+                        if let video = strongSelf.uploadTicket?.video, let viewPrivacy = video.privacy?.view, viewPrivacy != type(of: strongSelf).PreUploadViewPrivacy
                         {
-                            NSNotificationCenter.defaultCenter().postNotificationName(VideoSettingsViewController.UploadInitiatedNotification, object: video)
+                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: video)
                             
                             strongSelf.activityIndicatorView.stopAnimating()
-                            strongSelf.dismissViewControllerAnimated(true, completion: nil)
+                            strongSelf.dismiss(animated: true, completion: nil)
                         }
                         else
                         {
@@ -176,7 +176,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.operation?.start()
     }
     
-    private func startUpload()
+    fileprivate func startUpload()
     {
         let url = self.url!
         let uploadTicket = self.uploadTicket!
@@ -190,11 +190,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK: Actions
     
-    func didTapCancel(sender: UIBarButtonItem)
+    func didTapCancel(_ sender: UIBarButtonItem)
     {
         self.operation?.cancel()
         self.activityIndicatorView.stopAnimating()
-        self.navigationController?.popViewControllerAnimated(true)
+        _ = self.navigationController?.popViewController(animated: true)
         
         if let videoUri = self.uploadTicket?.video?.uri
         {
@@ -202,7 +202,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
     }
 
-    func didTapUpload(sender: UIBarButtonItem)
+    func didTapUpload(_ sender: UIBarButtonItem)
     {
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
@@ -210,7 +210,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
      
         let operation = self.operation as! ExportQuotaCreateOperation
         
-        if operation.state == .Executing
+        if operation.state == .executing
         {
             operation.videoSettings = self.videoSettings
 
@@ -222,11 +222,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
         else
         {
-            if let video = self.uploadTicket?.video, let viewPrivacy = video.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
+            if let video = self.uploadTicket?.video, let viewPrivacy = video.privacy?.view, viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
             {
-                NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.UploadInitiatedNotification, object: video)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: type(of: self).UploadInitiatedNotification), object: video)
                 
-                self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
             }
             else
             {
@@ -238,7 +238,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: UITextFieldDelegate
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
     {
         textField.resignFirstResponder()
         self.descriptionTextView.becomeFirstResponder()
@@ -248,42 +248,42 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: UI Presentation
     
-    private func presentOperationErrorAlert(error: NSError)
+    fileprivate func presentOperationErrorAlert(_ error: NSError)
     {
         // TODO: check error.code == AVError.DiskFull.rawValue and message appropriately
         // TODO: check error.code == AVError.OperationInterrupted.rawValue (app backgrounded during export)
         
-        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.popViewControllerAnimated(true)
+        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+            _ = self?.navigationController?.popViewController(animated: true)
         }))
         
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
             self?.activityIndicatorView.startAnimating()
             self?.setupAndStartOperation()
         }))
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
-    private func presentVideoSettingsErrorAlert(error: NSError)
+    fileprivate func presentVideoSettingsErrorAlert(_ error: NSError)
     {
-        let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.popViewControllerAnimated(true)
+        let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+            _ = self?.navigationController?.popViewController(animated: true)
         }))
         
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
             self?.activityIndicatorView.startAnimating()
             self?.applyVideoSettings()
         }))
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
 
     // MARK: Private API
     
-    private func applyVideoSettings()
+    fileprivate func applyVideoSettings()
     {
         let videoUri = self.uploadTicket!.video!.uri!
         let videoSettings = self.videoSettings!
@@ -294,21 +294,25 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                 
                 self?.task = nil
                 
-                dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                DispatchQueue.main.async(execute: { [weak self] () -> Void in
+                    guard let strongSelf = self else
+                    {
+                        return
+                    }
                     
-                    self?.activityIndicatorView.stopAnimating()
+                    strongSelf.activityIndicatorView.stopAnimating()
                     
                     if let error = error
                     {
-                        self?.presentVideoSettingsErrorAlert(error)
+                        strongSelf.presentVideoSettingsErrorAlert(error)
                     }
                     else
                     {
-                        NSNotificationCenter.defaultCenter().postNotificationName(VideoSettingsViewController.UploadInitiatedNotification, object: video)
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: video)
                         
-                        self?.dismissViewControllerAnimated(true, completion: nil)
+                        strongSelf.dismiss(animated: true, completion: nil)
                     }
-                })            
+                })
             })
             
             self.task?.resume()
