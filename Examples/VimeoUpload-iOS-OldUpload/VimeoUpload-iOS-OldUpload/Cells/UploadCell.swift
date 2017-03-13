@@ -194,7 +194,7 @@ class UploadCell: UITableViewCell
         {
             switch (keyPath, context)
             {
-            case(type(of: self).ProgressKeyPath, self.progressKVOContext):
+            case(type(of: self).ProgressKeyPath, .some(&self.progressKVOContext)):
                 
                 let progress = (change?[NSKeyValueChangeKey.newKey] as AnyObject).doubleValue ?? 0;
                 
@@ -206,7 +206,7 @@ class UploadCell: UITableViewCell
                     self?.updateProgress(progress)
                 })
                 
-            case(type(of: self).StateKeyPath, self.stateKVOContext):
+            case(type(of: self).StateKeyPath, .some(&self.stateKVOContext)):
                 
                 let stateRaw = (change?[NSKeyValueChangeKey.newKey] as? String) ?? DescriptorState.Ready.rawValue;
                 let state = DescriptorState(rawValue: stateRaw)!
