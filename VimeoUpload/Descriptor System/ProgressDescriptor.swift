@@ -90,7 +90,7 @@ open class ProgressDescriptor: Descriptor
         {
             switch (keyPath, context)
             {
-            case(type(of: self).ProgressKeyPath, self.progressKVOContext):
+            case(type(of: self).ProgressKeyPath, .some(&self.progressKVOContext)):
                 self.progressObservable = (change?[NSKeyValueChangeKey.newKey] as AnyObject).doubleValue ?? 0
             default:
                 super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
