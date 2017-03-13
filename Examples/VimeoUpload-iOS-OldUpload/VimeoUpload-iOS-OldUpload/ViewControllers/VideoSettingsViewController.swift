@@ -44,17 +44,17 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK:
     
-    private var operation: ConcurrentOperation?
-    private var descriptor: Descriptor?
+    fileprivate var operation: ConcurrentOperation?
+    fileprivate var descriptor: Descriptor?
 
     // MARK:
     
-    private var url: NSURL?
-    private var videoSettings: VideoSettings?
+    fileprivate var url: URL?
+    fileprivate var videoSettings: VideoSettings?
 
     // MARK:
     
-    private var hasTappedUpload: Bool
+    fileprivate var hasTappedUpload: Bool
     {
         get
         {
@@ -71,7 +71,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         assert(self.input != nil, "self.input cannot be nil")
         
-        self.edgesForExtendedLayout = .None
+        self.edgesForExtendedLayout = UIRectEdge()
         
         self.setupNavigationBar()
         self.setupAndStartOperation()
@@ -79,16 +79,16 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: Setup
     
-    private func setupNavigationBar()
+    fileprivate func setupNavigationBar()
     {
         self.title = "Video Settings"
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(VideoSettingsViewController.didTapCancel(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(VideoSettingsViewController.didTapCancel(_:)))
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.Done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
     }
 
-    private func setupAndStartOperation()
+    fileprivate func setupAndStartOperation()
     {
         let me = self.input!.user
         let phAsset = (self.input!.cameraRollAsset ).phAsset
@@ -104,14 +104,14 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -132,7 +132,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     {
                         strongSelf.startUpload()
                         strongSelf.activityIndicatorView.stopAnimating()
-                        strongSelf.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+                        strongSelf.navigationController?.dismiss(animated: true, completion: nil)
                     }
                 }
             })
@@ -142,7 +142,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.operation?.start()
     }
     
-    private func startUpload()
+    fileprivate func startUpload()
     {
         let url = self.url!
         let phAsset = (self.input!.cameraRollAsset ).phAsset
@@ -156,14 +156,14 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK: Actions
     
-    func didTapCancel(sender: UIBarButtonItem)
+    func didTapCancel(_ sender: UIBarButtonItem)
     {
         self.operation?.cancel()
         
-        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        self.navigationController?.dismiss(animated: true, completion: nil)
     }
 
-    func didTapUpload(sender: UIBarButtonItem)
+    func didTapUpload(_ sender: UIBarButtonItem)
     {
         let operation = self.operation as? PHAssetCloudExportQuotaOperation
         
@@ -182,13 +182,13 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         else
         {
             self.startUpload()
-            self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+            self.navigationController?.dismiss(animated: true, completion: nil)
         }
     }
     
     // MARK: UITextFieldDelegate
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
     {
         textField.resignFirstResponder()
         self.descriptionTextView.becomeFirstResponder()
@@ -198,34 +198,34 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: UI Presentation
     
-    private func presentOperationErrorAlert(error: NSError)
+    fileprivate func presentOperationErrorAlert(_ error: NSError)
     {
-        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+            self?.navigationController?.dismiss(animated: true, completion: nil)
         }))
         
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
             self?.setupAndStartOperation()
         }))
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
 
-    private func presentDescriptorErrorAlert(error: NSError)
+    fileprivate func presentDescriptorErrorAlert(_ error: NSError)
     {
-        let alert = UIAlertController(title: "Descriptor Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        let alert = UIAlertController(title: "Descriptor Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+            self?.navigationController?.dismiss(animated: true, completion: nil)
         }))
         
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
             // We start from the beginning (with the operation instead of the descriptor), 
             // Because the exported file was deleted when the upload descriptor failed,
             // We delete it because leaving it up to the API consumer to delete seems a little risky
             self?.setupAndStartOperation()
         }))
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
 }

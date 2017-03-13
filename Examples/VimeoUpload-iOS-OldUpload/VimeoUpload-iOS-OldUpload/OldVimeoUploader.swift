@@ -35,7 +35,7 @@ class OldVimeoUploader: VimeoUploader<OldUploadDescriptor>
     
     // MARK: - Initialization
     
-    init(backgroundSessionIdentifier: String, accessTokenProvider: VimeoRequestSerializer.AccessTokenProvider)
+    init(backgroundSessionIdentifier: String, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider)
     {
         super.init(backgroundSessionIdentifier: backgroundSessionIdentifier, accessTokenProvider: accessTokenProvider)
     }

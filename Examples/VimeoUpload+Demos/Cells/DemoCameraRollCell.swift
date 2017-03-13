@@ -83,7 +83,7 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
         self.imageView.image = image
     }
     
-    func setDuration(seconds: Float64)
+    func setDuration(_ seconds: Float64)
     {
         var string: NSString = ""
 
@@ -95,7 +95,7 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
         self.durationlabel?.text = string as String
     }
     
-    func setFileSize(bytes: Float64)
+    func setFileSize(_ bytes: Float64)
     {
         var string: NSString = ""
         

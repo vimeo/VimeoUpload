@@ -40,14 +40,14 @@ class CameraRollViewController: BaseCameraRollViewController
         self.title = "Camera Roll"
     }
         
-    override func didFinishWithResult(result: UploadUserAndCameraRollAsset)
+    override func didFinishWithResult(_ result: UploadUserAndCameraRollAsset)
     {
-        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:NSBundle.mainBundle())
+        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:Bundle.main)
         viewController.input = result
      
         let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.view.backgroundColor = UIColor.whiteColor()
+        navigationController.view.backgroundColor = UIColor.white
         
-        self.tabBarController?.presentViewController(navigationController, animated: true, completion: nil)
+        self.tabBarController?.present(navigationController, animated: true, completion: nil)
     }
 }
