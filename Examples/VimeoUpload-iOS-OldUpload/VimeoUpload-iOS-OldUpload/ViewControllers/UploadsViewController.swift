@@ -104,7 +104,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
-    func descriptorAdded(_ notification: Notification)
+    func descriptorAdded(_ notification: NSNotification)
     {
         // TODO: should we move this dispatch to within the descriptor manager itself?
         DispatchQueue.main.async { () -> Void in
@@ -113,25 +113,25 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
                 let identifier = descriptor.identifier
             {
                 let indexPath = IndexPath(row: 0, section: 0)
-                self.items.insert(identifier, atIndex: indexPath.row)
+                self.items.insert(identifier, at: indexPath.row)
                 self.tableView.insertRows(at: [indexPath], with: .fade)
             }
         }
     }
     
-    func descriptorDidCancel(_ notification: Notification)
+    func descriptorDidCancel(_ notification: NSNotification)
     {
         // TODO: should we move this dispatch to within the descriptor manager itself?
         DispatchQueue.main.async { () -> Void in
             
             if let descriptor = notification.object as? OldUploadDescriptor,
                 let identifier = descriptor.identifier,
-                let index = self.items.indexOf(identifier)
+                let index = self.items.index(of: identifier)
             {
-                self.items.removeAtIndex(index)
+                self.items.remove(at: index)
 
-                let indexPath = IndexPath(forRow: index, inSection: 0)
-                self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+                let indexPath = IndexPath(row: index, section: 0)
+                self.tableView.deleteRows(at: [indexPath], with: .fade)
             }
         }
     }
