@@ -63,7 +63,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
         self.sessionManager = sessionManager
         self.videoSettings = videoSettings
         
-        self.operationQueue = NSOperationQueue()
+        self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
     }
     
@@ -161,17 +161,17 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
                 
                 if let error = operation.error
                 {
-                    if let fileSize = try? AVURLAsset(URL: url).fileSize().doubleValue, let availableSpace = strongSelf.me.uploadQuota?.sizeQuota?.free?.doubleValue
+                    if let fileSize = try? AVURLAsset(url: url).fileSize().doubleValue, let availableSpace = strongSelf.me.uploadQuota?.sizeQuota?.free?.doubleValue
                     {
                         let userInfo = [UploadErrorKey.FileSize.rawValue: fileSize, UploadErrorKey.AvailableSpace.rawValue: availableSpace]
-                        strongSelf.error = error.errorByAddingUserInfo(userInfo)
+                        strongSelf.error = error.errorByAddingUserInfo(userInfo as [String : AnyObject])
                     }
                     else
                     {
@@ -182,7 +182,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
                 {
                     strongSelf.url = url
                     strongSelf.uploadTicket = operation.result!
-                    strongSelf.state = .Finished
+                    strongSelf.state = .finished
                 }
             })
         }
