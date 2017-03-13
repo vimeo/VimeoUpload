@@ -171,7 +171,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil, password: nil)
         
-        if operation?.state == .Executing
+        if operation?.state == .executing
         {
             self.activityIndicatorView.startAnimating() // Listen for operation completion, dismiss
         }
