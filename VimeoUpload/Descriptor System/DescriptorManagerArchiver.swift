@@ -30,13 +30,13 @@ import Foundation
 
 class DescriptorManagerArchiver
 {
-    private static let DescriptorsArchiveKey = "descriptors"
-    private static let SuspendedArchiveKey = "is_suspended"
+    fileprivate static let DescriptorsArchiveKey = "descriptors"
+    fileprivate static let SuspendedArchiveKey = "is_suspended"
 
     // MARK: 
     
-    private let archiver: KeyedArchiver
-    private(set) var descriptors = Set<Descriptor>()
+    fileprivate let archiver: KeyedArchiver
+    fileprivate(set) var descriptors = Set<Descriptor>()
     var suspended = false
     {
         didSet
@@ -49,7 +49,7 @@ class DescriptorManagerArchiver
     
     init(name: String)
     {
-        self.archiver = self.dynamicType.setupArchiver(name: name)
+        self.archiver = type(of: self).setupArchiver(name: name)
         
         self.descriptors = self.loadDescriptors()
         self.suspended = self.loadSuspendedState()
@@ -57,39 +57,39 @@ class DescriptorManagerArchiver
     
     // MARK: Setup - Archiving
     
-    private static func setupArchiver(name name: String) -> KeyedArchiver
+    fileprivate static func setupArchiver(name: String) -> KeyedArchiver
     {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        var documentsURL = NSURL(string: documentsPath)!
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        var documentsURL = URL(string: documentsPath)!
         
-        documentsURL = documentsURL.URLByAppendingPathComponent(name)!
+        documentsURL = documentsURL.appendingPathComponent(name)
 
-        if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
+        if FileManager.default.fileExists(atPath: documentsURL.path) == false
         {
-            try! NSFileManager.defaultManager().createDirectoryAtPath(documentsURL.path!, withIntermediateDirectories: true, attributes: nil)
+            try! FileManager.default.createDirectory(atPath: documentsURL.path, withIntermediateDirectories: true, attributes: nil)
         }
         
-        return KeyedArchiver(basePath: documentsURL.path!)
+        return KeyedArchiver(basePath: documentsURL.path)
     }
     
-    private func loadDescriptors() -> Set<Descriptor>
+    fileprivate func loadDescriptors() -> Set<Descriptor>
     {
-        return self.archiver.loadObjectForKey(self.dynamicType.DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
+        return self.archiver.loadObjectForKey(type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
     }
     
-    private func saveDescriptors()
+    fileprivate func saveDescriptors()
     {
-        self.archiver.saveObject(self.descriptors, key: self.dynamicType.DescriptorsArchiveKey)
+        self.archiver.saveObject(self.descriptors, key: type(of: self).DescriptorsArchiveKey)
     }
     
-    private func loadSuspendedState() -> Bool
+    fileprivate func loadSuspendedState() -> Bool
     {
-        return self.archiver.loadObjectForKey(self.dynamicType.SuspendedArchiveKey) as? Bool ?? false
+        return self.archiver.loadObjectForKey(type(of: self).SuspendedArchiveKey) as? Bool ?? false
     }
     
-    private func saveSuspendedState()
+    fileprivate func saveSuspendedState()
     {
-        self.archiver.saveObject(self.suspended, key: self.dynamicType.SuspendedArchiveKey)
+        self.archiver.saveObject(self.suspended, key: type(of: self).SuspendedArchiveKey)
     }
     
     // MARK: Public API
@@ -105,23 +105,23 @@ class DescriptorManagerArchiver
         self.saveDescriptors()
     }
     
-    func insert(descriptor: Descriptor)
+    func insert(_ descriptor: Descriptor)
     {
         self.descriptors.insert(descriptor)
         self.saveDescriptors()
     }
     
-    func remove(descriptor: Descriptor)
+    func remove(_ descriptor: Descriptor)
     {
         self.descriptors.remove(descriptor)
         self.saveDescriptors()
     }
     
-    func descriptorPassingTest(test: TestClosure) -> Descriptor?
+    func descriptorPassingTest(_ test: TestClosure) -> Descriptor?
     {
         for currentDescriptor in self.descriptors
         {
-            if test(descriptor: currentDescriptor) == true
+            if test(currentDescriptor) == true
             {
                 return currentDescriptor
             }

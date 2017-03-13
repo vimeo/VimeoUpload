@@ -28,27 +28,27 @@ import Foundation
 import VimeoNetworking
 import AVFoundation
 
-public class RetryUploadOperation: ConcurrentOperation
+open class RetryUploadOperation: ConcurrentOperation
 {
-    private let sessionManager: VimeoSessionManager
-    let operationQueue: NSOperationQueue
+    fileprivate let sessionManager: VimeoSessionManager
+    let operationQueue: OperationQueue
     
     // MARK:
     
-    public var downloadProgressBlock: ProgressBlock?
-    public var exportProgressBlock: ProgressBlock?
+    open var downloadProgressBlock: ProgressBlock?
+    open var exportProgressBlock: ProgressBlock?
     
     // MARK:
     
-    private(set) public var url: NSURL?
+    fileprivate(set) open var url: URL?
     
-    private(set) public var error: NSError?
+    fileprivate(set) open var error: NSError?
     {
         didSet
         {
             if self.error != nil
             {
-                self.state = .Finished
+                self.state = .finished
             }
         }
     }
@@ -69,9 +69,9 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override public func main()
+    override open func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
@@ -79,7 +79,7 @@ public class RetryUploadOperation: ConcurrentOperation
         self.performMeQuotaOperation()
     }
     
-    override public func cancel()
+    override open func cancel()
     {
         super.cancel()
         
@@ -88,12 +88,12 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    private func performMeQuotaOperation()
+    fileprivate func performMeQuotaOperation()
     {
         let operation = MeQuotaOperation(sessionManager: self.sessionManager)
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
@@ -123,26 +123,26 @@ public class RetryUploadOperation: ConcurrentOperation
         operation.fulfillSelection(avAsset: nil)
     }
     
-    private func performExportQuotaOperation(operation: ExportQuotaOperation)
+    fileprivate func performExportQuotaOperation(_ operation: ExportQuotaOperation)
     {
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
-            self?.downloadProgressBlock?(progress: progress)
+            self?.downloadProgressBlock?(progress)
         }
         
         operation.exportProgressBlock = { [weak self] (exportSession: AVAssetExportSession, progress: Double) -> Void in
-            self?.exportProgressBlock?(progress: progress)
+            self?.exportProgressBlock?(progress)
         }
         
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -154,7 +154,7 @@ public class RetryUploadOperation: ConcurrentOperation
                 else
                 {
                     strongSelf.url = operation.result!
-                    strongSelf.state = .Finished
+                    strongSelf.state = .finished
                 }
             })
         }
@@ -164,7 +164,7 @@ public class RetryUploadOperation: ConcurrentOperation
 
     // MARK: Public API
     
-    func makeExportQuotaOperation(user user: VIMUser) -> ExportQuotaOperation?
+    func makeExportQuotaOperation(user: VIMUser) -> ExportQuotaOperation?
     {
         assertionFailure("Subclasses must override")
         

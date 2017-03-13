@@ -33,7 +33,7 @@ public extension AVURLAsset
     {
         var value: AnyObject?
     
-        try self.URL.getResourceValue(&value, forKey: NSURLFileSizeKey)
+        try (self.url as NSURL).getResourceValue(&value, forKey: URLResourceKey.fileSizeKey)
     
         guard let number = value as? NSNumber else
         {

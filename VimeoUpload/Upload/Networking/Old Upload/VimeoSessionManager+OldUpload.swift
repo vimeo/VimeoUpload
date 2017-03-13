@@ -44,7 +44,7 @@ enum UploadTaskDescription: String
 
 extension VimeoSessionManager
 {
-    public func meDataTask(completionHandler completionHandler: UserCompletionHandler) throws -> NSURLSessionDataTask
+    public func meDataTask(completionHandler: UserCompletionHandler) throws -> URLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).meRequest()
 
@@ -75,7 +75,7 @@ extension VimeoSessionManager
         return task
     }
 
-    public func myVideosDataTask(completionHandler completionHandler: VideosCompletionHandler) throws -> NSURLSessionDataTask
+    public func myVideosDataTask(completionHandler: VideosCompletionHandler) throws -> URLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).myVideosRequest()
         
@@ -106,7 +106,7 @@ extension VimeoSessionManager
         return task
     }
 
-    public func createVideoDownloadTask(url url: NSURL) throws -> NSURLSessionDownloadTask
+    public func createVideoDownloadTask(url: NSURL) throws -> URLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url)
 
@@ -117,7 +117,7 @@ extension VimeoSessionManager
         return task
     }
     
-    func uploadVideoTask(source source: NSURL, destination: String, completionHandler: ErrorBlock?) throws -> NSURLSessionUploadTask
+    func uploadVideoTask(source: NSURL, destination: String, completionHandler: ErrorBlock?) throws -> URLSessionUploadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadVideoRequestWithSource(source, destination: destination)
         
@@ -146,7 +146,7 @@ extension VimeoSessionManager
     }
     
     // For use with background sessions, use session delegate methods for destination and completion
-    func activateVideoDownloadTask(uri activationUri: String) throws -> NSURLSessionDownloadTask
+    func activateVideoDownloadTask(uri activationUri: String) throws -> URLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).activateVideoRequestWithUri(activationUri)
         
@@ -158,7 +158,7 @@ extension VimeoSessionManager
     }    
 
     // For use with background sessions, use session delegate methods for destination and completion
-    func videoSettingsDownloadTask(videoUri videoUri: String, videoSettings: VideoSettings) throws -> NSURLSessionDownloadTask
+    func videoSettingsDownloadTask(videoUri: String, videoSettings: VideoSettings) throws -> URLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequestWithUri(videoUri, videoSettings: videoSettings)
         
@@ -169,7 +169,7 @@ extension VimeoSessionManager
         return task
     }
 
-    public func videoSettingsDataTask(videoUri videoUri: String, videoSettings: VideoSettings, completionHandler: VideoCompletionHandler) throws -> NSURLSessionDataTask
+    public func videoSettingsDataTask(videoUri: String, videoSettings: VideoSettings, completionHandler: VideoCompletionHandler) throws -> URLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequestWithUri(videoUri, videoSettings: videoSettings)
         
@@ -200,7 +200,7 @@ extension VimeoSessionManager
         return task
     }
     
-    func deleteVideoDataTask(videoUri videoUri: String, completionHandler: ErrorBlock) throws -> NSURLSessionDataTask
+    func deleteVideoDataTask(videoUri: String, completionHandler: @escaping ErrorBlock) throws -> URLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).deleteVideoRequestWithUri(videoUri)
         
@@ -227,7 +227,7 @@ extension VimeoSessionManager
         return task
     }
 
-    func videoDataTask(videoUri videoUri: String, completionHandler: VideoCompletionHandler) throws -> NSURLSessionDataTask
+    func videoDataTask(videoUri: String, completionHandler: VideoCompletionHandler) throws -> URLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).videoRequestWithUri(videoUri)
         

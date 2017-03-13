@@ -27,15 +27,15 @@
 import Foundation
 import Photos
 
-public class PHAssetDownloadOperation: ConcurrentOperation
+open class PHAssetDownloadOperation: ConcurrentOperation
 {
-    private let phAsset: PHAsset
-    private var requestID: PHImageRequestID?
+    fileprivate let phAsset: PHAsset
+    fileprivate var requestID: PHImageRequestID?
 
-    public var progressBlock: ProgressBlock?
+    open var progressBlock: ProgressBlock?
 
-    public var result: AVAsset?
-    public var error: NSError?
+    open var result: AVAsset?
+    open var error: NSError?
 
     // MARK: - Initialization
 
@@ -53,17 +53,17 @@ public class PHAssetDownloadOperation: ConcurrentOperation
     
     // MARK: Overrides
 
-    override public func main()
+    override open func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {            
             return
         }
                 
         let options = PHVideoRequestOptions()
-        options.networkAccessAllowed = true
-        options.deliveryMode = .HighQualityFormat
-        options.progressHandler = { [weak self] (progress: Double, error: NSError?, stop: UnsafeMutablePointer<ObjCBool>, info: [NSObject : AnyObject]?) -> Void in
+        options.isNetworkAccessAllowed = true
+        options.deliveryMode = .highQualityFormat
+        options.progressHandler = { [weak self] (progress: Double, error: NSError?, stop: UnsafeMutablePointer<ObjCBool>, info: [AnyHashable: Any]?) -> Void in
             
             guard let strongSelf = self else
             {
@@ -72,17 +72,17 @@ public class PHAssetDownloadOperation: ConcurrentOperation
 
             strongSelf.requestID = nil
 
-            if strongSelf.cancelled
+            if strongSelf.isCancelled
             {
                 return
             }
 
-            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
+            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool, cancelled == true
             {
                 return
             }
             
-            if strongSelf.state == .Finished // Just in case
+            if strongSelf.state == .finished // Just in case
             {
                 return
             }
@@ -91,13 +91,13 @@ public class PHAssetDownloadOperation: ConcurrentOperation
             {
                 strongSelf.progressBlock = nil
                 strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue)
-                strongSelf.state = .Finished
+                strongSelf.state = .finished
             }
             else if let info = info, let error = info[PHImageErrorKey] as? NSError
             {
                 strongSelf.progressBlock = nil
                 strongSelf.error = error
-                strongSelf.state = .Finished
+                strongSelf.state = .finished
             }
             else
             {
@@ -105,7 +105,7 @@ public class PHAssetDownloadOperation: ConcurrentOperation
             }
         }
         
-        self.requestID = PHImageManager.defaultManager().requestAVAssetForVideo(self.phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
+        self.requestID = PHImageManager.default().requestAVAsset(forVideo: self.phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
             
             guard let strongSelf = self else
             {
@@ -114,17 +114,17 @@ public class PHAssetDownloadOperation: ConcurrentOperation
             
             strongSelf.requestID = nil
 
-            if strongSelf.cancelled
+            if strongSelf.isCancelled
             {
                 return
             }
             
-            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
+            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool, cancelled == true
             {
                 return
             }
 
-            if strongSelf.state == .Finished // In case the state is changed to .Finished in the progressHandler above
+            if strongSelf.state == .finished // In case the state is changed to .Finished in the progressHandler above
             {
                 return
             }
@@ -142,11 +142,11 @@ public class PHAssetDownloadOperation: ConcurrentOperation
                 strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue, code: nil, description: "Request for AVAsset returned no error and no asset.")
             }
             
-            strongSelf.state = .Finished
+            strongSelf.state = .finished
         }
     }
     
-    override public func cancel()
+    override open func cancel()
     {
         super.cancel()
 
@@ -155,13 +155,13 @@ public class PHAssetDownloadOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    private func cleanup()
+    fileprivate func cleanup()
     {
         self.progressBlock = nil
         
         if let requestID = self.requestID
         {
-            PHImageManager.defaultManager().cancelImageRequest(requestID)
+            PHImageManager.default().cancelImageRequest(requestID)
             self.requestID = nil
         }
     }

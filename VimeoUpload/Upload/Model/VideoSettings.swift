@@ -26,9 +26,9 @@
 
 import Foundation
 
-public class VideoSettings: NSObject
+open class VideoSettings: NSObject
 {
-    public var title: String?
+    open var title: String?
     {
         didSet
         {
@@ -36,7 +36,7 @@ public class VideoSettings: NSObject
         }
     }
     
-    public var desc: String?
+    open var desc: String?
     {
         didSet
         {
@@ -44,9 +44,9 @@ public class VideoSettings: NSObject
         }
     }
     
-    public var privacy: String?
-    public var users: [String]? // List of uris of users who can view this video
-    public var password: String?
+    open var privacy: String?
+    open var users: [String]? // List of uris of users who can view this video
+    open var password: String?
 
     public init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
     {
@@ -61,21 +61,21 @@ public class VideoSettings: NSObject
     
     // MARK: Public API
     
-    public func parameterDictionary() -> [String: AnyObject]
+    open func parameterDictionary() -> [String: AnyObject]
     {
         var parameters: [String: AnyObject] = [:]
         
-        if let title = self.title where title.characters.count > 0
+        if let title = self.title, title.characters.count > 0
         {
-            parameters["name"] = title
+            parameters["name"] = title as AnyObject?
         }
         
-        if let description = self.desc where description.characters.count > 0
+        if let description = self.desc, description.characters.count > 0
         {
-            parameters["description"] = description
+            parameters["description"] = description as AnyObject?
         }
         
-        if let privacy = self.privacy where privacy.characters.count > 0
+        if let privacy = self.privacy, privacy.characters.count > 0
         {
             parameters["privacy"] = ["view": privacy]
         }
@@ -87,7 +87,7 @@ public class VideoSettings: NSObject
         
         if let password = self.password
         {
-            parameters["password"] = password
+            parameters["password"] = password as AnyObject?
         }
 
         return parameters
@@ -97,26 +97,26 @@ public class VideoSettings: NSObject
     
     required public init(coder aDecoder: NSCoder)
     {
-        self.title = aDecoder.decodeObjectForKey("title") as? String
-        self.desc = aDecoder.decodeObjectForKey("desc") as? String
-        self.privacy = aDecoder.decodeObjectForKey("privacy") as? String
-        self.users = aDecoder.decodeObjectForKey("users") as? [String]
-        self.password = aDecoder.decodeObjectForKey("password") as? String
+        self.title = aDecoder.decodeObject(forKey: "title") as? String
+        self.desc = aDecoder.decodeObject(forKey: "desc") as? String
+        self.privacy = aDecoder.decodeObject(forKey: "privacy") as? String
+        self.users = aDecoder.decodeObject(forKey: "users") as? [String]
+        self.password = aDecoder.decodeObject(forKey: "password") as? String
     }
     
-    func encodeWithCoder(aCoder: NSCoder)
+    func encodeWithCoder(_ aCoder: NSCoder)
     {
-        aCoder.encodeObject(self.title, forKey: "title")
-        aCoder.encodeObject(self.desc, forKey: "desc")
-        aCoder.encodeObject(self.privacy, forKey: "privacy")
-        aCoder.encodeObject(self.users, forKey: "users")
-        aCoder.encodeObject(self.password, forKey: "password")
+        aCoder.encode(self.title, forKey: "title")
+        aCoder.encode(self.desc, forKey: "desc")
+        aCoder.encode(self.privacy, forKey: "privacy")
+        aCoder.encode(self.users, forKey: "users")
+        aCoder.encode(self.password, forKey: "password")
     }
     
     // MARK : String Methods
     
-    func trim(text: String?) -> String?
+    func trim(_ text: String?) -> String?
     {
-        return text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        return text?.trimmingCharacters(in: CharacterSet.whitespaces)
     }
 }

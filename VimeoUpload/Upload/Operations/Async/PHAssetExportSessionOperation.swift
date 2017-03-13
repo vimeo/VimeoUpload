@@ -29,14 +29,14 @@ import Photos
 
 class PHAssetExportSessionOperation: ConcurrentOperation
 {
-    private let phAsset: PHAsset
-    private let exportPreset: String
+    fileprivate let phAsset: PHAsset
+    fileprivate let exportPreset: String
     
-    private var requestID: PHImageRequestID?
+    fileprivate var requestID: PHImageRequestID?
     var progressBlock: ProgressBlock?
     
-    private(set) var result: AVAssetExportSession?
-    private(set) var error: NSError?
+    fileprivate(set) var result: AVAssetExportSession?
+    fileprivate(set) var error: NSError?
     
     // MARK: - Initialization
     
@@ -57,15 +57,15 @@ class PHAssetExportSessionOperation: ConcurrentOperation
     
     override internal func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
         
         let options = PHVideoRequestOptions()
-        options.networkAccessAllowed = true
-        options.deliveryMode = .HighQualityFormat
-        options.progressHandler = { [weak self] (progress: Double, error: NSError?, stop: UnsafeMutablePointer<ObjCBool>, info: [NSObject : AnyObject]?) -> Void in
+        options.isNetworkAccessAllowed = true
+        options.deliveryMode = .highQualityFormat
+        options.progressHandler = { [weak self] (progress: Double, error: NSError?, stop: UnsafeMutablePointer<ObjCBool>, info: [AnyHashable: Any]?) -> Void in
             
             guard let strongSelf = self else
             {
@@ -74,12 +74,12 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             
             strongSelf.requestID = nil
             
-            if strongSelf.cancelled
+            if strongSelf.isCancelled
             {
                 return
             }
             
-            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
+            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool, cancelled == true
             {
                 return
             }
@@ -99,7 +99,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             }
         }
         
-        self.requestID = PHImageManager.defaultManager().requestExportSessionForVideo(self.phAsset, options: options, exportPreset: self.exportPreset, resultHandler: { [weak self] (exportSession, info) -> Void in
+        self.requestID = PHImageManager.default().requestExportSession(forVideo: self.phAsset, options: options, exportPreset: self.exportPreset, resultHandler: { [weak self] (exportSession, info) -> Void in
             
             guard let strongSelf = self else
             {
@@ -108,12 +108,12 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             
             strongSelf.requestID = nil
             
-            if strongSelf.cancelled
+            if strongSelf.isCancelled
             {
                 return
             }
             
-            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool where cancelled == true
+            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool, cancelled == true
             {
                 return
             }
@@ -131,7 +131,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
                 strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetExportSessionOperation.rawValue, code: nil, description: "Request for export session returned no error and no export session")
             }
             
-            strongSelf.state = .Finished
+            strongSelf.state = .finished
         })
     }
     
@@ -144,13 +144,13 @@ class PHAssetExportSessionOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    private func cleanup()
+    fileprivate func cleanup()
     {
         self.progressBlock = nil
         
         if let requestID = self.requestID
         {
-            PHImageManager.defaultManager().cancelImageRequest(requestID)
+            PHImageManager.default().cancelImageRequest(requestID)
             self.requestID = nil
         }
     }

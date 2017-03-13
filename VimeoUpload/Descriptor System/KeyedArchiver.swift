@@ -26,27 +26,27 @@
 
 import Foundation
 
-public class KeyedArchiver: ArchiverProtocol
+open class KeyedArchiver: ArchiverProtocol
 {
-    private static let ArchiveExtension = "archive"
+    fileprivate static let ArchiveExtension = "archive"
     
-    private let basePath: String
+    fileprivate let basePath: String
 
     public init(basePath: String)
     {
-        assert(NSFileManager.defaultManager().fileExistsAtPath(basePath, isDirectory: nil), "Invalid basePath")
+        assert(FileManager.default.fileExists(atPath: basePath, isDirectory: nil), "Invalid basePath")
         
         self.basePath = basePath
     }
     
-    public func loadObjectForKey(key: String) -> AnyObject?
+    open func loadObjectForKey(_ key: String) -> AnyObject?
     {
         let path = self.archivePath(key: key)
         
-        return NSKeyedUnarchiver.unarchiveObjectWithFile(path)
+        return NSKeyedUnarchiver.unarchiveObject(withFile: path) as AnyObject?
     }
     
-    public func saveObject(object: AnyObject, key: String)
+    open func saveObject(_ object: AnyObject, key: String)
     {
         let path = self.archivePath(key: key)
         
@@ -55,13 +55,13 @@ public class KeyedArchiver: ArchiverProtocol
     
     // MARK: Utilities
     
-    func archivePath(key key: String) -> String
+    func archivePath(key: String) -> String
     {
-        var URL = NSURL(string: self.basePath)!
+        var URL = Foundation.URL(string: self.basePath)!
         
-        URL = URL.URLByAppendingPathComponent(key)!
-        URL = URL.URLByAppendingPathExtension(self.dynamicType.ArchiveExtension)!
+        URL = URL.appendingPathComponent(key)
+        URL = URL.appendingPathExtension(type(of: self).ArchiveExtension)
         
-        return URL.absoluteString! as String
+        return URL.absoluteString as String
     }
 }

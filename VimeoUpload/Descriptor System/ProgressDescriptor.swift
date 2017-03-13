@@ -26,7 +26,7 @@
 
 import Foundation
 
-public class ProgressDescriptor: Descriptor
+open class ProgressDescriptor: Descriptor
 {
     // MARK:
     
@@ -34,11 +34,11 @@ public class ProgressDescriptor: Descriptor
     // If we allow views to observe the progress they wont know exactly when to remove and add observers when the descriptor is
     // suspended and resumed [AH] 12/25/2015
     
-    private static let ProgressKeyPath = "fractionCompleted"
-    private var progressKVOContext = UInt8()
-    dynamic private(set) var progressObservable: Double = 0
+    fileprivate static let ProgressKeyPath = "fractionCompleted"
+    fileprivate var progressKVOContext = UInt8()
+    dynamic fileprivate(set) var progressObservable: Double = 0
     
-    public var progress: NSProgress?
+    open var progress: Progress?
     {
         willSet
         {
@@ -53,7 +53,7 @@ public class ProgressDescriptor: Descriptor
     
     // MARK: 
     
-    private var observersAdded = false
+    fileprivate var observersAdded = false
 
     // MARK: - Initialization
     
@@ -64,41 +64,41 @@ public class ProgressDescriptor: Descriptor
 
     // MARK: KVO
     
-    private func addObserversIfNecessary()
+    fileprivate func addObserversIfNecessary()
     {
-        if let progress = self.progress where self.observersAdded == false
+        if let progress = self.progress, self.observersAdded == false
         {
-            progress.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: .New, context: &self.progressKVOContext)
+            progress.addObserver(self, forKeyPath: type(of: self).ProgressKeyPath, options: .new, context: &self.progressKVOContext)
 
             self.observersAdded = true
         }
     }
     
-    private func removeObserversIfNecessary()
+    fileprivate func removeObserversIfNecessary()
     {
-        if let progress = self.progress where self.observersAdded == true
+        if let progress = self.progress, self.observersAdded == true
         {
-            progress.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
+            progress.removeObserver(self, forKeyPath: type(of: self).ProgressKeyPath, context: &self.progressKVOContext)
             
             self.observersAdded = false
         }
     }
 
-    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
     {
         if let keyPath = keyPath
         {
             switch (keyPath, context)
             {
-            case(self.dynamicType.ProgressKeyPath, &self.progressKVOContext):
-                self.progressObservable = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0
+            case(type(of: self).ProgressKeyPath, self.progressKVOContext):
+                self.progressObservable = (change?[NSKeyValueChangeKey.newKey] as AnyObject).doubleValue ?? 0
             default:
-                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+                super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             }
         }
         else
         {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
 }

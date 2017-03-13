@@ -26,23 +26,23 @@
 
 import Foundation
 
-public extension NSFileManager
+public extension FileManager
 {
     public func availableDiskSpace() throws -> NSNumber?
     {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        let dictionary = try self.attributesOfFileSystemForPath(documentsPath)
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        let dictionary = try self.attributesOfFileSystem(forPath: documentsPath)
 
-        return dictionary[NSFileSystemFreeSize] as? NSNumber
+        return dictionary[FileAttributeKey.systemFreeSize] as? NSNumber
     }
     
-    public func deleteFileAtURL(url: NSURL)
+    public func deleteFileAtURL(_ url: URL)
     {
-        if let path = url.path where self.fileExistsAtPath(path)
+        if let path = url.path, self.fileExists(atPath: path)
         {
             do
             {
-                try self.removeItemAtPath(path)
+                try self.removeItem(atPath: path)
             }
             catch let error as NSError
             {

@@ -10,17 +10,17 @@ import Foundation
 import AFNetworking
 import VimeoNetworking
 
-public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
+open class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
-    let videoUrl: NSURL
+    let videoUrl: URL
     let videoSettings: VideoSettings?
-    let thumbnailUrl: NSURL?
+    let thumbnailUrl: URL?
     
-    public private(set) var uploadTicket: VIMUploadTicket?
-    private(set) var pictureTicket: VIMThumbnailUploadTicket?
-    private(set) var picture: VIMPicture?
+    open fileprivate(set) var uploadTicket: VIMUploadTicket?
+    fileprivate(set) var pictureTicket: VIMThumbnailUploadTicket?
+    fileprivate(set) var picture: VIMPicture?
     
-    private (set) var currentRequest = CAMUploadRequest.CreateVideo
+    fileprivate (set) var currentRequest = CAMUploadRequest.CreateVideo
     {
         didSet
         {
@@ -28,7 +28,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
  
-    private struct ArchiverConstants {
+    fileprivate struct ArchiverConstants {
         static let VideoUrlKey = "videoUrl"
         static let ThumbnailUrlKey = "thumbnailUrl"
         static let VideoSettingsKey = "videoSettings"
@@ -38,14 +38,14 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     //MARK: VideoDescriptor Protocol
     
-    public var type: VideoDescriptorType
+    open var type: VideoDescriptorType
     {
-        return .Upload
+        return .upload
     }
     
-    public var videoUri: VideoUri?
+    open var videoUri: VideoUri?
     
-    public var progressDescriptor: ProgressDescriptor
+    open var progressDescriptor: ProgressDescriptor
     {
         return self
     }
@@ -57,7 +57,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         fatalError("default init() should not be used, use init(videoUrl:videoSettings:thumbnailUrl:) instead")
     }
     
-    public init(videoUrl: NSURL, videoSettings: VideoSettings? = nil, thumbnailUrl: NSURL?)
+    public init(videoUrl: URL, videoSettings: VideoSettings? = nil, thumbnailUrl: URL?)
     {
         self.videoUrl = videoUrl
         self.videoSettings = videoSettings
@@ -68,7 +68,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     //MARK: Overrides
     
-    override public func prepare(sessionManager sessionManager: AFURLSessionManager) throws
+    override open func prepare(sessionManager: AFURLSessionManager) throws
     {
         let sessionManager = sessionManager as! VimeoSessionManager
         
@@ -86,35 +86,35 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override public func resume(sessionManager sessionManager: AFURLSessionManager)
+    override open func resume(sessionManager: AFURLSessionManager)
     {
         super.resume(sessionManager: sessionManager)
         
-        if let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTaskForIdentifier(identifier), let progress = sessionManager.uploadProgressForTask(task)
+        if let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTaskForIdentifier(identifier), let progress = sessionManager.uploadProgress(for: task)
         {
             self.progress = progress
         }
     }
     
-    override public func cancel(sessionManager sessionManager: AFURLSessionManager)
+    override open func cancel(sessionManager: AFURLSessionManager)
     {
         super.cancel(sessionManager: sessionManager)
         
-        NSFileManager.defaultManager().deleteFileAtURL(self.videoUrl)
+        FileManager.default.deleteFileAtURL(self.videoUrl)
         
         if let thumbnailUrl = self.thumbnailUrl {
-            NSFileManager.defaultManager().deleteFileAtURL(thumbnailUrl)
+            FileManager.default.deleteFileAtURL(thumbnailUrl)
         }
     }
     
-    override public func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    override open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
-        guard let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTaskForIdentifier(identifier), let progress = sessionManager.uploadProgressForTask(task) else
+        guard let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTaskForIdentifier(identifier), let progress = sessionManager.uploadProgress(for: task) else
         {
-            NSFileManager.defaultManager().deleteFileAtURL(self.videoUrl)
+            FileManager.default.deleteFileAtURL(self.videoUrl)
             
             if let thumbnailUrl = self.thumbnailUrl {
-                NSFileManager.defaultManager().deleteFileAtURL(thumbnailUrl)
+                FileManager.default.deleteFileAtURL(thumbnailUrl)
             }
             
             let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
@@ -128,7 +128,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.progress = progress
     }
     
-    override public func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    override open func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
     {
         let sessionManager = sessionManager as! VimeoSessionManager
         let responseSerializer = sessionManager.responseSerializer as! VimeoResponseSerializer
@@ -163,7 +163,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         return nil
     }
     
-    override public func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    override open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
     {
         let setFinishedState = {
             self.currentTaskIdentifier = nil
@@ -173,12 +173,12 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         // 1. Perform any necessary file clean up based on the state that just completed
         if self.currentRequest == .UploadVideo
         {
-            NSFileManager.defaultManager().deleteFileAtURL(self.videoUrl)
+            FileManager.default.deleteFileAtURL(self.videoUrl)
         }
         else if self.currentRequest == .UploadThumbnail
         {
             if let thumbnailUrl = self.thumbnailUrl {
-                NSFileManager.defaultManager().deleteFileAtURL(thumbnailUrl)
+                FileManager.default.deleteFileAtURL(thumbnailUrl)
             }
         }
         
@@ -236,14 +236,14 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: Private API
     
-    private func transitionToState(request request: CAMUploadRequest, sessionManager: VimeoSessionManager) throws
+    fileprivate func transitionToState(request: CAMUploadRequest, sessionManager: VimeoSessionManager) throws
     {
         self.currentRequest = request
         let task = try self.taskForRequest(request: request, sessionManager: sessionManager)
         self.currentTaskIdentifier = task.taskIdentifier
     }
     
-    private func taskForRequest(request request: CAMUploadRequest, sessionManager: VimeoSessionManager) throws -> NSURLSessionTask
+    fileprivate func taskForRequest(request: CAMUploadRequest, sessionManager: VimeoSessionManager) throws -> URLSessionTask
     {
         switch request
         {
@@ -266,7 +266,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
             return try sessionManager.createThumbnailDownloadTask(uri: videoUri)
             
         case .UploadThumbnail:
-            guard let thumbnailUploadLink = self.pictureTicket?.link, thumbnailUrl = self.thumbnailUrl else
+            guard let thumbnailUploadLink = self.pictureTicket?.link, let thumbnailUrl = self.thumbnailUrl else
             {
                 throw NSError(domain: UploadErrorDomain.UploadThumbnail.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate thumbnail upload, but thumbnailUploadLink is nil"])
             }
@@ -283,7 +283,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    private func errorDomainForRequest(request: CAMUploadRequest) -> String
+    fileprivate func errorDomainForRequest(_ request: CAMUploadRequest) -> String
     {
         switch request
         {
@@ -304,23 +304,23 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     required public init(coder aDecoder: NSCoder)
     {
-        self.videoUrl = aDecoder.decodeObjectForKey(ArchiverConstants.VideoUrlKey) as! NSURL
-        self.thumbnailUrl = aDecoder.decodeObjectForKey(ArchiverConstants.ThumbnailUrlKey) as? NSURL
-        self.videoSettings = aDecoder.decodeObjectForKey(ArchiverConstants.VideoSettingsKey) as? VideoSettings
+        self.videoUrl = aDecoder.decodeObject(forKey: ArchiverConstants.VideoUrlKey) as! URL
+        self.thumbnailUrl = aDecoder.decodeObject(forKey: ArchiverConstants.ThumbnailUrlKey) as? URL
+        self.videoSettings = aDecoder.decodeObject(forKey: ArchiverConstants.VideoSettingsKey) as? VideoSettings
         self.uploadTicket = aDecoder.decodeObjectForKey(ArchiverConstants.UploadTicketKey) as? VIMUploadTicket
-        self.currentRequest = CAMUploadRequest(rawValue: aDecoder.decodeObjectForKey(ArchiverConstants.CurrentRequestKey) as! String)!
+        self.currentRequest = CAMUploadRequest(rawValue: aDecoder.decodeObject(forKey: ArchiverConstants.CurrentRequestKey) as! String)!
         
         super.init(coder: aDecoder)
     }
     
-    override public func encodeWithCoder(aCoder: NSCoder)
+    override open func encode(with aCoder: NSCoder)
     {
-        aCoder.encodeObject(self.videoUrl, forKey: ArchiverConstants.VideoUrlKey)
-        aCoder.encodeObject(self.thumbnailUrl, forKey: ArchiverConstants.ThumbnailUrlKey)
-        aCoder.encodeObject(self.videoSettings, forKey: ArchiverConstants.VideoSettingsKey)
+        aCoder.encode(self.videoUrl, forKey: ArchiverConstants.VideoUrlKey)
+        aCoder.encode(self.thumbnailUrl, forKey: ArchiverConstants.ThumbnailUrlKey)
+        aCoder.encode(self.videoSettings, forKey: ArchiverConstants.VideoSettingsKey)
         aCoder.encodeObject(self.uploadTicket, forKey: ArchiverConstants.UploadTicketKey)
-        aCoder.encodeObject(self.currentRequest.rawValue, forKey: ArchiverConstants.CurrentRequestKey)
+        aCoder.encode(self.currentRequest.rawValue, forKey: ArchiverConstants.CurrentRequestKey)
         
-        super.encodeWithCoder(aCoder)
+        super.encode(with: aCoder)
     }
 }

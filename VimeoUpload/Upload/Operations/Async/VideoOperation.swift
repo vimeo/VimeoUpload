@@ -27,15 +27,15 @@
 import Foundation
 import VimeoNetworking
 
-public class VideoOperation: ConcurrentOperation
+open class VideoOperation: ConcurrentOperation
 {
-    private let sessionManager: VimeoSessionManager
-    private let videoUri: String
+    fileprivate let sessionManager: VimeoSessionManager
+    fileprivate let videoUri: String
     
-    private var task: NSURLSessionDataTask?
+    fileprivate var task: URLSessionDataTask?
     
-    private(set) var video: VIMVideo?
-    private(set) var error: NSError?
+    fileprivate(set) var video: VIMVideo?
+    fileprivate(set) var error: NSError?
     
     // MARK: - Initialization
     
@@ -54,9 +54,9 @@ public class VideoOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override public func main()
+    override open func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
@@ -94,11 +94,11 @@ public class VideoOperation: ConcurrentOperation
         catch let error as NSError
         {
             self.error = error.errorByAddingDomain(UploadErrorDomain.VideoOperation.rawValue)
-            self.state = .Finished
+            self.state = .finished
         }
     }
     
-    override public func cancel()
+    override open func cancel()
     {
         super.cancel()
         

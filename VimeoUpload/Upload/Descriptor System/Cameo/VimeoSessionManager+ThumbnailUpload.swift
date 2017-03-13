@@ -11,7 +11,7 @@ import VimeoNetworking
 
 extension VimeoSessionManager
 {
-    func createThumbnailDownloadTask(uri uri: VideoUri) throws -> NSURLSessionDownloadTask
+    func createThumbnailDownloadTask(uri: VideoUri) throws -> URLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createThumbnailRequestWithUri(uri)
         
@@ -21,13 +21,13 @@ extension VimeoSessionManager
         return task
     }
     
-    func uploadThumbnailTask(source source: NSURL, destination: String, completionHandler: ErrorBlock?) throws -> NSURLSessionUploadTask
+    func uploadThumbnailTask(source: NSURL, destination: String, completionHandler: ErrorBlock?) throws -> URLSessionUploadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadThumbnailRequestWithSource(source, destination: destination)
         
         let task = self.uploadTaskWithRequest(request, fromFile: source, progress: nil) { [weak self] (response, responseObject, error) in
             
-            guard let strongSelf = self, completionHandler = completionHandler else {
+            guard let strongSelf = self, let completionHandler = completionHandler else {
                 return
             }
             
@@ -45,7 +45,7 @@ extension VimeoSessionManager
         return task
     }
     
-    func activateThumbnailTask(activationUri activationUri: String) throws -> NSURLSessionDownloadTask
+    func activateThumbnailTask(activationUri: String) throws -> URLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).activateThumbnailRequestWithUri(activationUri)
         

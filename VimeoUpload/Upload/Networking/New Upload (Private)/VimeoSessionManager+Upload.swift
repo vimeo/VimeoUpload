@@ -29,7 +29,7 @@ import VimeoNetworking
 
 extension VimeoSessionManager
 {
-    func createVideoDataTask(url url: NSURL, videoSettings: VideoSettings?, completionHandler: UploadTicketCompletionHandler) throws -> NSURLSessionDataTask
+    func createVideoDataTask(url: NSURL, videoSettings: VideoSettings?, completionHandler: UploadTicketCompletionHandler) throws -> URLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url, videoSettings: videoSettings)
         
@@ -60,7 +60,7 @@ extension VimeoSessionManager
         return task
     }
     
-    func createVideoDownloadTask(url url: NSURL, videoSettings: VideoSettings?) throws -> NSURLSessionDownloadTask
+    func createVideoDownloadTask(url: NSURL, videoSettings: VideoSettings?) throws -> URLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url, videoSettings: videoSettings)
         

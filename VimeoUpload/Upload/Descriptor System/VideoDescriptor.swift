@@ -28,8 +28,8 @@ import Foundation
 
 @objc public enum VideoDescriptorType: Int
 {
-    case Upload
-    case Download
+    case upload
+    case download
 }
 
 @objc public protocol VideoDescriptor

@@ -33,7 +33,7 @@ import VimeoNetworking
 // 1. Perorm a PHAssetCloudExportQuotaOperation
 // 2. Create video record
 
-public class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
+open class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
 {
     let phAsset: PHAsset
 
@@ -48,7 +48,7 @@ public class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
     
     // MARK: Overrides
 
-    override func makeExportQuotaOperation(me: VIMUser) -> ExportQuotaOperation?
+    override func makeExportQuotaOperation(_ me: VIMUser) -> ExportQuotaOperation?
     {
         return PHAssetCloudExportQuotaOperation(me: me, phAsset: self.phAsset)
     }

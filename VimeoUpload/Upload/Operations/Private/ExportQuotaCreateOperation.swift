@@ -28,29 +28,29 @@ import Foundation
 import AVFoundation
 import VimeoNetworking
 
-public class ExportQuotaCreateOperation: ConcurrentOperation
+open class ExportQuotaCreateOperation: ConcurrentOperation
 {
     let me: VIMUser
     let sessionManager: VimeoSessionManager
-    public var videoSettings: VideoSettings?
-    let operationQueue: NSOperationQueue
+    open var videoSettings: VideoSettings?
+    let operationQueue: OperationQueue
     
     // MARK:
 
-    public var downloadProgressBlock: ProgressBlock?
-    public var exportProgressBlock: ExportProgressBlock?
+    open var downloadProgressBlock: ProgressBlock?
+    open var exportProgressBlock: ExportProgressBlock?
     
     // MARK:
     
-    public var url: NSURL?
-    public var uploadTicket: VIMUploadTicket?
-    public var error: NSError?
+    open var url: URL?
+    open var uploadTicket: VIMUploadTicket?
+    open var error: NSError?
     {
         didSet
         {
             if self.error != nil
             {
-                self.state = .Finished
+                self.state = .finished
             }
         }
     }
@@ -74,9 +74,9 @@ public class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override public func main()
+    override open func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
@@ -85,7 +85,7 @@ public class ExportQuotaCreateOperation: ConcurrentOperation
         self.performExportQuotaOperation(operation)
     }
     
-    override public func cancel()
+    override open func cancel()
     {
         super.cancel()
         
@@ -93,13 +93,13 @@ public class ExportQuotaCreateOperation: ConcurrentOperation
         
         if let url = self.url
         {
-            NSFileManager.defaultManager().deleteFileAtURL(url)
+            FileManager.default.deleteFileAtURL(url)
         }
     }
     
     // MARK: Public API
     
-    func makeExportQuotaOperation(me: VIMUser) -> ExportQuotaOperation?
+    func makeExportQuotaOperation(_ me: VIMUser) -> ExportQuotaOperation?
     {
         assertionFailure("Subclasses must override")
         
@@ -108,26 +108,26 @@ public class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: Private API
 
-    private func performExportQuotaOperation(operation: ExportQuotaOperation)
+    fileprivate func performExportQuotaOperation(_ operation: ExportQuotaOperation)
     {
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
-            self?.downloadProgressBlock?(progress: progress)
+            self?.downloadProgressBlock?(progress)
         }
         
         operation.exportProgressBlock = { [weak self] (exportSession: AVAssetExportSession, progress: Double) -> Void in
-            self?.exportProgressBlock?(exportSession: exportSession, progress: progress)
+            self?.exportProgressBlock?(exportSession, progress)
         }
         
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -147,14 +147,14 @@ public class ExportQuotaCreateOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    private func createVideo(url url: NSURL)
+    fileprivate func createVideo(url: URL)
     {
         let videoSettings = self.videoSettings
         
         let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {

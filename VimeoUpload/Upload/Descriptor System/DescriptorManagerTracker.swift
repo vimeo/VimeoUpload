@@ -34,43 +34,43 @@ import Foundation
 
 // We use this class purely to report lifecycle events via print statements and local notifications [AH] 10/28/2015
 
-public class DescriptorManagerTracker: DescriptorManagerDelegate
+open class DescriptorManagerTracker: DescriptorManagerDelegate
 {
     public init() {}
     
     // MARK: DescriptorManagerDelegate
     
-    @objc public func didLoadDescriptors(descriptors descriptors: Set<Descriptor>)
+    @objc open func didLoadDescriptors(descriptors: Set<Descriptor>)
     {
         self.printMessageAndPostLocalNotification("Loaded \(descriptors.count)")
     }
 
-    @objc public func didSaveDescriptors(count count: Int)
+    @objc open func didSaveDescriptors(count: Int)
     {
         self.printMessageAndPostLocalNotification("Saved \(count)")
     }
 
-    @objc public func didFailToLoadDescriptor(error error: NSError)
+    @objc open func didFailToLoadDescriptor(error: NSError)
     {
         self.printMessageAndPostLocalNotification("Load failed: \(error.localizedDescription)")
     }
     
-    @objc public func sessionDidBecomeInvalid(error error: NSError)
+    @objc open func sessionDidBecomeInvalid(error: NSError)
     {
         self.printMessageAndPostLocalNotification("Session invalidated: \(error.localizedDescription)")
     }
     
-    @objc public func willHandleEventsForBackgroundSession()
+    @objc open func willHandleEventsForBackgroundSession()
     {
         self.printMessageAndPostLocalNotification("Will handle background events")
     }
     
-    @objc public func didFinishEventsForBackgroundSession()
+    @objc open func didFinishEventsForBackgroundSession()
     {
         self.printMessageAndPostLocalNotification("Did handle background events")
     }
     
-    @objc public func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
+    @objc open func downloadTaskDidFinishDownloading(task: URLSessionDownloadTask, descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -78,7 +78,7 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
         }
     }
     
-    @objc public func taskDidComplete(task task: NSURLSessionTask, descriptor: Descriptor, error: NSError?)
+    @objc open func taskDidComplete(task: URLSessionTask, descriptor: Descriptor, error: NSError?)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -93,7 +93,7 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
         }
     }
     
-    @objc public func descriptorAdded(descriptor: Descriptor)
+    @objc open func descriptorAdded(_ descriptor: Descriptor)
     {
         if let identifier = descriptor.identifier
         {
@@ -101,7 +101,7 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
         }
     }
 
-    @objc public func descriptorDidSucceed(descriptor: Descriptor)
+    @objc open func descriptorDidSucceed(_ descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -109,7 +109,7 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
         }
     }
 
-    @objc public func descriptorDidCancel(descriptor: Descriptor)
+    @objc open func descriptorDidCancel(_ descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -117,7 +117,7 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
         }
     }
 
-    @objc public func descriptorDidFail(descriptor: Descriptor)
+    @objc open func descriptorDidFail(_ descriptor: Descriptor)
     {
         if let descriptorIdentifier = descriptor.identifier
         {
@@ -125,14 +125,14 @@ public class DescriptorManagerTracker: DescriptorManagerDelegate
         }
     }
     
-    @objc public func descriptorForTaskNotFound(task: NSURLSessionTask)
+    @objc open func descriptorForTaskNotFound(_ task: URLSessionTask)
     {
         self.printMessageAndPostLocalNotification("Descriptor for task not found")
     }
     
     // Private API
     
-    private func printMessageAndPostLocalNotification(message: String)
+    fileprivate func printMessageAndPostLocalNotification(_ message: String)
     {
         print(message)
         

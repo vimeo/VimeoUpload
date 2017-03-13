@@ -28,7 +28,7 @@ import Foundation
 
 public extension NSString
 {
-    static func stringFromFileSize(bytes bytes: Float64) -> NSString
+    static func stringFromFileSize(bytes: Float64) -> NSString
     {
         let bytes = max(bytes, 0)
 
@@ -61,21 +61,21 @@ public extension NSString
         }
 
         var string = String(format: "%.1f %@", value, suffix)
-        if let range = string.rangeOfString(".0")
+        if let range = string.range(of: ".0")
         {
-            string.replaceRange(range, with: "")
+            string.replaceSubrange(range, with: "")
         }
         
-        return string
+        return string as NSString
     }
     
-    static func stringFromDurationInSeconds(duration: Float64) -> NSString
+    static func stringFromDurationInSeconds(_ duration: Float64) -> NSString
     {
         let duration = max(duration, 0)
         
         let hours = Int(floor(duration / (60 * 60)))
-        let minutes = hours > 0 ? Int(floor((duration % (60 * 60)) / 60)) : Int(floor(duration / 60))
-        let seconds = Int(floor(duration % 60))
+        let minutes = hours > 0 ? Int(floor((duration.truncatingRemainder(dividingBy: (60 * 60))) / 60)) : Int(floor(duration / 60))
+        let seconds = Int(floor(duration.truncatingRemainder(dividingBy: 60)))
         
         var result = seconds < 10 ? "0\(seconds)" : "\(seconds)"
         
@@ -97,6 +97,6 @@ public extension NSString
             result = "\(minutes)" + ":\(result)"
         }
         
-        return result
+        return result as NSString
     }
 }

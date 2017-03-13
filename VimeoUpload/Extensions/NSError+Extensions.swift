@@ -49,14 +49,14 @@ extension NSError
             NSURLErrorNetworkConnectionLost].contains(self.code)
     }
     
-    class func errorWithDomain(domain: String?, code: Int?, description: String?) -> NSError
+    class func errorWithDomain(_ domain: String?, code: Int?, description: String?) -> NSError
     {
         var error = NSError(domain: VimeoErrorKey.VimeoErrorDomain.rawValue, code: 0, userInfo: nil)
         
         if let description = description
         {
             let userInfo = [NSLocalizedDescriptionKey: description]
-            error = error.errorByAddingDomain(domain, code: code, userInfo: userInfo)
+            error = error.errorByAddingDomain(domain, code: code, userInfo: userInfo as [String : AnyObject]?)
         }
         else
         {
@@ -66,22 +66,22 @@ extension NSError
         return error
     }
 
-    func errorByAddingDomain(domain: String) -> NSError
+    func errorByAddingDomain(_ domain: String) -> NSError
     {
         return self.errorByAddingDomain(domain, code: nil, userInfo: nil)
     }
     
-    func errorByAddingUserInfo(userInfo: [String: AnyObject]) -> NSError
+    func errorByAddingUserInfo(_ userInfo: [String: AnyObject]) -> NSError
     {
         return self.errorByAddingDomain(nil, code: nil, userInfo: userInfo)
     }
     
-    func errorByAddingCode(code: Int) -> NSError
+    func errorByAddingCode(_ code: Int) -> NSError
     {
         return self.errorByAddingDomain(nil, code: code, userInfo: nil)
     }
     
-    func errorByAddingDomain(domain: String?, code: Int?, userInfo: [String: AnyObject]?) -> NSError
+    func errorByAddingDomain(_ domain: String?, code: Int?, userInfo: [String: AnyObject]?) -> NSError
     {
         let augmentedInfo = NSMutableDictionary(dictionary: self.userInfo)
         
@@ -97,9 +97,9 @@ extension NSError
         
         if let userInfo = userInfo
         {
-            augmentedInfo.addEntriesFromDictionary(userInfo)
+            augmentedInfo.addEntries(from: userInfo)
         }
         
-        return NSError(domain: self.domain, code: self.code, userInfo: augmentedInfo as [NSObject: AnyObject])
+        return NSError(domain: self.domain, code: self.code, userInfo: augmentedInfo as [AnyHashable: Any])
     }
 }

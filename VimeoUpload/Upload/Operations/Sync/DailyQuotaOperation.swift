@@ -28,12 +28,12 @@ import Foundation
 import AVFoundation
 import VimeoNetworking
 
-public class DailyQuotaOperation: NSOperation
+open class DailyQuotaOperation: Operation
 {    
-    private let user: VIMUser
+    fileprivate let user: VIMUser
     
-    private(set) var result: Bool?
-    private(set) var error: NSError?
+    fileprivate(set) var result: Bool?
+    fileprivate(set) var error: NSError?
     
     init(user: VIMUser)
     {
@@ -44,7 +44,7 @@ public class DailyQuotaOperation: NSOperation
     
     // MARK: Overrides
 
-    override public func main()
+    override open func main()
     {
         if let sd = self.user.uploadQuota?.quantityQuota?.canUploadSd, let hd = self.user.uploadQuota?.quantityQuota?.canUploadHd
         {
@@ -52,7 +52,7 @@ public class DailyQuotaOperation: NSOperation
         }
         else
         {
-            self.error = NSError.errorWithDomain(UploadErrorDomain.DailyQuotaOperation.rawValue, code: UploadLocalErrorCode.CannotEvaluateDailyQuota.rawValue, description: "User object did not contain uploadQuota.quota information")
+            self.error = NSError.errorWithDomain(UploadErrorDomain.DailyQuotaOperation.rawValue, code: UploadLocalErrorCode.cannotEvaluateDailyQuota.rawValue, description: "User object did not contain uploadQuota.quota information")
         }
     }
 }

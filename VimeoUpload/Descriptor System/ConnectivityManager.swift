@@ -29,8 +29,8 @@ import AFNetworking
 
 protocol ConnectivityManagerDelegate: class
 {
-    func suspend(connectivityManager connectivityManager: ConnectivityManager)
-    func resume(connectivityManager connectivityManager: ConnectivityManager)
+    func suspend(connectivityManager: ConnectivityManager)
+    func resume(connectivityManager: ConnectivityManager)
 }
 
 @objc class ConnectivityManager: NSObject
@@ -64,26 +64,26 @@ protocol ConnectivityManagerDelegate: class
     
     // MARK: Notifications
     
-    private func addObservers()
+    fileprivate func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ConnectivityManager.reachabilityDidChange(_:)), name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ConnectivityManager.reachabilityDidChange(_:)), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    private func removeObservers()
+    fileprivate func removeObservers()
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    func reachabilityDidChange(notification: NSNotification)
+    func reachabilityDidChange(_ notification: Notification)
     {
         self.updateState()
     }
     
-    private func updateState()
+    fileprivate func updateState()
     {
-        if AFNetworkReachabilityManager.sharedManager().reachable == true
+        if AFNetworkReachabilityManager.shared().isReachable == true
         {
-            if AFNetworkReachabilityManager.sharedManager().reachableViaWiFi
+            if AFNetworkReachabilityManager.shared().isReachableViaWiFi
             {
                 self.delegate?.resume(connectivityManager: self)
             }

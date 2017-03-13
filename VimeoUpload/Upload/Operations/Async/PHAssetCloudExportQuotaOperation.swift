@@ -32,7 +32,7 @@ import VimeoNetworking
 // 2. Export (check disk space within this step)
 // 3. Check weekly quota
 
-public class PHAssetCloudExportQuotaOperation: ExportQuotaOperation
+open class PHAssetCloudExportQuotaOperation: ExportQuotaOperation
 {
     let phAsset: PHAsset
 
@@ -51,14 +51,14 @@ public class PHAssetCloudExportQuotaOperation: ExportQuotaOperation
         operation.progressBlock = super.downloadProgressBlock
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
             
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }

@@ -33,9 +33,9 @@ import VimeoNetworking
 // 1. Perorm a MeQuotaOperation
 // 2. Perform a PHAssetCloudExportQuotaOperation
 
-public class PHAssetRetryUploadOperation: RetryUploadOperation
+open class PHAssetRetryUploadOperation: RetryUploadOperation
 {
-    private let phAsset: PHAsset
+    fileprivate let phAsset: PHAsset
     
     // MARK: - Initialization
     
@@ -48,7 +48,7 @@ public class PHAssetRetryUploadOperation: RetryUploadOperation
     
     // MARK: Overrides
     
-    override func makeExportQuotaOperation(user user: VIMUser) -> ExportQuotaOperation?
+    override func makeExportQuotaOperation(user: VIMUser) -> ExportQuotaOperation?
     {
         return PHAssetCloudExportQuotaOperation(me: user, phAsset: self.phAsset)
     }

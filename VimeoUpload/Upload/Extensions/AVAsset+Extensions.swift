@@ -29,9 +29,9 @@ import AVFoundation
 
 public extension AVAsset
 {    
-    func approximateFileSize(completion: FloatBlock)
+    func approximateFileSize(_ completion: @escaping FloatBlock)
     {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async { () -> Void in
 
             var approximateSize: Float64 = 0
             
@@ -46,8 +46,8 @@ public extension AVAsset
 
             assert(approximateSize > 0, "Unable to calculate approximate fileSize")
             
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion(value: approximateSize)
+            DispatchQueue.main.async(execute: { () -> Void in
+                completion(approximateSize)
             })
         }
     }
