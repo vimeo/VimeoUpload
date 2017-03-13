@@ -61,7 +61,7 @@ open class MeQuotaOperation: ConcurrentOperation
         self.sessionManager = sessionManager
         self.me = me
         
-        self.operationQueue = NSOperationQueue()
+        self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
     }
 
@@ -141,7 +141,7 @@ open class MeQuotaOperation: ConcurrentOperation
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -190,7 +190,7 @@ open class MeQuotaOperation: ConcurrentOperation
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -199,7 +199,7 @@ open class MeQuotaOperation: ConcurrentOperation
 
                 if let result = operation.result, result == false
                 {
-                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.DailyQuotaException.rawValue, description: "Upload would exceed daily quota.")
+                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.dailyQuotaException.rawValue, description: "Upload would exceed daily quota.")
                 }
                 else
                 {
@@ -209,7 +209,7 @@ open class MeQuotaOperation: ConcurrentOperation
                     }
                     else
                     {
-                        strongSelf.state = .Finished // If the asset is nil, then it's in iCloud and we don't yet have access to the filesize
+                        strongSelf.state = .finished // If the asset is nil, then it's in iCloud and we don't yet have access to the filesize
                     }
                 }
             })
@@ -239,7 +239,7 @@ open class MeQuotaOperation: ConcurrentOperation
                         return
                     }
                     
-                    if operation.cancelled == true
+                    if operation.isCancelled == true
                     {
                         return
                     }
@@ -249,7 +249,7 @@ open class MeQuotaOperation: ConcurrentOperation
                     if let result = operation.result, result.success == false
                     {
                         let userInfo = [UploadErrorKey.FileSize.rawValue: result.fileSize, UploadErrorKey.AvailableSpace.rawValue: result.availableSpace]
-                        strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.WeeklyQuotaException.rawValue, description: "Upload would exceed approximate weekly quota.").errorByAddingUserInfo(userInfo)
+                        strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.weeklyQuotaException.rawValue, description: "Upload would exceed approximate weekly quota.").errorByAddingUserInfo(userInfo as [String : AnyObject])
                     }
                     else
                     {
@@ -284,7 +284,7 @@ open class MeQuotaOperation: ConcurrentOperation
                 if let result = operation.result, result.success == false
                 {
                     let userInfo = [UploadErrorKey.FileSize.rawValue: result.fileSize, UploadErrorKey.AvailableSpace.rawValue: result.availableSpace]
-                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.diskSpaceException.rawValue, description: "Not enough approximate disk space to export asset.").errorByAddingUserInfo(userInfo)
+                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.diskSpaceException.rawValue, description: "Not enough approximate disk space to export asset.").errorByAddingUserInfo(userInfo as [String : AnyObject])
                 }
                 else
                 {
