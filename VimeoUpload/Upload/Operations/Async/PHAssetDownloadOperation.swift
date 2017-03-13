@@ -63,7 +63,7 @@ open class PHAssetDownloadOperation: ConcurrentOperation
         let options = PHVideoRequestOptions()
         options.isNetworkAccessAllowed = true
         options.deliveryMode = .highQualityFormat
-        options.progressHandler = { [weak self] (progress: Double, error: NSError?, stop: UnsafeMutablePointer<ObjCBool>, info: [AnyHashable: Any]?) -> Void in
+        options.progressHandler = { [weak self] (progress: Double, error: Error?, stop: UnsafeMutablePointer<ObjCBool>, info: [AnyHashable: Any]?) -> Void in
             
             guard let strongSelf = self else
             {
@@ -90,7 +90,7 @@ open class PHAssetDownloadOperation: ConcurrentOperation
             if let error = error
             {
                 strongSelf.progressBlock = nil
-                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue)
+                strongSelf.error = (error as NSError).errorByAddingDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue)
                 strongSelf.state = .finished
             }
             else if let info = info, let error = info[PHImageErrorKey] as? NSError
@@ -101,7 +101,7 @@ open class PHAssetDownloadOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.progressBlock?(progress: progress)
+                strongSelf.progressBlock?(progress)
             }
         }
         
