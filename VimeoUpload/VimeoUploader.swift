@@ -52,7 +52,7 @@ open class VimeoUploader<T: VideoDescriptor>
         })
     }
     
-    public init(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: VimeoRequestSerializer.AccessTokenProvider)
+    public init(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider)
     {
         self.foregroundSessionManager = VimeoSessionManager.defaultSessionManager(accessTokenProvider: accessTokenProvider)
         
