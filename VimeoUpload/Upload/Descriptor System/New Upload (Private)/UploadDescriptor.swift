@@ -87,7 +87,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             }
             
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, completionHandler: nil)
+            let task = try sessionManager.uploadVideoTask(source: self.url as NSURL, destination: uploadLinkSecure, completionHandler: nil)
             
             self.currentTaskIdentifier = task.taskIdentifier
         }
@@ -163,7 +163,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first
             {
-                self.error = taskError.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
+                self.error = (taskError as NSError).errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
             }
             else if let error = error
             {
@@ -182,10 +182,10 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         let fileName = aDecoder.decodeObject(forKey: type(of: self).FileNameCoderKey) as! String 
         let fileExtension = aDecoder.decodeObject(forKey: type(of: self).FileExtensionCoderKey) as! String
-        let path = URL.uploadDirectory().appendingPathComponent(fileName)!.appendingPathExtension(fileExtension)!.absoluteString
+        let path = URL.uploadDirectory().appendingPathComponent(fileName).appendingPathExtension(fileExtension).absoluteString
         
-        self.url = URL(fileURLWithPath: path!)
-        self.uploadTicket = aDecoder.decodeObjectForKey(type(of: self).UploadTicketCoderKey) as! VIMUploadTicket
+        self.url = URL(fileURLWithPath: path)
+        self.uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as! VIMUploadTicket
 
         super.init(coder: aDecoder)
     }
@@ -197,7 +197,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
         aCoder.encode(fileName, forKey: type(of: self).FileNameCoderKey)
         aCoder.encode(ext, forKey: type(of: self).FileExtensionCoderKey)
-        aCoder.encodeObject(self.uploadTicket, forKey: type(of: self).UploadTicketCoderKey)
+        aCoder.encode(self.uploadTicket, forKey: type(of: self).UploadTicketCoderKey)
         
         super.encode(with: aCoder)
     }
