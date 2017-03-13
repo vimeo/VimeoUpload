@@ -14,10 +14,10 @@ extension VimeoRequestSerializer
 {
     func createThumbnailRequestWithUri(_ uri: String) throws -> NSMutableURLRequest
     {
-        let url = NSURL(string: "\(uri)/pictures", relativeToURL: VimeoBaseURLString)!
+        let url = NSURL(string: "\(uri)/pictures", relativeTo: VimeoBaseURLString)!
         
         var error: NSError?
-        let request = self.requestWithMethod("POST", URLString: url.absoluteString!, parameters: nil, error: &error)
+        let request = self.request(withMethod: "POST", urlString: url.absoluteString!, parameters: nil, error: &error)
         
         if let error = error
         {
@@ -29,11 +29,11 @@ extension VimeoRequestSerializer
     
     func activateThumbnailRequestWithUri(_ uri: String) throws -> NSMutableURLRequest
     {
-        let url = NSURL(string: "\(uri)", relativeToURL: VimeoBaseURLString)!
+        let url = NSURL(string: "\(uri)", relativeTo: VimeoBaseURLString)!
         
         var error: NSError?
         let activationParams = ["active" : "true"]
-        let request = self.requestWithMethod("PATCH", URLString: url.absoluteString!, parameters: activationParams, error: &error)
+        let request = self.request(withMethod: "PATCH", urlString: url.absoluteString!, parameters: activationParams, error: &error)
         
         if let error = error
         {
@@ -50,7 +50,7 @@ extension VimeoRequestSerializer
         }
         
         var error: NSError?
-        let request = self.requestWithMethod("PUT", URLString: destination, parameters: nil, error: &error)
+        let request = self.request(withMethod: "PUT", urlString: destination, parameters: nil, error: &error)
         if let error = error {
             throw error.errorByAddingDomain(UploadErrorDomain.UploadThumbnail.rawValue)
         }
