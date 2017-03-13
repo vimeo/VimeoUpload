@@ -111,7 +111,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     // Ensure that we refresh the me object on return from background
     // In the event that a user modified their upload quota while the app was backgrounded [AH] 12/06/2015
     
-    func applicationWillEnterForeground(_ notification: Notification)
+    func applicationWillEnterForeground(_ notification: NSNotification)
     {
         if self.meOperation != nil
         {
@@ -159,14 +159,14 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         
         let fetchResult = PHAsset.fetchAssets(with: .video, options: options)
 
-        fetchResult.enumerateObjects{ (object: AnyObject?, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
-
+        fetchResult.enumerateObjects({ (object: AnyObject?, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+            
             if let phAsset = object as? PHAsset
             {
                 let vimPHAsset = VIMPHAsset(phAsset: phAsset)
                 assets.append(vimPHAsset)
             }
-        }        
+        })        
         
         return assets
     }
