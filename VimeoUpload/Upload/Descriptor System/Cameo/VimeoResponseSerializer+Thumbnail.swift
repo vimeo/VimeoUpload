@@ -11,22 +11,22 @@ import VimeoNetworking
 
 extension VimeoResponseSerializer
 {
-    func processCreateThumbnailResponse(_ response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> VIMThumbnailUploadTicket
+    func processCreateThumbnailResponse(_ response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMThumbnailUploadTicket
     {
         let responseObject: [String: AnyObject]?
         do
         {
-            responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url, error: error)
+            responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)
         }
         catch let error as NSError
         {
             throw error.errorByAddingDomain(UploadErrorDomain.CreateThumbnail.rawValue)
         }
         
-        return try self.processCreateThumbnailResponse(response, responseObject: responseObject, error: error)
+        return try self.processCreateThumbnailResponse(response, responseObject: responseObject as AnyObject?, error: error)
     }
     
-    func processCreateThumbnailResponse(_ response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMThumbnailUploadTicket
+    func processCreateThumbnailResponse(_ response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMThumbnailUploadTicket
     {
         do
         {
@@ -59,22 +59,22 @@ extension VimeoResponseSerializer
         }
     }
     
-    func processActivateThumbnailResponse(_ response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> VIMPicture
+    func processActivateThumbnailResponse(_ response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMPicture
     {
         let responseObject: [String: AnyObject]?
         do
         {
-            responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url, error: error)
+            responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)
         }
         catch let error as NSError
         {
             throw error.errorByAddingDomain(UploadErrorDomain.ActivateThumbnail.rawValue)
         }
         
-        return try self.processActivateThumbnailResponse(response, responseObject: responseObject, error: error)
+        return try self.processActivateThumbnailResponse(response, responseObject: responseObject as AnyObject?, error: error)
     }
     
-    func processActivateThumbnailResponse(_ response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMPicture
+    func processActivateThumbnailResponse(_ response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMPicture
     {
         do
         {
@@ -104,7 +104,7 @@ extension VimeoResponseSerializer
             let mapper = VIMObjectMapper()
             mapper.addMappingClass(VIMThumbnailUploadTicket.self, forKeypath: "")
             
-            if let thumbnailTicket = mapper.applyMappingToJSON(dictionary) as? VIMThumbnailUploadTicket
+            if let thumbnailTicket = mapper.applyMapping(toJSON: dictionary) as? VIMThumbnailUploadTicket
             {
                 return thumbnailTicket
             }
@@ -120,7 +120,7 @@ extension VimeoResponseSerializer
             let mapper = VIMObjectMapper()
             mapper.addMappingClass(VIMPicture.self, forKeypath: "")
             
-            if let picture = mapper.applyMappingToJSON(dictionary) as? VIMPicture
+            if let picture = mapper.applyMapping(toJSON: dictionary) as? VIMPicture
             {
                 return picture
             }
