@@ -65,7 +65,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
         let options = PHVideoRequestOptions()
         options.isNetworkAccessAllowed = true
         options.deliveryMode = .highQualityFormat
-        options.progressHandler = { [weak self] (progress: Double, error: NSError?, stop: UnsafeMutablePointer<ObjCBool>, info: [AnyHashable: Any]?) -> Void in
+        options.progressHandler = { [weak self] (progress: Double, error: Error?, stop: UnsafeMutablePointer<ObjCBool>, info: [AnyHashable: Any]?) -> Void in
             
             guard let strongSelf = self else
             {
@@ -95,7 +95,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.progressBlock?(progress: progress)
+                strongSelf.progressBlock?(progress)
             }
         }
         
