@@ -77,7 +77,7 @@ import Foundation
     
     fileprivate func save()
     {
-        self.archiver.saveObject(self.failedDescriptors, key: type(of: self).ArchiveKey)
+        self.archiver.saveObject(self.failedDescriptors as AnyObject, key: type(of: self).ArchiveKey)
     }
     
     // MARK: Public API
