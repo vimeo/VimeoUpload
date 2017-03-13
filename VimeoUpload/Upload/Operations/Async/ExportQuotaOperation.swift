@@ -53,7 +53,7 @@ open class ExportQuotaOperation: ConcurrentOperation
     init(me: VIMUser)
     {
         self.me = me
-        self.operationQueue = NSOperationQueue()
+        self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
     }
     
@@ -163,7 +163,7 @@ open class ExportQuotaOperation: ConcurrentOperation
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -173,12 +173,12 @@ open class ExportQuotaOperation: ConcurrentOperation
                 if let result = operation.result, result.success == false
                 {
                     let userInfo = [UploadErrorKey.FileSize.rawValue: result.fileSize, UploadErrorKey.AvailableSpace.rawValue: result.availableSpace]
-                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: UploadLocalErrorCode.WeeklyQuotaException.rawValue, description: "Upload would exceed weekly quota.").errorByAddingUserInfo(userInfo)
+                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: UploadLocalErrorCode.weeklyQuotaException.rawValue, description: "Upload would exceed weekly quota.").errorByAddingUserInfo(userInfo as [String : AnyObject])
                 }
                 else
                 {
                     strongSelf.result = url
-                    strongSelf.state = .Finished
+                    strongSelf.state = .finished
                 }
             })
         }
