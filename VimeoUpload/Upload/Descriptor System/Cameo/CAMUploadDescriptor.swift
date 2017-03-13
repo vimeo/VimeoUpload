@@ -138,19 +138,19 @@ open class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
             switch self.currentRequest
             {
             case .CreateVideo:
-                self.uploadTicket = try responseSerializer.processCreateVideoResponse(task.response, url: url, error: error)
+                self.uploadTicket = try responseSerializer.processCreateVideoResponse(task.response, url: url as NSURL?, error: error)
                 
             case .UploadVideo:
                 break
                 
             case .CreateThumbnail:
-                self.pictureTicket = try responseSerializer.processCreateThumbnailResponse(task.response, url: url, error: error)
+                self.pictureTicket = try responseSerializer.processCreateThumbnailResponse(task.response, url: url as NSURL?, error: error)
                 
             case .UploadThumbnail:
                 break
                 
             case .ActivateThumbnail:
-                self.picture = try responseSerializer.processActivateThumbnailResponse(task.response, url: url, error: error)
+                self.picture = try responseSerializer.processActivateThumbnailResponse(task.response, url: url as NSURL?, error: error)
             }
         }
         catch let error as NSError
@@ -188,7 +188,7 @@ open class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first
             {
                 let domain = self.errorDomainForRequest(self.currentRequest)
-                self.error = taskError.errorByAddingDomain(domain)
+                self.error = (taskError as NSError).errorByAddingDomain(domain)
             }
             else if let error = error
             {
@@ -248,14 +248,14 @@ open class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         switch request
         {
         case .CreateVideo:
-            return try sessionManager.createVideoDownloadTask(url: self.videoUrl, videoSettings: self.videoSettings)
+            return try sessionManager.createVideoDownloadTask(url: self.videoUrl as NSURL, videoSettings: self.videoSettings)
         case .UploadVideo:
             guard let uploadUri = self.uploadTicket?.uploadLinkSecure else
             {
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
             
-            return try sessionManager.uploadVideoTask(source: self.videoUrl, destination: uploadUri, completionHandler: nil)
+            return try sessionManager.uploadVideoTask(source: self.videoUrl as NSURL, destination: uploadUri, completionHandler: nil)
             
         case .CreateThumbnail:
             guard let videoUri = self.uploadTicket?.video?.uri else
@@ -271,7 +271,7 @@ open class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
                 throw NSError(domain: UploadErrorDomain.UploadThumbnail.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate thumbnail upload, but thumbnailUploadLink is nil"])
             }
             
-            return try sessionManager.uploadThumbnailTask(source: thumbnailUrl, destination: thumbnailUploadLink, completionHandler: nil)
+            return try sessionManager.uploadThumbnailTask(source: thumbnailUrl as NSURL, destination: thumbnailUploadLink, completionHandler: nil)
             
         case .ActivateThumbnail:
             guard let thumbnailUri = self.pictureTicket?.uri else
@@ -307,7 +307,7 @@ open class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.videoUrl = aDecoder.decodeObject(forKey: ArchiverConstants.VideoUrlKey) as! URL
         self.thumbnailUrl = aDecoder.decodeObject(forKey: ArchiverConstants.ThumbnailUrlKey) as? URL
         self.videoSettings = aDecoder.decodeObject(forKey: ArchiverConstants.VideoSettingsKey) as? VideoSettings
-        self.uploadTicket = aDecoder.decodeObjectForKey(ArchiverConstants.UploadTicketKey) as? VIMUploadTicket
+        self.uploadTicket = aDecoder.decodeObject(forKey: ArchiverConstants.UploadTicketKey) as? VIMUploadTicket
         self.currentRequest = CAMUploadRequest(rawValue: aDecoder.decodeObject(forKey: ArchiverConstants.CurrentRequestKey) as! String)!
         
         super.init(coder: aDecoder)
@@ -318,7 +318,7 @@ open class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         aCoder.encode(self.videoUrl, forKey: ArchiverConstants.VideoUrlKey)
         aCoder.encode(self.thumbnailUrl, forKey: ArchiverConstants.ThumbnailUrlKey)
         aCoder.encode(self.videoSettings, forKey: ArchiverConstants.VideoSettingsKey)
-        aCoder.encodeObject(self.uploadTicket, forKey: ArchiverConstants.UploadTicketKey)
+        aCoder.encode(self.uploadTicket, forKey: ArchiverConstants.UploadTicketKey)
         aCoder.encode(self.currentRequest.rawValue, forKey: ArchiverConstants.CurrentRequestKey)
         
         super.encode(with: aCoder)
