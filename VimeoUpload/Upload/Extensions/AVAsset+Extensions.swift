@@ -31,8 +31,7 @@ public extension AVAsset
 {    
     func approximateFileSize(_ completion: @escaping FloatBlock)
     {
-        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async { () -> Void in
-
+        DispatchQueue.global(qos: .default).async { () -> Void in
             var approximateSize: Float64 = 0
             
             let tracks = self.tracks // Accessing the tracks property is slow, maybe synchronous below the hood, so dispatching to bg thread
@@ -43,7 +42,7 @@ public extension AVAsset
                 let seconds: Float64 = CMTimeGetSeconds(track.timeRange.duration)
                 approximateSize += seconds * Float64(bytesPerSecond)
             }
-
+            
             assert(approximateSize > 0, "Unable to calculate approximate fileSize")
             
             DispatchQueue.main.async(execute: { () -> Void in
