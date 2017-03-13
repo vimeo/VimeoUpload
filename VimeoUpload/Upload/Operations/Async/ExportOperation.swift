@@ -140,18 +140,18 @@ open class ExportOperation: ConcurrentOperation
             
             if let error = strongSelf.exportSession.error
             {
-                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue)
+                strongSelf.error = (error as NSError).errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue)
 
-                if error.domain == AVFoundationErrorDomain && error.code == AVError.Code.diskFull.rawValue
+                if (error as NSError).domain == AVFoundationErrorDomain && (error as NSError).code == AVError.Code.diskFull.rawValue
                 {
-                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue).errorByAddingCode(UploadLocalErrorCode.diskSpaceException.rawValue)
+                    strongSelf.error = (error as NSError).errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue).errorByAddingCode(UploadLocalErrorCode.diskSpaceException.rawValue)
                 }
                 else
                 {
-                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue)
+                    strongSelf.error = (error as NSError).errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue)
                 }
             }
-            else if let outputURL = strongSelf.exportSession.outputURL, let path = outputURL.path, FileManager.default.fileExists(atPath: path)
+            else if let outputURL = strongSelf.exportSession.outputURL, FileManager.default.fileExists(atPath: outputURL.path)
             {
                 strongSelf.outputURL = outputURL
             }
@@ -200,7 +200,7 @@ open class ExportOperation: ConcurrentOperation
         {
             switch (keyPath, context)
             {
-                case(type(of: self).ProgressKeyPath, self.exportProgressKVOContext):
+                case(type(of: self).ProgressKeyPath, .some(&self.exportProgressKVOContext)):
                     let progress = (change?[NSKeyValueChangeKey.newKey] as AnyObject).doubleValue ?? 0;
                     self.progressBlock?(progress)
                 
