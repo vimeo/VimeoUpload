@@ -138,7 +138,7 @@ import Foundation
             let key = descriptor.identifier
         {
             DispatchQueue.main.async { () -> Void in
-                self.removeFailedDescriptorForKey(key)
+                _ = self.removeFailedDescriptorForKey(key)
             }
         }
     }
