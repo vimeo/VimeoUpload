@@ -166,7 +166,7 @@ open class ExportOperation: ConcurrentOperation
         // For some reason, not sure why, KVO on self.exportSession.progress does not trigger calls to observeValueForKeyPath
         // So I'm using this while loop to update a dynamic property instead, and KVO'ing on that [AH] 10/22/2015
         
-        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.low).async { [weak self] () -> Void in
+        DispatchQueue.global(qos: .utility).async { [weak self] () -> Void in
             while self?.exportSession.status == AVAssetExportSessionStatus.waiting || self?.exportSession.status == AVAssetExportSessionStatus.exporting
             {
                 self?.progress = self?.exportSession.progress ?? 0
