@@ -15,7 +15,7 @@ extension VimeoSessionManager
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createThumbnailRequestWithUri(uri)
         
-        let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
+        let task = self.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         task.taskDescription = UploadTaskDescription.CreateThumbnail.rawValue
         
         return task
@@ -25,17 +25,17 @@ extension VimeoSessionManager
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadThumbnailRequestWithSource(source, destination: destination)
         
-        let task = self.uploadTaskWithRequest(request, fromFile: source, progress: nil) { [weak self] (response, responseObject, error) in
+        let task = self.uploadTask(with: request as URLRequest, fromFile: source as URL, progress: nil) { [weak self] (response, responseObject, error) in
             
             guard let strongSelf = self, let completionHandler = completionHandler else {
                 return
             }
             
             do {
-                try (strongSelf.responseSerializer as! VimeoResponseSerializer).processUploadThumbnailResponse(response, responseObject: responseObject, error: error)
-                completionHandler(error: nil)
+                try (strongSelf.responseSerializer as! VimeoResponseSerializer).processUploadThumbnailResponse(response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                completionHandler(nil)
             } catch let error as NSError {
-                completionHandler(error: error)
+                completionHandler(error)
             }
             
         }
@@ -49,7 +49,7 @@ extension VimeoSessionManager
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).activateThumbnailRequestWithUri(activationUri)
         
-        let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
+        let task = self.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         task.taskDescription = UploadTaskDescription.ActivateThumbnail.rawValue
         
         return task
