@@ -72,7 +72,7 @@ open class VideoOperation: ConcurrentOperation
                 
                 strongSelf.task = nil
                 
-                if strongSelf.cancelled
+                if strongSelf.isCancelled
                 {
                     return
                 }
@@ -86,7 +86,7 @@ open class VideoOperation: ConcurrentOperation
                     strongSelf.video = video
                 }
                 
-                strongSelf.state = .Finished
+                strongSelf.state = .finished
             })
             
             self.task?.resume()
