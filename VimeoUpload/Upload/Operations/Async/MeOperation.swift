@@ -71,7 +71,7 @@ open class MeOperation: ConcurrentOperation
                 
                 strongSelf.task = nil
                 
-                if strongSelf.cancelled
+                if strongSelf.isCancelled
                 {
                     return
                 }
@@ -89,7 +89,7 @@ open class MeOperation: ConcurrentOperation
                     fatalError("Execution should never reach this point")
                 }
                 
-                strongSelf.state = .Finished
+                strongSelf.state = .finished
             })
             
             self.task?.resume()
