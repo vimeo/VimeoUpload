@@ -71,7 +71,7 @@ open class DeleteVideoOperation: ConcurrentOperation
                 
                 strongSelf.task = nil
                 
-                if strongSelf.cancelled
+                if strongSelf.isCancelled
                 {
                     return
                 }
@@ -81,7 +81,7 @@ open class DeleteVideoOperation: ConcurrentOperation
                     strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.DeleteVideoOperation.rawValue)
                 }
                 
-                strongSelf.state = .Finished
+                strongSelf.state = .finished
             })
             
             self.task?.resume()
