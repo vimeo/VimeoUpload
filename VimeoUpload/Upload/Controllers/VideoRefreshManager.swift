@@ -60,7 +60,7 @@ import AFNetworking
         self.sessionManager = sessionManager
         self.delegate = delegate
         
-        self.operationQueue = NSOperationQueue()
+        self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
         
         super.init()
@@ -121,7 +121,7 @@ import AFNetworking
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -133,9 +133,9 @@ import AFNetworking
                 
                 if let error = operation.error
                 {
-                    if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? NSHTTPURLResponse, response.statusCode == 404
+                    if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse, response.statusCode == 404
                     {
-                        strongSelf.videos.removeValueForKey(uri) // The video was deleted, remove it from consideration
+                        strongSelf.videos.removeValue(forKey: uri) // The video was deleted, remove it from consideration
                     }
                     else
                     {
@@ -146,7 +146,7 @@ import AFNetworking
                 {
                     if type(of: strongSelf).isVideoStatusFinal(freshVideo) == true // We're done!
                     {
-                        strongSelf.videos.removeValueForKey(uri)
+                        strongSelf.videos.removeValue(forKey: uri)
                         strongSelf.delegate?.uploadingStateDidChangeForVideo(freshVideo)
                         
                         return
@@ -167,7 +167,7 @@ import AFNetworking
                 }
                 else // Execution should never reach this point
                 {
-                    strongSelf.videos.removeValueForKey(uri)
+                    strongSelf.videos.removeValue(forKey: uri)
                 }
             })
         }
@@ -188,7 +188,7 @@ import AFNetworking
     {
         let status = video.videoStatus
         
-        return status == .Available || status == .UploadingError || status == .TranscodingError || status == .QuotaExceeded
+        return status == .available || status == .uploadingError || status == .transcodingError || status == .quotaExceeded
     }
     
     // MARK: Notifications
@@ -209,17 +209,17 @@ import AFNetworking
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    func applicationWillEnterForeground(_ notification: Notification)
+    func applicationWillEnterForeground(_ notification: NSNotification)
     {
         self.operationQueue.isSuspended = false 
     }
     
-    func applicationDidEnterBackground(_ notification: Notification)
+    func applicationDidEnterBackground(_ notification: NSNotification)
     {
         self.operationQueue.isSuspended = true
     }
     
-    func reachabilityDidChange(_ notification: Notification?)
+    func reachabilityDidChange(_ notification: NSNotification?)
     {
         let currentlyReachable = AFNetworkReachabilityManager.shared().isReachable
         
