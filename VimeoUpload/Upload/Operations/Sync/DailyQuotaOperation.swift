@@ -30,10 +30,10 @@ import VimeoNetworking
 
 open class DailyQuotaOperation: Operation
 {    
-    fileprivate let user: VIMUser
+    private let user: VIMUser
     
-    fileprivate(set) var result: Bool?
-    fileprivate(set) var error: NSError?
+    private(set) var result: Bool?
+    private(set) var error: NSError?
     
     init(user: VIMUser)
     {
