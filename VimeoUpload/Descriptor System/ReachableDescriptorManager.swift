@@ -29,7 +29,7 @@ import VimeoNetworking
 
 @objc open class ReachableDescriptorManager: DescriptorManager, ConnectivityManagerDelegate
 {
-    fileprivate let connectivityManager = ConnectivityManager()
+    private let connectivityManager = ConnectivityManager()
     
     // MARK:
     
