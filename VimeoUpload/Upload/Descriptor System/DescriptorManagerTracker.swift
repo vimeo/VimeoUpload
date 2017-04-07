@@ -132,7 +132,7 @@ open class DescriptorManagerTracker: DescriptorManagerDelegate
     
     // Private API
     
-    fileprivate func printMessageAndPostLocalNotification(_ message: String)
+    private func printMessageAndPostLocalNotification(_ message: String)
     {
         print(message)
         
