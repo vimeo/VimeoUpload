@@ -29,13 +29,13 @@ import VimeoNetworking
 
 open class VideoOperation: ConcurrentOperation
 {
-    fileprivate let sessionManager: VimeoSessionManager
-    fileprivate let videoUri: String
+    private let sessionManager: VimeoSessionManager
+    private let videoUri: String
     
-    fileprivate var task: URLSessionDataTask?
+    private var task: URLSessionDataTask?
     
-    fileprivate(set) var video: VIMVideo?
-    fileprivate(set) var error: NSError?
+    private(set) var video: VIMVideo?
+    private(set) var error: NSError?
     
     // MARK: - Initialization
     
