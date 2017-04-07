@@ -28,12 +28,12 @@ import Foundation
 
 @objc open class VideoDescriptorFailureTracker: NSObject
 {
-    fileprivate static let ArchiveKey = "descriptors_failed"
+    private static let ArchiveKey = "descriptors_failed"
 
     // MARK: 
     
-    fileprivate let archiver: KeyedArchiver
-    fileprivate var failedDescriptors: [String: Descriptor] = [:]
+    private let archiver: KeyedArchiver
+    private var failedDescriptors: [String: Descriptor] = [:]
 
     // MARK: - Initialization
     
@@ -55,7 +55,7 @@ import Foundation
     
     // MARK: Setup
     
-    fileprivate static func setupArchiver(name: String) -> KeyedArchiver
+    private static func setupArchiver(name: String) -> KeyedArchiver
     {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         
@@ -70,12 +70,12 @@ import Foundation
         return KeyedArchiver(basePath: documentsURL.path)
     }
     
-    fileprivate func load() -> [String: Descriptor]
+    private func load() -> [String: Descriptor]
     {
         return self.archiver.loadObjectForKey(type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
     }
     
-    fileprivate func save()
+    private func save()
     {
         self.archiver.saveObject(self.failedDescriptors as AnyObject, key: type(of: self).ArchiveKey)
     }
@@ -107,14 +107,14 @@ import Foundation
     
     // MARK: Notifications
     
-    fileprivate func addObservers()
+    private func addObservers()
     {
         NotificationCenter.default.addObserver(self, selector: #selector(VideoDescriptorFailureTracker.descriptorDidFail(_:)), name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(VideoDescriptorFailureTracker.descriptorDidCancel(_:)), name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
-    fileprivate func removeObservers()
+    private func removeObservers()
     {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
