@@ -31,9 +31,9 @@ import Photos
 {
     static let ErrorDomain = "PHAssetHelperErrorDomain"
     
-    fileprivate let imageManager = PHImageManager.default()
-    fileprivate var activeImageRequests: [String: PHImageRequestID] = [:]
-    fileprivate var activeAssetRequests: [String: PHImageRequestID] = [:]
+    private let imageManager = PHImageManager.default()
+    private var activeImageRequests: [String: PHImageRequestID] = [:]
+    private var activeAssetRequests: [String: PHImageRequestID] = [:]
 
     deinit
     {
@@ -168,7 +168,7 @@ import Photos
 
     // MARK: Private API
 
-    fileprivate func cancelImageRequest(cameraRollAsset: VIMPHAsset)
+    private func cancelImageRequest(cameraRollAsset: VIMPHAsset)
     {
         let phAsset = cameraRollAsset.phAsset
         
@@ -179,7 +179,7 @@ import Photos
         }
     }
     
-    fileprivate func cancelAssetRequest(cameraRollAsset: VIMPHAsset)
+    private func cancelAssetRequest(cameraRollAsset: VIMPHAsset)
     {
         let phAsset = cameraRollAsset.phAsset
         
