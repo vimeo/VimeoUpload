@@ -44,7 +44,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
     static let UploadInitiatedNotification = "VideoSettingsViewControllerUploadInitiatedNotification"
     static let NibName = "VideoSettingsViewController"
-    fileprivate static let PreUploadViewPrivacy = "pre_upload"
+    private static let PreUploadViewPrivacy = "pre_upload"
     
     // MARK: 
     
@@ -58,18 +58,18 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK:
     
-    fileprivate var operation: ConcurrentOperation?
-    fileprivate var task: URLSessionDataTask?
+    private var operation: ConcurrentOperation?
+    private var task: URLSessionDataTask?
     
     // MARK:
     
-    fileprivate var url: URL?
-    fileprivate var uploadTicket: VIMUploadTicket?
-    fileprivate var videoSettings: VideoSettings?
+    private var url: URL?
+    private var uploadTicket: VIMUploadTicket?
+    private var videoSettings: VideoSettings?
 
     // MARK:
 
-    fileprivate var hasTappedUpload: Bool
+    private var hasTappedUpload: Bool
     {
         get
         {
@@ -99,7 +99,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: Setup
     
-    fileprivate func setupNavigationBar()
+    private func setupNavigationBar()
     {
         self.title = "Video Settings"
         
@@ -108,7 +108,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
     }
 
-    fileprivate func setupAndStartOperation()
+    private func setupAndStartOperation()
     {
         let me = self.input!.user
         let cameraRollAsset = self.input!.cameraRollAsset
@@ -176,7 +176,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.operation?.start()
     }
     
-    fileprivate func startUpload()
+    private func startUpload()
     {
         let url = self.url!
         let uploadTicket = self.uploadTicket!
@@ -248,7 +248,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: UI Presentation
     
-    fileprivate func presentOperationErrorAlert(_ error: NSError)
+    private func presentOperationErrorAlert(_ error: NSError)
     {
         // TODO: check error.code == AVError.DiskFull.rawValue and message appropriately
         // TODO: check error.code == AVError.OperationInterrupted.rawValue (app backgrounded during export)
@@ -266,7 +266,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.present(alert, animated: true, completion: nil)
     }
     
-    fileprivate func presentVideoSettingsErrorAlert(_ error: NSError)
+    private func presentVideoSettingsErrorAlert(_ error: NSError)
     {
         let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
@@ -283,7 +283,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK: Private API
     
-    fileprivate func applyVideoSettings()
+    private func applyVideoSettings()
     {
         let videoUri = self.uploadTicket!.video!.uri!
         let videoSettings = self.videoSettings!
