@@ -35,17 +35,17 @@ import AFNetworking
 
 @objc open class VideoRefreshManager: NSObject
 {
-    fileprivate static let RetryDelayInSeconds: Double = 3
+    private static let RetryDelayInSeconds: Double = 3
     
     // MARK:
     
-    fileprivate let sessionManager: VimeoSessionManager
-    fileprivate weak var delegate: VideoRefreshManagerDelegate?
+    private let sessionManager: VimeoSessionManager
+    private weak var delegate: VideoRefreshManagerDelegate?
     
     // MARK:
     
-    fileprivate var videos: [VideoUri: Bool] = [:]
-    fileprivate let operationQueue: OperationQueue
+    private var videos: [VideoUri: Bool] = [:]
+    private let operationQueue: OperationQueue
     
     // MARK: - Initialization
     
@@ -105,7 +105,7 @@ import AFNetworking
     
     // MARK: Private API
 
-    fileprivate func doRefreshVideo(_ video: VIMVideo)
+    private func doRefreshVideo(_ video: VIMVideo)
     {
         let uri = video.uri!
         
@@ -175,7 +175,7 @@ import AFNetworking
         self.operationQueue.addOperation(operation)
     }
 
-    fileprivate func retryVideo(_ video: VIMVideo)
+    private func retryVideo(_ video: VIMVideo)
     {
         let delayTime = DispatchTime.now() + Double(Int64(type(of: self).RetryDelayInSeconds * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
         
@@ -184,7 +184,7 @@ import AFNetworking
         }
     }
     
-    fileprivate static func isVideoStatusFinal(_ video: VIMVideo) -> Bool
+    private static func isVideoStatusFinal(_ video: VIMVideo) -> Bool
     {
         let status = video.videoStatus
         
@@ -193,7 +193,7 @@ import AFNetworking
     
     // MARK: Notifications
     
-    fileprivate func addObservers()
+    private func addObservers()
     {
         NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         
@@ -202,7 +202,7 @@ import AFNetworking
         NotificationCenter.default.addObserver(self, selector: #selector(VideoRefreshManager.reachabilityDidChange(_:)), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    fileprivate func removeObservers()
+    private func removeObservers()
     {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
