@@ -29,9 +29,9 @@ import VimeoNetworking
 
 open class MeOperation: ConcurrentOperation
 {
-    fileprivate let sessionManager: VimeoSessionManager
+    private let sessionManager: VimeoSessionManager
     
-    fileprivate var task: URLSessionDataTask?
+    private var task: URLSessionDataTask?
 
     open var result: VIMUser?
     open var error: NSError?
