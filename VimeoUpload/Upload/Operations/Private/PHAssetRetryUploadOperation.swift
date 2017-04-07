@@ -35,7 +35,7 @@ import VimeoNetworking
 
 open class PHAssetRetryUploadOperation: RetryUploadOperation
 {
-    fileprivate let phAsset: PHAsset
+    private let phAsset: PHAsset
     
     // MARK: - Initialization
     
