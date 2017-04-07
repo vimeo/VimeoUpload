@@ -30,7 +30,7 @@ import AVFoundation
 
 open class RetryUploadOperation: ConcurrentOperation
 {
-    fileprivate let sessionManager: VimeoSessionManager
+    private let sessionManager: VimeoSessionManager
     let operationQueue: OperationQueue
     
     // MARK:
@@ -40,9 +40,9 @@ open class RetryUploadOperation: ConcurrentOperation
     
     // MARK:
     
-    fileprivate(set) open var url: URL?
+    private(set) open var url: URL?
     
-    fileprivate(set) open var error: NSError?
+    private(set) open var error: NSError?
     {
         didSet
         {
@@ -88,7 +88,7 @@ open class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    fileprivate func performMeQuotaOperation()
+    private func performMeQuotaOperation()
     {
         let operation = MeQuotaOperation(sessionManager: self.sessionManager)
         operation.completionBlock = { [weak self] () -> Void in
@@ -123,7 +123,7 @@ open class RetryUploadOperation: ConcurrentOperation
         operation.fulfillSelection(avAsset: nil)
     }
     
-    fileprivate func performExportQuotaOperation(_ operation: ExportQuotaOperation)
+    private func performExportQuotaOperation(_ operation: ExportQuotaOperation)
     {
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
             self?.downloadProgressBlock?(progress)
