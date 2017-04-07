@@ -236,14 +236,14 @@ open class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: Private API
     
-    fileprivate func transitionToState(request: CAMUploadRequest, sessionManager: VimeoSessionManager) throws
+    private func transitionToState(request: CAMUploadRequest, sessionManager: VimeoSessionManager) throws
     {
         self.currentRequest = request
         let task = try self.taskForRequest(request: request, sessionManager: sessionManager)
         self.currentTaskIdentifier = task.taskIdentifier
     }
     
-    fileprivate func taskForRequest(request: CAMUploadRequest, sessionManager: VimeoSessionManager) throws -> URLSessionTask
+    private func taskForRequest(request: CAMUploadRequest, sessionManager: VimeoSessionManager) throws -> URLSessionTask
     {
         switch request
         {
@@ -283,7 +283,7 @@ open class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    fileprivate func errorDomainForRequest(_ request: CAMUploadRequest) -> String
+    private func errorDomainForRequest(_ request: CAMUploadRequest) -> String
     {
         switch request
         {
