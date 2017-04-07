@@ -37,13 +37,13 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK:
     
-    fileprivate(set) var uploadTicket: VIMUploadTicket? // Create response
+    private(set) var uploadTicket: VIMUploadTicket? // Create response
     open var videoUri: String? // Activate response
-    fileprivate(set) var video: VIMVideo? // Settings response
+    private(set) var video: VIMVideo? // Settings response
 
     // MARK:
     
-    fileprivate(set) var currentRequest = OldUploadRequest.Create
+    private(set) var currentRequest = OldUploadRequest.Create
     {
         didSet
         {
@@ -219,14 +219,14 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: Private API
     
-    fileprivate func transitionToState(request: OldUploadRequest, sessionManager: VimeoSessionManager) throws
+    private func transitionToState(request: OldUploadRequest, sessionManager: VimeoSessionManager) throws
     {
         self.currentRequest = request
         let task = try self.taskForRequest(request, sessionManager: sessionManager)
         self.currentTaskIdentifier = task.taskIdentifier
     }
     
-    fileprivate func taskForRequest(_ request: OldUploadRequest, sessionManager: VimeoSessionManager) throws -> URLSessionTask
+    private func taskForRequest(_ request: OldUploadRequest, sessionManager: VimeoSessionManager) throws -> URLSessionTask
     {
         switch request
         {
@@ -259,7 +259,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
 
-    fileprivate func errorDomainForRequest(_ request: OldUploadRequest) -> String
+    private func errorDomainForRequest(_ request: OldUploadRequest) -> String
     {
         switch request
         {
