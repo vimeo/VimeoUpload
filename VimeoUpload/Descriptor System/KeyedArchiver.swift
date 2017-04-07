@@ -28,9 +28,9 @@ import Foundation
 
 open class KeyedArchiver: ArchiverProtocol
 {
-    fileprivate static let ArchiveExtension = "archive"
+    private static let ArchiveExtension = "archive"
     
-    fileprivate let basePath: String
+    private let basePath: String
 
     public init(basePath: String)
     {
