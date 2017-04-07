@@ -30,11 +30,11 @@ import VimeoNetworking
 
 open class WeeklyQuotaOperation: Operation
 {    
-    fileprivate let user: VIMUser
-    fileprivate let fileSize: Float64
+    private let user: VIMUser
+    private let fileSize: Float64
     
-    fileprivate(set) var result: FileSizeCheckResult?
-    fileprivate(set) var error: NSError?
+    private(set) var result: FileSizeCheckResult?
+    private(set) var error: NSError?
 
     init(user: VIMUser, fileSize: Float64)
     {
