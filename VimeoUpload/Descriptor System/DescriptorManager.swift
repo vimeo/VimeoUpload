@@ -41,18 +41,18 @@ public typealias VoidClosure = () -> Void
 
 open class DescriptorManager: NSObject
 {
-    fileprivate static let QueueName = "descriptor_manager.synchronization_queue"
+    private static let QueueName = "descriptor_manager.synchronization_queue"
     
     // MARK:
     
-    fileprivate var sessionManager: AFURLSessionManager
-    fileprivate let name: String
-    fileprivate weak var delegate: DescriptorManagerDelegate?
+    private var sessionManager: AFURLSessionManager
+    private let name: String
+    private weak var delegate: DescriptorManagerDelegate?
     
     // MARK:
     
-    fileprivate let archiver: DescriptorManagerArchiver // This object handles persistence of descriptors and suspended state to disk
-    fileprivate let synchronizationQueue = DispatchQueue(label: DescriptorManager.QueueName, attributes: [])
+    private let archiver: DescriptorManagerArchiver // This object handles persistence of descriptors and suspended state to disk
+    private let synchronizationQueue = DispatchQueue(label: DescriptorManager.QueueName, attributes: [])
 
     // MARK:
     
@@ -86,7 +86,7 @@ open class DescriptorManager: NSObject
 
     // MARK: Setup - State
     
-    fileprivate func setupDescriptors()
+    private func setupDescriptors()
     {
         var failedDescriptors: [Descriptor] = []
         for descriptor in self.archiver.descriptors
@@ -113,7 +113,7 @@ open class DescriptorManager: NSObject
         self.delegate?.didLoadDescriptors?(descriptors: self.archiver.descriptors)
     }
     
-    fileprivate func setupSuspendedState()
+    private func setupSuspendedState()
     {
         if self.archiver.suspended == true
         {
@@ -123,7 +123,7 @@ open class DescriptorManager: NSObject
     
     // MARK: Setup - Session
 
-    fileprivate func setupSessionBlocks()
+    private func setupSessionBlocks()
     {
         // Because we're using a background session we never have cause to invalidate the session,
         // Which means that if this block is called it's likely due to an unrecoverable error,
@@ -461,7 +461,7 @@ open class DescriptorManager: NSObject
     
     // MARK: Private API
     
-    fileprivate func doSuspend()
+    private func doSuspend()
     {
         self.archiver.suspended = true
         
@@ -482,7 +482,7 @@ open class DescriptorManager: NSObject
         })
     }
     
-    fileprivate func doResume()
+    private func doResume()
     {
         self.archiver.suspended = false
         
@@ -503,13 +503,13 @@ open class DescriptorManager: NSObject
         })
     }
     
-    fileprivate func save()
+    private func save()
     {
         self.archiver.save()
         self.delegate?.didSaveDescriptors?(count: self.archiver.descriptors.count)
     }
 
-    fileprivate func descriptorForTask(_ task: URLSessionTask) -> Descriptor?
+    private func descriptorForTask(_ task: URLSessionTask) -> Descriptor?
     {
         let descriptor = self.archiver.descriptorPassingTest { (descriptor) -> Bool in
             return descriptor.currentTaskIdentifier == task.taskIdentifier
