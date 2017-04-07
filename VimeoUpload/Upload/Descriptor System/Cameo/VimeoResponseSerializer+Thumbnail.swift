@@ -97,7 +97,7 @@ extension VimeoResponseSerializer
     
     //MARK: Private methods
     
-    fileprivate func thumbnailTicketFromResponseObject(_ responseObject: AnyObject?) throws -> VIMThumbnailUploadTicket
+    private func thumbnailTicketFromResponseObject(_ responseObject: AnyObject?) throws -> VIMThumbnailUploadTicket
     {
         if let dictionary = responseObject as? [String: AnyObject]
         {
@@ -113,7 +113,7 @@ extension VimeoResponseSerializer
         throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse thumbnailTicket object from responseObject failed")
     }
     
-    fileprivate func vimPictureFromResponseObject(_ responseObject: AnyObject?) throws -> VIMPicture
+    private func vimPictureFromResponseObject(_ responseObject: AnyObject?) throws -> VIMPicture
     {
         if let dictionary = responseObject as? [String: AnyObject]
         {
