@@ -41,7 +41,7 @@ open class VimeoUploader<T: VideoDescriptor>
     
     // MARK: 
     
-    fileprivate let deletionManager: VideoDeletionManager
+    private let deletionManager: VideoDeletionManager
 
     // MARK: - Initialization
 
