@@ -29,11 +29,11 @@ import VimeoNetworking
 
 open class CreateVideoOperation: ConcurrentOperation
 {
-    fileprivate let sessionManager: VimeoSessionManager
-    fileprivate let url: URL
-    fileprivate let videoSettings: VideoSettings?
+    private let sessionManager: VimeoSessionManager
+    private let url: URL
+    private let videoSettings: VideoSettings?
     
-    fileprivate var task: URLSessionDataTask?
+    private var task: URLSessionDataTask?
 
     open var result: VIMUploadTicket?
     open var error: NSError?
