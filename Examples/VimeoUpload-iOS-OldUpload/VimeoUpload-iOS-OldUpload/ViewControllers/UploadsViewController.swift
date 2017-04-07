@@ -39,7 +39,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     // MARK: 
     
-    fileprivate var items: [AssetIdentifier] = []
+    private var items: [AssetIdentifier] = []
     
     // MARK:
     
@@ -60,7 +60,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     // MARK: Setup
     
-    fileprivate func setupTableView()
+    private func setupTableView()
     {
         let nib = UINib(nibName: UploadCell.NibName, bundle: Bundle.main)
         self.tableView.register(nib, forCellReuseIdentifier: UploadCell.CellIdentifier)
@@ -90,14 +90,14 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     // MARK: Observers
     
-    fileprivate func addObservers()
+    private func addObservers()
     {
         NotificationCenter.default.addObserver(self, selector: #selector(DescriptorManagerDelegate.descriptorAdded(_:)), name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorAdded.rawValue), object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(DescriptorManagerDelegate.descriptorDidCancel(_:)), name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
-    fileprivate func removeObservers()
+    private func removeObservers()
     {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorAdded.rawValue), object: nil)
 
