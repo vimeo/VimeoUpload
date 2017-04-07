@@ -108,7 +108,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: Private API
 
-    fileprivate func performExportQuotaOperation(_ operation: ExportQuotaOperation)
+    private func performExportQuotaOperation(_ operation: ExportQuotaOperation)
     {
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
             self?.downloadProgressBlock?(progress)
@@ -147,7 +147,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    fileprivate func createVideo(url: URL)
+    private func createVideo(url: URL)
     {
         let videoSettings = self.videoSettings
         
