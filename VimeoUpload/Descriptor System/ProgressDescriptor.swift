@@ -34,9 +34,9 @@ open class ProgressDescriptor: Descriptor
     // If we allow views to observe the progress they wont know exactly when to remove and add observers when the descriptor is
     // suspended and resumed [AH] 12/25/2015
     
-    fileprivate static let ProgressKeyPath = "fractionCompleted"
-    fileprivate var progressKVOContext = UInt8()
-    dynamic fileprivate(set) var progressObservable: Double = 0
+    private static let ProgressKeyPath = "fractionCompleted"
+    private var progressKVOContext = UInt8()
+    dynamic private(set) var progressObservable: Double = 0
     
     open var progress: Progress?
     {
@@ -53,7 +53,7 @@ open class ProgressDescriptor: Descriptor
     
     // MARK: 
     
-    fileprivate var observersAdded = false
+    private var observersAdded = false
 
     // MARK: - Initialization
     
@@ -64,7 +64,7 @@ open class ProgressDescriptor: Descriptor
 
     // MARK: KVO
     
-    fileprivate func addObserversIfNecessary()
+    private func addObserversIfNecessary()
     {
         if let progress = self.progress, self.observersAdded == false
         {
@@ -74,7 +74,7 @@ open class ProgressDescriptor: Descriptor
         }
     }
     
-    fileprivate func removeObserversIfNecessary()
+    private func removeObserversIfNecessary()
     {
         if let progress = self.progress, self.observersAdded == true
         {
