@@ -136,7 +136,7 @@ open class ExportQuotaOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    fileprivate func checkExactWeeklyQuota(url: URL)
+    private func checkExactWeeklyQuota(url: URL)
     {
         let me = self.me
         let avUrlAsset = AVURLAsset(url: url)
