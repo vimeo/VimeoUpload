@@ -37,14 +37,14 @@ public enum DescriptorState: String
 
 open class Descriptor: NSObject, NSCoding
 {
-    fileprivate static let StateCoderKey = "state"
-    fileprivate static let IdentifierCoderKey = "identifier"
-    fileprivate static let ErrorCoderKey = "error"
-    fileprivate static let CurrentTaskIdentifierCoderKey = "currentTaskIdentifier"
+    private static let StateCoderKey = "state"
+    private static let IdentifierCoderKey = "identifier"
+    private static let ErrorCoderKey = "error"
+    private static let CurrentTaskIdentifierCoderKey = "currentTaskIdentifier"
 
     // MARK:
     
-    dynamic fileprivate(set) var stateObservable: String = DescriptorState.Ready.rawValue
+    dynamic private(set) var stateObservable: String = DescriptorState.Ready.rawValue
     open var state = DescriptorState.Ready
     {
         didSet
@@ -59,7 +59,7 @@ open class Descriptor: NSObject, NSCoding
     open var currentTaskIdentifier: Int?
     open var error: NSError?
     
-    fileprivate(set) open var isCancelled = false
+    private(set) open var isCancelled = false
     
     // MARK: - Initialization
 
@@ -134,7 +134,7 @@ open class Descriptor: NSObject, NSCoding
     
     // We need this method because we need to differentiate between suspend-initiated cancellations and user-initiated cancellations [AH] 2/17/2016
 
-    fileprivate func doCancel(sessionManager: AFURLSessionManager)
+    private func doCancel(sessionManager: AFURLSessionManager)
     {
         if let identifier = self.currentTaskIdentifier,
             let task = sessionManager.taskForIdentifier(identifier)
