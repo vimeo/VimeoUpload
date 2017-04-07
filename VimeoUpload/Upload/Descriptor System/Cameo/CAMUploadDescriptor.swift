@@ -16,11 +16,11 @@ open class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     let videoSettings: VideoSettings?
     let thumbnailUrl: URL?
     
-    open fileprivate(set) var uploadTicket: VIMUploadTicket?
-    fileprivate(set) var pictureTicket: VIMThumbnailUploadTicket?
-    fileprivate(set) var picture: VIMPicture?
+    open private(set) var uploadTicket: VIMUploadTicket?
+    private var pictureTicket: VIMThumbnailUploadTicket?
+    private var picture: VIMPicture?
     
-    fileprivate (set) var currentRequest = CAMUploadRequest.CreateVideo
+    private var currentRequest = CAMUploadRequest.CreateVideo
     {
         didSet
         {
@@ -28,7 +28,7 @@ open class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
  
-    fileprivate struct ArchiverConstants {
+    private struct ArchiverConstants {
         static let VideoUrlKey = "videoUrl"
         static let ThumbnailUrlKey = "thumbnailUrl"
         static let VideoSettingsKey = "videoSettings"
