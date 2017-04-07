@@ -29,8 +29,8 @@ import Photos
 
 open class PHAssetDownloadOperation: ConcurrentOperation
 {
-    fileprivate let phAsset: PHAsset
-    fileprivate var requestID: PHImageRequestID?
+    private let phAsset: PHAsset
+    private var requestID: PHImageRequestID?
 
     open var progressBlock: ProgressBlock?
 
@@ -155,7 +155,7 @@ open class PHAssetDownloadOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    fileprivate func cleanup()
+    private func cleanup()
     {
         self.progressBlock = nil
         
