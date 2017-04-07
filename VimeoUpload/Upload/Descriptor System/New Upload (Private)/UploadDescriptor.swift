@@ -30,9 +30,9 @@ import AFNetworking
 
 open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
-    fileprivate static let FileNameCoderKey = "fileName"
-    fileprivate static let FileExtensionCoderKey = "fileExtension"
-    fileprivate static let UploadTicketCoderKey = "uploadTicket"
+    private static let FileNameCoderKey = "fileName"
+    private static let FileExtensionCoderKey = "fileExtension"
+    private static let UploadTicketCoderKey = "uploadTicket"
 
     // MARK: 
     
