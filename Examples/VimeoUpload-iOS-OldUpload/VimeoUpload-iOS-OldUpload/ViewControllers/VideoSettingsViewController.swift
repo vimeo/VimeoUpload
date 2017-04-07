@@ -44,17 +44,17 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK:
     
-    fileprivate var operation: ConcurrentOperation?
-    fileprivate var descriptor: Descriptor?
+    private var operation: ConcurrentOperation?
+    private var descriptor: Descriptor?
 
     // MARK:
     
-    fileprivate var url: URL?
-    fileprivate var videoSettings: VideoSettings?
+    private var url: URL?
+    private var videoSettings: VideoSettings?
 
     // MARK:
     
-    fileprivate var hasTappedUpload: Bool
+    private var hasTappedUpload: Bool
     {
         get
         {
@@ -79,7 +79,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: Setup
     
-    fileprivate func setupNavigationBar()
+    private func setupNavigationBar()
     {
         self.title = "Video Settings"
         
@@ -88,7 +88,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
     }
 
-    fileprivate func setupAndStartOperation()
+    private func setupAndStartOperation()
     {
         let me = self.input!.user
         let phAsset = (self.input!.cameraRollAsset ).phAsset
@@ -142,7 +142,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.operation?.start()
     }
     
-    fileprivate func startUpload()
+    private func startUpload()
     {
         let url = self.url!
         let phAsset = (self.input!.cameraRollAsset ).phAsset
@@ -198,7 +198,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: UI Presentation
     
-    fileprivate func presentOperationErrorAlert(_ error: NSError)
+    private func presentOperationErrorAlert(_ error: NSError)
     {
         let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
@@ -212,7 +212,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.present(alert, animated: true, completion: nil)
     }
 
-    fileprivate func presentDescriptorErrorAlert(_ error: NSError)
+    private func presentDescriptorErrorAlert(_ error: NSError)
     {
         let alert = UIAlertController(title: "Descriptor Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
