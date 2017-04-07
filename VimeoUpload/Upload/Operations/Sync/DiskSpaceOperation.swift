@@ -29,10 +29,10 @@ import AVFoundation
 
 open class DiskSpaceOperation: Operation
 {    
-    fileprivate let fileSize: Float64
+    private let fileSize: Float64
     
-    fileprivate(set) var result: FileSizeCheckResult?
-    fileprivate(set) var error: NSError?
+    private(set) var result: FileSizeCheckResult?
+    private(set) var error: NSError?
 
     init(fileSize: Float64)
     {
