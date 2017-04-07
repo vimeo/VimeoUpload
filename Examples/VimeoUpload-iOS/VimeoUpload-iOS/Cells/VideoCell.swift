@@ -55,14 +55,14 @@ class VideoCell: UITableViewCell
 
     // MARK: 
     
-    fileprivate static let ProgressKeyPath = "progressObservable"
-    fileprivate static let StateKeyPath = "stateObservable"
-    fileprivate var progressKVOContext = UInt8()
-    fileprivate var stateKVOContext = UInt8()
+    private static let ProgressKeyPath = "progressObservable"
+    private static let StateKeyPath = "stateObservable"
+    private var progressKVOContext = UInt8()
+    private var stateKVOContext = UInt8()
     
-    fileprivate var observersAdded = false
+    private var observersAdded = false
 
-    fileprivate var descriptor: UploadDescriptor?
+    private var descriptor: UploadDescriptor?
     {
         willSet
         {
@@ -138,7 +138,7 @@ class VideoCell: UITableViewCell
 
     // MARK: Video Setup
     
-    fileprivate func setupImageView(video: VIMVideo)
+    private func setupImageView(video: VIMVideo)
     {
         let width = Float(self.thumbnailImageView.frame.size.width * UIScreen.main.scale)
         if let picture = video.pictureCollection?.picture(forWidth: width), let link = picture.link, let url = URL(string: link)
@@ -147,21 +147,21 @@ class VideoCell: UITableViewCell
         }
     }
     
-    fileprivate func setupStatusLabel(video: VIMVideo)
+    private func setupStatusLabel(video: VIMVideo)
     {
         self.statusLabel.text = video.status
     }
 
     // MARK: Descriptor Setup
 
-    fileprivate func updateProgress(_ progress: Double)
+    private func updateProgress(_ progress: Double)
     {
         let width = self.contentView.frame.size.width
         let constant = CGFloat(1 - progress) * width
         self.progressConstraint.constant = constant
     }
 
-    fileprivate func updateState(_ state: DescriptorState)
+    private func updateState(_ state: DescriptorState)
     {
         switch state
         {
@@ -199,7 +199,7 @@ class VideoCell: UITableViewCell
 
     // MARK: KVO
     
-    fileprivate func addObserversIfNecessary()
+    private func addObserversIfNecessary()
     {
         if let descriptor = self.descriptor, self.observersAdded == false
         {
@@ -210,7 +210,7 @@ class VideoCell: UITableViewCell
         }
     }
     
-    fileprivate func removeObserversIfNecessary()
+    private func removeObserversIfNecessary()
     {
         if let descriptor = self.descriptor, self.observersAdded == true
         {
