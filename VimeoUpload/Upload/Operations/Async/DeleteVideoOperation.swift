@@ -29,12 +29,12 @@ import VimeoNetworking
 
 open class DeleteVideoOperation: ConcurrentOperation
 {
-    fileprivate let sessionManager: VimeoSessionManager
-    fileprivate let videoUri: String
+    private let sessionManager: VimeoSessionManager
+    private let videoUri: String
     
-    fileprivate var task: URLSessionDataTask?
+    private var task: URLSessionDataTask?
 
-    fileprivate(set) var error: NSError?
+    private(set) var error: NSError?
     
     // MARK: - Initialization
 
