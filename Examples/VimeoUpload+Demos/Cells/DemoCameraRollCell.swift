@@ -69,7 +69,7 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
     
     // MARK: Private API
     
-    fileprivate func clear()
+    private func clear()
     {
         self.imageView.image = nil
         self.fileSizeLabel.text = ""
