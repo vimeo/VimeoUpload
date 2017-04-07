@@ -72,7 +72,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         }
     }
     
-    fileprivate func requestCameraRollAccessIfNecessary()
+    private func requestCameraRollAccessIfNecessary()
     {
         PHPhotoLibrary.requestAuthorization { status in
             switch status
