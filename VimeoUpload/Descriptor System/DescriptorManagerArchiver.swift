@@ -30,13 +30,13 @@ import Foundation
 
 class DescriptorManagerArchiver
 {
-    fileprivate static let DescriptorsArchiveKey = "descriptors"
-    fileprivate static let SuspendedArchiveKey = "is_suspended"
+    private static let DescriptorsArchiveKey = "descriptors"
+    private static let SuspendedArchiveKey = "is_suspended"
 
     // MARK: 
     
-    fileprivate let archiver: KeyedArchiver
-    fileprivate(set) var descriptors = Set<Descriptor>()
+    private let archiver: KeyedArchiver
+    private(set) var descriptors = Set<Descriptor>()
     var suspended = false
     {
         didSet
@@ -57,7 +57,7 @@ class DescriptorManagerArchiver
     
     // MARK: Setup - Archiving
     
-    fileprivate static func setupArchiver(name: String) -> KeyedArchiver
+    private static func setupArchiver(name: String) -> KeyedArchiver
     {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         var documentsURL = URL(string: documentsPath)!
@@ -72,22 +72,22 @@ class DescriptorManagerArchiver
         return KeyedArchiver(basePath: documentsURL.path)
     }
     
-    fileprivate func loadDescriptors() -> Set<Descriptor>
+    private func loadDescriptors() -> Set<Descriptor>
     {
         return self.archiver.loadObjectForKey(type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
     }
     
-    fileprivate func saveDescriptors()
+    private func saveDescriptors()
     {
         self.archiver.saveObject(self.descriptors as AnyObject, key: type(of: self).DescriptorsArchiveKey)
     }
     
-    fileprivate func loadSuspendedState() -> Bool
+    private func loadSuspendedState() -> Bool
     {
         return self.archiver.loadObjectForKey(type(of: self).SuspendedArchiveKey) as? Bool ?? false
     }
     
-    fileprivate func saveSuspendedState()
+    private func saveSuspendedState()
     {
         self.archiver.saveObject(self.suspended as AnyObject, key: type(of: self).SuspendedArchiveKey)
     }
