@@ -64,12 +64,12 @@ protocol ConnectivityManagerDelegate: class
     
     // MARK: Notifications
     
-    fileprivate func addObservers()
+    private func addObservers()
     {
         NotificationCenter.default.addObserver(self, selector: #selector(ConnectivityManager.reachabilityDidChange(_:)), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    fileprivate func removeObservers()
+    private func removeObservers()
     {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
@@ -79,7 +79,7 @@ protocol ConnectivityManagerDelegate: class
         self.updateState()
     }
     
-    fileprivate func updateState()
+    private func updateState()
     {
         if AFNetworkReachabilityManager.shared().isReachable == true
         {
