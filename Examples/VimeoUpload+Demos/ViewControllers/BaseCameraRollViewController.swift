@@ -46,7 +46,7 @@ typealias UploadUserAndCameraRollAsset = (user: VIMUser, cameraRollAsset: VIMPHA
 class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
     static let NibName = "BaseCameraRollViewController"
-    fileprivate static let CollectionViewSpacing: CGFloat = 2
+    private static let CollectionViewSpacing: CGFloat = 2
     
     var sessionManager: VimeoSessionManager!
     
@@ -57,12 +57,12 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     // MARK: 
     
-    fileprivate var assets: [VIMPHAsset] = []
-    fileprivate var cameraRollAssetHelper: PHAssetHelper?
-    fileprivate var operation: MeQuotaOperation?
-    fileprivate var me: VIMUser? // We store this in a property instead of on the operation itself, so that we can refresh it independent of the operation [AH]
-    fileprivate var meOperation: MeOperation?
-    fileprivate var selectedIndexPath: IndexPath?
+    private var assets: [VIMPHAsset] = []
+    private var cameraRollAssetHelper: PHAssetHelper?
+    private var operation: MeQuotaOperation?
+    private var me: VIMUser? // We store this in a property instead of on the operation itself, so that we can refresh it independent of the operation [AH]
+    private var meOperation: MeOperation?
+    private var selectedIndexPath: IndexPath?
     
     // MARK: Lifecycle
     
@@ -98,12 +98,12 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     // MARK: Observers
     
-    fileprivate func addObservers()
+    private func addObservers()
     {
         NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }
     
-    fileprivate func removeObservers()
+    private func removeObservers()
     {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }
@@ -150,7 +150,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     // MARK: Setup
     
-    fileprivate func loadAssets() -> [VIMPHAsset]
+    private func loadAssets() -> [VIMPHAsset]
     {
         var assets = [VIMPHAsset]()
 
@@ -171,7 +171,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         return assets
     }
 
-    fileprivate func setupCollectionView()
+    private func setupCollectionView()
     {
         let nib = UINib(nibName: DemoCameraRollCell.NibName, bundle: nil)
         self.collectionView.register(nib, forCellWithReuseIdentifier: DemoCameraRollCell.CellIdentifier)
@@ -181,7 +181,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         layout?.minimumLineSpacing = BaseCameraRollViewController.CollectionViewSpacing
     }
     
-    fileprivate func setupAndStartOperation()
+    private func setupAndStartOperation()
     {
         let operation = MeQuotaOperation(sessionManager: self.sessionManager, me: self.me)
         operation.completionBlock = { [weak self] () -> Void in
@@ -267,7 +267,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     // MARK: Private API
         
-    fileprivate func didSelectIndexPath(_ indexPath: IndexPath)
+    private func didSelectIndexPath(_ indexPath: IndexPath)
     {
         let cameraRollAsset = self.assets[indexPath.item]
         
@@ -308,7 +308,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     // MARK: UI Presentation
 
-    fileprivate func presentAssetErrorAlert(_ indexPath: IndexPath, error: NSError)
+    private func presentAssetErrorAlert(_ indexPath: IndexPath, error: NSError)
     {
         let alert = UIAlertController(title: "Asset Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
@@ -318,7 +318,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         self.present(alert, animated: true, completion: nil)
     }
     
-    fileprivate func presentErrorAlert(_ indexPath: IndexPath, error: NSError)
+    private func presentErrorAlert(_ indexPath: IndexPath, error: NSError)
     {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
@@ -347,7 +347,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         self.present(alert, animated: true, completion: nil)
     }
 
-    fileprivate func finish(cameraRollAsset: VIMPHAsset)
+    private func finish(cameraRollAsset: VIMPHAsset)
     {
         let me = self.me!
 
