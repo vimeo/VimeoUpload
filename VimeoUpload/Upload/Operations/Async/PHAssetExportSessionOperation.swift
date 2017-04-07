@@ -29,14 +29,14 @@ import Photos
 
 class PHAssetExportSessionOperation: ConcurrentOperation
 {
-    fileprivate let phAsset: PHAsset
-    fileprivate let exportPreset: String
+    private let phAsset: PHAsset
+    private let exportPreset: String
     
-    fileprivate var requestID: PHImageRequestID?
+    private var requestID: PHImageRequestID?
     var progressBlock: ProgressBlock?
     
-    fileprivate(set) var result: AVAssetExportSession?
-    fileprivate(set) var error: NSError?
+    private(set) var result: AVAssetExportSession?
+    private(set) var error: NSError?
     
     // MARK: - Initialization
     
@@ -144,7 +144,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    fileprivate func cleanup()
+    private func cleanup()
     {
         self.progressBlock = nil
         
