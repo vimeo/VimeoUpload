@@ -45,14 +45,14 @@ class UploadCell: UITableViewCell
 
     // MARK:
     
-    fileprivate static let ProgressKeyPath = "progressObservable"
-    fileprivate static let StateKeyPath = "stateObservable"
-    fileprivate var progressKVOContext = UInt8()
-    fileprivate var stateKVOContext = UInt8()
+    private static let ProgressKeyPath = "progressObservable"
+    private static let StateKeyPath = "stateObservable"
+    private var progressKVOContext = UInt8()
+    private var stateKVOContext = UInt8()
 
-    fileprivate var observersAdded = false
+    private var observersAdded = false
 
-    fileprivate var descriptor: OldUploadDescriptor?
+    private var descriptor: OldUploadDescriptor?
     {
         willSet
         {
@@ -120,14 +120,14 @@ class UploadCell: UITableViewCell
     
     // MARK: Descriptor Setup
     
-    fileprivate func updateProgress(_ progress: Double)
+    private func updateProgress(_ progress: Double)
     {
         let width = self.contentView.frame.size.width
         let constant = CGFloat(1 - progress) * width
         self.progressConstraint.constant = constant
     }
     
-    fileprivate func updateState(_ state: DescriptorState)
+    private func updateState(_ state: DescriptorState)
     {
         switch state
         {
@@ -166,7 +166,7 @@ class UploadCell: UITableViewCell
     
     // MARK: KVO
     
-    fileprivate func addObserversIfNecessary()
+    private func addObserversIfNecessary()
     {
         if let descriptor = self.descriptor, self.observersAdded == false
         {
@@ -177,7 +177,7 @@ class UploadCell: UITableViewCell
         }
     }
     
-    fileprivate func removeObserversIfNecessary()
+    private func removeObserversIfNecessary()
     {
         if let descriptor = self.descriptor, self.observersAdded == true
         {
