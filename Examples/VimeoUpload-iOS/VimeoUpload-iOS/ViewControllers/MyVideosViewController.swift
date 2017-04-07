@@ -36,11 +36,11 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     static let NibName = "MyVideosViewController"
     
     @IBOutlet weak var tableView: UITableView!
-    fileprivate var refreshControl: UIRefreshControl?
+    private var refreshControl: UIRefreshControl?
     
-    fileprivate var items: [VIMVideo] = []
-    fileprivate var task: URLSessionDataTask?
-    fileprivate var videoRefreshManager: VideoRefreshManager?
+    private var items: [VIMVideo] = []
+    private var task: URLSessionDataTask?
+    private var videoRefreshManager: VideoRefreshManager?
     
     deinit
     {
@@ -65,13 +65,13 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: Setup
     
-    fileprivate func setupTableView()
+    private func setupTableView()
     {
         let nib = UINib(nibName: VideoCell.NibName, bundle: Bundle.main)
         self.tableView.register(nib, forCellReuseIdentifier: VideoCell.CellIdentifier)
     }
     
-    fileprivate func setupRefreshControl()
+    private func setupRefreshControl()
     {
         self.refreshControl = UIRefreshControl()
         self.refreshControl!.addTarget(self, action: #selector(MyVideosViewController.refresh), for: .valueChanged)
@@ -79,19 +79,19 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         self.tableView.addSubview(self.refreshControl!)
     }
     
-    fileprivate func setupVideoRefreshManager()
+    private func setupVideoRefreshManager()
     {
         self.videoRefreshManager = VideoRefreshManager(sessionManager: NewVimeoUploader.sharedInstance.foregroundSessionManager, delegate: self)
     }
     
     // MARK: Notifications
     
-    fileprivate func addObservers()
+    private func addObservers()
     {
         NotificationCenter.default.addObserver(self, selector: #selector(MyVideosViewController.uploadInitiated(_:)), name: NSNotification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: nil)
     }
     
-    fileprivate func removeObservers()
+    private func removeObservers()
     {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: nil)
     }
@@ -178,7 +178,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         })
     }
     
-    fileprivate func indexPathForVideoUri(_ videoUri: String) -> IndexPath?
+    private func indexPathForVideoUri(_ videoUri: String) -> IndexPath?
     {
         for (index, video) in self.items.enumerated()
         {
@@ -285,7 +285,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: Alerts
     
-    fileprivate func presentRefreshErrorAlert(_ error: NSError)
+    private func presentRefreshErrorAlert(_ error: NSError)
     {
         let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
@@ -296,7 +296,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         self.present(alert, animated: true, completion: nil)
     }
     
-    fileprivate func presentUploadRetryErrorAlert(_ error: NSError)
+    private func presentUploadRetryErrorAlert(_ error: NSError)
     {
         let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
@@ -306,7 +306,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: Private API
     
-    fileprivate func retryUploadDescriptor(_ descriptor: UploadDescriptor, completion: ErrorBlock)
+    private func retryUploadDescriptor(_ descriptor: UploadDescriptor, completion: ErrorBlock)
     {
         // TODO: This should be cancellable
 
