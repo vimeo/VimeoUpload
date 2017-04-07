@@ -30,19 +30,19 @@ import VimeoNetworking
 
 open class VideoDeletionManager: NSObject
 {
-    fileprivate static let DeletionsArchiveKey = "deletions"
-    fileprivate static let DefaultRetryCount = 3
+    private static let DeletionsArchiveKey = "deletions"
+    private static let DefaultRetryCount = 3
     
     // MARK:
     
-    fileprivate let sessionManager: VimeoSessionManager
-    fileprivate let retryCount: Int
+    private let sessionManager: VimeoSessionManager
+    private let retryCount: Int
     
     // MARK:
     
-    fileprivate var deletions: [VideoUri: Int] = [:]
-    fileprivate let operationQueue: OperationQueue
-    fileprivate let archiver: KeyedArchiver
+    private var deletions: [VideoUri: Int] = [:]
+    private let operationQueue: OperationQueue
+    private let archiver: KeyedArchiver
     
     // MARK: - Initialization
     
@@ -72,7 +72,7 @@ open class VideoDeletionManager: NSObject
     
     // MARK: Setup
     
-    fileprivate static func setupArchiver(name: String) -> KeyedArchiver
+    private static func setupArchiver(name: String) -> KeyedArchiver
     {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         var documentsURL = URL(string: documentsPath)!
@@ -90,7 +90,7 @@ open class VideoDeletionManager: NSObject
     
     // MARK: Archiving
     
-    fileprivate func loadDeletions() -> [VideoUri: Int]
+    private func loadDeletions() -> [VideoUri: Int]
     {
         if let deletions = self.archiver.loadObjectForKey(type(of: self).DeletionsArchiveKey) as? [VideoUri: Int]
         {
@@ -100,7 +100,7 @@ open class VideoDeletionManager: NSObject
         return [:]
     }
 
-    fileprivate func startDeletions()
+    private func startDeletions()
     {
         for (key, value) in self.deletions
         {
@@ -108,7 +108,7 @@ open class VideoDeletionManager: NSObject
         }
     }
     
-    fileprivate func save()
+    private func save()
     {
         self.archiver.saveObject(self.deletions as AnyObject, key: type(of: self).DeletionsArchiveKey)
     }
@@ -122,7 +122,7 @@ open class VideoDeletionManager: NSObject
     
     // MARK: Private API
 
-    fileprivate func deleteVideoWithUri(_ uri: String, retryCount: Int)
+    private func deleteVideoWithUri(_ uri: String, retryCount: Int)
     {
         self.deletions[uri] = retryCount
         self.save()
@@ -176,7 +176,7 @@ open class VideoDeletionManager: NSObject
     
     // MARK: Notifications
     
-    fileprivate func addObservers()
+    private func addObservers()
     {
         NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         
@@ -185,7 +185,7 @@ open class VideoDeletionManager: NSObject
         NotificationCenter.default.addObserver(self, selector: #selector(VideoDeletionManager.reachabilityDidChange(_:)), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    fileprivate func removeObservers()
+    private func removeObservers()
     {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
