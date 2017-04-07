@@ -40,10 +40,10 @@ open class MeQuotaOperation: ConcurrentOperation
     let sessionManager: VimeoSessionManager
     
     open var me: VIMUser?
-    fileprivate let operationQueue: OperationQueue
+    private let operationQueue: OperationQueue
     
-    fileprivate var avAsset: AVAsset?
-    fileprivate var selectionFulfilled: Bool = false
+    private var avAsset: AVAsset?
+    private var selectionFulfilled: Bool = false
 
     open var error: NSError?
     {
@@ -129,7 +129,7 @@ open class MeQuotaOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    fileprivate func requestMe()
+    private func requestMe()
     {
         let operation = MeOperation(sessionManager: self.sessionManager)
         operation.completionBlock = { [weak self] () -> Void in
@@ -161,7 +161,7 @@ open class MeQuotaOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    fileprivate func proceedIfMeAndSelectionFulfilled()
+    private func proceedIfMeAndSelectionFulfilled()
     {
         if let _ = self.error
         {
@@ -176,7 +176,7 @@ open class MeQuotaOperation: ConcurrentOperation
         self.checkDailyQuota()
     }
     
-    fileprivate func checkDailyQuota()
+    private func checkDailyQuota()
     {
         let me = self.me!
         
@@ -218,7 +218,7 @@ open class MeQuotaOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
 
-   fileprivate func checkApproximateWeeklyQuota()
+   private func checkApproximateWeeklyQuota()
     {
         let me = self.me!
         let avAsset = self.avAsset!
@@ -262,7 +262,7 @@ open class MeQuotaOperation: ConcurrentOperation
         }
     }
 
-    fileprivate func checkApproximateDiskSpace(fileSize: Float64)
+    private func checkApproximateDiskSpace(fileSize: Float64)
     {
         let operation = DiskSpaceOperation(fileSize: fileSize)
         operation.completionBlock = { [weak self] () -> Void in
