@@ -29,7 +29,7 @@ import VimeoNetworking
 
 extension VimeoResponseSerializer
 {
-    fileprivate static let LocationKey = "Location"
+    private static let LocationKey = "Location"
     
     func processMeResponse(_ response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMUser
     {
@@ -211,7 +211,7 @@ extension VimeoResponseSerializer
 
     // MARK: Private API
 
-    fileprivate func videosFromResponseObject(_ responseObject: AnyObject?) throws -> [VIMVideo]
+    private func videosFromResponseObject(_ responseObject: AnyObject?) throws -> [VIMVideo]
     {
         if let dictionary = responseObject as? [String: AnyObject]
         {
@@ -227,7 +227,7 @@ extension VimeoResponseSerializer
         throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse videos array from responseObject failed")
     }
 
-    fileprivate func videoFromResponseObject(_ responseObject: AnyObject?) throws -> VIMVideo
+    private func videoFromResponseObject(_ responseObject: AnyObject?) throws -> VIMVideo
     {
         if let dictionary = responseObject as? [String: AnyObject]
         {
@@ -243,7 +243,7 @@ extension VimeoResponseSerializer
         throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse video object from responseObject failed")
     }
 
-    fileprivate func userFromResponseObject(_ responseObject: AnyObject?) throws -> VIMUser
+    private func userFromResponseObject(_ responseObject: AnyObject?) throws -> VIMUser
     {
         if let dictionary = responseObject as? [String: AnyObject]
         {
@@ -259,7 +259,7 @@ extension VimeoResponseSerializer
         throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse user object from responseObject failed")
     }
 
-    fileprivate func uploadTicketFromResponseObject(_ responseObject: AnyObject?) throws -> VIMUploadTicket
+    private func uploadTicketFromResponseObject(_ responseObject: AnyObject?) throws -> VIMUploadTicket
     {
         if let dictionary = responseObject as? [String: AnyObject]
         {
