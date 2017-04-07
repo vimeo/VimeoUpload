@@ -35,18 +35,18 @@ import AVFoundation
 
 open class ExportOperation: ConcurrentOperation
 {
-    fileprivate static let ProgressKeyPath = "progress"
-    fileprivate static let FileType = AVFileTypeMPEG4
+    private static let ProgressKeyPath = "progress"
+    private static let FileType = AVFileTypeMPEG4
 
-    fileprivate(set) var exportSession: AVAssetExportSession
+    private(set) var exportSession: AVAssetExportSession
     
     // We KVO on this internally in order to call the progressBlock, see note below as to why [AH] 10/22/2015
-    fileprivate dynamic var progress: Float = 0
-    fileprivate var exportProgressKVOContext = UInt8()
+    private dynamic var progress: Float = 0
+    private var exportProgressKVOContext = UInt8()
     var progressBlock: ProgressBlock?
     
-    fileprivate(set) var outputURL: URL?
-    fileprivate(set) var error: NSError?
+    private(set) var outputURL: URL?
+    private(set) var error: NSError?
     
     // MARK: - Initialization
     
@@ -184,12 +184,12 @@ open class ExportOperation: ConcurrentOperation
         
     // MARK: KVO
     
-    fileprivate func addObservers()
+    private func addObservers()
     {
         self.addObserver(self, forKeyPath: type(of: self).ProgressKeyPath, options: NSKeyValueObservingOptions.new, context: &self.exportProgressKVOContext)
     }
     
-    fileprivate func removeObservers()
+    private func removeObservers()
     {
         self.removeObserver(self, forKeyPath: type(of: self).ProgressKeyPath, context: &self.exportProgressKVOContext)
     }
