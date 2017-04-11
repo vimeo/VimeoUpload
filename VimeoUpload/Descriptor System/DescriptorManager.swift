@@ -453,7 +453,7 @@ open class DescriptorManager: NSObject
                 return
             }
 
-            descriptor = strongSelf.archiver.descriptorPassingTest(test)
+            descriptor = strongSelf.archiver.descriptor(passing: test)
         })
         
         return descriptor
@@ -511,9 +511,9 @@ open class DescriptorManager: NSObject
 
     private func descriptor(for task: URLSessionTask) -> Descriptor?
     {
-        let descriptor = self.archiver.descriptorPassingTest { (descriptor) -> Bool in
+        let descriptor = self.archiver.descriptor(passing: { (descriptor) -> Bool in
             return descriptor.currentTaskIdentifier == task.taskIdentifier
-        }
+        })
         
         // If the descriptor is not found then the session.tasks and self.descriptors are out of sync (his is a major problem)
         // Or we're using the background session for a standalone task, independent of a descriptor
