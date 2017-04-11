@@ -67,27 +67,27 @@ open class VideoSettings: NSObject
         
         if let title = self.title, title.characters.count > 0
         {
-            parameters["name"] = title as Any?
+            parameters["name"] = title
         }
         
         if let description = self.desc, description.characters.count > 0
         {
-            parameters["description"] = description as Any?
+            parameters["description"] = description
         }
         
         if let privacy = self.privacy, privacy.characters.count > 0
         {
-            parameters["privacy"] = (["view": privacy] as Any)
+            parameters["privacy"] = (["view": privacy])
         }
         
         if let users = self.users
         {
-            parameters["users"] = (users.map { ["uri": $0] } as Any)
+            parameters["users"] = (users.map { ["uri": $0] })
         }
         
         if let password = self.password
         {
-            parameters["password"] = password as Any?
+            parameters["password"] = password
         }
 
         return parameters

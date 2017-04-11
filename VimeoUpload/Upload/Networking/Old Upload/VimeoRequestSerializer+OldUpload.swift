@@ -94,7 +94,7 @@ extension VimeoRequestSerializer
             throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
         }
         
-        return ["type": "streaming" as Any, "size": fileSize]
+        return ["type": "streaming", "size": fileSize]
     }
 
     func uploadVideoRequestWithSource(_ source: NSURL, destination: String) throws -> NSMutableURLRequest

@@ -32,7 +32,7 @@ extension VimeoRequestSerializer
     func createVideoRequestWithUrl(_ url: NSURL, videoSettings: VideoSettings?) throws -> NSMutableURLRequest
     {
         var parameters = try self.createVideoRequestBaseParameters(url: url)
-        parameters["create_clip"] = "true" as Any?
+        parameters["create_clip"] = "true"
         
         if let videoSettings = videoSettings
         {
