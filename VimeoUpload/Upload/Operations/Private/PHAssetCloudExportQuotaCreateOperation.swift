@@ -33,7 +33,7 @@ import VimeoNetworking
 // 1. Perorm a PHAssetCloudExportQuotaOperation
 // 2. Create video record
 
-open class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
+public class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
 {
     let phAsset: PHAsset
 
