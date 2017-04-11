@@ -27,7 +27,7 @@
 import Foundation
 import VimeoNetworking
 
-open class VideoOperation: ConcurrentOperation
+public class VideoOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
     private let videoUri: String
@@ -54,7 +54,7 @@ open class VideoOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override open func main()
+    override public func main()
     {
         if self.isCancelled
         {
@@ -98,7 +98,7 @@ open class VideoOperation: ConcurrentOperation
         }
     }
     
-    override open func cancel()
+    override public func cancel()
     {
         super.cancel()
         
