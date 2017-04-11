@@ -71,7 +71,7 @@ extension NSError
         return self.errorByAddingDomain(domain, code: nil, userInfo: nil)
     }
     
-    func errorByAddingUserInfo(_ userInfo: [String: AnyObject]) -> NSError
+    func errorByAddingUserInfo(_ userInfo: [String: Any]) -> NSError
     {
         return self.errorByAddingDomain(nil, code: nil, userInfo: userInfo)
     }
@@ -81,7 +81,7 @@ extension NSError
         return self.errorByAddingDomain(nil, code: code, userInfo: nil)
     }
     
-    func errorByAddingDomain(_ domain: String?, code: Int?, userInfo: [String: AnyObject]?) -> NSError
+    func errorByAddingDomain(_ domain: String?, code: Int?, userInfo: [String: Any]?) -> NSError
     {
         let augmentedInfo = NSMutableDictionary(dictionary: self.userInfo)
         
