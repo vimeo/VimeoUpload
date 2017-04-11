@@ -33,7 +33,7 @@ import AFNetworking
     func uploadingStateDidChangeForVideo(_ video: VIMVideo)
 }
 
-@objc open class VideoRefreshManager: NSObject
+@objc public class VideoRefreshManager: NSObject
 {
     private static let RetryDelayInSeconds: Double = 3
     
@@ -71,18 +71,18 @@ import AFNetworking
     
     // MARK: Public API
     
-    open func cancelAll()
+    public func cancelAll()
     {
         self.videos.removeAll()
         self.operationQueue.cancelAllOperations()
     }
     
-    open func cancelRefreshForVideoWithUri(_ uri: VideoUri)
+    public func cancelRefreshForVideoWithUri(_ uri: VideoUri)
     {
         self.videos.removeValue(forKey: uri)
     }
 
-    open func refreshVideo(_ video: VIMVideo)
+    public func refreshVideo(_ video: VIMVideo)
     {
         guard let uri = video.uri else
         {
