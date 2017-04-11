@@ -67,7 +67,7 @@ extension VimeoRequestSerializer
         return try self.createVideoRequestWithUrl(url, parameters: parameters)
     }
 
-    func createVideoRequestWithUrl(_ url: NSURL, parameters: [String: AnyObject]) throws -> NSMutableURLRequest
+    func createVideoRequestWithUrl(_ url: NSURL, parameters: [String: Any]) throws -> NSMutableURLRequest
     {
         var error: NSError?
         let request = self.request(withMethod: "POST", urlString: url.absoluteString!, parameters: parameters, error: &error)
@@ -80,7 +80,7 @@ extension VimeoRequestSerializer
         return request
     }
 
-    func createVideoRequestBaseParameters(url: NSURL) throws -> [String: AnyObject]
+    func createVideoRequestBaseParameters(url: NSURL) throws -> [String: Any]
     {
         let asset = AVURLAsset(url: url as URL)
         
@@ -94,7 +94,7 @@ extension VimeoRequestSerializer
             throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
         }
         
-        return ["type": "streaming" as AnyObject, "size": fileSize]
+        return ["type": "streaming" as Any, "size": fileSize]
     }
 
     func uploadVideoRequestWithSource(_ source: NSURL, destination: String) throws -> NSMutableURLRequest

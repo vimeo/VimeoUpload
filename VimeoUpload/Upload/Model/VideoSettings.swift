@@ -61,33 +61,33 @@ open class VideoSettings: NSObject
     
     // MARK: Public API
     
-    open func parameterDictionary() -> [String: AnyObject]
+    open func parameterDictionary() -> [String: Any]
     {
-        var parameters: [String: AnyObject] = [:]
+        var parameters: [String: Any] = [:]
         
         if let title = self.title, title.characters.count > 0
         {
-            parameters["name"] = title as AnyObject?
+            parameters["name"] = title as Any?
         }
         
         if let description = self.desc, description.characters.count > 0
         {
-            parameters["description"] = description as AnyObject?
+            parameters["description"] = description as Any?
         }
         
         if let privacy = self.privacy, privacy.characters.count > 0
         {
-            parameters["privacy"] = (["view": privacy] as AnyObject)
+            parameters["privacy"] = (["view": privacy] as Any)
         }
         
         if let users = self.users
         {
-            parameters["users"] = (users.map { ["uri": $0] } as AnyObject)
+            parameters["users"] = (users.map { ["uri": $0] } as Any)
         }
         
         if let password = self.password
         {
-            parameters["password"] = password as AnyObject?
+            parameters["password"] = password as Any?
         }
 
         return parameters
