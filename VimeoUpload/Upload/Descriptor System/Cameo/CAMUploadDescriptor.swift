@@ -187,12 +187,12 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first
             {
-                let domain = self.errorDomainForRequest(self.currentRequest)
+                let domain = self.errorDomain(for: self.currentRequest)
                 self.error = (taskError as NSError).errorByAddingDomain(domain)
             }
             else if let error = error
             {
-                let domain = self.errorDomainForRequest(self.currentRequest)
+                let domain = self.errorDomain(for: self.currentRequest)
                 self.error = error.errorByAddingDomain(domain)
             }
         }
@@ -283,7 +283,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    private func errorDomainForRequest(_ request: CAMUploadRequest) -> String
+    private func errorDomain(for request: CAMUploadRequest) -> String
     {
         switch request
         {
