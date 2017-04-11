@@ -79,7 +79,7 @@ class DescriptorManagerArchiver
     
     private func saveDescriptors()
     {
-        self.archiver.saveObject(self.descriptors as AnyObject, key: type(of: self).DescriptorsArchiveKey)
+        self.archiver.saveObject(self.descriptors, key: type(of: self).DescriptorsArchiveKey)
     }
     
     private func loadSuspendedState() -> Bool
@@ -89,7 +89,7 @@ class DescriptorManagerArchiver
     
     private func saveSuspendedState()
     {
-        self.archiver.saveObject(self.suspended as AnyObject, key: type(of: self).SuspendedArchiveKey)
+        self.archiver.saveObject(self.suspended, key: type(of: self).SuspendedArchiveKey)
     }
     
     // MARK: Public API
