@@ -106,7 +106,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         super.resume(sessionManager: sessionManager)
         
          if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.uploadTaskForIdentifier(identifier),
+            let task = sessionManager.uploadTask(for: identifier),
             let progress = sessionManager.uploadProgress(for: task)
         {
             self.progress = progress
@@ -123,7 +123,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     override public func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.uploadTaskForIdentifier(identifier),
+            let task = sessionManager.uploadTask(for: identifier),
             let progress = sessionManager.uploadProgress(for: task) else
         {
             // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload

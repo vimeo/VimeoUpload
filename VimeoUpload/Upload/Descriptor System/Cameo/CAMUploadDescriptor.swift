@@ -90,7 +90,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         super.resume(sessionManager: sessionManager)
         
-        if let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTaskForIdentifier(identifier), let progress = sessionManager.uploadProgress(for: task)
+        if let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTask(for: identifier), let progress = sessionManager.uploadProgress(for: task)
         {
             self.progress = progress
         }
@@ -109,7 +109,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     override public func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
-        guard let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTaskForIdentifier(identifier), let progress = sessionManager.uploadProgress(for: task) else
+        guard let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTask(for: identifier), let progress = sessionManager.uploadProgress(for: task) else
         {
             FileManager.default.deleteFileAtURL(self.videoUrl)
             
