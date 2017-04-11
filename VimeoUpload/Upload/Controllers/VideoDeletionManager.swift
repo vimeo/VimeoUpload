@@ -28,7 +28,7 @@ import Foundation
 import AFNetworking
 import VimeoNetworking
 
-open class VideoDeletionManager: NSObject
+public class VideoDeletionManager: NSObject
 {
     private static let DeletionsArchiveKey = "deletions"
     private static let DefaultRetryCount = 3
@@ -115,7 +115,7 @@ open class VideoDeletionManager: NSObject
     
     // MARK: Public API
     
-    open func deleteVideoWithUri(_ uri: String)
+    public func deleteVideoWithUri(_ uri: String)
     {
         self.deleteVideoWithUri(uri, retryCount: self.retryCount)
     }
