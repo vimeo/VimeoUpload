@@ -144,7 +144,7 @@ import Photos
 
                 if let asset = asset
                 {
-                    asset.approximateFileSize({ (value) -> Void in
+                    asset.approximateFileSize(completion: { (value) -> Void in
                         cell.setFileSize(bytes: value)
                     })
                 }

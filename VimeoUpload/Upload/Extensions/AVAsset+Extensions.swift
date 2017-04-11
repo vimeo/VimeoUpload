@@ -29,7 +29,7 @@ import AVFoundation
 
 public extension AVAsset
 {    
-    func approximateFileSize(_ completion: @escaping FloatBlock)
+    func approximateFileSize(completion completion: @escaping FloatBlock)
     {
         DispatchQueue.global(qos: .default).async { () -> Void in
             var approximateSize: Float64 = 0
