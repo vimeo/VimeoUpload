@@ -27,14 +27,14 @@
 import Foundation
 import VimeoNetworking
 
-open class MeOperation: ConcurrentOperation
+public class MeOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
     
     private var task: URLSessionDataTask?
 
-    open var result: VIMUser?
-    open var error: NSError?
+    public var result: VIMUser?
+    public var error: NSError?
     
     // MARK: - Initialization
 
@@ -53,7 +53,7 @@ open class MeOperation: ConcurrentOperation
     
     // MARK: Overrides
 
-    override open func main()
+    override public func main()
     {
         if self.isCancelled
         {
@@ -101,7 +101,7 @@ open class MeOperation: ConcurrentOperation
         }
     }
     
-    override open func cancel()
+    override public func cancel()
     {
         super.cancel()
         
