@@ -28,7 +28,7 @@ import Foundation
 
 protocol ArchiverProtocol
 {
-    func loadObjectForKey(_ key: String) -> Any?
-    func saveObject(_ object: Any, key: String)
+    func loadObject(for key: String) -> Any?
+    func save(object object: Any, key: String)
 }
 

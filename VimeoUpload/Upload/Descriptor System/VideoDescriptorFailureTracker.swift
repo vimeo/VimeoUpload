@@ -72,12 +72,12 @@ import Foundation
     
     private func load() -> [String: Descriptor]
     {
-        return self.archiver.loadObjectForKey(type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
+        return self.archiver.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
     }
     
     private func save()
     {
-        self.archiver.saveObject(self.failedDescriptors, key: type(of: self).ArchiveKey)
+        self.archiver.save(object: self.failedDescriptors, key: type(of: self).ArchiveKey)
     }
     
     // MARK: Public API

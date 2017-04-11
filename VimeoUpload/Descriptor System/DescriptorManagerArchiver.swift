@@ -74,22 +74,22 @@ class DescriptorManagerArchiver
     
     private func loadDescriptors() -> Set<Descriptor>
     {
-        return self.archiver.loadObjectForKey(type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
+        return self.archiver.loadObject(for: type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
     }
     
     private func saveDescriptors()
     {
-        self.archiver.saveObject(self.descriptors, key: type(of: self).DescriptorsArchiveKey)
+        self.archiver.save(object: self.descriptors, key: type(of: self).DescriptorsArchiveKey)
     }
     
     private func loadSuspendedState() -> Bool
     {
-        return self.archiver.loadObjectForKey(type(of: self).SuspendedArchiveKey) as? Bool ?? false
+        return self.archiver.loadObject(for: type(of: self).SuspendedArchiveKey) as? Bool ?? false
     }
     
     private func saveSuspendedState()
     {
-        self.archiver.saveObject(self.suspended, key: type(of: self).SuspendedArchiveKey)
+        self.archiver.save(object: self.suspended, key: type(of: self).SuspendedArchiveKey)
     }
     
     // MARK: Public API

@@ -39,14 +39,14 @@ public class KeyedArchiver: ArchiverProtocol
         self.basePath = basePath
     }
     
-    public func loadObjectForKey(_ key: String) -> Any?
+    public func loadObject(for key: String) -> Any?
     {
         let path = self.archivePath(key: key)
         
         return NSKeyedUnarchiver.unarchiveObject(withFile: path)
     }
     
-    public func saveObject(_ object: Any, key: String)
+    public func save(object object: Any, key: String)
     {
         let path = self.archivePath(key: key)
         

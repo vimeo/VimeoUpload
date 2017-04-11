@@ -92,7 +92,7 @@ public class VideoDeletionManager: NSObject
     
     private func loadDeletions() -> [VideoUri: Int]
     {
-        if let deletions = self.archiver.loadObjectForKey(type(of: self).DeletionsArchiveKey) as? [VideoUri: Int]
+        if let deletions = self.archiver.loadObject(for: type(of: self).DeletionsArchiveKey) as? [VideoUri: Int]
         {
             return deletions
         }
@@ -110,7 +110,7 @@ public class VideoDeletionManager: NSObject
     
     private func save()
     {
-        self.archiver.saveObject(self.deletions, key: type(of: self).DeletionsArchiveKey)
+        self.archiver.save(object: self.deletions, key: type(of: self).DeletionsArchiveKey)
     }
     
     // MARK: Public API
