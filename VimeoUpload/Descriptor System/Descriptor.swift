@@ -80,7 +80,7 @@ open class Descriptor: NSObject, NSCoding
         self.state = .Executing
         
         if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.taskForIdentifier(identifier)
+            let task = sessionManager.task(for: identifier)
         {
             task.resume()
         }
@@ -137,7 +137,7 @@ open class Descriptor: NSObject, NSCoding
     private func doCancel(sessionManager: AFURLSessionManager)
     {
         if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.taskForIdentifier(identifier)
+            let task = sessionManager.task(for: identifier)
         {
             task.cancel()
         }

@@ -29,7 +29,7 @@ import AFNetworking
 
 extension AFURLSessionManager
 {
-    func taskForIdentifier(_ identifier: Int) -> URLSessionTask?
+    func task(for identifier: Int) -> URLSessionTask?
     {
         return self.tasks.filter{ $0.taskIdentifier == identifier }.first
     }
