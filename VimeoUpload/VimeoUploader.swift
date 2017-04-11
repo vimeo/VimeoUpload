@@ -27,7 +27,7 @@
 import Foundation
 import VimeoNetworking
 
-public class VimeoUploader<T: VideoDescriptor>
+open class VimeoUploader<T: VideoDescriptor>
 {
     public static var Name: String
     {
