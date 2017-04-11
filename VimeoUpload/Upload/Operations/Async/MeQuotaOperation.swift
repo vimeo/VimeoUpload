@@ -35,17 +35,17 @@ import VimeoNetworking
 // 4. If non iCloud asset, check approximate weekly quota
 // 5. If non iCloud asset, check approximate disk space
 
-open class MeQuotaOperation: ConcurrentOperation
+public class MeQuotaOperation: ConcurrentOperation
 {    
     let sessionManager: VimeoSessionManager
     
-    open var me: VIMUser?
+    public var me: VIMUser?
     private let operationQueue: OperationQueue
     
     private var avAsset: AVAsset?
     private var selectionFulfilled: Bool = false
 
-    open var error: NSError?
+    public var error: NSError?
     {
         didSet
         {
@@ -72,7 +72,7 @@ open class MeQuotaOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override open func main()
+    override public func main()
     {
         if self.isCancelled
         {
@@ -89,7 +89,7 @@ open class MeQuotaOperation: ConcurrentOperation
         }
     }
     
-    override open func cancel()
+    override public func cancel()
     {
         super.cancel()
         
@@ -102,7 +102,7 @@ open class MeQuotaOperation: ConcurrentOperation
     // Then we're dealing with an iCloud asset
     // This is ok, but download of iCloud asset is not handled by this workflow
     
-    open func fulfillSelection(avAsset: AVAsset?)
+    public func fulfillSelection(avAsset: AVAsset?)
     {
         if self.selectionFulfilled == true
         {
