@@ -26,7 +26,7 @@
 
 import Foundation
 
-@objc open class VideoDescriptorFailureTracker: NSObject
+@objc public class VideoDescriptorFailureTracker: NSObject
 {
     private static let ArchiveKey = "descriptors_failed"
 
@@ -82,13 +82,13 @@ import Foundation
     
     // MARK: Public API
     
-    open func removeAllFailures()
+    public func removeAllFailures()
     {
         self.failedDescriptors.removeAll()
         self.save()
     }
     
-    open func removeFailedDescriptorForKey(_ key: String) -> Descriptor?
+    public func removeFailedDescriptorForKey(_ key: String) -> Descriptor?
     {
         guard let descriptor = self.failedDescriptors.removeValue(forKey: key) else
         {
@@ -100,7 +100,7 @@ import Foundation
         return descriptor
     }
     
-    open func failedDescriptorForKey(_ key: String) -> Descriptor?
+    public func failedDescriptorForKey(_ key: String) -> Descriptor?
     {
         return self.failedDescriptors[key]
     }
