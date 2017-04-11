@@ -36,7 +36,7 @@ public enum DescriptorManagerNotification: String
     case SessionDidBecomeInvalid = "SessionDidBecomeInvalidNotification"
 }
 
-public typealias TestClosure = (_ descriptor: Descriptor) -> Bool
+public typealias TestClosure = (Descriptor) -> Bool
 public typealias VoidClosure = () -> Void
 
 open class DescriptorManager: NSObject
