@@ -28,7 +28,7 @@ import Foundation
 import AFNetworking
 import VimeoNetworking
 
-open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
+public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
     // MARK:
     
@@ -38,7 +38,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     // MARK:
     
     private(set) var uploadTicket: VIMUploadTicket? // Create response
-    open var videoUri: String? // Activate response
+    public var videoUri: String? // Activate response
     private(set) var video: VIMVideo? // Settings response
 
     // MARK:
@@ -53,12 +53,12 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: VideoDescriptor
     
-    open var type: VideoDescriptorType
+    public var type: VideoDescriptorType
     {
         return .upload
     }
     
-    open var progressDescriptor: ProgressDescriptor
+    public var progressDescriptor: ProgressDescriptor
     {
         return self
     }
@@ -80,7 +80,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: Overrides
     
-    override open func prepare(sessionManager: AFURLSessionManager) throws
+    override public func prepare(sessionManager: AFURLSessionManager) throws
     {
         let sessionManager = sessionManager as! VimeoSessionManager
 
@@ -98,7 +98,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override open func resume(sessionManager: AFURLSessionManager)
+    override public func resume(sessionManager: AFURLSessionManager)
     {
         super.resume(sessionManager: sessionManager)
         
@@ -110,7 +110,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
 
-    override open func cancel(sessionManager: AFURLSessionManager)
+    override public func cancel(sessionManager: AFURLSessionManager)
     {
         super.cancel(sessionManager: sessionManager)
         
@@ -119,7 +119,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // If necessary, resume the current task and re-connect progress objects
 
-    override open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    override public func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
             let task = sessionManager.uploadTaskForIdentifier(identifier),
@@ -141,7 +141,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.progress = progress
     }
     
-    override open func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
+    override public func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
     {
         let sessionManager = sessionManager as! VimeoSessionManager
         let responseSerializer = sessionManager.responseSerializer as! VimeoResponseSerializer
@@ -173,7 +173,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         return nil
     }
     
-    override open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
+    override public func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
     {
         if self.currentRequest == .Upload
         {
@@ -290,7 +290,7 @@ open class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         super.init(coder: aDecoder)
     }
     
-    override open func encode(with aCoder: NSCoder)
+    override public func encode(with aCoder: NSCoder)
     {
         aCoder.encode(self.url, forKey: "url")
         aCoder.encode(self.videoSettings, forKey: "videoSettings")
