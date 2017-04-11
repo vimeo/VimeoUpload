@@ -26,7 +26,7 @@
 
 import Foundation
 
-open class KeyedArchiver: ArchiverProtocol
+public class KeyedArchiver: ArchiverProtocol
 {
     private static let ArchiveExtension = "archive"
     
@@ -39,14 +39,14 @@ open class KeyedArchiver: ArchiverProtocol
         self.basePath = basePath
     }
     
-    open func loadObjectForKey(_ key: String) -> AnyObject?
+    public func loadObjectForKey(_ key: String) -> AnyObject?
     {
         let path = self.archivePath(key: key)
         
         return NSKeyedUnarchiver.unarchiveObject(withFile: path) as AnyObject?
     }
     
-    open func saveObject(_ object: AnyObject, key: String)
+    public func saveObject(_ object: AnyObject, key: String)
     {
         let path = self.archivePath(key: key)
         
