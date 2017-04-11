@@ -165,7 +165,7 @@ open class DescriptorManager: NSObject
             strongSelf.synchronizationQueue.sync(execute: { [weak self] () -> Void in
 
                 guard let strongSelf = self,
-                    let descriptor = strongSelf.descriptorForTask(task) else
+                    let descriptor = strongSelf.descriptor(for: task) else
                 {
                     return
                 }
@@ -198,7 +198,7 @@ open class DescriptorManager: NSObject
             strongSelf.synchronizationQueue.async(execute: { [weak self] () -> Void in
 
                 guard let strongSelf = self,
-                    let descriptor = strongSelf.descriptorForTask(task) else
+                    let descriptor = strongSelf.descriptor(for: task) else
                 {
                     return
                 }
@@ -442,7 +442,7 @@ open class DescriptorManager: NSObject
         })
     }
     
-    open func descriptorPassingTest(_ test: @escaping TestClosure) -> Descriptor?
+    open func descriptor(passing test: @escaping TestClosure) -> Descriptor?
     {
         var descriptor: Descriptor?
         
@@ -509,7 +509,7 @@ open class DescriptorManager: NSObject
         self.delegate?.didSaveDescriptors?(count: self.archiver.descriptors.count)
     }
 
-    private func descriptorForTask(_ task: URLSessionTask) -> Descriptor?
+    private func descriptor(for task: URLSessionTask) -> Descriptor?
     {
         let descriptor = self.archiver.descriptorPassingTest { (descriptor) -> Bool in
             return descriptor.currentTaskIdentifier == task.taskIdentifier
