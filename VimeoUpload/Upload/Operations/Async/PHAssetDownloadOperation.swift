@@ -27,15 +27,15 @@
 import Foundation
 import Photos
 
-open class PHAssetDownloadOperation: ConcurrentOperation
+public class PHAssetDownloadOperation: ConcurrentOperation
 {
     private let phAsset: PHAsset
     private var requestID: PHImageRequestID?
 
-    open var progressBlock: ProgressBlock?
+    public var progressBlock: ProgressBlock?
 
-    open var result: AVAsset?
-    open var error: NSError?
+    public var result: AVAsset?
+    public var error: NSError?
 
     // MARK: - Initialization
 
@@ -53,7 +53,7 @@ open class PHAssetDownloadOperation: ConcurrentOperation
     
     // MARK: Overrides
 
-    override open func main()
+    override public func main()
     {
         if self.isCancelled
         {            
@@ -146,7 +146,7 @@ open class PHAssetDownloadOperation: ConcurrentOperation
         }
     }
     
-    override open func cancel()
+    override public func cancel()
     {
         super.cancel()
 
