@@ -33,7 +33,7 @@ import AVFoundation
     import CoreServices
 #endif
 
-open class ExportOperation: ConcurrentOperation
+public class ExportOperation: ConcurrentOperation
 {
     private static let ProgressKeyPath = "progress"
     private static let FileType = AVFileTypeMPEG4
@@ -99,7 +99,7 @@ open class ExportOperation: ConcurrentOperation
 
     // MARK: Overrides
 
-    override open func main()
+    override public func main()
     {
         if self.isCancelled
         {
@@ -174,7 +174,7 @@ open class ExportOperation: ConcurrentOperation
         }
     }
     
-    override open func cancel()
+    override public func cancel()
     {
         super.cancel()
         
@@ -194,7 +194,7 @@ open class ExportOperation: ConcurrentOperation
         self.removeObserver(self, forKeyPath: type(of: self).ProgressKeyPath, context: &self.exportProgressKVOContext)
     }
     
-    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
+    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
     {
         if let keyPath = keyPath
         {
