@@ -28,7 +28,7 @@ import Foundation
 import AVFoundation
 import VimeoNetworking
 
-open class WeeklyQuotaOperation: Operation
+public class WeeklyQuotaOperation: Operation
 {    
     private let user: VIMUser
     private let fileSize: Float64
@@ -48,7 +48,7 @@ open class WeeklyQuotaOperation: Operation
     
     // MARK: Overrides
 
-    override open func main()
+    override public func main()
     {
         if let free = self.user.uploadQuota?.sizeQuota?.free?.doubleValue
         {
