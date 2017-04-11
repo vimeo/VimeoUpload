@@ -28,7 +28,7 @@ import Foundation
 import VimeoNetworking
 import AFNetworking
 
-open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
+public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
     private static let FileNameCoderKey = "fileName"
     private static let FileExtensionCoderKey = "fileExtension"
@@ -36,22 +36,22 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: 
     
-    open var url: URL
-    open var uploadTicket: VIMUploadTicket
+    public var url: URL
+    public var uploadTicket: VIMUploadTicket
     
     // MARK: VideoDescriptor
     
-    open var type: VideoDescriptorType
+    public var type: VideoDescriptorType
     {
         return .upload
     }
     
-    open var videoUri: VideoUri?
+    public var videoUri: VideoUri?
     {
         return self.uploadTicket.video?.uri
     }
     
-    open var progressDescriptor: ProgressDescriptor
+    public var progressDescriptor: ProgressDescriptor
     {
         return self
     }
@@ -73,7 +73,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: Overrides
     
-    override open func prepare(sessionManager: AFURLSessionManager) throws
+    override public func prepare(sessionManager: AFURLSessionManager) throws
     {
         // TODO: Do we need to set self.state == .Ready here? [AH] 2/22/2016
         
@@ -101,7 +101,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override open func resume(sessionManager: AFURLSessionManager)
+    override public func resume(sessionManager: AFURLSessionManager)
     {
         super.resume(sessionManager: sessionManager)
         
@@ -113,14 +113,14 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override open func cancel(sessionManager: AFURLSessionManager)
+    override public func cancel(sessionManager: AFURLSessionManager)
     {
         super.cancel(sessionManager: sessionManager)
         
         FileManager.default.deleteFileAtURL(self.url)
     }
 
-    override open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    override public func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
             let task = sessionManager.uploadTaskForIdentifier(identifier),
@@ -141,7 +141,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.progress = progress
     }
     
-    override open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
+    override public func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
     {
         self.currentTaskIdentifier = nil
 
@@ -190,7 +190,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         super.init(coder: aDecoder)
     }
 
-    override open func encode(with aCoder: NSCoder)
+    override public func encode(with aCoder: NSCoder)
     {
         let fileName = self.url.deletingPathExtension().lastPathComponent
         let ext = self.url.pathExtension
