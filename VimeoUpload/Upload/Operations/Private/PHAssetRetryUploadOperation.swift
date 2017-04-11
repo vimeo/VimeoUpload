@@ -33,7 +33,7 @@ import VimeoNetworking
 // 1. Perorm a MeQuotaOperation
 // 2. Perform a PHAssetCloudExportQuotaOperation
 
-open class PHAssetRetryUploadOperation: RetryUploadOperation
+public class PHAssetRetryUploadOperation: RetryUploadOperation
 {
     private let phAsset: PHAsset
     
