@@ -78,7 +78,7 @@ public class DeleteVideoOperation: ConcurrentOperation
                 
                 if let error = error
                 {
-                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.DeleteVideoOperation.rawValue)
+                    strongSelf.error = error.error(byAdding: UploadErrorDomain.DeleteVideoOperation.rawValue)
                 }
                 
                 strongSelf.state = .finished
@@ -88,7 +88,7 @@ public class DeleteVideoOperation: ConcurrentOperation
         }
         catch let error as NSError
         {
-            self.error = error.errorByAddingDomain(UploadErrorDomain.DeleteVideoOperation.rawValue)
+            self.error = error.error(byAdding: UploadErrorDomain.DeleteVideoOperation.rawValue)
             self.state = .finished
         }
     }

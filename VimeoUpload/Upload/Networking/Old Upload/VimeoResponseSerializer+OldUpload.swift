@@ -39,7 +39,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Me.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Me.rawValue)
         }
         
         do
@@ -48,7 +48,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Me.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Me.rawValue)
         }
     }
 
@@ -60,7 +60,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.MyVideos.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.MyVideos.rawValue)
         }
         
         do
@@ -69,7 +69,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.MyVideos.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.MyVideos.rawValue)
         }
     }
 
@@ -82,7 +82,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Create.rawValue)
         }
 
         return try self.processCreateVideoResponse(response, responseObject: responseObject as AnyObject?, error: error)
@@ -96,7 +96,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Create.rawValue)
         }
         
         do
@@ -105,7 +105,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Create.rawValue)
         }
     }
 
@@ -117,7 +117,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Upload.rawValue)
         }
     }
     
@@ -129,7 +129,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Activate.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Activate.rawValue)
         }
 
         guard let HTTPResponse = response as? HTTPURLResponse, let location = HTTPResponse.allHeaderFields[type(of: self).LocationKey] as? String else
@@ -149,7 +149,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.VideoSettings.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.VideoSettings.rawValue)
         }
         
         return try self.processVideoSettingsResponse(response, responseObject: responseObject as AnyObject?, error: error)
@@ -163,7 +163,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.VideoSettings.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.VideoSettings.rawValue)
         }
         
         do
@@ -172,7 +172,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.VideoSettings.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.VideoSettings.rawValue)
         }
     }
 
@@ -184,7 +184,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Delete.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Delete.rawValue)
         }
     }
 
@@ -196,7 +196,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Video.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Video.rawValue)
         }
 
         do
@@ -205,7 +205,7 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Video.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Video.rawValue)
         }
     }
 

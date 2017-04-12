@@ -199,7 +199,7 @@ public class MeQuotaOperation: ConcurrentOperation
 
                 if let result = operation.result, result == false
                 {
-                    strongSelf.error = NSError.errorWithDomain(domain: UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.dailyQuotaException.rawValue, description: "Upload would exceed daily quota.")
+                    strongSelf.error = NSError.error(with: UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.dailyQuotaException.rawValue, description: "Upload would exceed daily quota.")
                 }
                 else
                 {

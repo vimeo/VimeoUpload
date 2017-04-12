@@ -78,7 +78,7 @@ public class MeOperation: ConcurrentOperation
                 
                 if let error = error
                 {
-                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.MeOperation.rawValue)
+                    strongSelf.error = error.error(byAdding: UploadErrorDomain.MeOperation.rawValue)
                 }
                 else if let user = user
                 {
@@ -96,7 +96,7 @@ public class MeOperation: ConcurrentOperation
         }
         catch let error as NSError
         {
-            self.error = error.errorByAddingDomain(UploadErrorDomain.MeOperation.rawValue)
+            self.error = error.error(byAdding: UploadErrorDomain.MeOperation.rawValue)
             self.state = .finished
         }
     }

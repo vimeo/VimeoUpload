@@ -38,7 +38,7 @@ extension VimeoRequestSerializer
         let request = self.request(withMethod: "GET", urlString: url.absoluteString!, parameters: nil, error: &error)
         if let error = error
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Me.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Me.rawValue)
         }
         
         return request
@@ -52,7 +52,7 @@ extension VimeoRequestSerializer
         let request = self.request(withMethod: "GET", urlString: url.absoluteString!, parameters: nil, error: &error)
         if let error = error
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.MyVideos.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.MyVideos.rawValue)
         }
         
         return request
@@ -74,7 +74,7 @@ extension VimeoRequestSerializer
 
         if let error = error
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Create.rawValue)
         }
         
         return request
@@ -91,7 +91,7 @@ extension VimeoRequestSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Create.rawValue)
         }
         
         return ["type": "streaming", "size": fileSize]
@@ -108,7 +108,7 @@ extension VimeoRequestSerializer
         let request = self.request(withMethod: "PUT", urlString: destination, parameters: nil, error: &error)
         if let error = error
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Upload.rawValue)
         }
         
         let asset = AVURLAsset(url: source as URL)
@@ -120,7 +120,7 @@ extension VimeoRequestSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Upload.rawValue)
         }
         
         request.setValue("\(fileSize)", forHTTPHeaderField: "Content-Length")
@@ -140,7 +140,7 @@ extension VimeoRequestSerializer
         let request = self.request(withMethod: "DELETE", urlString: url.absoluteString!, parameters: nil, error: &error)
         if let error = error
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Activate.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Activate.rawValue)
         }
         
         return request
@@ -165,7 +165,7 @@ extension VimeoRequestSerializer
         let request = self.request(withMethod: "PATCH", urlString: url.absoluteString!, parameters: parameters, error: &error)
         if let error = error
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.VideoSettings.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.VideoSettings.rawValue)
         }
         
         return request
@@ -184,7 +184,7 @@ extension VimeoRequestSerializer
         let request = self.request(withMethod: "DELETE", urlString: url.absoluteString!, parameters: nil, error: &error)
         if let error = error
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Delete.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Delete.rawValue)
         }
         
         return request
@@ -203,7 +203,7 @@ extension VimeoRequestSerializer
         let request = self.request(withMethod: "GET", urlString: url.absoluteString!, parameters: nil, error: &error)
         if let error = error
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Video.rawValue)
+            throw error.error(byAdding: UploadErrorDomain.Video.rawValue)
         }
         
         return request

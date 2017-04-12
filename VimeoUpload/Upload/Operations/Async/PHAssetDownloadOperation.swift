@@ -90,7 +90,7 @@ public class PHAssetDownloadOperation: ConcurrentOperation
             if let error = error
             {
                 strongSelf.progressBlock = nil
-                strongSelf.error = (error as NSError).errorByAddingDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue)
+                strongSelf.error = (error as NSError).error(byAdding: UploadErrorDomain.PHAssetDownloadOperation.rawValue)
                 strongSelf.state = .finished
             }
             else if let info = info, let error = info[PHImageErrorKey] as? NSError
@@ -131,7 +131,7 @@ public class PHAssetDownloadOperation: ConcurrentOperation
 
             if let info = info, let error = info[PHImageErrorKey] as? NSError
             {
-                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue)
+                strongSelf.error = error.error(byAdding: UploadErrorDomain.PHAssetDownloadOperation.rawValue)
             }
             else if let asset = asset
             {
