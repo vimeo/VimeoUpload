@@ -163,11 +163,11 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first
             {
-                self.error = (taskError as NSError).error(byAdding: UploadErrorDomain.Upload.rawValue)
+                self.error = (taskError as NSError).error(byAddingDomain: UploadErrorDomain.Upload.rawValue)
             }
             else if let error = error
             {
-                self.error = error.error(byAdding: UploadErrorDomain.Upload.rawValue)
+                self.error = error.error(byAddingDomain: UploadErrorDomain.Upload.rawValue)
             }
         }
 

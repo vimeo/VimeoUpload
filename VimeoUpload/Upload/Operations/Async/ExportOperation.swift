@@ -140,15 +140,15 @@ public class ExportOperation: ConcurrentOperation
             
             if let error = strongSelf.exportSession.error
             {
-                strongSelf.error = (error as NSError).error(byAdding: UploadErrorDomain.ExportOperation.rawValue)
+                strongSelf.error = (error as NSError).error(byAddingDomain: UploadErrorDomain.ExportOperation.rawValue)
 
                 if (error as NSError).domain == AVFoundationErrorDomain && (error as NSError).code == AVError.Code.diskFull.rawValue
                 {
-                    strongSelf.error = (error as NSError).error(byAdding: UploadErrorDomain.ExportOperation.rawValue).errorByAddingCode(UploadLocalErrorCode.diskSpaceException.rawValue)
+                    strongSelf.error = (error as NSError).error(byAddingDomain: UploadErrorDomain.ExportOperation.rawValue).errorByAddingCode(UploadLocalErrorCode.diskSpaceException.rawValue)
                 }
                 else
                 {
-                    strongSelf.error = (error as NSError).error(byAdding: UploadErrorDomain.ExportOperation.rawValue)
+                    strongSelf.error = (error as NSError).error(byAddingDomain: UploadErrorDomain.ExportOperation.rawValue)
                 }
             }
             else if let outputURL = strongSelf.exportSession.outputURL, FileManager.default.fileExists(atPath: outputURL.path)

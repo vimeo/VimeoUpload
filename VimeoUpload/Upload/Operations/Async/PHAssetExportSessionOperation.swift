@@ -120,7 +120,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             
             if let info = info, let error = info[PHImageErrorKey] as? NSError
             {
-                strongSelf.error = error.error(byAdding: UploadErrorDomain.PHAssetExportSessionOperation.rawValue)
+                strongSelf.error = error.error(byAddingDomain: UploadErrorDomain.PHAssetExportSessionOperation.rawValue)
             }
             else if let exportSession = exportSession
             {

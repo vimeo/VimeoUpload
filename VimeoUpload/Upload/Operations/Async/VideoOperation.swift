@@ -79,7 +79,7 @@ public class VideoOperation: ConcurrentOperation
                 
                 if let error = error
                 {
-                    strongSelf.error = error.error(byAdding: UploadErrorDomain.VideoOperation.rawValue)
+                    strongSelf.error = error.error(byAddingDomain: UploadErrorDomain.VideoOperation.rawValue)
                 }
                 else
                 {
@@ -93,7 +93,7 @@ public class VideoOperation: ConcurrentOperation
         }
         catch let error as NSError
         {
-            self.error = error.error(byAdding: UploadErrorDomain.VideoOperation.rawValue)
+            self.error = error.error(byAddingDomain: UploadErrorDomain.VideoOperation.rawValue)
             self.state = .finished
         }
     }
