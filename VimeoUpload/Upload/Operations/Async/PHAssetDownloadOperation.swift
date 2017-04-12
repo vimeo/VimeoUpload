@@ -139,7 +139,7 @@ public class PHAssetDownloadOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetDownloadOperation.rawValue, code: nil, description: "Request for AVAsset returned no error and no asset.")
+                strongSelf.error = NSError.error(with: UploadErrorDomain.PHAssetDownloadOperation.rawValue, code: nil, description: "Request for AVAsset returned no error and no asset.")
             }
             
             strongSelf.state = .finished

@@ -49,7 +49,7 @@ extension NSError
             NSURLErrorNetworkConnectionLost].contains(self.code)
     }
     
-    class func errorWithDomain(_ domain: String?, code: Int?, description: String?) -> NSError
+    class func error(with domain: String?, code: Int?, description: String?) -> NSError
     {
         var error = NSError(domain: VimeoErrorKey.VimeoErrorDomain.rawValue, code: 0, userInfo: nil)
         

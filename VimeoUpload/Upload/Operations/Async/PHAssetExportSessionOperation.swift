@@ -128,7 +128,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetExportSessionOperation.rawValue, code: nil, description: "Request for export session returned no error and no export session")
+                strongSelf.error = NSError.error(with: UploadErrorDomain.PHAssetExportSessionOperation.rawValue, code: nil, description: "Request for export session returned no error and no export session")
             }
             
             strongSelf.state = .finished

@@ -173,7 +173,7 @@ open class ExportQuotaOperation: ConcurrentOperation
                 if let result = operation.result, result.success == false
                 {
                     let userInfo = [UploadErrorKey.FileSize.rawValue: result.fileSize, UploadErrorKey.AvailableSpace.rawValue: result.availableSpace]
-                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: UploadLocalErrorCode.weeklyQuotaException.rawValue, description: "Upload would exceed weekly quota.").errorByAddingUserInfo(userInfo as [String : AnyObject])
+                    strongSelf.error = NSError.error(with: UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: UploadLocalErrorCode.weeklyQuotaException.rawValue, description: "Upload would exceed weekly quota.").errorByAddingUserInfo(userInfo as [String : AnyObject])
                 }
                 else
                 {

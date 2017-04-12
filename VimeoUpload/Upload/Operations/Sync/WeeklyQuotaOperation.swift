@@ -57,7 +57,7 @@ public class WeeklyQuotaOperation: Operation
         }
         else
         {
-            self.error = NSError.errorWithDomain(UploadErrorDomain.WeeklyQuotaOperation.rawValue, code: UploadLocalErrorCode.cannotEvaluateWeeklyQuota.rawValue, description: "User object did not contain uploadQuota.space information")
+            self.error = NSError.error(with: UploadErrorDomain.WeeklyQuotaOperation.rawValue, code: UploadLocalErrorCode.cannotEvaluateWeeklyQuota.rawValue, description: "User object did not contain uploadQuota.space information")
         }
     }
 }

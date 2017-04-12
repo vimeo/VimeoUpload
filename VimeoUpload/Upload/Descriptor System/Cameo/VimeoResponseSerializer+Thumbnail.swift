@@ -110,7 +110,7 @@ extension VimeoResponseSerializer
             }
         }
         
-        throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse thumbnailTicket object from responseObject failed")
+        throw NSError.error(with: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse thumbnailTicket object from responseObject failed")
     }
     
     private func vimPictureFromResponseObject(_ responseObject: AnyObject?) throws -> VIMPicture
@@ -126,6 +126,6 @@ extension VimeoResponseSerializer
             }
         }
         
-        throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse picture object from responseObject failed")
+        throw NSError.error(with: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse picture object from responseObject failed")
     }
 }
