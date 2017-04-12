@@ -144,7 +144,7 @@ public class ExportOperation: ConcurrentOperation
 
                 if (error as NSError).domain == AVFoundationErrorDomain && (error as NSError).code == AVError.Code.diskFull.rawValue
                 {
-                    strongSelf.error = (error as NSError).error(byAddingDomain: UploadErrorDomain.ExportOperation.rawValue).errorByAddingCode(UploadLocalErrorCode.diskSpaceException.rawValue)
+                    strongSelf.error = (error as NSError).error(byAddingDomain: UploadErrorDomain.ExportOperation.rawValue).error(byAddingCode: UploadLocalErrorCode.diskSpaceException.rawValue)
                 }
                 else
                 {
