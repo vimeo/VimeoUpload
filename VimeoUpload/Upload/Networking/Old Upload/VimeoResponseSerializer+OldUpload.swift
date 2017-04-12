@@ -142,7 +142,7 @@ extension VimeoResponseSerializer
 
     func processVideoSettingsResponse(_ response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMVideo
     {
-        let responseObject: [String: AnyObject]?
+        let responseObject: [AnyHashable: Any]?
         do
         {
             responseObject = try self.responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)
