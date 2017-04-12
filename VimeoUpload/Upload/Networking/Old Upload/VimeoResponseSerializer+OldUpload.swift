@@ -75,7 +75,7 @@ extension VimeoResponseSerializer
 
     func processCreateVideoResponse(_ response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMUploadTicket
     {
-        let responseObject: [String: AnyObject]?
+        let responseObject: [AnyHashable: Any]?
         do
         {
             responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)

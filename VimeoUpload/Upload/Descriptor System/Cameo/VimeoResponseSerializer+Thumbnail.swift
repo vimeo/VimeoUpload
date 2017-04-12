@@ -13,7 +13,7 @@ extension VimeoResponseSerializer
 {
     func processCreateThumbnailResponse(_ response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMThumbnailUploadTicket
     {
-        let responseObject: [String: AnyObject]?
+        let responseObject: [AnyHashable: Any]?
         do
         {
             responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)
@@ -61,7 +61,7 @@ extension VimeoResponseSerializer
     
     func processActivateThumbnailResponse(_ response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMPicture
     {
-        let responseObject: [String: AnyObject]?
+        let responseObject: [AnyHashable: Any]?
         do
         {
             responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)
