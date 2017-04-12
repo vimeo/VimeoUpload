@@ -224,7 +224,7 @@ extension VimeoResponseSerializer
             }
         }
         
-        throw NSError.error(with: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse videos array from responseObject failed")
+        throw NSError.error(withDomain: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse videos array from responseObject failed")
     }
 
     private func videoFromResponseObject(_ responseObject: AnyObject?) throws -> VIMVideo
@@ -240,7 +240,7 @@ extension VimeoResponseSerializer
             }
         }
         
-        throw NSError.error(with: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse video object from responseObject failed")
+        throw NSError.error(withDomain: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse video object from responseObject failed")
     }
 
     private func userFromResponseObject(_ responseObject: AnyObject?) throws -> VIMUser
@@ -256,7 +256,7 @@ extension VimeoResponseSerializer
             }
         }
         
-        throw NSError.error(with: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse user object from responseObject failed")
+        throw NSError.error(withDomain: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse user object from responseObject failed")
     }
 
     private func uploadTicketFromResponseObject(_ responseObject: AnyObject?) throws -> VIMUploadTicket
@@ -272,6 +272,6 @@ extension VimeoResponseSerializer
             }
         }
         
-        throw NSError.error(with: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse uploadTicket object from responseObject failed")
+        throw NSError.error(withDomain: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse uploadTicket object from responseObject failed")
     }
 }

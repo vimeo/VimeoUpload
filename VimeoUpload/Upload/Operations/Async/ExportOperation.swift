@@ -108,7 +108,7 @@ public class ExportOperation: ConcurrentOperation
         
         if self.exportSession.asset.isExportable == false // DRM protected
         {
-            self.error = NSError.error(with: UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.assetIsNotExportable.rawValue, description: "Asset is not exportable")
+            self.error = NSError.error(withDomain: UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.assetIsNotExportable.rawValue, description: "Asset is not exportable")
             self.state = .finished
             
             return
@@ -120,7 +120,7 @@ public class ExportOperation: ConcurrentOperation
         let availableDiskSpace = try? FileManager.default.availableDiskSpace() // Double optional
         if let diskSpace = availableDiskSpace, let space = diskSpace, space.int64Value < self.exportSession.estimatedOutputFileLength
         {
-            self.error = NSError.error(with: UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.diskSpaceException.rawValue, description: "Not enough disk space to copy asset")
+            self.error = NSError.error(withDomain: UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.diskSpaceException.rawValue, description: "Not enough disk space to copy asset")
             self.state = .finished
             
             return
@@ -157,7 +157,7 @@ public class ExportOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.error = NSError.error(with: UploadErrorDomain.ExportOperation.rawValue, code: nil, description: "Export session finished with no error and no output URL.")
+                strongSelf.error = NSError.error(withDomain: UploadErrorDomain.ExportOperation.rawValue, code: nil, description: "Export session finished with no error and no output URL.")
             }
 
             strongSelf.state = .finished
