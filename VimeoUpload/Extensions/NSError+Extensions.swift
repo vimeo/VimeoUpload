@@ -56,11 +56,11 @@ extension NSError
         if let description = description
         {
             let userInfo = [NSLocalizedDescriptionKey: description]
-            error = error.errorByAddingDomain(domain, code: code, userInfo: userInfo as [String : AnyObject]?)
+            error = error.error(byAddingDomain: domain, code: code, userInfo: userInfo as [String : AnyObject]?)
         }
         else
         {
-            error = error.errorByAddingDomain(domain, code: code, userInfo: nil)
+            error = error.error(byAddingDomain: domain, code: code, userInfo: nil)
         }
         
         return error
@@ -68,20 +68,20 @@ extension NSError
 
     func error(byAddingDomain domain: String) -> NSError
     {
-        return self.errorByAddingDomain(domain, code: nil, userInfo: nil)
+        return self.error(byAddingDomain: domain, code: nil, userInfo: nil)
     }
     
     func error(byAddingUserInfo userInfo: [String: Any]) -> NSError
     {
-        return self.errorByAddingDomain(nil, code: nil, userInfo: userInfo)
+        return self.error(byAddingDomain: nil, code: nil, userInfo: userInfo)
     }
     
     func error(byAddingCode code: Int) -> NSError
     {
-        return self.errorByAddingDomain(nil, code: code, userInfo: nil)
+        return self.error(byAddingDomain: nil, code: code, userInfo: nil)
     }
     
-    func errorByAddingDomain(_ domain: String?, code: Int?, userInfo: [String: Any]?) -> NSError
+    func error(byAddingDomain domain: String?, code: Int?, userInfo: [String: Any]?) -> NSError
     {
         let augmentedInfo = NSMutableDictionary(dictionary: self.userInfo)
         
