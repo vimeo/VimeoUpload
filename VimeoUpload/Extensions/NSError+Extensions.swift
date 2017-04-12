@@ -76,7 +76,7 @@ extension NSError
         return self.errorByAddingDomain(nil, code: nil, userInfo: userInfo)
     }
     
-    func errorByAddingCode(_ code: Int) -> NSError
+    func error(byAddingCode code: Int) -> NSError
     {
         return self.errorByAddingDomain(nil, code: code, userInfo: nil)
     }
