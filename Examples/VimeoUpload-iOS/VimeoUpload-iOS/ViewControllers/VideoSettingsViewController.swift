@@ -152,7 +152,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     if let error = operation.error
                     {
                         strongSelf.activityIndicatorView.stopAnimating()
-                        strongSelf.presentOperationErrorAlert(error)
+                        strongSelf.presentOperationErrorAlert(with: error)
                     }
                     else
                     {
@@ -218,7 +218,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
         else if let error = operation.error
         {
-            self.presentOperationErrorAlert(error)
+            self.presentOperationErrorAlert(with: error)
         }
         else
         {
@@ -248,7 +248,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: UI Presentation
     
-    private func presentOperationErrorAlert(_ error: NSError)
+    private func presentOperationErrorAlert(with error: NSError)
     {
         // TODO: check error.code == AVError.DiskFull.rawValue and message appropriately
         // TODO: check error.code == AVError.OperationInterrupted.rawValue (app backgrounded during export)
@@ -266,7 +266,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.present(alert, animated: true, completion: nil)
     }
     
-    private func presentVideoSettingsErrorAlert(_ error: NSError)
+    private func presentVideoSettingsErrorAlert(with error: NSError)
     {
         let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
@@ -304,7 +304,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     
                     if let error = error
                     {
-                        strongSelf.presentVideoSettingsErrorAlert(error)
+                        strongSelf.presentVideoSettingsErrorAlert(with: error)
                     }
                     else
                     {
@@ -320,7 +320,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         catch let error as NSError
         {
             self.activityIndicatorView.stopAnimating()
-            self.presentVideoSettingsErrorAlert(error)
+            self.presentVideoSettingsErrorAlert(with: error)
         }
     }
 }
