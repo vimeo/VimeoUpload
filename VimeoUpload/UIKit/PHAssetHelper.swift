@@ -160,7 +160,7 @@ import Photos
         self.activeAssetRequests[phAsset.localIdentifier] = requestID
     }
     
-    public func cancelRequests(_ cameraRollAsset: VIMPHAsset)
+    public func cancelRequests(with cameraRollAsset: VIMPHAsset)
     {
         self.cancelImageRequest(cameraRollAsset: cameraRollAsset)
         self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
