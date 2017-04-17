@@ -113,7 +113,7 @@ public class RetryUploadOperation: ConcurrentOperation
                 {
                     let user = operation.me!
                     let exportQuotaOperation = strongSelf.makeExportQuotaOperation(user: user)!
-                    strongSelf.performExportQuotaOperation(exportQuotaOperation)
+                    strongSelf.perform(exportQuotaOperation: exportQuotaOperation)
                 }
             })
         }
@@ -123,7 +123,7 @@ public class RetryUploadOperation: ConcurrentOperation
         operation.fulfillSelection(avAsset: nil)
     }
     
-    private func performExportQuotaOperation(_ operation: ExportQuotaOperation)
+    private func perform(exportQuotaOperation operation: ExportQuotaOperation)
     {
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
             self?.downloadProgressBlock?(progress)
