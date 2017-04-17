@@ -77,12 +77,12 @@ import AFNetworking
         self.operationQueue.cancelAllOperations()
     }
     
-    public func cancelRefreshForVideoWithUri(_ uri: VideoUri)
+    public func cancelRefreshForVideo(withURI uri: VideoUri)
     {
         self.videos.removeValue(forKey: uri)
     }
 
-    public func refreshVideo(_ video: VIMVideo)
+    public func refresh(video: VIMVideo)
     {
         guard let uri = video.uri else
         {
@@ -95,17 +95,17 @@ import AFNetworking
             return // It's already scheduled for refresh
         }
 
-        guard type(of: self).isVideoStatusFinal(video) != true else
+        guard type(of: self).isStatusFinal(for: video) != true else
         {
             return // No need to refresh this video, it's already done
         }
 
-        self.doRefreshVideo(video)
+        self.doRefresh(video: video)
     }
     
     // MARK: Private API
 
-    private func doRefreshVideo(_ video: VIMVideo)
+    private func doRefresh(video: VIMVideo)
     {
         let uri = video.uri!
         
@@ -139,12 +139,12 @@ import AFNetworking
                     }
                     else
                     {
-                        strongSelf.retryVideo(video)
+                        strongSelf.retry(video: video)
                     }
                 }
                 else if let freshVideo = operation.video
                 {
-                    if type(of: strongSelf).isVideoStatusFinal(freshVideo) == true // We're done!
+                    if type(of: strongSelf).isStatusFinal(for: freshVideo) == true // We're done!
                     {
                         strongSelf.videos.removeValue(forKey: uri)
                         strongSelf.delegate?.uploadingStateDidChange(for: freshVideo)
@@ -157,12 +157,12 @@ import AFNetworking
 
                     if existingStatus == newStatus
                     {
-                        strongSelf.retryVideo(freshVideo) // Nothing has changed, just retry
+                        strongSelf.retry(video: freshVideo) // Nothing has changed, just retry
                     }
                     else
                     {
                         strongSelf.delegate?.uploadingStateDidChange(for: freshVideo)
-                        strongSelf.retryVideo(freshVideo)
+                        strongSelf.retry(video: freshVideo)
                     }
                 }
                 else // Execution should never reach this point
@@ -175,16 +175,16 @@ import AFNetworking
         self.operationQueue.addOperation(operation)
     }
 
-    private func retryVideo(_ video: VIMVideo)
+    private func retry(video: VIMVideo)
     {
         let delayTime = DispatchTime.now() + Double(Int64(type(of: self).RetryDelayInSeconds * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
         
         DispatchQueue.main.asyncAfter(deadline: delayTime) { [weak self] () -> Void in
-            self?.doRefreshVideo(video)
+            self?.doRefresh(video: video)
         }
     }
     
-    private static func isVideoStatusFinal(_ video: VIMVideo) -> Bool
+    private static func isStatusFinal(for video: VIMVideo) -> Bool
     {
         let status = video.videoStatus
         

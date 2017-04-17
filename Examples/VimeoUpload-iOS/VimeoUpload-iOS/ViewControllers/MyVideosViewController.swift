@@ -105,7 +105,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
             let indexPath = IndexPath(row: 0, section: 0)
             self.tableView.insertRows(at: [indexPath], with: .top)
             
-            self.videoRefreshManager?.refreshVideo(video)
+            self.videoRefreshManager?.refresh(video: video)
         }
     }
     
@@ -241,7 +241,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
                         {
                             if video.videoStatus == .uploading || video.videoStatus == .transcoding
                             {
-                                strongSelf.videoRefreshManager?.refreshVideo(video)
+                                strongSelf.videoRefreshManager?.refresh(video: video)
                             }
                         }
                     }
