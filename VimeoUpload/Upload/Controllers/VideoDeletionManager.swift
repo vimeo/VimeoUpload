@@ -110,7 +110,7 @@ public class VideoDeletionManager: NSObject
     
     private func save()
     {
-        self.archiver.saveObject(self.deletions, key: type(of: self).DeletionsArchiveKey)
+        self.archiver.save(object: self.deletions, key: type(of: self).DeletionsArchiveKey)
     }
     
     // MARK: Public API
