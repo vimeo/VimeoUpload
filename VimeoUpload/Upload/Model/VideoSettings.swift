@@ -32,7 +32,7 @@ open class VideoSettings: NSObject
     {
         didSet
         {
-            self.title = self.trim(self.title)
+            self.title = self.trim(text: self.title)
         }
     }
     
@@ -40,7 +40,7 @@ open class VideoSettings: NSObject
     {
         didSet
         {
-            self.desc = self.trim(self.desc)
+            self.desc = self.trim(text: self.desc)
         }
     }
     
@@ -55,8 +55,8 @@ open class VideoSettings: NSObject
         self.privacy = privacy
         self.users = users
         self.password = password
-        self.title = self.trim(title)
-        self.desc = self.trim(description)
+        self.title = self.trim(text: title)
+        self.desc = self.trim(text: description)
     }
     
     // MARK: Public API
@@ -104,7 +104,7 @@ open class VideoSettings: NSObject
         self.password = aDecoder.decodeObject(forKey: "password") as? String
     }
     
-    func encodeWithCoder(_ aCoder: NSCoder)
+    func encode(with aCoder: NSCoder)
     {
         aCoder.encode(self.title, forKey: "title")
         aCoder.encode(self.desc, forKey: "desc")
@@ -115,7 +115,7 @@ open class VideoSettings: NSObject
     
     // MARK : String Methods
     
-    func trim(_ text: String?) -> String?
+    func trim(text: String?) -> String?
     {
         return text?.trimmingCharacters(in: CharacterSet.whitespaces)
     }
