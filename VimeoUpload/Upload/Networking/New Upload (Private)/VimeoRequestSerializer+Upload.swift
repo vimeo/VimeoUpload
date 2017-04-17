@@ -44,6 +44,6 @@ extension VimeoRequestSerializer
 
         let url = NSURL(string: "/me/videos", relativeTo: VimeoBaseURLString)!
         
-        return try self.createVideoRequestWithUrl(url, parameters: parameters)
+        return try self.createVideoRequest(with: url, parameters: parameters)
     }
 }

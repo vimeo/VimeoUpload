@@ -106,7 +106,7 @@ extension VimeoSessionManager
 
     public func createVideoDownloadTask(url: NSURL) throws -> URLSessionDownloadTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url)
 
         let task = self.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         
@@ -117,7 +117,7 @@ extension VimeoSessionManager
     
     func uploadVideoTask(source: NSURL, destination: String, completionHandler: ErrorBlock?) throws -> URLSessionUploadTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadVideoRequestWithSource(source, destination: destination)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadVideoRequest(with: source, destination: destination)
         
         let task = self.uploadTask(with: request as URLRequest, fromFile: source as URL, progress: nil, completionHandler: { [weak self] (response, responseObject, error) -> Void in
 
@@ -146,7 +146,7 @@ extension VimeoSessionManager
     // For use with background sessions, use session delegate methods for destination and completion
     func activateVideoDownloadTask(uri activationUri: String) throws -> URLSessionDownloadTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).activateVideoRequestWithUri(activationUri)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).activateVideoRequest(withURI: activationUri)
         
         let task = self.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         

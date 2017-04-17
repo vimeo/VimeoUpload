@@ -58,16 +58,16 @@ extension VimeoRequestSerializer
         return request
     }
 
-    func createVideoRequestWithUrl(_ url: NSURL) throws -> NSMutableURLRequest
+    func createVideoRequest(with url: NSURL) throws -> NSMutableURLRequest
     {
         let parameters = try self.createVideoRequestBaseParameters(url: url)
         
         let url = NSURL(string: "/me/videos", relativeTo: VimeoBaseURLString)!
 
-        return try self.createVideoRequestWithUrl(url, parameters: parameters)
+        return try self.createVideoRequest(with: url, parameters: parameters)
     }
 
-    func createVideoRequestWithUrl(_ url: NSURL, parameters: [String: Any]) throws -> NSMutableURLRequest
+    func createVideoRequest(with url: NSURL, parameters: [String: Any]) throws -> NSMutableURLRequest
     {
         var error: NSError?
         let request = self.request(withMethod: "POST", urlString: url.absoluteString!, parameters: parameters, error: &error)
@@ -97,7 +97,7 @@ extension VimeoRequestSerializer
         return ["type": "streaming", "size": fileSize]
     }
 
-    func uploadVideoRequestWithSource(_ source: NSURL, destination: String) throws -> NSMutableURLRequest
+    func uploadVideoRequest(with source: NSURL, destination: String) throws -> NSMutableURLRequest
     {
         guard let path = source.path, FileManager.default.fileExists(atPath: path) else
         {
@@ -132,7 +132,7 @@ extension VimeoRequestSerializer
         return request
     }
     
-    func activateVideoRequestWithUri(_ uri: String) throws -> NSMutableURLRequest
+    func activateVideoRequest(withURI uri: String) throws -> NSMutableURLRequest
     {
         let url = NSURL(string: uri, relativeTo: VimeoBaseURLString)!
         var error: NSError?
