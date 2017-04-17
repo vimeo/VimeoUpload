@@ -158,7 +158,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     {
         let videoUri = descriptor.uploadTicket.video!.uri!
 
-        self.retryUploadDescriptor(descriptor, completion: { [weak self] (error) in
+        self.retry(uploadDescriptor: descriptor, completion: { [weak self] (error) in
          
             guard let strongSelf = self else
             {
@@ -229,7 +229,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
                     
                     if let error = error
                     {
-                        strongSelf.presentRefreshErrorAlert(error)
+                        strongSelf.presentRefreshErrorAlert(with: error)
                     }
                     else
                     {
@@ -252,7 +252,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         catch let error as NSError
         {
-            self.presentRefreshErrorAlert(error)
+            self.presentRefreshErrorAlert(with: error)
         }
     }
     
@@ -285,7 +285,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: Alerts
     
-    private func presentRefreshErrorAlert(_ error: NSError)
+    private func presentRefreshErrorAlert(with error: NSError)
     {
         let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
@@ -296,7 +296,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         self.present(alert, animated: true, completion: nil)
     }
     
-    private func presentUploadRetryErrorAlert(_ error: NSError)
+    private func presentUploadRetryErrorAlert(with error: NSError)
     {
         let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
@@ -306,7 +306,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: Private API
     
-    private func retryUploadDescriptor(_ descriptor: UploadDescriptor, completion: ErrorBlock)
+    private func retry(uploadDescriptor descriptor: UploadDescriptor, completion: ErrorBlock)
     {
         // TODO: This should be cancellable
 
