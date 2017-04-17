@@ -45,7 +45,7 @@ class CameraRollViewController: BaseCameraRollViewController
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(CameraRollViewController.didTapCancel(_:)))
     }
     
-    override func didFinishWithResult(_ result: UploadUserAndCameraRollAsset)
+    override func didFinish(with result: UploadUserAndCameraRollAsset)
     {
         let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:Bundle.main)
         viewController.input = result

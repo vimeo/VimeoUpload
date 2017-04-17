@@ -355,7 +355,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         self.setupAndStartOperation()
         
         let result = UploadUserAndCameraRollAsset(user: me, cameraRollAsset: cameraRollAsset)
-        self.didFinishWithResult(result)        
+        self.didFinish(with: result)
     }
     
     // MARK: Overrides
@@ -365,7 +365,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         self.title = "Camera Roll"
     }
 
-    func didFinishWithResult(_ result: UploadUserAndCameraRollAsset)
+    func didFinish(with result: UploadUserAndCameraRollAsset)
     {
         assertionFailure("Subclasses must override")
     }
