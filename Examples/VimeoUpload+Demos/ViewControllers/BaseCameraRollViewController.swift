@@ -204,7 +204,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
                 {
                     if let indexPath = strongSelf.selectedIndexPath
                     {
-                        strongSelf.presentErrorAlert(indexPath, error: error)
+                        strongSelf.presentErrorAlert(at: indexPath, error: error)
                     }
                     // else: do nothing, the error will be communicated at the time of cell selection
                 }
@@ -262,19 +262,19 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-        self.didSelectIndexPath(indexPath)
+        self.didSelect(indexPath: indexPath)
     }
     
     // MARK: Private API
         
-    private func didSelectIndexPath(_ indexPath: IndexPath)
+    private func didSelect(indexPath: IndexPath)
     {
         let cameraRollAsset = self.assets[indexPath.item]
         
         // Check if an error occurred when attempting to retrieve the asset
         if let error = cameraRollAsset.error
         {
-            self.presentAssetErrorAlert(indexPath, error: error)
+            self.presentAssetErrorAlert(at: indexPath, error: error)
             
             return
         }
@@ -283,14 +283,14 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
         if let error = self.operation?.error
         {
-            self.presentErrorAlert(indexPath, error: error)
+            self.presentErrorAlert(at: indexPath, error: error)
         }
         else
         {
             if AFNetworkReachabilityManager.shared().isReachable == false
             {
                 let error = NSError(domain: NSURLErrorDomain, code: NSURLErrorNotConnectedToInternet, userInfo: [NSLocalizedDescriptionKey: "The internet connection appears to be offline."])
-                self.presentErrorAlert(indexPath, error: error)
+                self.presentErrorAlert(at: indexPath, error: error)
                 
                 return
             }
@@ -308,7 +308,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     // MARK: UI Presentation
 
-    private func presentAssetErrorAlert(_ indexPath: IndexPath, error: NSError)
+    private func presentAssetErrorAlert(at indexPath: IndexPath, error: NSError)
     {
         let alert = UIAlertController(title: "Asset Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
@@ -318,7 +318,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
         self.present(alert, animated: true, completion: nil)
     }
     
-    private func presentErrorAlert(_ indexPath: IndexPath, error: NSError)
+    private func presentErrorAlert(at indexPath: IndexPath, error: NSError)
     {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
@@ -341,7 +341,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
             }
 
             strongSelf.setupAndStartOperation()
-            strongSelf.didSelectIndexPath(indexPath)
+            strongSelf.didSelect(indexPath: indexPath)
         }))
         
         self.present(alert, animated: true, completion: nil)
