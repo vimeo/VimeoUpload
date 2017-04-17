@@ -12,7 +12,7 @@ import VimeoNetworking
 
 extension VimeoRequestSerializer
 {
-    func createThumbnailRequestWithUri(_ uri: String) throws -> NSMutableURLRequest
+    func createThumbnailRequest(with uri: String) throws -> NSMutableURLRequest
     {
         let url = NSURL(string: "\(uri)/pictures", relativeTo: VimeoBaseURLString)!
         
@@ -27,7 +27,7 @@ extension VimeoRequestSerializer
         return request
     }
     
-    func activateThumbnailRequestWithUri(_ uri: String) throws -> NSMutableURLRequest
+    func activateThumbnailRequest(with uri: String) throws -> NSMutableURLRequest
     {
         let url = NSURL(string: "\(uri)", relativeTo: VimeoBaseURLString)!
         
@@ -43,7 +43,7 @@ extension VimeoRequestSerializer
         return request
     }
     
-    func uploadThumbnailRequestWithSource(_ source: NSURL, destination: String) throws -> NSMutableURLRequest {
+    func uploadThumbnailRequest(with source: NSURL, destination: String) throws -> NSMutableURLRequest {
         
         guard let path = source.path, FileManager.default.fileExists(atPath: path) else {
             throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to construct upload request but the source file does not exist."])
