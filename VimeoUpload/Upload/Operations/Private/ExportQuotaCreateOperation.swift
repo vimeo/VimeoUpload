@@ -81,7 +81,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
             return
         }
         
-        let operation = self.makeExportQuotaOperation(self.me)!
+        let operation = self.makeExportQuotaOperation(with: self.me)!
         self.performExportQuotaOperation(operation)
     }
     
@@ -99,7 +99,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: Public API
     
-    func makeExportQuotaOperation(_ me: VIMUser) -> ExportQuotaOperation?
+    func makeExportQuotaOperation(with me: VIMUser) -> ExportQuotaOperation?
     {
         assertionFailure("Subclasses must override")
         
