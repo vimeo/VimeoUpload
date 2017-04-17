@@ -184,12 +184,12 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first
             {
-                let domain = self.errorDomainForRequest(self.currentRequest)
+                let domain = self.errorDomain(forRequest: self.currentRequest)
                 self.error = (taskError as NSError).error(byAddingDomain: domain)
             }
             else if let error = error
             {
-                let domain = self.errorDomainForRequest(self.currentRequest)
+                let domain = self.errorDomain(forRequest: self.currentRequest)
                 self.error = error.error(byAddingDomain: domain)
             }
         }
@@ -222,11 +222,11 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     private func transitionToState(request: OldUploadRequest, sessionManager: VimeoSessionManager) throws
     {
         self.currentRequest = request
-        let task = try self.taskForRequest(request, sessionManager: sessionManager)
+        let task = try self.task(forRequest: request, sessionManager: sessionManager)
         self.currentTaskIdentifier = task.taskIdentifier
     }
     
-    private func taskForRequest(_ request: OldUploadRequest, sessionManager: VimeoSessionManager) throws -> URLSessionTask
+    private func task(forRequest request: OldUploadRequest, sessionManager: VimeoSessionManager) throws -> URLSessionTask
     {
         switch request
         {
@@ -259,7 +259,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
 
-    private func errorDomainForRequest(_ request: OldUploadRequest) -> String
+    private func errorDomain(forRequest request: OldUploadRequest) -> String
     {
         switch request
         {
