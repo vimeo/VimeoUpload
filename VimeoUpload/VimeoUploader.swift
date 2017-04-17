@@ -71,7 +71,7 @@ open class VimeoUploader<T: VideoDescriptor>
     
     public func uploadVideo(descriptor: T)
     {
-        self.descriptorManager.addDescriptor(descriptor.progressDescriptor)
+        self.descriptorManager.add(descriptor: descriptor.progressDescriptor)
     }
 
     // MARK: Public API - Canceling
@@ -82,7 +82,7 @@ open class VimeoUploader<T: VideoDescriptor>
         
         if let descriptor = self.descriptorForVideo(videoUri: videoUri)
         {
-            self.descriptorManager.cancelDescriptor(descriptor.progressDescriptor)
+            self.descriptorManager.cancel(descriptor: descriptor.progressDescriptor)
         }
     }
 
@@ -93,7 +93,7 @@ open class VimeoUploader<T: VideoDescriptor>
             self.deletionManager.deleteVideo(withURI: videoUri)
         }
         
-        self.descriptorManager.cancelDescriptor(descriptor.progressDescriptor)
+        self.descriptorManager.cancel(descriptor: descriptor.progressDescriptor)
     }
 
     public func cancelUpload(identifier: String)
@@ -105,7 +105,7 @@ open class VimeoUploader<T: VideoDescriptor>
                 self.deletionManager.deleteVideo(withURI: videoUri)
             }
 
-            self.descriptorManager.cancelDescriptor(descriptor.progressDescriptor)
+            self.descriptorManager.cancel(descriptor: descriptor.progressDescriptor)
         }
     }
     

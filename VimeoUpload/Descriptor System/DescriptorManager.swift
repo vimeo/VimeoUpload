@@ -351,7 +351,7 @@ open class DescriptorManager: NSObject
         self.doResume()
     }
     
-    open func addDescriptor(_ descriptor: Descriptor)
+    open func add(descriptor descriptor: Descriptor)
     {
         self.synchronizationQueue.async(execute: { [weak self] () -> Void in
             
@@ -392,7 +392,7 @@ open class DescriptorManager: NSObject
         })
     }
     
-    open func cancelDescriptor(_ descriptor: Descriptor)
+    open func cancel(descriptor descriptor: Descriptor)
     {
         self.synchronizationQueue.async(execute: { [weak self] () -> Void in
 
