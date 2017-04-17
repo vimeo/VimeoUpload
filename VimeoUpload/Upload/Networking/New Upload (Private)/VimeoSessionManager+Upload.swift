@@ -31,7 +31,7 @@ extension VimeoSessionManager
 {
     func createVideoDataTask(url: NSURL, videoSettings: VideoSettings?, completionHandler: @escaping UploadTicketCompletionHandler) throws -> URLSessionDataTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url, videoSettings: videoSettings)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings)
         
         let task = self.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
@@ -61,7 +61,7 @@ extension VimeoSessionManager
     
     func createVideoDownloadTask(url: NSURL, videoSettings: VideoSettings?) throws -> URLSessionDownloadTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url, videoSettings: videoSettings)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings)
         
         let task = self.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         
