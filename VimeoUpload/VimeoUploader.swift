@@ -98,7 +98,7 @@ open class VimeoUploader<T: VideoDescriptor>
 
     public func cancelUpload(identifier: String)
     {
-        if let descriptor = self.descriptorForIdentifier(identifier)
+        if let descriptor = self.descriptor(for: identifier)
         {
             if let videoUri = descriptor.videoUri
             {
@@ -126,7 +126,7 @@ open class VimeoUploader<T: VideoDescriptor>
         return descriptor as? T
     }
     
-    public func descriptorForIdentifier(_ identifier: String) -> T?
+    public func descriptor(for identifier: String) -> T?
     {
         let descriptor = self.descriptorManager.descriptor(passing: { (descriptor) -> Bool in
             
