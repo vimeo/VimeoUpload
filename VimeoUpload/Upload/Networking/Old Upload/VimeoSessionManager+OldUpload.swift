@@ -158,7 +158,7 @@ extension VimeoSessionManager
     // For use with background sessions, use session delegate methods for destination and completion
     func videoSettingsDownloadTask(videoUri: String, videoSettings: VideoSettings) throws -> URLSessionDownloadTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequestWithUri(videoUri, videoSettings: videoSettings)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequest(with: videoUri, videoSettings: videoSettings)
         
         let task = self.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         
@@ -169,7 +169,7 @@ extension VimeoSessionManager
 
     public func videoSettingsDataTask(videoUri: String, videoSettings: VideoSettings, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequestWithUri(videoUri, videoSettings: videoSettings)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequest(with: videoUri, videoSettings: videoSettings)
         
         let task = self.dataTask(with: request as URLRequest, completionHandler: { (response, responseObject, error) -> Void in
             

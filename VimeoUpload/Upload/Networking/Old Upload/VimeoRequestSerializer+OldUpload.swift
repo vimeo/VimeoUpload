@@ -146,7 +146,7 @@ extension VimeoRequestSerializer
         return request
     }
 
-    func videoSettingsRequestWithUri(_ videoUri: String, videoSettings: VideoSettings) throws -> NSMutableURLRequest
+    func videoSettingsRequest(with videoUri: String, videoSettings: VideoSettings) throws -> NSMutableURLRequest
     {
         guard videoUri.characters.count > 0 else 
         {
