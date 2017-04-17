@@ -73,7 +73,7 @@ class VideoCell: UITableViewCell
         {
             if let state = descriptor?.state
             {
-                self.updateState(state)
+                self.update(state: state)
             }
             
             self.addObserversIfNecessary()
@@ -107,7 +107,7 @@ class VideoCell: UITableViewCell
     {
         super.awakeFromNib()
         
-        self.updateState(.Finished)
+        self.update(state: .Finished)
     }
 
     override func prepareForReuse()
@@ -120,7 +120,7 @@ class VideoCell: UITableViewCell
         self.statusLabel.text = ""
         self.errorLabel.text = ""
 
-        self.updateState(.Finished)
+        self.update(state: .Finished)
     }
     
     // MARK: Actions
@@ -130,7 +130,7 @@ class VideoCell: UITableViewCell
         if let videoUri = self.video?.uri
         {
             self.descriptor = nil
-            self.updateProgress(0)
+            self.update(progress: 0)
             
             self.delegate?.cellDidDeleteVideoWithUri(cell: self, videoUri: videoUri)
         }
@@ -154,19 +154,19 @@ class VideoCell: UITableViewCell
 
     // MARK: Descriptor Setup
 
-    private func updateProgress(_ progress: Double)
+    private func update(progress: Double)
     {
         let width = self.contentView.frame.size.width
         let constant = CGFloat(1 - progress) * width
         self.progressConstraint.constant = constant
     }
 
-    private func updateState(_ state: DescriptorState)
+    private func update(state: DescriptorState)
     {
         switch state
         {
         case .Ready:
-            self.updateProgress(0)
+            self.update(progress: 0)
             self.progressView.isHidden = false
             self.deleteButton.setTitle("Cancel", for: UIControlState())
             self.errorLabel.text = "Ready"
@@ -177,12 +177,12 @@ class VideoCell: UITableViewCell
             self.errorLabel.text = "Executing"
 
         case .Suspended:
-            self.updateProgress(0)
+            self.update(progress: 0)
             self.progressView.isHidden = true
             self.errorLabel.text = "Suspended"
 
         case .Finished:
-            self.updateProgress(0) // Reset the progress bar to 0
+            self.update(progress: 0) // Reset the progress bar to 0
             self.progressView.isHidden = true
             self.deleteButton.setTitle("Delete", for: UIControlState())
 
@@ -236,7 +236,7 @@ class VideoCell: UITableViewCell
                     // And therefore the initial state is calculated based on the laid out width of the cell
                     // Doing this in awakeFromNib is too early, the width is incorrect [AH] 11/25/2015
                     self?.progressView.isHidden = false
-                    self?.updateProgress(progress)
+                    self?.update(progress: progress)
                 })
 
             case(type(of: self).StateKeyPath, .some(&self.stateKVOContext)):
@@ -245,7 +245,7 @@ class VideoCell: UITableViewCell
                 let state = DescriptorState(rawValue: stateRaw)!
 
                 DispatchQueue.main.async(execute: { [weak self] () -> Void in
-                    self?.updateState(state)
+                    self?.update(state: state)
                 })
 
             default:
