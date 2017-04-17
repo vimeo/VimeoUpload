@@ -93,7 +93,7 @@ import Photos
             
             if let image = image
             {
-                cell.setImage(image)
+                cell.set(image: image)
             }
             else if let _ = cameraRollAsset.error
             {
