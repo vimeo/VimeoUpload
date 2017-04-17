@@ -32,7 +32,7 @@ extension VimeoSessionManager
             }
             
             do {
-                try (strongSelf.responseSerializer as! VimeoResponseSerializer).processUploadThumbnailResponse(response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(uploadThumbnailResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                 completionHandler(nil)
             } catch let error as NSError {
                 completionHandler(error)

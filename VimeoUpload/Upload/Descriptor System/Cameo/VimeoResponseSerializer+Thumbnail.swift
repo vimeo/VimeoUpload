@@ -11,7 +11,7 @@ import VimeoNetworking
 
 extension VimeoResponseSerializer
 {
-    func processCreateThumbnailResponse(_ response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMThumbnailUploadTicket
+    func process(createThumbnailResponse response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMThumbnailUploadTicket
     {
         let responseObject: [AnyHashable: Any]?
         do
@@ -23,10 +23,10 @@ extension VimeoResponseSerializer
             throw error.error(byAddingDomain: UploadErrorDomain.CreateThumbnail.rawValue)
         }
         
-        return try self.processCreateThumbnailResponse(response, responseObject: responseObject as AnyObject?, error: error)
+        return try self.process(createThumbnailResponse: response, responseObject: responseObject as AnyObject?, error: error)
     }
     
-    func processCreateThumbnailResponse(_ response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMThumbnailUploadTicket
+    func process(createThumbnailResponse response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMThumbnailUploadTicket
     {
         do
         {
@@ -39,7 +39,7 @@ extension VimeoResponseSerializer
         
         do
         {
-            return try self.thumbnailTicketFromResponseObject(responseObject)
+            return try self.thumbnailTicket(from: responseObject)
         }
         catch let error as NSError
         {
@@ -47,7 +47,7 @@ extension VimeoResponseSerializer
         }
     }
     
-    func processUploadThumbnailResponse(_ response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws
+    func process(uploadThumbnailResponse response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws
     {
         do
         {
@@ -59,7 +59,7 @@ extension VimeoResponseSerializer
         }
     }
     
-    func processActivateThumbnailResponse(_ response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMPicture
+    func process(activateThumbnailResponse response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMPicture
     {
         let responseObject: [AnyHashable: Any]?
         do
@@ -71,10 +71,10 @@ extension VimeoResponseSerializer
             throw error.error(byAddingDomain: UploadErrorDomain.ActivateThumbnail.rawValue)
         }
         
-        return try self.processActivateThumbnailResponse(response, responseObject: responseObject as AnyObject?, error: error)
+        return try self.process(activateThumbnailResponse: response, responseObject: responseObject as AnyObject?, error: error)
     }
     
-    func processActivateThumbnailResponse(_ response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMPicture
+    func process(activateThumbnailResponse response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMPicture
     {
         do
         {
@@ -87,7 +87,7 @@ extension VimeoResponseSerializer
         
         do
         {
-            return try self.vimPictureFromResponseObject(responseObject)
+            return try self.vimPicture(from: responseObject)
         }
         catch let error as NSError
         {
@@ -97,7 +97,7 @@ extension VimeoResponseSerializer
     
     //MARK: Private methods
     
-    private func thumbnailTicketFromResponseObject(_ responseObject: AnyObject?) throws -> VIMThumbnailUploadTicket
+    private func thumbnailTicket(from responseObject: AnyObject?) throws -> VIMThumbnailUploadTicket
     {
         if let dictionary = responseObject as? [String: AnyObject]
         {
@@ -113,7 +113,7 @@ extension VimeoResponseSerializer
         throw NSError.error(withDomain: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse thumbnailTicket object from responseObject failed")
     }
     
-    private func vimPictureFromResponseObject(_ responseObject: AnyObject?) throws -> VIMPicture
+    private func vimPicture(from responseObject: AnyObject?) throws -> VIMPicture
     {
         if let dictionary = responseObject as? [String: AnyObject]
         {
