@@ -34,7 +34,7 @@ import Foundation
 
 public extension URL
 {
-    static func uploadURLWithFilename(_ filename: String, fileType: String) throws -> URL
+    static func uploadURL(withFileName filename: String, fileType: String) throws -> URL
     {
         let url = URL.uploadDirectory()
         

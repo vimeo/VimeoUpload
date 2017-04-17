@@ -76,7 +76,7 @@ public class ExportOperation: ConcurrentOperation
         do
         {
             let filename = ProcessInfo.processInfo.globallyUniqueString
-            exportSession.outputURL = try URL.uploadURLWithFilename(filename, fileType: type(of: self).FileType)
+            exportSession.outputURL = try URL.uploadURL(withFileName: filename, fileType: type(of: self).FileType)
         }
         catch let error as NSError
         {
