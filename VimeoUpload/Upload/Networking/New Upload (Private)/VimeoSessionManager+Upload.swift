@@ -44,7 +44,7 @@ extension VimeoSessionManager
                 
                 do
                 {
-                    let uploadTicket = try (strongSelf.responseSerializer as! VimeoResponseSerializer).processCreateVideoResponse(response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                    let uploadTicket = try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(createVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                     completionHandler(uploadTicket, nil)
                 }
                 catch let error as NSError

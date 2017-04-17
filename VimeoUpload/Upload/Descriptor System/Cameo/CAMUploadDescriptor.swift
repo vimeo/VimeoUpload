@@ -138,7 +138,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
             switch self.currentRequest
             {
             case .CreateVideo:
-                self.uploadTicket = try responseSerializer.processCreateVideoResponse(task.response, url: url as NSURL?, error: error)
+                self.uploadTicket = try responseSerializer.process(createVideoResponse: task.response, url: url as NSURL?, error: error)
                 
             case .UploadVideo:
                 break

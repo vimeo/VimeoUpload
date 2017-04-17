@@ -59,7 +59,7 @@ extension VimeoSessionManager
                 
                 do
                 {
-                    let user = try (strongSelf.responseSerializer as! VimeoResponseSerializer).processMeResponse(response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                    let user = try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(meResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                     completionHandler(user, nil)
                 }
                 catch let error as NSError
@@ -89,7 +89,7 @@ extension VimeoSessionManager
                 
                 do
                 {
-                    let videos = try (strongSelf.responseSerializer as! VimeoResponseSerializer).processMyVideosResponse(response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                    let videos = try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(myVideosResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                     completionHandler(videos, nil)
                 }
                 catch let error as NSError
@@ -128,7 +128,7 @@ extension VimeoSessionManager
             
             do
             {
-                try (strongSelf.responseSerializer as! VimeoResponseSerializer).processUploadVideoResponse(response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(uploadVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                 completionHandler(nil)
             }
             catch let error as NSError
@@ -182,7 +182,7 @@ extension VimeoSessionManager
                 
                 do
                 {
-                    let video = try (strongSelf.responseSerializer as! VimeoResponseSerializer).processVideoSettingsResponse(response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                    let video = try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(videoSettingsResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                     completionHandler(video, nil)
                 }
                 catch let error as NSError
@@ -210,7 +210,7 @@ extension VimeoSessionManager
             
             do
             {
-                try (strongSelf.responseSerializer as! VimeoResponseSerializer).processDeleteVideoResponse(response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(deleteVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                 completionHandler(nil)
             }
             catch let error as NSError
@@ -237,7 +237,7 @@ extension VimeoSessionManager
             
             do
             {
-                let video = try (strongSelf.responseSerializer as! VimeoResponseSerializer).processVideoResponse(response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                let video = try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(videoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                 completionHandler(video, nil)
             }
             catch let error as NSError
