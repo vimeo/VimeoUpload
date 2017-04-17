@@ -93,7 +93,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
         
         if let url = self.url
         {
-            FileManager.default.deleteFileAtURL(url)
+            FileManager.default.deleteFile(at: url)
         }
     }
     

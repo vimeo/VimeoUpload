@@ -100,10 +100,10 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         super.cancel(sessionManager: sessionManager)
         
-        FileManager.default.deleteFileAtURL(self.videoUrl)
+        FileManager.default.deleteFile(at: self.videoUrl)
         
         if let thumbnailUrl = self.thumbnailUrl {
-            FileManager.default.deleteFileAtURL(thumbnailUrl)
+            FileManager.default.deleteFile(at: thumbnailUrl)
         }
     }
     
@@ -111,10 +111,10 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         guard let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTask(for: identifier), let progress = sessionManager.uploadProgress(for: task) else
         {
-            FileManager.default.deleteFileAtURL(self.videoUrl)
+            FileManager.default.deleteFile(at: self.videoUrl)
             
             if let thumbnailUrl = self.thumbnailUrl {
-                FileManager.default.deleteFileAtURL(thumbnailUrl)
+                FileManager.default.deleteFile(at: thumbnailUrl)
             }
             
             let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
@@ -173,12 +173,12 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         // 1. Perform any necessary file clean up based on the state that just completed
         if self.currentRequest == .UploadVideo
         {
-            FileManager.default.deleteFileAtURL(self.videoUrl)
+            FileManager.default.deleteFile(at: self.videoUrl)
         }
         else if self.currentRequest == .UploadThumbnail
         {
             if let thumbnailUrl = self.thumbnailUrl {
-                FileManager.default.deleteFileAtURL(thumbnailUrl)
+                FileManager.default.deleteFile(at: thumbnailUrl)
             }
         }
         

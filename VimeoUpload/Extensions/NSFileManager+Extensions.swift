@@ -36,7 +36,7 @@ public extension FileManager
         return dictionary[FileAttributeKey.systemFreeSize] as? NSNumber
     }
     
-    public func deleteFileAtURL(_ url: URL)
+    public func deleteFile(at url: URL)
     {
         if self.fileExists(atPath: url.path)
         {

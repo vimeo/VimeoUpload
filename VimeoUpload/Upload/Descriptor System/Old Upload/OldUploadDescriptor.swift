@@ -114,7 +114,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         super.cancel(sessionManager: sessionManager)
         
-        FileManager.default.deleteFileAtURL(self.url)
+        FileManager.default.deleteFile(at: self.url)
     }
     
     // If necessary, resume the current task and re-connect progress objects
@@ -128,7 +128,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
             // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload
             // Upon reopening the app, the descriptor is loaded but no longer has a task
             
-            FileManager.default.deleteFileAtURL(self.url)
+            FileManager.default.deleteFile(at: self.url)
             
             let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
             self.error = error // TODO: Whenever we set error delete local file? Same for download?
@@ -177,7 +177,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         if self.currentRequest == .Upload
         {
-            FileManager.default.deleteFileAtURL(self.url)
+            FileManager.default.deleteFile(at: self.url)
         }
 
         if self.error == nil
