@@ -104,7 +104,7 @@ public class VideoDeletionManager: NSObject
     {
         for (key, value) in self.deletions
         {
-            self.deleteVideoWithUri(key, retryCount: value)
+            self.deleteVideo(withURI: key, retryCount: value)
         }
     }
     
@@ -115,14 +115,14 @@ public class VideoDeletionManager: NSObject
     
     // MARK: Public API
     
-    public func deleteVideoWithUri(_ uri: String)
+    public func deleteVideo(withURI uri: String)
     {
-        self.deleteVideoWithUri(uri, retryCount: self.retryCount)
+        self.deleteVideo(withURI: uri, retryCount: self.retryCount)
     }
     
     // MARK: Private API
 
-    private func deleteVideoWithUri(_ uri: String, retryCount: Int)
+    private func deleteVideo(withURI uri: String, retryCount: Int)
     {
         self.deletions[uri] = retryCount
         self.save()
@@ -155,7 +155,7 @@ public class VideoDeletionManager: NSObject
                     if let retryCount = strongSelf.deletions[uri], retryCount > 0
                     {
                         let newRetryCount = retryCount - 1
-                        strongSelf.deleteVideoWithUri(uri, retryCount: newRetryCount) // Decrement the retryCount and try again
+                        strongSelf.deleteVideo(withURI: uri, retryCount: newRetryCount) // Decrement the retryCount and try again
                     }
                     else
                     {
