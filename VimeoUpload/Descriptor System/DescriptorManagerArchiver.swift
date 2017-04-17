@@ -105,13 +105,13 @@ class DescriptorManagerArchiver
         self.saveDescriptors()
     }
     
-    func insert(_ descriptor: Descriptor)
+    func insert(descriptor: Descriptor)
     {
         self.descriptors.insert(descriptor)
         self.saveDescriptors()
     }
     
-    func remove(_ descriptor: Descriptor)
+    func remove(descriptor: Descriptor)
     {
         self.descriptors.remove(descriptor)
         self.saveDescriptors()

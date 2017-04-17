@@ -103,7 +103,7 @@ open class DescriptorManager: NSObject
         
         for descriptor in failedDescriptors
         {
-            self.archiver.remove(descriptor)
+            self.archiver.remove(descriptor: descriptor)
             
             self.delegate?.descriptorDidFail?(descriptor)
             NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
@@ -218,7 +218,7 @@ open class DescriptorManager: NSObject
                     }
                     catch
                     {
-                        strongSelf.archiver.remove(descriptor)
+                        strongSelf.archiver.remove(descriptor: descriptor)
                         
                         strongSelf.delegate?.descriptorDidFail?(descriptor)
                         NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
@@ -241,7 +241,7 @@ open class DescriptorManager: NSObject
                     }
                     catch
                     {
-                        strongSelf.archiver.remove(descriptor)
+                        strongSelf.archiver.remove(descriptor: descriptor)
                         
                         strongSelf.delegate?.descriptorDidFail?(descriptor)
                         NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
@@ -265,7 +265,7 @@ open class DescriptorManager: NSObject
                         
                         if error.isNetworkTaskCancellationError() == false
                         {
-                            strongSelf.archiver.remove(descriptor)
+                            strongSelf.archiver.remove(descriptor: descriptor)
                         }
                         
                         strongSelf.delegate?.descriptorDidFail?(descriptor)
@@ -273,7 +273,7 @@ open class DescriptorManager: NSObject
                     }
                     else
                     {
-                        strongSelf.archiver.remove(descriptor)
+                        strongSelf.archiver.remove(descriptor: descriptor)
 
                         strongSelf.delegate?.descriptorDidSucceed?(descriptor)
                         NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidSucceed.rawValue), object: descriptor)
@@ -351,7 +351,7 @@ open class DescriptorManager: NSObject
         self.doResume()
     }
     
-    open func add(descriptor descriptor: Descriptor)
+    open func add(descriptor: Descriptor)
     {
         self.synchronizationQueue.async(execute: { [weak self] () -> Void in
             
@@ -360,7 +360,7 @@ open class DescriptorManager: NSObject
                 return
             }
 
-            strongSelf.archiver.insert(descriptor)
+            strongSelf.archiver.insert(descriptor: descriptor)
             strongSelf.delegate?.descriptorAdded?(descriptor)
             NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorAdded.rawValue), object: descriptor)
 
@@ -372,7 +372,7 @@ open class DescriptorManager: NSObject
             }
             catch
             {
-                strongSelf.archiver.remove(descriptor)
+                strongSelf.archiver.remove(descriptor: descriptor)
                 strongSelf.delegate?.descriptorDidFail?(descriptor)
                 NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
                 
@@ -392,7 +392,7 @@ open class DescriptorManager: NSObject
         })
     }
     
-    open func cancel(descriptor descriptor: Descriptor)
+    open func cancel(descriptor: Descriptor)
     {
         self.synchronizationQueue.async(execute: { [weak self] () -> Void in
 
@@ -401,7 +401,7 @@ open class DescriptorManager: NSObject
                 return
             }
 
-            strongSelf.archiver.remove(descriptor)
+            strongSelf.archiver.remove(descriptor: descriptor)
 
             descriptor.cancel(sessionManager: strongSelf.sessionManager)
             
