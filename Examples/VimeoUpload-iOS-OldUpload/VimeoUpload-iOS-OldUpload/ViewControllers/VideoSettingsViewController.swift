@@ -126,7 +126,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     if let error = operation.error
                     {
                         strongSelf.activityIndicatorView.stopAnimating()
-                        strongSelf.presentOperationErrorAlert(error)
+                        strongSelf.presentOperationErrorAlert(with: error)
                     }
                     else
                     {
@@ -177,7 +177,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
         else if let error = operation?.error
         {
-            self.presentOperationErrorAlert(error)
+            self.presentOperationErrorAlert(with: error)
         }
         else
         {
@@ -198,7 +198,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: UI Presentation
     
-    private func presentOperationErrorAlert(_ error: NSError)
+    private func presentOperationErrorAlert(with error: NSError)
     {
         let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
@@ -212,7 +212,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.present(alert, animated: true, completion: nil)
     }
 
-    private func presentDescriptorErrorAlert(_ error: NSError)
+    private func presentDescriptorErrorAlert(with error: NSError)
     {
         let alert = UIAlertController(title: "Descriptor Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
