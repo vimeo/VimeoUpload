@@ -88,7 +88,7 @@ import Foundation
         self.save()
     }
     
-    public func removeFailedDescriptorForKey(_ key: String) -> Descriptor?
+    public func removeFailedDescriptor(for key: String) -> Descriptor?
     {
         guard let descriptor = self.failedDescriptors.removeValue(forKey: key) else
         {
@@ -100,7 +100,7 @@ import Foundation
         return descriptor
     }
     
-    public func failedDescriptorForKey(_ key: String) -> Descriptor?
+    public func failedDescriptor(for key: String) -> Descriptor?
     {
         return self.failedDescriptors[key]
     }
@@ -138,7 +138,7 @@ import Foundation
             let key = descriptor.identifier
         {
             DispatchQueue.main.async { () -> Void in
-                _ = self.removeFailedDescriptorForKey(key)
+                _ = self.removeFailedDescriptor(for: key)
             }
         }
     }
