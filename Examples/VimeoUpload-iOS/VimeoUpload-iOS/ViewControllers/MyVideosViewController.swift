@@ -147,7 +147,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     {
         NewVimeoUploader.sharedInstance.cancelUpload(videoUri: videoUri)
 
-        if let indexPath = self.indexPathForVideoUri(videoUri)
+        if let indexPath = self.indexPath(for: videoUri)
         {
             self.items.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
@@ -171,14 +171,14 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
             }
             
             // Reload the cell so that it reflects the state of the newly retried upload
-            if let indexPath = strongSelf.indexPathForVideoUri(videoUri)
+            if let indexPath = strongSelf.indexPath(for: videoUri)
             {
                 strongSelf.tableView.reloadRows(at: [indexPath], with: .none)
             }
         })
     }
     
-    private func indexPathForVideoUri(_ videoUri: String) -> IndexPath?
+    private func indexPath(for videoUri: String) -> IndexPath?
     {
         for (index, video) in self.items.enumerated()
         {
@@ -195,7 +195,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func uploadingStateDidChange(for video: VIMVideo)
     {
-        if let uri = video.uri, let indexPath = self.indexPathForVideoUri(uri)
+        if let uri = video.uri, let indexPath = self.indexPath(for: uri)
         {
             self.items.remove(at: indexPath.row)
             self.items.insert(video, at: indexPath.row)
