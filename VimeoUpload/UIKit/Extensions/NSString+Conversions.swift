@@ -69,7 +69,7 @@ public extension NSString
         return string as NSString
     }
     
-    static func stringFromDurationInSeconds(_ duration: Float64) -> NSString
+    static func stringFromDuration(inSeconds duration: Float64) -> NSString
     {
         let duration = max(duration, 0)
         
