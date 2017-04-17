@@ -82,7 +82,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
         }
         
         let operation = self.makeExportQuotaOperation(with: self.me)!
-        self.performExportQuotaOperation(operation)
+        self.perform(exportQuotaOperation: operation)
     }
     
     override open func cancel()
@@ -108,7 +108,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: Private API
 
-    private func performExportQuotaOperation(_ operation: ExportQuotaOperation)
+    private func perform(exportQuotaOperation operation: ExportQuotaOperation)
     {
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
             self?.downloadProgressBlock?(progress)
