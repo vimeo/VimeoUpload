@@ -30,7 +30,7 @@ import AFNetworking
 
 @objc public protocol VideoRefreshManagerDelegate
 {
-    func uploadingStateDidChangeForVideo(_ video: VIMVideo)
+    func uploadingStateDidChange(for video: VIMVideo)
 }
 
 @objc public class VideoRefreshManager: NSObject
@@ -147,7 +147,7 @@ import AFNetworking
                     if type(of: strongSelf).isVideoStatusFinal(freshVideo) == true // We're done!
                     {
                         strongSelf.videos.removeValue(forKey: uri)
-                        strongSelf.delegate?.uploadingStateDidChangeForVideo(freshVideo)
+                        strongSelf.delegate?.uploadingStateDidChange(for: freshVideo)
                         
                         return
                     }
@@ -161,7 +161,7 @@ import AFNetworking
                     }
                     else
                     {
-                        strongSelf.delegate?.uploadingStateDidChangeForVideo(freshVideo)
+                        strongSelf.delegate?.uploadingStateDidChange(for: freshVideo)
                         strongSelf.retryVideo(freshVideo)
                     }
                 }
