@@ -171,7 +171,7 @@ extension VimeoRequestSerializer
         return request
     }
     
-    func deleteVideoRequestWithUri(_ videoUri: String) throws -> NSMutableURLRequest
+    func deleteVideoRequest(with videoUri: String) throws -> NSMutableURLRequest
     {
         guard videoUri.characters.count > 0 else
         {
@@ -190,7 +190,7 @@ extension VimeoRequestSerializer
         return request
     }
 
-    func videoRequestWithUri(_ videoUri: String) throws -> NSMutableURLRequest
+    func videoRequest(with videoUri: String) throws -> NSMutableURLRequest
     {
         guard videoUri.characters.count > 0 else
         {

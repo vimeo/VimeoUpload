@@ -199,7 +199,7 @@ extension VimeoSessionManager
     
     func deleteVideoDataTask(videoUri: String, completionHandler: @escaping ErrorBlock) throws -> URLSessionDataTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).deleteVideoRequestWithUri(videoUri)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).deleteVideoRequest(with: videoUri)
         
         let task = self.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
@@ -226,7 +226,7 @@ extension VimeoSessionManager
 
     func videoDataTask(videoUri: String, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).videoRequestWithUri(videoUri)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).videoRequest(with: videoUri)
         
         let task = self.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
