@@ -193,7 +193,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: VideoRefreshManagerDelegate
     
-    func uploadingStateDidChangeForVideo(_ video: VIMVideo)
+    func uploadingStateDidChange(for video: VIMVideo)
     {
         if let uri = video.uri, let indexPath = self.indexPathForVideoUri(uri)
         {

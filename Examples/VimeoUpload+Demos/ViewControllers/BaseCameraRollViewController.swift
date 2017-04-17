@@ -246,7 +246,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     {
         let cameraRollAsset = self.assets[indexPath.item] 
         
-        self.cameraRollAssetHelper?.cancelRequests(cameraRollAsset)
+        self.cameraRollAssetHelper?.cancelRequests(with: cameraRollAsset)
     }
     
     // MARK: UICollectionViewFlowLayoutDelegate

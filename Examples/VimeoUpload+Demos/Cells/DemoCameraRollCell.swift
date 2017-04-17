@@ -78,7 +78,7 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
     
     // MARK: CameraRollAssetCell Protocol
     
-    func setImage(_ image: UIImage)
+    func set(image: UIImage)
     {
         self.imageView.image = image
     }
@@ -89,7 +89,7 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
 
         if seconds > 0
         {
-            string = String.stringFromDurationInSeconds(seconds) as String as String as NSString
+            string = String.stringFromDuration(inSeconds: seconds) as String as String as NSString
         }
 
         self.durationlabel?.text = string as String
