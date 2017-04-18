@@ -84,7 +84,7 @@ extension VimeoRequestSerializer
     {
         let asset = AVURLAsset(url: url as URL)
         
-        let fileSize: NSNumber
+        let fileSize: Double
         do
         {
             fileSize = try asset.fileSize()
@@ -113,7 +113,7 @@ extension VimeoRequestSerializer
         
         let asset = AVURLAsset(url: source as URL)
         
-        let fileSize: NSNumber
+        let fileSize: Double
         do
         {
             fileSize = try asset.fileSize()

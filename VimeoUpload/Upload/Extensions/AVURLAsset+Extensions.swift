@@ -29,17 +29,16 @@ import AVFoundation
 
 public extension AVURLAsset
 {
-    func fileSize() throws -> NSNumber
+    func fileSize() throws -> Double
     {
-        var value: AnyObject?
+        let key: Set = [URLResourceKey.fileSizeKey]
+        let value = try self.url.resourceValues(forKeys: key)
     
-        try (self.url as NSURL).getResourceValue(&value, forKey: URLResourceKey.fileSizeKey)
-    
-        guard let number = value as? NSNumber else
+        guard let fileSize = value.fileSize else
         {
             throw NSError(domain: "AVURLAsset+Extensions", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to calculate filesize of AVURLAsset"])
         }
         
-        return number
+        return Double(fileSize)
     }
 }

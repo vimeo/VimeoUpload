@@ -168,7 +168,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
                 
                 if let error = operation.error
                 {
-                    if let fileSize = try? AVURLAsset(url: url).fileSize().doubleValue, let availableSpace = strongSelf.me.uploadQuota?.sizeQuota?.free?.doubleValue
+                    if let fileSize = try? AVURLAsset(url: url).fileSize(), let availableSpace = strongSelf.me.uploadQuota?.sizeQuota?.free?.doubleValue
                     {
                         let userInfo = [UploadErrorKey.FileSize.rawValue: fileSize, UploadErrorKey.AvailableSpace.rawValue: availableSpace]
                         strongSelf.error = error.error(byAddingUserInfo: userInfo)
