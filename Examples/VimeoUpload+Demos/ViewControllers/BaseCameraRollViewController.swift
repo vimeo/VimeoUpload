@@ -100,18 +100,18 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     private func addObservers()
     {
-        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
     }
     
     private func removeObservers()
     {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
     }
     
     // Ensure that we refresh the me object on return from background
     // In the event that a user modified their upload quota while the app was backgrounded [AH] 12/06/2015
     
-    func applicationWillEnterForeground(_ notification: NSNotification)
+    func applicationWillEnterForeground(_ notification: Notification)
     {
         if self.meOperation != nil
         {
