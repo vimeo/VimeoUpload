@@ -231,7 +231,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         switch request
         {
         case .Create:
-            return try sessionManager.createVideoDownloadTask(url: self.url as NSURL)
+            return try sessionManager.createVideoDownloadTask(url: self.url)
             
         case .Upload:
             guard let uploadUri = self.uploadTicket?.uploadLinkSecure else
@@ -239,7 +239,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
 
-            return try sessionManager.uploadVideoTask(source: self.url as NSURL, destination: uploadUri, completionHandler: nil)
+            return try sessionManager.uploadVideoTask(source: self.url, destination: uploadUri, completionHandler: nil)
             
         case .Activate:
             guard let activationUri = self.uploadTicket?.completeUri else

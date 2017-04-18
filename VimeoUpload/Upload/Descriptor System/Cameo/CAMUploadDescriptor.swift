@@ -248,14 +248,14 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         switch request
         {
         case .CreateVideo:
-            return try sessionManager.createVideoDownloadTask(url: self.videoUrl as NSURL, videoSettings: self.videoSettings)
+            return try sessionManager.createVideoDownloadTask(url: self.videoUrl, videoSettings: self.videoSettings)
         case .UploadVideo:
             guard let uploadUri = self.uploadTicket?.uploadLinkSecure else
             {
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
             
-            return try sessionManager.uploadVideoTask(source: self.videoUrl as NSURL, destination: uploadUri, completionHandler: nil)
+            return try sessionManager.uploadVideoTask(source: self.videoUrl, destination: uploadUri, completionHandler: nil)
             
         case .CreateThumbnail:
             guard let videoUri = self.uploadTicket?.video?.uri else

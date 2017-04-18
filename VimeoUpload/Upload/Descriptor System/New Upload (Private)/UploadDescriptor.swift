@@ -87,7 +87,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             }
             
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try sessionManager.uploadVideoTask(source: self.url as NSURL, destination: uploadLinkSecure, completionHandler: nil)
+            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, completionHandler: nil)
             
             self.currentTaskIdentifier = task.taskIdentifier
         }
