@@ -144,13 +144,13 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
                 break
                 
             case .CreateThumbnail:
-                self.pictureTicket = try responseSerializer.process(createThumbnailResponse: task.response, url: url as NSURL?, error: error)
+                self.pictureTicket = try responseSerializer.process(createThumbnailResponse: task.response, url: url, error: error)
                 
             case .UploadThumbnail:
                 break
                 
             case .ActivateThumbnail:
-                self.picture = try responseSerializer.process(activateThumbnailResponse: task.response, url: url as NSURL?, error: error)
+                self.picture = try responseSerializer.process(activateThumbnailResponse: task.response, url: url, error: error)
             }
         }
         catch let error as NSError
