@@ -271,7 +271,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
                 throw NSError(domain: UploadErrorDomain.UploadThumbnail.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate thumbnail upload, but thumbnailUploadLink is nil"])
             }
             
-            return try sessionManager.uploadThumbnailTask(source: thumbnailUrl as NSURL, destination: thumbnailUploadLink, completionHandler: nil)
+            return try sessionManager.uploadThumbnailTask(source: thumbnailUrl as URL, destination: thumbnailUploadLink, completionHandler: nil)
             
         case .ActivateThumbnail:
             guard let thumbnailUri = self.pictureTicket?.uri else

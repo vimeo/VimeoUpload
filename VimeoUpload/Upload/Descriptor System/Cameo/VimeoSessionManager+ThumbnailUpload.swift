@@ -21,7 +21,7 @@ extension VimeoSessionManager
         return task
     }
     
-    func uploadThumbnailTask(source: NSURL, destination: String, completionHandler: ErrorBlock?) throws -> URLSessionUploadTask
+    func uploadThumbnailTask(source: URL, destination: String, completionHandler: ErrorBlock?) throws -> URLSessionUploadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadThumbnailRequest(with: source, destination: destination)
         
