@@ -158,7 +158,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     {
                         if let video = strongSelf.uploadTicket?.video, let viewPrivacy = video.privacy?.view, viewPrivacy != type(of: strongSelf).PreUploadViewPrivacy
                         {
-                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: video)
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: video)
                             
                             strongSelf.activityIndicatorView.stopAnimating()
                             strongSelf.dismiss(animated: true, completion: nil)
@@ -224,7 +224,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         {
             if let video = self.uploadTicket?.video, let viewPrivacy = video.privacy?.view, viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
             {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: type(of: self).UploadInitiatedNotification), object: video)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: type(of: self).UploadInitiatedNotification), object: video)
                 
                 self.dismiss(animated: true, completion: nil)
             }
@@ -308,7 +308,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     }
                     else
                     {
-                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: video)
+                        NotificationCenter.default.post(name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: video)
                         
                         strongSelf.dismiss(animated: true, completion: nil)
                     }
