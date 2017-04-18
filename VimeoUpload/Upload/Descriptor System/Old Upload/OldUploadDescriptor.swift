@@ -151,16 +151,16 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
             switch self.currentRequest
             {
             case .Create:
-                self.uploadTicket = try responseSerializer.process(createVideoResponse: task.response, url: url as NSURL?, error: error)
+                self.uploadTicket = try responseSerializer.process(createVideoResponse: task.response, url: url, error: error)
                 
             case .Upload:
                 break
                 
             case .Activate:
-                self.videoUri = try responseSerializer.process(activateVideoResponse: task.response, url: url as NSURL?, error: error)
+                self.videoUri = try responseSerializer.process(activateVideoResponse: task.response, url: url, error: error)
                 
             case .Settings:
-                self.video = try responseSerializer.process(videoSettingsResponse: task.response, url: url as NSURL?, error: error)
+                self.video = try responseSerializer.process(videoSettingsResponse: task.response, url: url, error: error)
             }
         }
         catch let error as NSError

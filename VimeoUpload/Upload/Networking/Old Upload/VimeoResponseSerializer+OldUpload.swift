@@ -73,7 +73,7 @@ extension VimeoResponseSerializer
         }
     }
 
-    func process(createVideoResponse response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMUploadTicket
+    func process(createVideoResponse response: URLResponse?, url: URL?, error: NSError?) throws -> VIMUploadTicket
     {
         let responseObject: [AnyHashable: Any]?
         do
@@ -121,7 +121,7 @@ extension VimeoResponseSerializer
         }
     }
     
-    func process(activateVideoResponse response: URLResponse?, url: NSURL?, error: NSError?) throws -> String
+    func process(activateVideoResponse response: URLResponse?, url: URL?, error: NSError?) throws -> String
     {
         do
         {
@@ -140,7 +140,7 @@ extension VimeoResponseSerializer
         return location
     }
 
-    func process(videoSettingsResponse response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMVideo
+    func process(videoSettingsResponse response: URLResponse?, url: URL?, error: NSError?) throws -> VIMVideo
     {
         let responseObject: [AnyHashable: Any]?
         do
