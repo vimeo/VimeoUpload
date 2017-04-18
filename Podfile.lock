@@ -16,27 +16,24 @@ PODS:
     - AFNetworking/NSURLSession
   - VimeoNetworking (0.0.1):
     - AFNetworking (= 3.1.0)
-    - VimeoNetworking/Model (= 0.0.1)
-  - VimeoNetworking/Model (0.0.1):
-    - AFNetworking (= 3.1.0)
 
 DEPENDENCIES:
-  - VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, commit `be393b925c3fb523c54b0c59a659e5b3c959858d`)
+  - VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, branch `swift-3-part-1`)
 
 EXTERNAL SOURCES:
   VimeoNetworking:
-    :commit: be393b925c3fb523c54b0c59a659e5b3c959858d
+    :branch: swift-3-part-1
     :git: git@github.com:vimeo/VimeoNetworking.git
 
 CHECKOUT OPTIONS:
   VimeoNetworking:
-    :commit: be393b925c3fb523c54b0c59a659e5b3c959858d
+    :commit: 3eb7729d98ae5209bdc5e24874d81063ab14e4dd
     :git: git@github.com:vimeo/VimeoNetworking.git
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  VimeoNetworking: dac22e43aff60cfbc8cb93af745196bf9856604d
+  VimeoNetworking: 17f8d451e4a168044f619315d0cd821669676e67
 
-PODFILE CHECKSUM: 4127e82e6dc5b44b5b810f73d34d5b3f48fc7a30
+PODFILE CHECKSUM: 468bf11d2874ffa091fb8630dc0ecce341d10be6
 
 COCOAPODS: 1.1.1
