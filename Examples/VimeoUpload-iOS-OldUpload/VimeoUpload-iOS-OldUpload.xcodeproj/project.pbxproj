@@ -561,7 +561,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CEE1B3D12A6927014E253022 /* Pods-VimeoUpload-iOS-OldUpload.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 35R365FS4Q;
 				INFOPLIST_FILE = "VimeoUpload-iOS-OldUpload/Info.plist";
@@ -578,7 +578,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9B8EBF50CBA80C187F8444F1 /* Pods-VimeoUpload-iOS-OldUpload.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 35R365FS4Q;
 				INFOPLIST_FILE = "VimeoUpload-iOS-OldUpload/Info.plist";
