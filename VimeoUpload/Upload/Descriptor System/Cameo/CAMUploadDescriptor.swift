@@ -17,8 +17,8 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     let thumbnailUrl: URL?
     
     public private(set) var uploadTicket: VIMUploadTicket?
-    private var pictureTicket: VIMThumbnailUploadTicket?
-    private var picture: VIMPicture?
+    public private(set) var pictureTicket: VIMThumbnailUploadTicket?
+    public private(set) var picture: VIMPicture?
     
     private var currentRequest = CAMUploadRequest.CreateVideo
     {
