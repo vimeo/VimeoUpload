@@ -57,11 +57,11 @@ public class KeyedArchiver: ArchiverProtocol
     
     func archivePath(key: String) -> String
     {
-        var URL = Foundation.URL(string: self.basePath)!
+        var url = URL(string: self.basePath)!
         
-        URL = URL.appendingPathComponent(key)
-        URL = URL.appendingPathExtension(type(of: self).ArchiveExtension)
+        url = url.appendingPathComponent(key)
+        url = url.appendingPathExtension(type(of: self).ArchiveExtension)
         
-        return URL.absoluteString as String
+        return url.absoluteString as String
     }
 }
