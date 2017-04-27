@@ -107,7 +107,7 @@ class VideoCell: UITableViewCell
     {
         super.awakeFromNib()
         
-        self.update(state: .Finished)
+        self.update(state: .finished)
     }
 
     override func prepareForReuse()
@@ -120,7 +120,7 @@ class VideoCell: UITableViewCell
         self.statusLabel.text = ""
         self.errorLabel.text = ""
 
-        self.update(state: .Finished)
+        self.update(state: .finished)
     }
     
     // MARK: Actions
@@ -165,23 +165,23 @@ class VideoCell: UITableViewCell
     {
         switch state
         {
-        case .Ready:
+        case .ready:
             self.update(progress: 0)
             self.progressView.isHidden = false
             self.deleteButton.setTitle("Cancel", for: UIControlState())
             self.errorLabel.text = "Ready"
             
-        case .Executing:
+        case .executing:
             self.progressView.isHidden = false
             self.deleteButton.setTitle("Cancel", for: UIControlState())
             self.errorLabel.text = "Executing"
 
-        case .Suspended:
+        case .suspended:
             self.update(progress: 0)
             self.progressView.isHidden = true
             self.errorLabel.text = "Suspended"
 
-        case .Finished:
+        case .finished:
             self.update(progress: 0) // Reset the progress bar to 0
             self.progressView.isHidden = true
             self.deleteButton.setTitle("Delete", for: UIControlState())
@@ -241,7 +241,7 @@ class VideoCell: UITableViewCell
 
             case(type(of: self).StateKeyPath, .some(&self.stateKVOContext)):
                 
-                let stateRaw = (change?[NSKeyValueChangeKey.newKey] as? String) ?? DescriptorState.Ready.rawValue;
+                let stateRaw = (change?[NSKeyValueChangeKey.newKey] as? String) ?? DescriptorState.ready.rawValue;
                 let state = DescriptorState(rawValue: stateRaw)!
 
                 DispatchQueue.main.async(execute: { [weak self] () -> Void in

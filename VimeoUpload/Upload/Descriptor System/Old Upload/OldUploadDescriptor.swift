@@ -92,7 +92,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.currentTaskIdentifier = nil
             self.error = error
-            self.state = .Finished
+            self.state = .finished
             
             throw error // Propagate this out so that DescriptorManager can remove the descriptor from the set
         }
@@ -133,7 +133,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
             let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
             self.error = error // TODO: Whenever we set error delete local file? Same for download?
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
             
             throw error
         }
@@ -167,7 +167,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.error = error
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
         }
 
         return nil
@@ -198,7 +198,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         if self.error != nil || nextRequest == nil || (nextRequest == .Settings && self.videoSettings == nil)
         {
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
 
             return
         }
@@ -213,7 +213,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.error = error
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
         }
     }
     

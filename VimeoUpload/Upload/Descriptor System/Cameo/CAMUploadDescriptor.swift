@@ -80,7 +80,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.currentTaskIdentifier = nil
             self.error = error
-            self.state = .Finished
+            self.state = .finished
             
             throw error
         }
@@ -120,7 +120,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
             let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
             self.error = error // TODO: Whenever we set error delete local file? Same for download?
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
             
             throw error
         }
@@ -157,7 +157,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.error = error
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
         }
         
         return nil
@@ -167,7 +167,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         let setFinishedState = {
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
         }
         
         // 1. Perform any necessary file clean up based on the state that just completed

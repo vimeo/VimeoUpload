@@ -131,27 +131,27 @@ class UploadCell: UITableViewCell
     {
         switch state
         {
-        case .Ready:
+        case .ready:
             self.updateProgress(0)
             self.progressView.isHidden = false
             self.deleteButton.setTitle("Cancel", for: UIControlState())
             self.descriptorStateLabel.text = "Ready"
             self.errorLabel.text = ""
         
-        case .Executing:
+        case .executing:
             self.progressView.isHidden = false
             self.deleteButton.setTitle("Cancel", for: UIControlState())
             self.descriptorStateLabel.text = "Executing"
             self.errorLabel.text = ""
 
-        case .Suspended:
+        case .suspended:
             self.updateProgress(0)
             self.progressView.isHidden = true
             self.deleteButton.setTitle("Cancel", for: UIControlState())
             self.descriptorStateLabel.text = "Suspended"
             self.errorLabel.text = ""
     
-        case .Finished:
+        case .finished:
             self.updateProgress(0)
             self.progressView.isHidden = true
             self.deleteButton.setTitle("Delete", for: UIControlState())
@@ -208,7 +208,7 @@ class UploadCell: UITableViewCell
                 
             case(type(of: self).StateKeyPath, .some(&self.stateKVOContext)):
                 
-                let stateRaw = (change?[NSKeyValueChangeKey.newKey] as? String) ?? DescriptorState.Ready.rawValue;
+                let stateRaw = (change?[NSKeyValueChangeKey.newKey] as? String) ?? DescriptorState.ready.rawValue;
                 let state = DescriptorState(rawValue: stateRaw)!
                 
                 DispatchQueue.main.async(execute: { [weak self] () -> Void in
