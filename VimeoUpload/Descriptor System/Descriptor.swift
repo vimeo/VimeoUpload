@@ -45,7 +45,7 @@ open class Descriptor: NSObject, NSCoding
     // MARK:
     
     dynamic private(set) var stateObservable: String = DescriptorState.ready.rawValue
-    open var state = DescriptorState.ready
+    public var state = DescriptorState.ready
     {
         didSet
         {
@@ -55,9 +55,9 @@ open class Descriptor: NSObject, NSCoding
     
     // MARK:
     
-    open var identifier: String?
-    open var currentTaskIdentifier: Int?
-    open var error: NSError?
+    public var identifier: String?
+    public var currentTaskIdentifier: Int?
+    public var error: NSError?
     
     private(set) open var isCancelled = false
     
@@ -153,7 +153,7 @@ open class Descriptor: NSObject, NSCoding
         self.currentTaskIdentifier = aDecoder.decodeInteger(forKey: type(of: self).CurrentTaskIdentifierCoderKey)
     }
     
-    open func encode(with aCoder: NSCoder)
+    public func encode(with aCoder: NSCoder)
     {
         aCoder.encode(self.state.rawValue, forKey: type(of: self).StateCoderKey)
         aCoder.encode(self.identifier, forKey: type(of: self).IdentifierCoderKey)
