@@ -91,7 +91,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         assert(self.input != nil, "self.input cannot be nil")
         
-        self.edgesForExtendedLayout = UIRectEdge()
+        self.edgesForExtendedLayout = []
         
         self.setupNavigationBar()
         self.setupAndStartOperation()
