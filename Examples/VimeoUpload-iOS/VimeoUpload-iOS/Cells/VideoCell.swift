@@ -168,12 +168,12 @@ class VideoCell: UITableViewCell
         case .ready:
             self.update(progress: 0)
             self.progressView.isHidden = false
-            self.deleteButton.setTitle("Cancel", for: UIControlState())
+            self.deleteButton.setTitle("Cancel", for: .normal)
             self.errorLabel.text = "Ready"
             
         case .executing:
             self.progressView.isHidden = false
-            self.deleteButton.setTitle("Cancel", for: UIControlState())
+            self.deleteButton.setTitle("Cancel", for: .normal)
             self.errorLabel.text = "Executing"
 
         case .suspended:
@@ -184,7 +184,7 @@ class VideoCell: UITableViewCell
         case .finished:
             self.update(progress: 0) // Reset the progress bar to 0
             self.progressView.isHidden = true
-            self.deleteButton.setTitle("Delete", for: UIControlState())
+            self.deleteButton.setTitle("Delete", for: .normal)
 
             if let error = self.descriptor?.error
             {

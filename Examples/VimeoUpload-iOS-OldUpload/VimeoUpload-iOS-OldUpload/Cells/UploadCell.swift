@@ -134,27 +134,27 @@ class UploadCell: UITableViewCell
         case .ready:
             self.updateProgress(0)
             self.progressView.isHidden = false
-            self.deleteButton.setTitle("Cancel", for: UIControlState())
+            self.deleteButton.setTitle("Cancel", for: .normal)
             self.descriptorStateLabel.text = "Ready"
             self.errorLabel.text = ""
         
         case .executing:
             self.progressView.isHidden = false
-            self.deleteButton.setTitle("Cancel", for: UIControlState())
+            self.deleteButton.setTitle("Cancel", for: .normal)
             self.descriptorStateLabel.text = "Executing"
             self.errorLabel.text = ""
 
         case .suspended:
             self.updateProgress(0)
             self.progressView.isHidden = true
-            self.deleteButton.setTitle("Cancel", for: UIControlState())
+            self.deleteButton.setTitle("Cancel", for: .normal)
             self.descriptorStateLabel.text = "Suspended"
             self.errorLabel.text = ""
     
         case .finished:
             self.updateProgress(0)
             self.progressView.isHidden = true
-            self.deleteButton.setTitle("Delete", for: UIControlState())
+            self.deleteButton.setTitle("Delete", for: .normal)
             self.descriptorStateLabel.text = "Finished"
 
             if let error = self.descriptor?.error
