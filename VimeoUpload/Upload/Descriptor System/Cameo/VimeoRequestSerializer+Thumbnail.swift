@@ -55,7 +55,7 @@ extension VimeoRequestSerializer
             throw error.error(byAddingDomain: UploadErrorDomain.UploadThumbnail.rawValue)
         }
         
-        let asset = AVURLAsset(url: source as URL)
+        let asset = AVURLAsset(url: source)
         
         let fileSize: Double
         do {
