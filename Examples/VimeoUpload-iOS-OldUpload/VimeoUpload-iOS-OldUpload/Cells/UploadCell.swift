@@ -196,7 +196,7 @@ class UploadCell: UITableViewCell
             {
             case(type(of: self).ProgressKeyPath, .some(&self.progressKVOContext)):
                 
-                let progress = (change?[NSKeyValueChangeKey.newKey] as AnyObject).doubleValue ?? 0;
+                let progress = (change?[.newKey] as AnyObject).doubleValue ?? 0;
                 
                 DispatchQueue.main.async(execute: { [weak self] () -> Void in
                     // Set the progress view to visible here so that the view has already been laid out
@@ -208,7 +208,7 @@ class UploadCell: UITableViewCell
                 
             case(type(of: self).StateKeyPath, .some(&self.stateKVOContext)):
                 
-                let stateRaw = (change?[NSKeyValueChangeKey.newKey] as? String) ?? DescriptorState.ready.rawValue;
+                let stateRaw = (change?[.newKey] as? String) ?? DescriptorState.ready.rawValue;
                 let state = DescriptorState(rawValue: stateRaw)!
                 
                 DispatchQueue.main.async(execute: { [weak self] () -> Void in

@@ -114,7 +114,7 @@ public class DescriptorKVObserver: NSObject
             {
             case(type(of: self).ProgressKeyPath, .some(&self.progressKVOContext)):
                 
-                let progress: Double = change?[NSKeyValueChangeKey.newKey] as? Double ?? 0
+                let progress: Double = change?[.newKey] as? Double ?? 0
                 
                 DispatchQueue.main.async { [weak self] in
                     
@@ -130,7 +130,7 @@ public class DescriptorKVObserver: NSObject
                 
             case(type(of: self).StateKeyPath, .some(&self.stateKVOContext)):
                 
-                let stateRaw = (change?[NSKeyValueChangeKey.newKey] as? String) ?? DescriptorState.ready.rawValue;
+                let stateRaw = (change?[.newKey] as? String) ?? DescriptorState.ready.rawValue;
                 let state = DescriptorState(rawValue: stateRaw)!
                 
                 DispatchQueue.main.async { [weak self] in
