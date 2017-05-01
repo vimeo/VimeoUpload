@@ -208,7 +208,7 @@ open class DescriptorManager: NSObject
                     return
                 }
 
-                if descriptor.state == .Suspended
+                if descriptor.state == .suspended
                 {
                     do
                     {
@@ -253,7 +253,7 @@ open class DescriptorManager: NSObject
                 strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error as NSError?)
                 descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error as NSError?)
                 
-                if descriptor.state == .Finished
+                if descriptor.state == .finished
                 {
                     if let error = descriptor.error
                     {

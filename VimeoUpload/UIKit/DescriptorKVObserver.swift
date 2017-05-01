@@ -130,7 +130,7 @@ public class DescriptorKVObserver: NSObject
                 
             case(type(of: self).StateKeyPath, .some(&self.stateKVOContext)):
                 
-                let stateRaw = (change?[NSKeyValueChangeKey.newKey] as? String) ?? DescriptorState.Ready.rawValue;
+                let stateRaw = (change?[NSKeyValueChangeKey.newKey] as? String) ?? DescriptorState.ready.rawValue;
                 let state = DescriptorState(rawValue: stateRaw)!
                 
                 DispatchQueue.main.async { [weak self] in

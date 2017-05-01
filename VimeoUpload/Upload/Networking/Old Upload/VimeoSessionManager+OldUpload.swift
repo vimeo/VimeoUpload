@@ -104,7 +104,7 @@ extension VimeoSessionManager
         return task
     }
 
-    public func createVideoDownloadTask(url: NSURL) throws -> URLSessionDownloadTask
+    public func createVideoDownloadTask(url: URL) throws -> URLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url)
 
@@ -115,7 +115,7 @@ extension VimeoSessionManager
         return task
     }
     
-    func uploadVideoTask(source: NSURL, destination: String, completionHandler: ErrorBlock?) throws -> URLSessionUploadTask
+    func uploadVideoTask(source: URL, destination: String, completionHandler: ErrorBlock?) throws -> URLSessionUploadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadVideoRequest(with: source, destination: destination)
         

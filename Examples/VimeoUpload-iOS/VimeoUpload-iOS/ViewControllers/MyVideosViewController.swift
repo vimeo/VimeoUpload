@@ -88,15 +88,15 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func addObservers()
     {
-        NotificationCenter.default.addObserver(self, selector: #selector(MyVideosViewController.uploadInitiated(_:)), name: NSNotification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MyVideosViewController.uploadInitiated(_:)), name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: nil)
     }
     
     private func removeObservers()
     {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: nil)
     }
     
-    func uploadInitiated(_ notification: NSNotification)
+    func uploadInitiated(_ notification: Notification)
     {
         if let video = notification.object as? VIMVideo
         {

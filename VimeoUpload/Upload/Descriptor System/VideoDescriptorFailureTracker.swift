@@ -109,15 +109,15 @@ import Foundation
     
     private func addObservers()
     {
-        NotificationCenter.default.addObserver(self, selector: #selector(VideoDescriptorFailureTracker.descriptorDidFail(_:)), name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(VideoDescriptorFailureTracker.descriptorDidFail(_:)), name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: nil)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(VideoDescriptorFailureTracker.descriptorDidCancel(_:)), name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(VideoDescriptorFailureTracker.descriptorDidCancel(_:)), name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
     private func removeObservers()
     {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
     func descriptorDidFail(_ notification: Notification)

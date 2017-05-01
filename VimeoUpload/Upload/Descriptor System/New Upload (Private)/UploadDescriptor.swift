@@ -87,7 +87,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             }
             
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try sessionManager.uploadVideoTask(source: self.url as NSURL, destination: uploadLinkSecure, completionHandler: nil)
+            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, completionHandler: nil)
             
             self.currentTaskIdentifier = task.taskIdentifier
         }
@@ -95,7 +95,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.currentTaskIdentifier = nil
             self.error = error
-            self.state = .Finished
+            self.state = .finished
 
             throw error // Propagate this out so that DescriptorManager can remove the descriptor from the set
         }
@@ -133,7 +133,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
             let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
             self.error = error // TODO: Whenever we set error delete local file? Same for download?
-            self.state = .Finished
+            self.state = .finished
             
             throw error
         }
@@ -152,7 +152,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             return
         }
 
-        if self.state == .Suspended
+        if self.state == .suspended
         {
             assertionFailure("taskDidComplete was called for a suspended descriptor.")
 
@@ -173,7 +173,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
         FileManager.default.deleteFile(at: self.url)
 
-        self.state = .Finished
+        self.state = .finished
     }
     
     // MARK: NSCoding

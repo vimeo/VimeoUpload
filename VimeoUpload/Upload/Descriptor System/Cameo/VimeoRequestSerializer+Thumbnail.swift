@@ -14,10 +14,10 @@ extension VimeoRequestSerializer
 {
     func createThumbnailRequest(with uri: String) throws -> NSMutableURLRequest
     {
-        let url = NSURL(string: "\(uri)/pictures", relativeTo: VimeoBaseURLString)!
+        let url = URL(string: "\(uri)/pictures", relativeTo: VimeoBaseURLString)!
         
         var error: NSError?
-        let request = self.request(withMethod: "POST", urlString: url.absoluteString!, parameters: nil, error: &error)
+        let request = self.request(withMethod: "POST", urlString: url.absoluteString, parameters: nil, error: &error)
         
         if let error = error
         {
@@ -29,11 +29,11 @@ extension VimeoRequestSerializer
     
     func activateThumbnailRequest(with uri: String) throws -> NSMutableURLRequest
     {
-        let url = NSURL(string: "\(uri)", relativeTo: VimeoBaseURLString)!
+        let url = URL(string: "\(uri)", relativeTo: VimeoBaseURLString)!
         
         var error: NSError?
         let activationParams = ["active" : "true"]
-        let request = self.request(withMethod: "PATCH", urlString: url.absoluteString!, parameters: activationParams, error: &error)
+        let request = self.request(withMethod: "PATCH", urlString: url.absoluteString, parameters: activationParams, error: &error)
         
         if let error = error
         {
@@ -43,9 +43,9 @@ extension VimeoRequestSerializer
         return request
     }
     
-    func uploadThumbnailRequest(with source: NSURL, destination: String) throws -> NSMutableURLRequest {
+    func uploadThumbnailRequest(with source: URL, destination: String) throws -> NSMutableURLRequest {
         
-        guard let path = source.path, FileManager.default.fileExists(atPath: path) else {
+        guard FileManager.default.fileExists(atPath: source.path) else {
             throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to construct upload request but the source file does not exist."])
         }
         
@@ -55,9 +55,9 @@ extension VimeoRequestSerializer
             throw error.error(byAddingDomain: UploadErrorDomain.UploadThumbnail.rawValue)
         }
         
-        let asset = AVURLAsset(url: source as URL)
+        let asset = AVURLAsset(url: source)
         
-        let fileSize: NSNumber
+        let fileSize: Double
         do {
             fileSize = try asset.fileSize()
         } catch let error as NSError {

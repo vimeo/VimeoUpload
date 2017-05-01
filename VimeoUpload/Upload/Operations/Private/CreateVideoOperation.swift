@@ -65,7 +65,7 @@ public class CreateVideoOperation: ConcurrentOperation
         
         do
         {
-            self.task = try self.sessionManager.createVideoDataTask(url: url as NSURL, videoSettings: videoSettings, completionHandler: { [weak self] (uploadTicket, error) -> Void in
+            self.task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, completionHandler: { [weak self] (uploadTicket, error) -> Void in
                 
                 guard let strongSelf = self else
                 {

@@ -66,12 +66,12 @@ protocol ConnectivityManagerDelegate: class
     
     private func addObservers()
     {
-        NotificationCenter.default.addObserver(self, selector: #selector(ConnectivityManager.reachabilityDidChange(_:)), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ConnectivityManager.reachabilityDidChange(_:)), name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
     private func removeObservers()
     {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
     func reachabilityDidChange(_ notification: Notification)

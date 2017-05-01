@@ -29,10 +29,10 @@ import AFNetworking
 
 public enum DescriptorState: String
 {
-    case Ready = "Ready"
-    case Executing = "Executing"
-    case Suspended = "Suspended"
-    case Finished = "Finished"
+    case ready = "Ready"
+    case executing = "Executing"
+    case suspended = "Suspended"
+    case finished = "Finished"
 }
 
 open class Descriptor: NSObject, NSCoding
@@ -44,8 +44,8 @@ open class Descriptor: NSObject, NSCoding
 
     // MARK:
     
-    dynamic private(set) var stateObservable: String = DescriptorState.Ready.rawValue
-    open var state = DescriptorState.Ready
+    dynamic private(set) var stateObservable: String = DescriptorState.ready.rawValue
+    public var state = DescriptorState.ready
     {
         didSet
         {
@@ -55,9 +55,9 @@ open class Descriptor: NSObject, NSCoding
     
     // MARK:
     
-    open var identifier: String?
-    open var currentTaskIdentifier: Int?
-    open var error: NSError?
+    public var identifier: String?
+    public var currentTaskIdentifier: Int?
+    public var error: NSError?
     
     private(set) open var isCancelled = false
     
@@ -77,7 +77,7 @@ open class Descriptor: NSObject, NSCoding
 
     open func resume(sessionManager: AFURLSessionManager)
     {
-        self.state = .Executing
+        self.state = .executing
         
         if let identifier = self.currentTaskIdentifier,
             let task = sessionManager.task(for: identifier)
@@ -90,11 +90,11 @@ open class Descriptor: NSObject, NSCoding
     {
         let originalState = self.state
         
-        self.state = .Suspended
+        self.state = .suspended
 
         // If we're suspending a just-enqueued descriptor, don't cancel it, just update it's state to .Suspended [AH] 2/24/2016
         
-        if originalState == .Ready
+        if originalState == .ready
         {
             return
         }
@@ -110,7 +110,7 @@ open class Descriptor: NSObject, NSCoding
     open func cancel(sessionManager: AFURLSessionManager)
     {
         self.isCancelled = true
-        self.state = .Finished
+        self.state = .finished
 
         self.doCancel(sessionManager: sessionManager)
     }
@@ -153,7 +153,7 @@ open class Descriptor: NSObject, NSCoding
         self.currentTaskIdentifier = aDecoder.decodeInteger(forKey: type(of: self).CurrentTaskIdentifierCoderKey)
     }
     
-    open func encode(with aCoder: NSCoder)
+    public func encode(with aCoder: NSCoder)
     {
         aCoder.encode(self.state.rawValue, forKey: type(of: self).StateCoderKey)
         aCoder.encode(self.identifier, forKey: type(of: self).IdentifierCoderKey)

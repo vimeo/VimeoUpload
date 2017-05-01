@@ -11,12 +11,12 @@ import VimeoNetworking
 
 extension VimeoResponseSerializer
 {
-    func process(createThumbnailResponse response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMThumbnailUploadTicket
+    func process(createThumbnailResponse response: URLResponse?, url: URL?, error: NSError?) throws -> VIMThumbnailUploadTicket
     {
         let responseObject: [AnyHashable: Any]?
         do
         {
-            responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)
+            responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url, error: error)
         }
         catch let error as NSError
         {
@@ -59,12 +59,12 @@ extension VimeoResponseSerializer
         }
     }
     
-    func process(activateThumbnailResponse response: URLResponse?, url: NSURL?, error: NSError?) throws -> VIMPicture
+    func process(activateThumbnailResponse response: URLResponse?, url: URL?, error: NSError?) throws -> VIMPicture
     {
         let responseObject: [AnyHashable: Any]?
         do
         {
-            responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)
+            responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url, error: error)
         }
         catch let error as NSError
         {

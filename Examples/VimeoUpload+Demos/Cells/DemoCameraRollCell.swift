@@ -85,26 +85,26 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
     
     func setDuration(seconds: Float64)
     {
-        var string: NSString = ""
+        var string = ""
 
         if seconds > 0
         {
-            string = String.stringFromDuration(inSeconds: seconds) as String as String as NSString
+            string = String.stringFromDuration(inSeconds: seconds) as String
         }
 
-        self.durationlabel?.text = string as String
+        self.durationlabel?.text = string
     }
     
     func setFileSize(bytes: Float64)
     {
-        var string: NSString = ""
+        var string = ""
         
         if bytes > 0
         {
-            string = NSString.stringFromFileSize(bytes: bytes)
+            string = NSString.stringFromFileSize(bytes: bytes) as String
         }
 
-        self.fileSizeLabel.text = string as String
+        self.fileSizeLabel.text = string
     }
 
     func setInCloud()

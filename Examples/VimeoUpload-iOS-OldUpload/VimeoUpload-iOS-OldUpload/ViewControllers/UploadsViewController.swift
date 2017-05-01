@@ -92,19 +92,19 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     private func addObservers()
     {
-        NotificationCenter.default.addObserver(self, selector: #selector(DescriptorManagerDelegate.descriptorAdded(_:)), name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorAdded.rawValue), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(DescriptorManagerDelegate.descriptorAdded(_:)), name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorAdded.rawValue), object: nil)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(DescriptorManagerDelegate.descriptorDidCancel(_:)), name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(DescriptorManagerDelegate.descriptorDidCancel(_:)), name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
     private func removeObservers()
     {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorAdded.rawValue), object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorAdded.rawValue), object: nil)
 
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
-    func descriptorAdded(_ notification: NSNotification)
+    func descriptorAdded(_ notification: Notification)
     {
         // TODO: should we move this dispatch to within the descriptor manager itself?
         DispatchQueue.main.async { () -> Void in
@@ -119,7 +119,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         }
     }
     
-    func descriptorDidCancel(_ notification: NSNotification)
+    func descriptorDidCancel(_ notification: Notification)
     {
         // TODO: should we move this dispatch to within the descriptor manager itself?
         DispatchQueue.main.async { () -> Void in

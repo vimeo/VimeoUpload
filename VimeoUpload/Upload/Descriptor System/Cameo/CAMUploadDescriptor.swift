@@ -17,8 +17,8 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     let thumbnailUrl: URL?
     
     public private(set) var uploadTicket: VIMUploadTicket?
-    private var pictureTicket: VIMThumbnailUploadTicket?
-    private var picture: VIMPicture?
+    public private(set) var pictureTicket: VIMThumbnailUploadTicket?
+    public private(set) var picture: VIMPicture?
     
     private var currentRequest = CAMUploadRequest.CreateVideo
     {
@@ -80,7 +80,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.currentTaskIdentifier = nil
             self.error = error
-            self.state = .Finished
+            self.state = .finished
             
             throw error
         }
@@ -120,7 +120,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
             let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
             self.error = error // TODO: Whenever we set error delete local file? Same for download?
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
             
             throw error
         }
@@ -138,26 +138,26 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
             switch self.currentRequest
             {
             case .CreateVideo:
-                self.uploadTicket = try responseSerializer.process(createVideoResponse: task.response, url: url as NSURL?, error: error)
+                self.uploadTicket = try responseSerializer.process(createVideoResponse: task.response, url: url, error: error)
                 
             case .UploadVideo:
                 break
                 
             case .CreateThumbnail:
-                self.pictureTicket = try responseSerializer.process(createThumbnailResponse: task.response, url: url as NSURL?, error: error)
+                self.pictureTicket = try responseSerializer.process(createThumbnailResponse: task.response, url: url, error: error)
                 
             case .UploadThumbnail:
                 break
                 
             case .ActivateThumbnail:
-                self.picture = try responseSerializer.process(activateThumbnailResponse: task.response, url: url as NSURL?, error: error)
+                self.picture = try responseSerializer.process(activateThumbnailResponse: task.response, url: url, error: error)
             }
         }
         catch let error as NSError
         {
             self.error = error
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
         }
         
         return nil
@@ -167,7 +167,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         let setFinishedState = {
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
         }
         
         // 1. Perform any necessary file clean up based on the state that just completed
@@ -248,14 +248,14 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         switch request
         {
         case .CreateVideo:
-            return try sessionManager.createVideoDownloadTask(url: self.videoUrl as NSURL, videoSettings: self.videoSettings)
+            return try sessionManager.createVideoDownloadTask(url: self.videoUrl, videoSettings: self.videoSettings)
         case .UploadVideo:
             guard let uploadUri = self.uploadTicket?.uploadLinkSecure else
             {
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
             
-            return try sessionManager.uploadVideoTask(source: self.videoUrl as NSURL, destination: uploadUri, completionHandler: nil)
+            return try sessionManager.uploadVideoTask(source: self.videoUrl, destination: uploadUri, completionHandler: nil)
             
         case .CreateThumbnail:
             guard let videoUri = self.uploadTicket?.video?.uri else
@@ -271,7 +271,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
                 throw NSError(domain: UploadErrorDomain.UploadThumbnail.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate thumbnail upload, but thumbnailUploadLink is nil"])
             }
             
-            return try sessionManager.uploadThumbnailTask(source: thumbnailUrl as NSURL, destination: thumbnailUploadLink, completionHandler: nil)
+            return try sessionManager.uploadThumbnailTask(source: thumbnailUrl as URL, destination: thumbnailUploadLink, completionHandler: nil)
             
         case .ActivateThumbnail:
             guard let thumbnailUri = self.pictureTicket?.uri else

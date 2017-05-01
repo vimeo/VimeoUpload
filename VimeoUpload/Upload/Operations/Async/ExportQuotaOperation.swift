@@ -141,7 +141,7 @@ open class ExportQuotaOperation: ConcurrentOperation
         let me = self.me
         let avUrlAsset = AVURLAsset(url: url)
         
-        let fileSize: NSNumber
+        let fileSize: Double
         do
         {
             fileSize = try avUrlAsset.fileSize()
@@ -153,7 +153,7 @@ open class ExportQuotaOperation: ConcurrentOperation
             return
         }
         
-        let operation = WeeklyQuotaOperation(user: me, fileSize: fileSize.doubleValue)
+        let operation = WeeklyQuotaOperation(user: me, fileSize: fileSize)
         operation.completionBlock = { [weak self] () -> Void in
             
             DispatchQueue.main.async(execute: { [weak self] () -> Void in

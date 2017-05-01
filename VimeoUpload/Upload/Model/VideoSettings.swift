@@ -26,9 +26,9 @@
 
 import Foundation
 
-open class VideoSettings: NSObject
+public class VideoSettings: NSObject
 {
-    open var title: String?
+    public var title: String?
     {
         didSet
         {
@@ -36,7 +36,7 @@ open class VideoSettings: NSObject
         }
     }
     
-    open var desc: String?
+    public var desc: String?
     {
         didSet
         {
@@ -44,9 +44,9 @@ open class VideoSettings: NSObject
         }
     }
     
-    open var privacy: String?
-    open var users: [String]? // List of uris of users who can view this video
-    open var password: String?
+    public var privacy: String?
+    public var users: [String]? // List of uris of users who can view this video
+    public var password: String?
 
     public init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
     {
@@ -61,7 +61,7 @@ open class VideoSettings: NSObject
     
     // MARK: Public API
     
-    open func parameterDictionary() -> [String: Any]
+    public func parameterDictionary() -> [String: Any]
     {
         var parameters: [String: Any] = [:]
         

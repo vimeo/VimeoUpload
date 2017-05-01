@@ -92,7 +92,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.currentTaskIdentifier = nil
             self.error = error
-            self.state = .Finished
+            self.state = .finished
             
             throw error // Propagate this out so that DescriptorManager can remove the descriptor from the set
         }
@@ -133,7 +133,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
             let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
             self.error = error // TODO: Whenever we set error delete local file? Same for download?
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
             
             throw error
         }
@@ -151,23 +151,23 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
             switch self.currentRequest
             {
             case .Create:
-                self.uploadTicket = try responseSerializer.process(createVideoResponse: task.response, url: url as NSURL?, error: error)
+                self.uploadTicket = try responseSerializer.process(createVideoResponse: task.response, url: url, error: error)
                 
             case .Upload:
                 break
                 
             case .Activate:
-                self.videoUri = try responseSerializer.process(activateVideoResponse: task.response, url: url as NSURL?, error: error)
+                self.videoUri = try responseSerializer.process(activateVideoResponse: task.response, url: url, error: error)
                 
             case .Settings:
-                self.video = try responseSerializer.process(videoSettingsResponse: task.response, url: url as NSURL?, error: error)
+                self.video = try responseSerializer.process(videoSettingsResponse: task.response, url: url, error: error)
             }
         }
         catch let error as NSError
         {
             self.error = error
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
         }
 
         return nil
@@ -198,7 +198,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         if self.error != nil || nextRequest == nil || (nextRequest == .Settings && self.videoSettings == nil)
         {
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
 
             return
         }
@@ -213,7 +213,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.error = error
             self.currentTaskIdentifier = nil
-            self.state = .Finished
+            self.state = .finished
         }
     }
     
@@ -231,7 +231,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
         switch request
         {
         case .Create:
-            return try sessionManager.createVideoDownloadTask(url: self.url as NSURL)
+            return try sessionManager.createVideoDownloadTask(url: self.url)
             
         case .Upload:
             guard let uploadUri = self.uploadTicket?.uploadLinkSecure else
@@ -239,7 +239,7 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
 
-            return try sessionManager.uploadVideoTask(source: self.url as NSURL, destination: uploadUri, completionHandler: nil)
+            return try sessionManager.uploadVideoTask(source: self.url, destination: uploadUri, completionHandler: nil)
             
         case .Activate:
             guard let activationUri = self.uploadTicket?.completeUri else
