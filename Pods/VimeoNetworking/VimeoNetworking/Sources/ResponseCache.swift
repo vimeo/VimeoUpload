@@ -154,7 +154,7 @@ final internal class ResponseCache
                 let fileManager = FileManager()
                 let directoryPath = self.cachesDirectoryURL().path
                 
-                guard let filePath = self.fileURL(forKey: key)?.path else
+                guard let filePath = self.fileURL(forKey: key)?.path else 
                 {
                     assertionFailure("No cache path found.")
                     return

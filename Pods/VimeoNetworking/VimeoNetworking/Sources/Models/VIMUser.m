@@ -320,4 +320,15 @@
     }
 }
 
+- (BOOL)hasSameBadgeCount:(VIMUser *)newUser
+{
+    VIMNotificationsConnection *currentAccountConnection = [self notificationsConnection];
+    NSInteger currentAccountTotal = [currentAccountConnection supportedNotificationNewTotal];
+    
+    VIMNotificationsConnection *responseConnection = [newUser notificationsConnection];
+    NSInteger responseTotal = [responseConnection supportedNotificationNewTotal];
+    
+    return currentAccountTotal == responseTotal;
+}
+
 @end

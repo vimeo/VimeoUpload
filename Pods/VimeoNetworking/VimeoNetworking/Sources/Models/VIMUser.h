@@ -70,5 +70,6 @@ typedef NS_ENUM(NSInteger, VIMUserAccountType)
 - (BOOL)isFollowing;
 
 - (nullable NSString *)accountTypeAnalyticsIdentifier;
+- (BOOL)hasSameBadgeCount:(nullable VIMUser *)newUser;
 
 @end
