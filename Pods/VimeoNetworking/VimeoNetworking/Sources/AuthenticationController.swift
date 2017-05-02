@@ -134,14 +134,14 @@ final public class AuthenticationController
     {
         let accountType: AccountStore.AccountType = (account.user != nil) ? .user : .clientCredentials
         
-        try self.accountStore.saveAccount(account: account, type: accountType)
+        try self.accountStore.save(account, ofType: accountType)
     }
     
     // MARK: - Private Saved Accounts
     
     private func loadAccount(accountType: AccountStore.AccountType) throws -> VIMAccount?
     {
-        let loadedAccount = try self.accountStore.loadAccount(type: accountType)
+        let loadedAccount = try self.accountStore.loadAccount(ofType: accountType)
         
         if let loadedAccount = loadedAccount
         {
@@ -512,7 +512,7 @@ final public class AuthenticationController
         
         if loadClientCredentials
         {
-            let loadedClientCredentialsAccount = (try? self.accountStore.loadAccount(type: .clientCredentials)) ?? nil
+            let loadedClientCredentialsAccount = (try? self.accountStore.loadAccount(ofType: .clientCredentials)) ?? nil
             try self.setClientAccount(with: loadedClientCredentialsAccount, shouldClearCache: true)
         }
         else
@@ -520,7 +520,7 @@ final public class AuthenticationController
             try self.setClientAccount(with: nil, shouldClearCache: true)
         }
         
-        try self.accountStore.removeAccount(type: .user)
+        try self.accountStore.removeAccount(ofType: .user)
     }
     
     // MARK: - Private
@@ -575,7 +575,7 @@ final public class AuthenticationController
             
             let accountType: AccountStore.AccountType = (account.user != nil) ? .user : .clientCredentials
             
-            try self.accountStore.saveAccount(account: account, type: accountType)
+            try self.accountStore.save(account, ofType: accountType)
         }
         catch let error
         {

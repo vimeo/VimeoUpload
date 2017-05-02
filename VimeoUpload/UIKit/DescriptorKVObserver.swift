@@ -38,7 +38,7 @@ public class DescriptorKVObserver: NSObject
     
     public weak var delegate: DescriptorKVObserverDelegate?
     
-    // MARK: 
+    // MARK:
     
     private var observersAdded = false
     
@@ -54,7 +54,7 @@ public class DescriptorKVObserver: NSObject
     // See http://stackoverflow.com/questions/30495828/swift-property-that-conforms-to-a-protocol-and-class for details [AH] 2/6/2016
     
     public var descriptor: VideoDescriptor?
-    {
+        {
         willSet
         {
             self.removeObserversIfNecessary()
@@ -86,10 +86,10 @@ public class DescriptorKVObserver: NSObject
     
     private func addObserversIfNecessary()
     {
-        if let descriptor = self.descriptor where self.observersAdded == false
+        if let descriptor = self.descriptor, self.observersAdded == false
         {
-            descriptor.progressDescriptor.addObserver(self, forKeyPath: self.dynamicType.StateKeyPath, options: .New, context: &self.stateKVOContext)
-            descriptor.progressDescriptor.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: .New, context: &self.progressKVOContext)
+            descriptor.progressDescriptor.addObserver(self, forKeyPath: type(of: self).StateKeyPath, options: .new, context: &self.stateKVOContext)
+            descriptor.progressDescriptor.addObserver(self, forKeyPath: type(of: self).ProgressKeyPath, options: .new, context: &self.progressKVOContext)
             
             self.observersAdded = true
         }
@@ -97,26 +97,26 @@ public class DescriptorKVObserver: NSObject
     
     private func removeObserversIfNecessary()
     {
-        if let descriptor = self.descriptor where self.observersAdded == true
+        if let descriptor = self.descriptor, self.observersAdded == true
         {
-            descriptor.progressDescriptor.removeObserver(self, forKeyPath: self.dynamicType.StateKeyPath, context: &self.stateKVOContext)
-            descriptor.progressDescriptor.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
+            descriptor.progressDescriptor.removeObserver(self, forKeyPath: type(of: self).StateKeyPath, context: &self.stateKVOContext)
+            descriptor.progressDescriptor.removeObserver(self, forKeyPath: type(of: self).ProgressKeyPath, context: &self.progressKVOContext)
             
             self.observersAdded = false
         }
     }
     
-    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?)
     {
         if let keyPath = keyPath
         {
             switch (keyPath, context)
             {
-            case(self.dynamicType.ProgressKeyPath, &self.progressKVOContext):
+            case(type(of: self).ProgressKeyPath, .some(&self.progressKVOContext)):
                 
-                let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0
+                let progress = change?[.newKey] as? Double ?? 0
                 
-                dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                DispatchQueue.main.async { [weak self] in
                     
                     guard let strongSelf = self,
                         let descriptor = strongSelf.descriptor else
@@ -126,14 +126,14 @@ public class DescriptorKVObserver: NSObject
                     
                     let type = descriptor.type
                     strongSelf.delegate?.descriptorProgressDidChange(descriptorType: type, progress: progress)
-                })
+                }
                 
-            case(self.dynamicType.StateKeyPath, &self.stateKVOContext):
+            case(type(of: self).StateKeyPath, .some(&self.stateKVOContext)):
                 
-                let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? DescriptorState.Ready.rawValue;
+                let stateRaw = (change?[.newKey] as? String) ?? DescriptorState.ready.rawValue;
                 let state = DescriptorState(rawValue: stateRaw)!
-
-                dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                
+                DispatchQueue.main.async { [weak self] in
                     
                     guard let strongSelf = self,
                         let descriptor = strongSelf.descriptor else
@@ -145,15 +145,15 @@ public class DescriptorKVObserver: NSObject
                     let isCancelled = descriptor.progressDescriptor.isCancelled
                     let error = descriptor.progressDescriptor.error
                     strongSelf.delegate?.descriptorStateDidChange(descriptorType: type, descriptorState: state, isCancelled: isCancelled, descriptorError: error)
-                })
+                }
                 
             default:
-                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+                super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             }
         }
         else
         {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
 }

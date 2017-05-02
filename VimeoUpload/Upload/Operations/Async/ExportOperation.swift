@@ -201,7 +201,7 @@ public class ExportOperation: ConcurrentOperation
             switch (keyPath, context)
             {
                 case(type(of: self).ProgressKeyPath, .some(&self.exportProgressKVOContext)):
-                    let progress = (change?[NSKeyValueChangeKey.newKey] as AnyObject).doubleValue ?? 0;
+                    let progress = (change?[.newKey] as AnyObject).doubleValue ?? 0
                     self.progressBlock?(progress)
                 
                 default:

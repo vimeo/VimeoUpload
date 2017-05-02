@@ -88,7 +88,7 @@ final class AccountStore
      
      - throws: an error if the data could not be saved
      */
-    func saveAccount(account: VIMAccount, type: AccountType) throws
+    func save(_ account: VIMAccount, ofType type: AccountType) throws
     {
         let data = NSMutableData()
         let archiver = NSKeyedArchiver(forWritingWith: data)
@@ -107,7 +107,7 @@ final class AccountStore
      
      - returns: an account of the specified type, if one was found
      */
-    func loadAccount(type: AccountType) throws -> VIMAccount?
+    func loadAccount(ofType type: AccountType) throws -> VIMAccount?
     {
         do
         {
@@ -142,7 +142,7 @@ final class AccountStore
         }
         catch let error
         {
-            _ = try? self.removeAccount(type: type)
+            _ = try? self.removeAccount(ofType: type)
             
             throw error
         }
@@ -155,7 +155,7 @@ final class AccountStore
      
      - throws: an error if the data exists but could not be removed
      */
-    func removeAccount(type: AccountType) throws
+    func removeAccount(ofType type: AccountType) throws
     {
         try self.keychainStore.deleteData(for: type.keychainKey())
     }
