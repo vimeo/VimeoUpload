@@ -153,7 +153,7 @@ open class Descriptor: NSObject, NSCoding
         self.currentTaskIdentifier = aDecoder.decodeInteger(forKey: type(of: self).CurrentTaskIdentifierCoderKey)
     }
     
-    public func encode(with aCoder: NSCoder)
+    open func encode(with aCoder: NSCoder)
     {
         aCoder.encode(self.state.rawValue, forKey: type(of: self).StateCoderKey)
         aCoder.encode(self.identifier, forKey: type(of: self).IdentifierCoderKey)
