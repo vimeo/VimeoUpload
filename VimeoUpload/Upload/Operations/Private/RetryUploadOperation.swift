@@ -31,7 +31,7 @@ import AVFoundation
 public class RetryUploadOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
-    let operationQueue: NSOperationQueue
+    let operationQueue: OperationQueue
     
     // MARK:
     
@@ -40,7 +40,7 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK:
     
-    private(set) public var url: NSURL?
+    private(set) public var url: URL?
     
     private(set) public var error: NSError?
     {
@@ -48,7 +48,7 @@ public class RetryUploadOperation: ConcurrentOperation
         {
             if self.error != nil
             {
-                self.state = .Finished
+                self.state = .finished
             }
         }
     }
@@ -58,7 +58,7 @@ public class RetryUploadOperation: ConcurrentOperation
     init(sessionManager: VimeoSessionManager)
     {
         self.sessionManager = sessionManager
-        self.operationQueue = NSOperationQueue()
+        self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
     }
     
@@ -71,7 +71,7 @@ public class RetryUploadOperation: ConcurrentOperation
     
     override public func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
@@ -93,14 +93,14 @@ public class RetryUploadOperation: ConcurrentOperation
         let operation = MeQuotaOperation(sessionManager: self.sessionManager)
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if strongSelf.cancelled
+                if strongSelf.isCancelled
                 {
                     return
                 }
@@ -113,7 +113,7 @@ public class RetryUploadOperation: ConcurrentOperation
                 {
                     let user = operation.me!
                     let exportQuotaOperation = strongSelf.makeExportQuotaOperation(user: user)!
-                    strongSelf.performExportQuotaOperation(exportQuotaOperation)
+                    strongSelf.perform(exportQuotaOperation: exportQuotaOperation)
                 }
             })
         }
@@ -123,26 +123,26 @@ public class RetryUploadOperation: ConcurrentOperation
         operation.fulfillSelection(avAsset: nil)
     }
     
-    private func performExportQuotaOperation(operation: ExportQuotaOperation)
+    private func perform(exportQuotaOperation operation: ExportQuotaOperation)
     {
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
-            self?.downloadProgressBlock?(progress: progress)
+            self?.downloadProgressBlock?(progress)
         }
         
         operation.exportProgressBlock = { [weak self] (exportSession: AVAssetExportSession, progress: Double) -> Void in
-            self?.exportProgressBlock?(progress: progress)
+            self?.exportProgressBlock?(progress)
         }
         
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -154,7 +154,7 @@ public class RetryUploadOperation: ConcurrentOperation
                 else
                 {
                     strongSelf.url = operation.result!
-                    strongSelf.state = .Finished
+                    strongSelf.state = .finished
                 }
             })
         }
@@ -164,7 +164,7 @@ public class RetryUploadOperation: ConcurrentOperation
 
     // MARK: Public API
     
-    func makeExportQuotaOperation(user user: VIMUser) -> ExportQuotaOperation?
+    func makeExportQuotaOperation(user: VIMUser) -> ExportQuotaOperation?
     {
         assertionFailure("Subclasses must override")
         

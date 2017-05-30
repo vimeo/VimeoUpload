@@ -31,7 +31,7 @@ public class MeOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
     
-    private var task: NSURLSessionDataTask?
+    private var task: URLSessionDataTask?
 
     public var result: VIMUser?
     public var error: NSError?
@@ -55,7 +55,7 @@ public class MeOperation: ConcurrentOperation
 
     override public func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
@@ -71,14 +71,14 @@ public class MeOperation: ConcurrentOperation
                 
                 strongSelf.task = nil
                 
-                if strongSelf.cancelled
+                if strongSelf.isCancelled
                 {
                     return
                 }
                 
                 if let error = error
                 {
-                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.MeOperation.rawValue)
+                    strongSelf.error = error.error(byAddingDomain: UploadErrorDomain.MeOperation.rawValue)
                 }
                 else if let user = user
                 {
@@ -89,15 +89,15 @@ public class MeOperation: ConcurrentOperation
                     fatalError("Execution should never reach this point")
                 }
                 
-                strongSelf.state = .Finished
+                strongSelf.state = .finished
             })
             
             self.task?.resume()
         }
         catch let error as NSError
         {
-            self.error = error.errorByAddingDomain(UploadErrorDomain.MeOperation.rawValue)
-            self.state = .Finished
+            self.error = error.error(byAddingDomain: UploadErrorDomain.MeOperation.rawValue)
+            self.state = .finished
         }
     }
     

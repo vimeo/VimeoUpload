@@ -31,8 +31,8 @@ import UIKit
 @objc public protocol CameraRollAssetCell
 {
     var bounds: CGRect { get }
-    func setImage(image: UIImage)
-    func setDuration(seconds seconds: Float64)
-    func setFileSize(bytes bytes: Float64)
+    func set(image: UIImage)
+    func setDuration(seconds: Float64)
+    func setFileSize(bytes: Float64)
     func setInCloud()
 }

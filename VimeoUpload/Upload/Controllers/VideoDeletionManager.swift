@@ -41,7 +41,7 @@ public class VideoDeletionManager: NSObject
     // MARK:
     
     private var deletions: [VideoUri: Int] = [:]
-    private let operationQueue: NSOperationQueue
+    private let operationQueue: OperationQueue
     private let archiver: KeyedArchiver
     
     // MARK: - Initialization
@@ -57,8 +57,8 @@ public class VideoDeletionManager: NSObject
         self.sessionManager = sessionManager
         self.retryCount = retryCount
      
-        self.operationQueue = NSOperationQueue()
-        self.operationQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
+        self.operationQueue = OperationQueue()
+        self.operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
         self.archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey)
         
         super.init()
@@ -72,27 +72,27 @@ public class VideoDeletionManager: NSObject
     
     // MARK: Setup
     
-    private static func setupArchiver(name name: String) -> KeyedArchiver
+    private static func setupArchiver(name: String) -> KeyedArchiver
     {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        var documentsURL = NSURL(string: documentsPath)!
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        var documentsURL = URL(string: documentsPath)!
         
-        documentsURL = documentsURL.URLByAppendingPathComponent(name)!
-        documentsURL = documentsURL.URLByAppendingPathComponent(VideoDeletionManager.DeletionsArchiveKey)!
+        documentsURL = documentsURL.appendingPathComponent(name)
+        documentsURL = documentsURL.appendingPathComponent(VideoDeletionManager.DeletionsArchiveKey)
         
-        if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
+        if FileManager.default.fileExists(atPath: documentsURL.path) == false
         {
-            try! NSFileManager.defaultManager().createDirectoryAtPath(documentsURL.path!, withIntermediateDirectories: true, attributes: nil)
+            try! FileManager.default.createDirectory(atPath: documentsURL.path, withIntermediateDirectories: true, attributes: nil)
         }
         
-        return KeyedArchiver(basePath: documentsURL.path!)
+        return KeyedArchiver(basePath: documentsURL.path)
     }
     
     // MARK: Archiving
     
     private func loadDeletions() -> [VideoUri: Int]
     {
-        if let deletions = self.archiver.loadObjectForKey(self.dynamicType.DeletionsArchiveKey) as? [VideoUri: Int]
+        if let deletions = self.archiver.loadObject(for: type(of: self).DeletionsArchiveKey) as? [VideoUri: Int]
         {
             return deletions
         }
@@ -104,25 +104,25 @@ public class VideoDeletionManager: NSObject
     {
         for (key, value) in self.deletions
         {
-            self.deleteVideoWithUri(key, retryCount: value)
+            self.deleteVideo(withURI: key, retryCount: value)
         }
     }
     
     private func save()
     {
-        self.archiver.saveObject(self.deletions, key: self.dynamicType.DeletionsArchiveKey)
+        self.archiver.save(object: self.deletions, key: type(of: self).DeletionsArchiveKey)
     }
     
     // MARK: Public API
     
-    public func deleteVideoWithUri(uri: String)
+    public func deleteVideo(withURI uri: String)
     {
-        self.deleteVideoWithUri(uri, retryCount: self.retryCount)
+        self.deleteVideo(withURI: uri, retryCount: self.retryCount)
     }
     
     // MARK: Private API
 
-    private func deleteVideoWithUri(uri: String, retryCount: Int)
+    private func deleteVideo(withURI uri: String, retryCount: Int)
     {
         self.deletions[uri] = retryCount
         self.save()
@@ -130,42 +130,42 @@ public class VideoDeletionManager: NSObject
         let operation = DeleteVideoOperation(sessionManager: self.sessionManager, videoUri: uri)
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
                 
                 if let error = operation.error
                 {
-                    if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? NSHTTPURLResponse where response.statusCode == 404
+                    if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse, response.statusCode == 404
                     {
-                        strongSelf.deletions.removeValueForKey(uri) // The video has already been deleted
+                        strongSelf.deletions.removeValue(forKey: uri) // The video has already been deleted
                         strongSelf.save()
 
                         return
                     }
                     
-                    if let retryCount = strongSelf.deletions[uri] where retryCount > 0
+                    if let retryCount = strongSelf.deletions[uri], retryCount > 0
                     {
                         let newRetryCount = retryCount - 1
-                        strongSelf.deleteVideoWithUri(uri, retryCount: newRetryCount) // Decrement the retryCount and try again
+                        strongSelf.deleteVideo(withURI: uri, retryCount: newRetryCount) // Decrement the retryCount and try again
                     }
                     else
                     {
-                        strongSelf.deletions.removeValueForKey(uri) // We retried the required number of times, nothing more to do
+                        strongSelf.deletions.removeValue(forKey: uri) // We retried the required number of times, nothing more to do
                         strongSelf.save()
                     }
                 }
                 else
                 {
-                    strongSelf.deletions.removeValueForKey(uri)
+                    strongSelf.deletions.removeValue(forKey: uri)
                     strongSelf.save()
                 }
             })
@@ -178,34 +178,34 @@ public class VideoDeletionManager: NSObject
     
     private func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(VideoDeletionManager.reachabilityDidChange(_:)), name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(VideoDeletionManager.reachabilityDidChange(_:)), name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
     private func removeObservers()
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillEnterForegroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidEnterBackgroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    func applicationWillEnterForeground(notification: NSNotification)
+    func applicationWillEnterForeground(_ notification: Notification)
     {
-        self.operationQueue.suspended = false
+        self.operationQueue.isSuspended = false
     }
 
-    func applicationDidEnterBackground(notification: NSNotification)
+    func applicationDidEnterBackground(_ notification: Notification)
     {
-        self.operationQueue.suspended = true
+        self.operationQueue.isSuspended = true
     }
 
-    func reachabilityDidChange(notification: NSNotification?)
+    func reachabilityDidChange(_ notification: Notification?)
     {
-        let currentlyReachable = AFNetworkReachabilityManager.sharedManager().reachable
+        let currentlyReachable = AFNetworkReachabilityManager.shared().isReachable
         
-        self.operationQueue.suspended = !currentlyReachable
+        self.operationQueue.isSuspended = !currentlyReachable
     }
 }

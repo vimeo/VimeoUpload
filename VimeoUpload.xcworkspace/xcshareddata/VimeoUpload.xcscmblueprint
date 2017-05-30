@@ -4,27 +4,27 @@
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "48C22B04BB999A9CD61DFB7B4E6A670AFD7B992C" : 0,
-    "951DC1E970BB10468856CADA6A96EABCB161AF33" : 0
+    "951DC1E970BB10468856CADA6A96EABCB161AF33" : 9223372036854775807,
+    "E6FEFDB1BB384422BD51ABBF99DBFDE089784474" : 9223372036854775807
   },
-  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "ACD102A2-BB2B-4AE3-98A8-EE8BB002E1EB",
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "214FA523-45E6-4085-9CAD-98BEA9D31040",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "48C22B04BB999A9CD61DFB7B4E6A670AFD7B992C" : "..",
-    "951DC1E970BB10468856CADA6A96EABCB161AF33" : "VimeoUpload\/"
+    "951DC1E970BB10468856CADA6A96EABCB161AF33" : "VimeoUpload\/",
+    "E6FEFDB1BB384422BD51ABBF99DBFDE089784474" : ".."
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "VimeoUpload",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
   "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "VimeoUpload.xcworkspace",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
     {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.vimeows.com:MobileApps\/Cameo-iOS.git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "48C22B04BB999A9CD61DFB7B4E6A670AFD7B992C"
-    },
-    {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:vimeo\/VimeoUpload.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "951DC1E970BB10468856CADA6A96EABCB161AF33"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.vimeows.com\/MobileApps\/Vimeo-iOS.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E6FEFDB1BB384422BD51ABBF99DBFDE089784474"
     }
   ]
 }

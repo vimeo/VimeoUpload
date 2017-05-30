@@ -17,7 +17,7 @@ default_platform :ios
 
 platform :ios do
   before_all do
-    ensure_xcode_version(version: "8.0")
+    ensure_xcode_version(version: "8.2.1")
   end
 
   desc "buid the example project"
@@ -28,8 +28,6 @@ platform :ios do
       "ios" => ["VimeoUpload-iOS", "generic/platform=iOS"],
       "iosold" => ["VimeoUpload-iOS-OldUpload", "generic/platform=iOS"],
     }
-    
-    cocoapods
 
     # cant use gym: https://github.com/fastlane/fastlane/issues/1816
     xcodebuild(
@@ -48,21 +46,44 @@ platform :ios do
 
   end
 
-  desc "build ios"
+  desc "run test"
+  lane :run_test do |options|
+    # Work-around to hanging simulators
+    ENV['FASTLANE_EXPLICIT_OPEN_SIMULATOR'] = "1"
+    # custom paths for xcpretty-formatter; see Dangerfile
+    ENV['XCPRETTY_JSON_FILE_OUTPUT'] = "build/reports/errors-#{options[:scheme]}.json"
+    scan(
+      workspace: "VimeoUpload.xcworkspace",
+      scheme: options[:scheme],
+      configuration: "Debug",
+      buildlog_path: ".",
+      output_directory: "./fastlane/test_output-#{options[:scheme]}",
+      derived_data_path: "build/",
+      formatter: 'xcpretty-json-formatter',
+    )
+
+    pretty_junit(file_pattern: "./fastlane/test_output-#{options[:scheme]}/report.junit")
+  end
+
+  desc "test ios"
   lane :ios do |options|
-    build_example(type:"ios")
+    run_test(scheme: "VimeoUpload-iOS")
   end
 
-  desc "build ios old"
+  desc "test ios old"
   lane :iosold do |options|
-    build_example(type:"iosold")
+    run_test(scheme: "VimeoUpload-iOS-OldUpload")
   end
 
-  desc "build all"
-  lane :all do |options|
+  desc "test all"
+  lane :test do |options|
     
     ios
     iosold
+
+    if is_ci?
+      danger(use_bundle_exec: false)
+    end
     
   end
 

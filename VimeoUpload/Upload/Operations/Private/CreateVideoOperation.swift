@@ -30,17 +30,17 @@ import VimeoNetworking
 public class CreateVideoOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
-    private let url: NSURL
+    private let url: URL
     private let videoSettings: VideoSettings?
     
-    private var task: NSURLSessionDataTask?
+    private var task: URLSessionDataTask?
 
     public var result: VIMUploadTicket?
     public var error: NSError?
     
     // MARK: - Initialization
 
-    public required init(sessionManager: VimeoSessionManager, url: NSURL, videoSettings: VideoSettings?)
+    public required init(sessionManager: VimeoSessionManager, url: URL, videoSettings: VideoSettings?)
     {
         self.sessionManager = sessionManager
         self.url = url
@@ -58,7 +58,7 @@ public class CreateVideoOperation: ConcurrentOperation
 
     override public func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
@@ -74,14 +74,14 @@ public class CreateVideoOperation: ConcurrentOperation
                 
                 strongSelf.task = nil
                 
-                if strongSelf.cancelled
+                if strongSelf.isCancelled
                 {
                     return
                 }
                 
                 if let error = error
                 {
-                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.CreateVideoOperation.rawValue)
+                    strongSelf.error = error.error(byAddingDomain: UploadErrorDomain.CreateVideoOperation.rawValue)
                 }
                 else if let uploadTicket = uploadTicket
                 {
@@ -92,15 +92,15 @@ public class CreateVideoOperation: ConcurrentOperation
                     fatalError("Execution should never reach this point")
                 }
                 
-                strongSelf.state = .Finished
+                strongSelf.state = .finished
             })
             
             self.task?.resume()
         }
         catch let error as NSError
         {
-            self.error = error.errorByAddingDomain(UploadErrorDomain.CreateVideoOperation.rawValue)
-            self.state = .Finished
+            self.error = error.error(byAddingDomain: UploadErrorDomain.CreateVideoOperation.rawValue)
+            self.state = .finished
         }
     }
     

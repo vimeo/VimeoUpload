@@ -32,18 +32,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 {
     var window: UIWindow?
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
     {
-        AFNetworkReachabilityManager.sharedManager().startMonitoring()
+        AFNetworkReachabilityManager.shared().startMonitoring()
         NewVimeoUploader.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
 
-        let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
+        let settings = UIUserNotificationSettings(types: .alert, categories: nil)
         application.registerUserNotificationSettings(settings)
         
-        let viewController = MyVideosViewController(nibName: MyVideosViewController.NibName, bundle:NSBundle.mainBundle())
+        let viewController = MyVideosViewController(nibName: MyVideosViewController.NibName, bundle:Bundle.main)
         let navigationController = UINavigationController(rootViewController: viewController)
         
-        let frame = UIScreen.mainScreen().bounds
+        let frame = UIScreen.main.bounds
         self.window = UIWindow(frame: frame)
         self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
@@ -51,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         return true
     }
     
-    func application(application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: () -> Void)
+    func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void)
     {
         if NewVimeoUploader.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
         {

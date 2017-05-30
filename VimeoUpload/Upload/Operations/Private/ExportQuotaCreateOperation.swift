@@ -28,29 +28,29 @@ import Foundation
 import AVFoundation
 import VimeoNetworking
 
-public class ExportQuotaCreateOperation: ConcurrentOperation
+open class ExportQuotaCreateOperation: ConcurrentOperation
 {
     let me: VIMUser
     let sessionManager: VimeoSessionManager
-    public var videoSettings: VideoSettings?
-    let operationQueue: NSOperationQueue
+    open var videoSettings: VideoSettings?
+    let operationQueue: OperationQueue
     
     // MARK:
 
-    public var downloadProgressBlock: ProgressBlock?
-    public var exportProgressBlock: ExportProgressBlock?
+    open var downloadProgressBlock: ProgressBlock?
+    open var exportProgressBlock: ExportProgressBlock?
     
     // MARK:
     
-    public var url: NSURL?
-    public var uploadTicket: VIMUploadTicket?
-    public var error: NSError?
+    open var url: URL?
+    open var uploadTicket: VIMUploadTicket?
+    open var error: NSError?
     {
         didSet
         {
             if self.error != nil
             {
-                self.state = .Finished
+                self.state = .finished
             }
         }
     }
@@ -63,7 +63,7 @@ public class ExportQuotaCreateOperation: ConcurrentOperation
         self.sessionManager = sessionManager
         self.videoSettings = videoSettings
         
-        self.operationQueue = NSOperationQueue()
+        self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
     }
     
@@ -74,18 +74,18 @@ public class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override public func main()
+    override open func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
         
-        let operation = self.makeExportQuotaOperation(self.me)!
-        self.performExportQuotaOperation(operation)
+        let operation = self.makeExportQuotaOperation(with: self.me)!
+        self.perform(exportQuotaOperation: operation)
     }
     
-    override public func cancel()
+    override open func cancel()
     {
         super.cancel()
         
@@ -93,13 +93,13 @@ public class ExportQuotaCreateOperation: ConcurrentOperation
         
         if let url = self.url
         {
-            NSFileManager.defaultManager().deleteFileAtURL(url)
+            FileManager.default.deleteFile(at: url)
         }
     }
     
     // MARK: Public API
     
-    func makeExportQuotaOperation(me: VIMUser) -> ExportQuotaOperation?
+    func makeExportQuotaOperation(with me: VIMUser) -> ExportQuotaOperation?
     {
         assertionFailure("Subclasses must override")
         
@@ -108,26 +108,26 @@ public class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: Private API
 
-    private func performExportQuotaOperation(operation: ExportQuotaOperation)
+    private func perform(exportQuotaOperation operation: ExportQuotaOperation)
     {
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
-            self?.downloadProgressBlock?(progress: progress)
+            self?.downloadProgressBlock?(progress)
         }
         
         operation.exportProgressBlock = { [weak self] (exportSession: AVAssetExportSession, progress: Double) -> Void in
-            self?.exportProgressBlock?(exportSession: exportSession, progress: progress)
+            self?.exportProgressBlock?(exportSession, progress)
         }
         
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -147,31 +147,31 @@ public class ExportQuotaCreateOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    private func createVideo(url url: NSURL)
+    private func createVideo(url: URL)
     {
         let videoSettings = self.videoSettings
         
         let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
                 
                 if let error = operation.error
                 {
-                    if let fileSize = try? AVURLAsset(URL: url).fileSize().doubleValue, let availableSpace = strongSelf.me.uploadQuota?.sizeQuota?.free?.doubleValue
+                    if let fileSize = try? AVURLAsset(url: url).fileSize(), let availableSpace = strongSelf.me.uploadQuota?.sizeQuota?.free?.doubleValue
                     {
                         let userInfo = [UploadErrorKey.FileSize.rawValue: fileSize, UploadErrorKey.AvailableSpace.rawValue: availableSpace]
-                        strongSelf.error = error.errorByAddingUserInfo(userInfo)
+                        strongSelf.error = error.error(byAddingUserInfo: userInfo)
                     }
                     else
                     {
@@ -182,7 +182,7 @@ public class ExportQuotaCreateOperation: ConcurrentOperation
                 {
                     strongSelf.url = url
                     strongSelf.uploadTicket = operation.result!
-                    strongSelf.state = .Finished
+                    strongSelf.state = .finished
                 }
             })
         }

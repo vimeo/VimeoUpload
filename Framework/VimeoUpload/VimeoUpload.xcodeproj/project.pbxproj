@@ -17,6 +17,7 @@
 		3EA2DAD61DFF3E0F006E2C65 /* PHAssetCloudExportQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA2DAD31DFF3E0F006E2C65 /* PHAssetCloudExportQuotaOperation.swift */; };
 		3EA2DAD71DFF3E0F006E2C65 /* PHAssetDownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA2DAD41DFF3E0F006E2C65 /* PHAssetDownloadOperation.swift */; };
 		3EA2DAD81DFF3E0F006E2C65 /* PHAssetExportSessionOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA2DAD51DFF3E0F006E2C65 /* PHAssetExportSessionOperation.swift */; };
+		5C9E3CA51EA66187000D1F6B /* DescriptorKVObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9E3CA41EA66187000D1F6B /* DescriptorKVObserver.swift */; };
 		8D9A15BCC5ABADC2D001B20C /* Pods_VimeoUpload.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4E8D665288660F1F668B91 /* Pods_VimeoUpload.framework */; };
 		AF40D4E51CCE9CB600753ABA /* VimeoUpload.h in Headers */ = {isa = PBXBuildFile; fileRef = AF40D4E41CCE9CB600753ABA /* VimeoUpload.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AF40D4EC1CCE9CB600753ABA /* VimeoUpload.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF40D4E11CCE9CB600753ABA /* VimeoUpload.framework */; };
@@ -96,6 +97,7 @@
 		3EA2DAD41DFF3E0F006E2C65 /* PHAssetDownloadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetDownloadOperation.swift; sourceTree = "<group>"; };
 		3EA2DAD51DFF3E0F006E2C65 /* PHAssetExportSessionOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetExportSessionOperation.swift; sourceTree = "<group>"; };
 		4D4E8D665288660F1F668B91 /* Pods_VimeoUpload.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VimeoUpload.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C9E3CA41EA66187000D1F6B /* DescriptorKVObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorKVObserver.swift; sourceTree = "<group>"; };
 		AF40D4E11CCE9CB600753ABA /* VimeoUpload.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VimeoUpload.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF40D4E41CCE9CB600753ABA /* VimeoUpload.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VimeoUpload.h; sourceTree = "<group>"; };
 		AF40D4E61CCE9CB600753ABA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 		AF40D50A1CCE9DEB00753ABA /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				5C9E3CA41EA66187000D1F6B /* DescriptorKVObserver.swift */,
 				AF40D50C1CCE9DEB00753ABA /* CameraRollAssetCell.swift */,
 				AF40D50E1CCE9DEB00753ABA /* Extensions */,
 				AF40D5101CCE9DEB00753ABA /* Model */,
@@ -528,10 +531,11 @@
 					AF40D4E01CCE9CB600753ABA = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = 35R365FS4Q;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0820;
 					};
 					AF40D4EA1CCE9CB600753ABA = {
 						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0820;
 					};
 				};
 			};
@@ -612,6 +616,7 @@
 				AF40D5631CCE9DEB00753ABA /* VIMPHAsset.swift in Sources */,
 				AF40D5691CCE9DEB00753ABA /* OldUploadDescriptor.swift in Sources */,
 				3C53EC271D219C8500B7AA6D /* VimeoResponseSerializer+Thumbnail.swift in Sources */,
+				5C9E3CA51EA66187000D1F6B /* DescriptorKVObserver.swift in Sources */,
 				AF40D5641CCE9DEB00753ABA /* PHAssetHelper.swift in Sources */,
 				AF40D5741CCE9DEB00753ABA /* VimeoRequestSerializer+Upload.swift in Sources */,
 				AF40D5811CCE9DEB00753ABA /* MeOperation.swift in Sources */,
@@ -805,7 +810,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -827,7 +832,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.vimeo.VimeoUpload;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -838,6 +843,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vimeo.VimeoUploadTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -848,6 +854,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vimeo.VimeoUploadTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

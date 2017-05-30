@@ -59,11 +59,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     // MARK:
     
     private var operation: ConcurrentOperation?
-    private var task: NSURLSessionDataTask?
+    private var task: URLSessionDataTask?
     
     // MARK:
     
-    private var url: NSURL?
+    private var url: URL?
     private var uploadTicket: VIMUploadTicket?
     private var videoSettings: VideoSettings?
 
@@ -91,7 +91,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         assert(self.input != nil, "self.input cannot be nil")
         
-        self.edgesForExtendedLayout = .None
+        self.edgesForExtendedLayout = []
         
         self.setupNavigationBar()
         self.setupAndStartOperation()
@@ -103,9 +103,9 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         self.title = "Video Settings"
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(VideoSettingsViewController.didTapCancel(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(VideoSettingsViewController.didTapCancel(_:)))
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.Done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
     }
 
     private func setupAndStartOperation()
@@ -128,14 +128,14 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -152,16 +152,16 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     if let error = operation.error
                     {
                         strongSelf.activityIndicatorView.stopAnimating()
-                        strongSelf.presentOperationErrorAlert(error)
+                        strongSelf.presentOperationErrorAlert(with: error)
                     }
                     else
                     {
-                        if let video = strongSelf.uploadTicket?.video, let viewPrivacy = video.privacy?.view where viewPrivacy != strongSelf.dynamicType.PreUploadViewPrivacy
+                        if let video = strongSelf.uploadTicket?.video, let viewPrivacy = video.privacy?.view, viewPrivacy != type(of: strongSelf).PreUploadViewPrivacy
                         {
-                            NSNotificationCenter.defaultCenter().postNotificationName(VideoSettingsViewController.UploadInitiatedNotification, object: video)
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: video)
                             
                             strongSelf.activityIndicatorView.stopAnimating()
-                            strongSelf.dismissViewControllerAnimated(true, completion: nil)
+                            strongSelf.dismiss(animated: true, completion: nil)
                         }
                         else
                         {
@@ -190,11 +190,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK: Actions
     
-    func didTapCancel(sender: UIBarButtonItem)
+    func didTapCancel(_ sender: UIBarButtonItem)
     {
         self.operation?.cancel()
         self.activityIndicatorView.stopAnimating()
-        self.navigationController?.popViewControllerAnimated(true)
+        _ = self.navigationController?.popViewController(animated: true)
         
         if let videoUri = self.uploadTicket?.video?.uri
         {
@@ -202,7 +202,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
     }
 
-    func didTapUpload(sender: UIBarButtonItem)
+    func didTapUpload(_ sender: UIBarButtonItem)
     {
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
@@ -210,7 +210,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
      
         let operation = self.operation as! ExportQuotaCreateOperation
         
-        if operation.state == .Executing
+        if operation.state == .executing
         {
             operation.videoSettings = self.videoSettings
 
@@ -218,15 +218,15 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
         else if let error = operation.error
         {
-            self.presentOperationErrorAlert(error)
+            self.presentOperationErrorAlert(with: error)
         }
         else
         {
-            if let video = self.uploadTicket?.video, let viewPrivacy = video.privacy?.view where viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
+            if let video = self.uploadTicket?.video, let viewPrivacy = video.privacy?.view, viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
             {
-                NSNotificationCenter.defaultCenter().postNotificationName(self.dynamicType.UploadInitiatedNotification, object: video)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: type(of: self).UploadInitiatedNotification), object: video)
                 
-                self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
             }
             else
             {
@@ -238,7 +238,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: UITextFieldDelegate
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
     {
         textField.resignFirstResponder()
         self.descriptionTextView.becomeFirstResponder()
@@ -248,37 +248,37 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: UI Presentation
     
-    private func presentOperationErrorAlert(error: NSError)
+    private func presentOperationErrorAlert(with error: NSError)
     {
         // TODO: check error.code == AVError.DiskFull.rawValue and message appropriately
         // TODO: check error.code == AVError.OperationInterrupted.rawValue (app backgrounded during export)
         
-        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.popViewControllerAnimated(true)
+        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+            _ = self?.navigationController?.popViewController(animated: true)
         }))
         
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
             self?.activityIndicatorView.startAnimating()
             self?.setupAndStartOperation()
         }))
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
-    private func presentVideoSettingsErrorAlert(error: NSError)
+    private func presentVideoSettingsErrorAlert(with error: NSError)
     {
-        let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
-            self?.navigationController?.popViewControllerAnimated(true)
+        let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+            _ = self?.navigationController?.popViewController(animated: true)
         }))
         
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
             self?.activityIndicatorView.startAnimating()
             self?.applyVideoSettings()
         }))
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
 
     // MARK: Private API
@@ -294,21 +294,25 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                 
                 self?.task = nil
                 
-                dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                DispatchQueue.main.async(execute: { [weak self] () -> Void in
+                    guard let strongSelf = self else
+                    {
+                        return
+                    }
                     
-                    self?.activityIndicatorView.stopAnimating()
+                    strongSelf.activityIndicatorView.stopAnimating()
                     
                     if let error = error
                     {
-                        self?.presentVideoSettingsErrorAlert(error)
+                        strongSelf.presentVideoSettingsErrorAlert(with: error)
                     }
                     else
                     {
-                        NSNotificationCenter.defaultCenter().postNotificationName(VideoSettingsViewController.UploadInitiatedNotification, object: video)
+                        NotificationCenter.default.post(name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: video)
                         
-                        self?.dismissViewControllerAnimated(true, completion: nil)
+                        strongSelf.dismiss(animated: true, completion: nil)
                     }
-                })            
+                })
             })
             
             self.task?.resume()
@@ -316,7 +320,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         catch let error as NSError
         {
             self.activityIndicatorView.stopAnimating()
-            self.presentVideoSettingsErrorAlert(error)
+            self.presentVideoSettingsErrorAlert(with: error)
         }
     }
 }

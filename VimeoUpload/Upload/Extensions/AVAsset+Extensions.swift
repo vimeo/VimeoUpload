@@ -29,10 +29,9 @@ import AVFoundation
 
 public extension AVAsset
 {    
-    func approximateFileSize(completion: FloatBlock)
+    func approximateFileSize(completion completion: @escaping FloatBlock)
     {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
-
+        DispatchQueue.global(qos: .default).async { () -> Void in
             var approximateSize: Float64 = 0
             
             let tracks = self.tracks // Accessing the tracks property is slow, maybe synchronous below the hood, so dispatching to bg thread
@@ -43,11 +42,11 @@ public extension AVAsset
                 let seconds: Float64 = CMTimeGetSeconds(track.timeRange.duration)
                 approximateSize += seconds * Float64(bytesPerSecond)
             }
-
+            
             assert(approximateSize > 0, "Unable to calculate approximate fileSize")
             
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion(value: approximateSize)
+            DispatchQueue.main.async(execute: { () -> Void in
+                completion(approximateSize)
             })
         }
     }

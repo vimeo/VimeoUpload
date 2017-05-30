@@ -1,14 +1,13 @@
 machine:
   xcode:
-    version: 8.0
+    version: 8.2.1
 
 dependencies:
     override:
-        - bundle install
+        - bundle install --deployment
     cache_directories:
-        - "Pods"
         - "vendor/bundle"
 
 test:
   override:
-    - bundle exec fastlane all
+    - FASTLANE_SKIP_UPDATE_CHECK=1 bundle exec fastlane test

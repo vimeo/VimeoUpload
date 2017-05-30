@@ -45,7 +45,7 @@ public class ExportOperation: ConcurrentOperation
     private var exportProgressKVOContext = UInt8()
     var progressBlock: ProgressBlock?
     
-    private(set) var outputURL: NSURL?
+    private(set) var outputURL: URL?
     private(set) var error: NSError?
     
     // MARK: - Initialization
@@ -75,8 +75,8 @@ public class ExportOperation: ConcurrentOperation
 
         do
         {
-            let filename = NSProcessInfo.processInfo().globallyUniqueString
-            exportSession.outputURL = try NSURL.uploadURLWithFilename(filename, fileType: self.dynamicType.FileType)
+            let filename = ProcessInfo.processInfo.globallyUniqueString
+            exportSession.outputURL = try URL.uploadURL(withFileName: filename, fileType: type(of: self).FileType)
         }
         catch let error as NSError
         {
@@ -101,15 +101,15 @@ public class ExportOperation: ConcurrentOperation
 
     override public func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
         
-        if self.exportSession.asset.exportable == false // DRM protected
+        if self.exportSession.asset.isExportable == false // DRM protected
         {
-            self.error = NSError.errorWithDomain(UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.AssetIsNotExportable.rawValue, description: "Asset is not exportable")
-            self.state = .Finished
+            self.error = NSError.error(withDomain: UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.assetIsNotExportable.rawValue, description: "Asset is not exportable")
+            self.state = .finished
             
             return
         }
@@ -117,57 +117,57 @@ public class ExportOperation: ConcurrentOperation
         // AVAssetExportSession does not do an internal check to see if there's ample disk space available to perform the export [AH] 12/06/2015
         // However this check will not work with presetName "passthrough" since that preset reports estimatedOutputFileLength of zero always.
 
-        let availableDiskSpace = try? NSFileManager.defaultManager().availableDiskSpace() // Double optional
-        if let diskSpace = availableDiskSpace, let space = diskSpace where space.longLongValue < self.exportSession.estimatedOutputFileLength
+        let availableDiskSpace = try? FileManager.default.availableDiskSpace() // Double optional
+        if let diskSpace = availableDiskSpace, let space = diskSpace, space.int64Value < self.exportSession.estimatedOutputFileLength
         {
-            self.error = NSError.errorWithDomain(UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.DiskSpaceException.rawValue, description: "Not enough disk space to copy asset")
-            self.state = .Finished
+            self.error = NSError.error(withDomain: UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.diskSpaceException.rawValue, description: "Not enough disk space to copy asset")
+            self.state = .finished
             
             return
         }
         
-        self.exportSession.exportAsynchronouslyWithCompletionHandler({ [weak self] () -> Void in
+        self.exportSession.exportAsynchronously(completionHandler: { [weak self] () -> Void in
             
             guard let strongSelf = self else
             {
                 return
             }
             
-            if strongSelf.cancelled
+            if strongSelf.isCancelled
             {
                 return
             }
             
             if let error = strongSelf.exportSession.error
             {
-                strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue)
+                strongSelf.error = (error as NSError).error(byAddingDomain: UploadErrorDomain.ExportOperation.rawValue)
 
-                if error.domain == AVFoundationErrorDomain && error.code == AVError.DiskFull.rawValue
+                if (error as NSError).domain == AVFoundationErrorDomain && (error as NSError).code == AVError.Code.diskFull.rawValue
                 {
-                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue).errorByAddingCode(UploadLocalErrorCode.DiskSpaceException.rawValue)
+                    strongSelf.error = (error as NSError).error(byAddingDomain: UploadErrorDomain.ExportOperation.rawValue).error(byAddingCode: UploadLocalErrorCode.diskSpaceException.rawValue)
                 }
                 else
                 {
-                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.ExportOperation.rawValue)
+                    strongSelf.error = (error as NSError).error(byAddingDomain: UploadErrorDomain.ExportOperation.rawValue)
                 }
             }
-            else if let outputURL = strongSelf.exportSession.outputURL, let path = outputURL.path where NSFileManager.defaultManager().fileExistsAtPath(path)
+            else if let outputURL = strongSelf.exportSession.outputURL, FileManager.default.fileExists(atPath: outputURL.path)
             {
                 strongSelf.outputURL = outputURL
             }
             else
             {
-                strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.ExportOperation.rawValue, code: nil, description: "Export session finished with no error and no output URL.")
+                strongSelf.error = NSError.error(withDomain: UploadErrorDomain.ExportOperation.rawValue, code: nil, description: "Export session finished with no error and no output URL.")
             }
 
-            strongSelf.state = .Finished
+            strongSelf.state = .finished
         })
 
         // For some reason, not sure why, KVO on self.exportSession.progress does not trigger calls to observeValueForKeyPath
         // So I'm using this while loop to update a dynamic property instead, and KVO'ing on that [AH] 10/22/2015
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) { [weak self] () -> Void in
-            while self?.exportSession.status == AVAssetExportSessionStatus.Waiting || self?.exportSession.status == AVAssetExportSessionStatus.Exporting
+        DispatchQueue.global(qos: .utility).async { [weak self] () -> Void in
+            while self?.exportSession.status == AVAssetExportSessionStatus.waiting || self?.exportSession.status == AVAssetExportSessionStatus.exporting
             {
                 self?.progress = self?.exportSession.progress ?? 0
             }
@@ -186,31 +186,31 @@ public class ExportOperation: ConcurrentOperation
     
     private func addObservers()
     {
-        self.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: NSKeyValueObservingOptions.New, context: &self.exportProgressKVOContext)
+        self.addObserver(self, forKeyPath: type(of: self).ProgressKeyPath, options: NSKeyValueObservingOptions.new, context: &self.exportProgressKVOContext)
     }
     
     private func removeObservers()
     {
-        self.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.exportProgressKVOContext)
+        self.removeObserver(self, forKeyPath: type(of: self).ProgressKeyPath, context: &self.exportProgressKVOContext)
     }
     
-    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
+    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
     {
         if let keyPath = keyPath
         {
             switch (keyPath, context)
             {
-                case(self.dynamicType.ProgressKeyPath, &self.exportProgressKVOContext):
-                    let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0;
-                    self.progressBlock?(progress: progress)
+                case(type(of: self).ProgressKeyPath, .some(&self.exportProgressKVOContext)):
+                    let progress = (change?[.newKey] as AnyObject).doubleValue ?? 0
+                    self.progressBlock?(progress)
                 
                 default:
-                    super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+                    super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             }
         }
         else
         {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }    
 }

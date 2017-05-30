@@ -28,25 +28,25 @@ import Foundation
 
 // This class is a minimally modified version of this gist: https://gist.github.com/calebd/93fa347397cec5f88233
 
-public class ConcurrentOperation: NSOperation
+open class ConcurrentOperation: Operation
 {
     // MARK: Types
     
     public enum State
     {
-        case Ready, Executing, Finished
+        case ready, executing, finished
         
         func keyPath() -> String
         {
             switch self
             {
-                case Ready:
+                case .ready:
                     return "isReady"
                 
-                case Executing:
+                case .executing:
                     return "isExecuting"
                 
-                case Finished:
+                case .finished:
                     return "isFinished"
             }
         }
@@ -54,52 +54,52 @@ public class ConcurrentOperation: NSOperation
     
     // MARK: Properties
     
-    public var state = State.Ready
+    open var state = State.ready
     {
         willSet
         {
-            self.willChangeValueForKey(newValue.keyPath())
-            self.willChangeValueForKey(state.keyPath())
+            self.willChangeValue(forKey: newValue.keyPath())
+            self.willChangeValue(forKey: state.keyPath())
         }
         didSet
         {
-            self.didChangeValueForKey(oldValue.keyPath())
-            self.didChangeValueForKey(state.keyPath())
+            self.didChangeValue(forKey: oldValue.keyPath())
+            self.didChangeValue(forKey: state.keyPath())
         }
     }
     
     // MARK: NSOperation Property Overrides
     
-    override public var ready: Bool
+    override open var isReady: Bool
     {
-        return super.ready && self.state == .Ready
+        return super.isReady && self.state == .ready
     }
     
-    override public var executing: Bool
+    override open var isExecuting: Bool
     {
-        return self.state == .Executing
+        return self.state == .executing
     }
     
-    override public var finished: Bool
+    override open var isFinished: Bool
     {
-        return self.state == .Finished
+        return self.state == .finished
     }
     
-    override public var asynchronous: Bool
+    override open var isAsynchronous: Bool
     {
         return true
     }
     
     // MARK: NSOperation Method Overrides
     
-    override public func start()
+    override open func start()
     {
-        if self.cancelled
+        if self.isCancelled
         {            
             return
         }
     
-        self.state = .Executing
+        self.state = .executing
 
         // Specifically not dispatching the main method call on a background thread,
         // It's the responsibility of the subclass to determine whether this is necessary,
@@ -110,15 +110,15 @@ public class ConcurrentOperation: NSOperation
         self.main()
     }
     
-    override public func main()
+    override open func main()
     {
         fatalError("Subclasses must override main()")
     }
     
-    override public func cancel()
+    override open func cancel()
     {
         super.cancel()
         
-        self.state = .Finished
+        self.state = .finished
     }
 }

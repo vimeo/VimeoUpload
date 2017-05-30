@@ -12,56 +12,56 @@ import VimeoNetworking
 
 extension VimeoRequestSerializer
 {
-    func createThumbnailRequestWithUri(uri: String) throws -> NSMutableURLRequest
+    func createThumbnailRequest(with uri: String) throws -> NSMutableURLRequest
     {
-        let url = NSURL(string: "\(uri)/pictures", relativeToURL: VimeoBaseURLString)!
+        let url = URL(string: "\(uri)/pictures", relativeTo: VimeoBaseURLString)!
         
         var error: NSError?
-        let request = self.requestWithMethod("POST", URLString: url.absoluteString!, parameters: nil, error: &error)
+        let request = self.request(withMethod: "POST", urlString: url.absoluteString, parameters: nil, error: &error)
         
         if let error = error
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.CreateThumbnail.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.CreateThumbnail.rawValue)
         }
         
         return request
     }
     
-    func activateThumbnailRequestWithUri(uri: String) throws -> NSMutableURLRequest
+    func activateThumbnailRequest(with uri: String) throws -> NSMutableURLRequest
     {
-        let url = NSURL(string: "\(uri)", relativeToURL: VimeoBaseURLString)!
+        let url = URL(string: "\(uri)", relativeTo: VimeoBaseURLString)!
         
         var error: NSError?
         let activationParams = ["active" : "true"]
-        let request = self.requestWithMethod("PATCH", URLString: url.absoluteString!, parameters: activationParams, error: &error)
+        let request = self.request(withMethod: "PATCH", urlString: url.absoluteString, parameters: activationParams, error: &error)
         
         if let error = error
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.ActivateThumbnail.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.ActivateThumbnail.rawValue)
         }
         
         return request
     }
     
-    func uploadThumbnailRequestWithSource(source: NSURL, destination: String) throws -> NSMutableURLRequest {
+    func uploadThumbnailRequest(with source: URL, destination: String) throws -> NSMutableURLRequest {
         
-        guard let path = source.path where NSFileManager.defaultManager().fileExistsAtPath(path) else {
+        guard FileManager.default.fileExists(atPath: source.path) else {
             throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to construct upload request but the source file does not exist."])
         }
         
         var error: NSError?
-        let request = self.requestWithMethod("PUT", URLString: destination, parameters: nil, error: &error)
+        let request = self.request(withMethod: "PUT", urlString: destination, parameters: nil, error: &error)
         if let error = error {
-            throw error.errorByAddingDomain(UploadErrorDomain.UploadThumbnail.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.UploadThumbnail.rawValue)
         }
         
-        let asset = AVURLAsset(URL: source)
+        let asset = AVURLAsset(url: source)
         
-        let fileSize: NSNumber
+        let fileSize: Double
         do {
             fileSize = try asset.fileSize()
         } catch let error as NSError {
-            throw error.errorByAddingDomain(UploadErrorDomain.UploadThumbnail.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.UploadThumbnail.rawValue)
         }
         
         request.setValue("\(fileSize)", forHTTPHeaderField: "Content-Length")

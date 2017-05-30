@@ -40,7 +40,7 @@ public class MeQuotaOperation: ConcurrentOperation
     let sessionManager: VimeoSessionManager
     
     public var me: VIMUser?
-    private let operationQueue: NSOperationQueue
+    private let operationQueue: OperationQueue
     
     private var avAsset: AVAsset?
     private var selectionFulfilled: Bool = false
@@ -51,7 +51,7 @@ public class MeQuotaOperation: ConcurrentOperation
         {
             if self.error != nil
             {
-                self.state = .Finished
+                self.state = .finished
             }
         }
     }
@@ -61,7 +61,7 @@ public class MeQuotaOperation: ConcurrentOperation
         self.sessionManager = sessionManager
         self.me = me
         
-        self.operationQueue = NSOperationQueue()
+        self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
     }
 
@@ -74,7 +74,7 @@ public class MeQuotaOperation: ConcurrentOperation
     
     override public func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
@@ -102,7 +102,7 @@ public class MeQuotaOperation: ConcurrentOperation
     // Then we're dealing with an iCloud asset
     // This is ok, but download of iCloud asset is not handled by this workflow
     
-    public func fulfillSelection(avAsset avAsset: AVAsset?)
+    public func fulfillSelection(avAsset: AVAsset?)
     {
         if self.selectionFulfilled == true
         {
@@ -111,7 +111,7 @@ public class MeQuotaOperation: ConcurrentOperation
             return
         }
         
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
@@ -134,14 +134,14 @@ public class MeQuotaOperation: ConcurrentOperation
         let operation = MeOperation(sessionManager: self.sessionManager)
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -168,7 +168,7 @@ public class MeQuotaOperation: ConcurrentOperation
             return
         }
         
-        guard let _ = self.me where self.selectionFulfilled == true else
+        guard let _ = self.me, self.selectionFulfilled == true else
         {
             return
         }
@@ -183,23 +183,23 @@ public class MeQuotaOperation: ConcurrentOperation
         let operation = DailyQuotaOperation(user: me)
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
                 
                 // Do not check error, allow to pass [AH]
 
-                if let result = operation.result where result == false
+                if let result = operation.result, result == false
                 {
-                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.DailyQuotaException.rawValue, description: "Upload would exceed daily quota.")
+                    strongSelf.error = NSError.error(withDomain: UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.dailyQuotaException.rawValue, description: "Upload would exceed daily quota.")
                 }
                 else
                 {
@@ -209,7 +209,7 @@ public class MeQuotaOperation: ConcurrentOperation
                     }
                     else
                     {
-                        strongSelf.state = .Finished // If the asset is nil, then it's in iCloud and we don't yet have access to the filesize
+                        strongSelf.state = .finished // If the asset is nil, then it's in iCloud and we don't yet have access to the filesize
                     }
                 }
             })
@@ -232,24 +232,24 @@ public class MeQuotaOperation: ConcurrentOperation
             let operation = WeeklyQuotaOperation(user: me, fileSize: value)
             operation.completionBlock = { [weak self] () -> Void in
                 
-                dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                DispatchQueue.main.async(execute: { [weak self] () -> Void in
                     
                     guard let strongSelf = self else
                     {
                         return
                     }
                     
-                    if operation.cancelled == true
+                    if operation.isCancelled == true
                     {
                         return
                     }
                     
                     // Do not check error, allow to pass [AH]
 
-                    if let result = operation.result where result.success == false
+                    if let result = operation.result, result.success == false
                     {
                         let userInfo = [UploadErrorKey.FileSize.rawValue: result.fileSize, UploadErrorKey.AvailableSpace.rawValue: result.availableSpace]
-                        strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.WeeklyQuotaException.rawValue, description: "Upload would exceed approximate weekly quota.").errorByAddingUserInfo(userInfo)
+                        strongSelf.error = NSError.error(withDomain: UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.weeklyQuotaException.rawValue, description: "Upload would exceed approximate weekly quota.").error(byAddingUserInfo: userInfo as [String : AnyObject])
                     }
                     else
                     {
@@ -262,33 +262,33 @@ public class MeQuotaOperation: ConcurrentOperation
         }
     }
 
-    private func checkApproximateDiskSpace(fileSize fileSize: Float64)
+    private func checkApproximateDiskSpace(fileSize: Float64)
     {
         let operation = DiskSpaceOperation(fileSize: fileSize)
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
                 
                 // Do not check error, allow to pass [AH]
 
-                if let result = operation.result where result.success == false
+                if let result = operation.result, result.success == false
                 {
                     let userInfo = [UploadErrorKey.FileSize.rawValue: result.fileSize, UploadErrorKey.AvailableSpace.rawValue: result.availableSpace]
-                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.DiskSpaceException.rawValue, description: "Not enough approximate disk space to export asset.").errorByAddingUserInfo(userInfo)
+                    strongSelf.error = NSError.error(withDomain: UploadErrorDomain.MeQuotaOperation.rawValue, code: UploadLocalErrorCode.diskSpaceException.rawValue, description: "Not enough approximate disk space to export asset.").error(byAddingUserInfo: userInfo as [String : AnyObject])
                 }
                 else
                 {
-                    strongSelf.state = .Finished
+                    strongSelf.state = .finished
                 }
             })
         }

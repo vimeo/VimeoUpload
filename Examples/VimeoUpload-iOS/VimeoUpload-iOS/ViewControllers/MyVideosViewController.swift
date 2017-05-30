@@ -39,7 +39,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     private var refreshControl: UIRefreshControl?
     
     private var items: [VIMVideo] = []
-    private var task: NSURLSessionDataTask?
+    private var task: URLSessionDataTask?
     private var videoRefreshManager: VideoRefreshManager?
     
     deinit
@@ -67,14 +67,14 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func setupTableView()
     {
-        let nib = UINib(nibName: VideoCell.NibName, bundle: NSBundle.mainBundle())
-        self.tableView.registerNib(nib, forCellReuseIdentifier: VideoCell.CellIdentifier)
+        let nib = UINib(nibName: VideoCell.NibName, bundle: Bundle.main)
+        self.tableView.register(nib, forCellReuseIdentifier: VideoCell.CellIdentifier)
     }
     
     private func setupRefreshControl()
     {
         self.refreshControl = UIRefreshControl()
-        self.refreshControl!.addTarget(self, action: #selector(MyVideosViewController.refresh), forControlEvents: .ValueChanged)
+        self.refreshControl!.addTarget(self, action: #selector(MyVideosViewController.refresh), for: .valueChanged)
         
         self.tableView.addSubview(self.refreshControl!)
     }
@@ -88,37 +88,37 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MyVideosViewController.uploadInitiated(_:)), name: VideoSettingsViewController.UploadInitiatedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MyVideosViewController.uploadInitiated(_:)), name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: nil)
     }
     
     private func removeObservers()
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: VideoSettingsViewController.UploadInitiatedNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: nil)
     }
     
-    func uploadInitiated(notification: NSNotification)
+    func uploadInitiated(_ notification: Notification)
     {
         if let video = notification.object as? VIMVideo
         {
-            self.items.insert(video, atIndex: 0)
+            self.items.insert(video, at: 0)
             
-            let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-            self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
+            let indexPath = IndexPath(row: 0, section: 0)
+            self.tableView.insertRows(at: [indexPath], with: .top)
             
-            self.videoRefreshManager?.refreshVideo(video)
+            self.videoRefreshManager?.refresh(video: video)
         }
     }
     
     // MARK: UITableViewDataSource
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return self.items.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCellWithIdentifier(VideoCell.CellIdentifier) as! VideoCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: VideoCell.CellIdentifier) as! VideoCell
 
         let video = self.items[indexPath.row]
         cell.delegate = self
@@ -127,14 +127,14 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         return cell
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
         return 100
     }
     
     // MARK: UITableViewDelegate
 
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         
     }
@@ -143,22 +143,22 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
 
     // MARK: VideoCellDelegate
     
-    func cellDidDeleteVideoWithUri(cell cell: VideoCell, videoUri: String)
+    func cellDidDeleteVideoWithUri(cell: VideoCell, videoUri: String)
     {
         NewVimeoUploader.sharedInstance.cancelUpload(videoUri: videoUri)
 
-        if let indexPath = self.indexPathForVideoUri(videoUri)
+        if let indexPath = self.indexPath(for: videoUri)
         {
-            self.items.removeAtIndex(indexPath.row)
-            self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            self.items.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
     
-    func cellDidRetryUploadDescriptor(cell cell: VideoCell, descriptor: UploadDescriptor)
+    func cellDidRetryUploadDescriptor(cell: VideoCell, descriptor: UploadDescriptor)
     {
         let videoUri = descriptor.uploadTicket.video!.uri!
 
-        self.retryUploadDescriptor(descriptor, completion: { [weak self] (error) in
+        self.retry(uploadDescriptor: descriptor, completion: { [weak self] (error) in
          
             guard let strongSelf = self else
             {
@@ -171,20 +171,20 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
             }
             
             // Reload the cell so that it reflects the state of the newly retried upload
-            if let indexPath = strongSelf.indexPathForVideoUri(videoUri)
+            if let indexPath = strongSelf.indexPath(for: videoUri)
             {
-                strongSelf.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                strongSelf.tableView.reloadRows(at: [indexPath], with: .none)
             }
         })
     }
     
-    private func indexPathForVideoUri(videoUri: String) -> NSIndexPath?
+    private func indexPath(for videoUri: String) -> IndexPath?
     {
-        for (index, video) in self.items.enumerate()
+        for (index, video) in self.items.enumerated()
         {
             if video.uri == videoUri
             {
-                return NSIndexPath(forRow: index, inSection: 0)
+                return IndexPath(row: index, section: 0)
             }
         }
         
@@ -193,13 +193,13 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: VideoRefreshManagerDelegate
     
-    func uploadingStateDidChangeForVideo(video: VIMVideo)
+    func uploadingStateDidChange(for video: VIMVideo)
     {
-        if let uri = video.uri, let indexPath = self.indexPathForVideoUri(uri)
+        if let uri = video.uri, let indexPath = self.indexPath(for: uri)
         {
-            self.items.removeAtIndex(indexPath.row)
-            self.items.insert(video, atIndex: indexPath.row)
-            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+            self.items.remove(at: indexPath.row)
+            self.items.insert(video, at: indexPath.row)
+            self.tableView.reloadRows(at: [indexPath], with: .none)
         }
     }
     
@@ -217,7 +217,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
             
             self.task = try sessionManager.myVideosDataTask(completionHandler: { [weak self] (videos, error) -> Void in
                 
-                dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                DispatchQueue.main.async(execute: { [weak self] () -> Void in
                     
                     guard let strongSelf = self else
                     {
@@ -229,7 +229,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
                     
                     if let error = error
                     {
-                        strongSelf.presentRefreshErrorAlert(error)
+                        strongSelf.presentRefreshErrorAlert(with: error)
                     }
                     else
                     {
@@ -239,9 +239,9 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
                         // Schedule video refreshes
                         for video in strongSelf.items
                         {
-                            if video.videoStatus == .Uploading || video.videoStatus == .Transcoding
+                            if video.videoStatus == .uploading || video.videoStatus == .transcoding
                             {
-                                strongSelf.videoRefreshManager?.refreshVideo(video)
+                                strongSelf.videoRefreshManager?.refresh(video: video)
                             }
                         }
                     }
@@ -252,27 +252,27 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         catch let error as NSError
         {
-            self.presentRefreshErrorAlert(error)
+            self.presentRefreshErrorAlert(with: error)
         }
     }
     
-    @IBAction func didTapUpload(sender: UIButton)
+    @IBAction func didTapUpload(_ sender: UIButton)
     {
         PHPhotoLibrary.requestAuthorization { status in
             
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.async(execute: { () -> Void in
 
                 switch status
                 {
-                case .Authorized:
-                    let viewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:NSBundle.mainBundle())
+                case .authorized:
+                    let viewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:Bundle.main)
                     let navigationController = UINavigationController(rootViewController: viewController)
-                    navigationController.view.backgroundColor = UIColor.whiteColor()
-                    self.presentViewController(navigationController, animated: true, completion: nil)
+                    navigationController.view.backgroundColor = UIColor.white
+                    self.present(navigationController, animated: true, completion: nil)
 
-                case .Restricted:
+                case .restricted:
                     print("Unable to present camera roll. Camera roll access restricted.")
-                case .Denied:
+                case .denied:
                     print("Unable to present camera roll. Camera roll access denied.")
                 default:
                     // place for .NotDetermined - in this callback status is already determined so should never get here
@@ -285,28 +285,28 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: Alerts
     
-    private func presentRefreshErrorAlert(error: NSError)
+    private func presentRefreshErrorAlert(with error: NSError)
     {
-        let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.Default, handler: { [weak self] (action) -> Void in
+        let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
             self?.refresh()
         }))
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
-    private func presentUploadRetryErrorAlert(error: NSError)
+    private func presentUploadRetryErrorAlert(with error: NSError)
     {
-        let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+        let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
     // MARK: Private API
     
-    private func retryUploadDescriptor(descriptor: UploadDescriptor, completion: ErrorBlock)
+    private func retry(uploadDescriptor descriptor: UploadDescriptor, completion: ErrorBlock)
     {
         // TODO: This should be cancellable
 

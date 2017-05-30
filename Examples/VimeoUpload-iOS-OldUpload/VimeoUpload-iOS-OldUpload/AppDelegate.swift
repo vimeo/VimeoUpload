@@ -33,16 +33,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 {
     var window: UIWindow?
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
     {
-        AFNetworkReachabilityManager.sharedManager().startMonitoring()
+        AFNetworkReachabilityManager.shared().startMonitoring()
         OldVimeoUploader.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
 
-        let settings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
+        let settings = UIUserNotificationSettings(types: .alert, categories: nil)
         application.registerUserNotificationSettings(settings)
 
-        let cameraRollViewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:NSBundle.mainBundle())
-        let uploadsViewController = UploadsViewController(nibName: UploadsViewController.NibName, bundle:NSBundle.mainBundle())
+        let cameraRollViewController = CameraRollViewController(nibName: BaseCameraRollViewController.NibName, bundle:Bundle.main)
+        let uploadsViewController = UploadsViewController(nibName: UploadsViewController.NibName, bundle:Bundle.main)
         
         let cameraNavController = UINavigationController(rootViewController: cameraRollViewController)
         cameraNavController.tabBarItem.title = "Camera Roll"
@@ -54,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         tabBarController.viewControllers = [cameraNavController, uploadsNavController]
         tabBarController.selectedIndex = 1
         
-        let frame = UIScreen.mainScreen().bounds
+        let frame = UIScreen.main.bounds
         self.window = UIWindow(frame: frame)
         self.window?.rootViewController = tabBarController
         self.window?.makeKeyAndVisible()
@@ -64,7 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         return true
     }
 
-    func application(application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: () -> Void)
+    func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void)
     {
         if OldVimeoUploader.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
         {
@@ -77,11 +77,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         PHPhotoLibrary.requestAuthorization { status in
             switch status
             {
-            case .Authorized:
+            case .authorized:
                 print("Camera roll access granted")
-            case .Restricted:
+            case .restricted:
                 print("Unable to present camera roll. Camera roll access restricted.")
-            case .Denied:
+            case .denied:
                 print("Unable to present camera roll. Camera roll access denied.")
             default:
                 // place for .NotDetermined - in this callback status is already determined so should never get here

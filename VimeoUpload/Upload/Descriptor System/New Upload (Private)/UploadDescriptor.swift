@@ -36,14 +36,14 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: 
     
-    public var url: NSURL
+    public var url: URL
     public var uploadTicket: VIMUploadTicket
     
     // MARK: VideoDescriptor
     
     public var type: VideoDescriptorType
     {
-        return .Upload
+        return .upload
     }
     
     public var videoUri: VideoUri?
@@ -63,7 +63,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         fatalError("init() has not been implemented")
     }
 
-    public init(url: NSURL, uploadTicket: VIMUploadTicket)
+    public init(url: URL, uploadTicket: VIMUploadTicket)
     {
         self.url = url
         self.uploadTicket = uploadTicket
@@ -73,7 +73,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: Overrides
     
-    override public func prepare(sessionManager sessionManager: AFURLSessionManager) throws
+    override public func prepare(sessionManager: AFURLSessionManager) throws
     {
         // TODO: Do we need to set self.state == .Ready here? [AH] 2/22/2016
         
@@ -95,45 +95,45 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.currentTaskIdentifier = nil
             self.error = error
-            self.state = .Finished
+            self.state = .finished
 
             throw error // Propagate this out so that DescriptorManager can remove the descriptor from the set
         }
     }
     
-    override public func resume(sessionManager sessionManager: AFURLSessionManager)
+    override public func resume(sessionManager: AFURLSessionManager)
     {
         super.resume(sessionManager: sessionManager)
         
          if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.uploadTaskForIdentifier(identifier),
-            let progress = sessionManager.uploadProgressForTask(task)
+            let task = sessionManager.uploadTask(for: identifier),
+            let progress = sessionManager.uploadProgress(for: task)
         {
             self.progress = progress
         }
     }
     
-    override public func cancel(sessionManager sessionManager: AFURLSessionManager)
+    override public func cancel(sessionManager: AFURLSessionManager)
     {
         super.cancel(sessionManager: sessionManager)
         
-        NSFileManager.defaultManager().deleteFileAtURL(self.url)
+        FileManager.default.deleteFile(at: self.url)
     }
 
-    override public func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    override public func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.uploadTaskForIdentifier(identifier),
-            let progress = sessionManager.uploadProgressForTask(task) else
+            let task = sessionManager.uploadTask(for: identifier),
+            let progress = sessionManager.uploadProgress(for: task) else
         {
             // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload
             // Upon reopening the app, the descriptor is loaded but no longer has a task 
          
-            NSFileManager.defaultManager().deleteFileAtURL(self.url)
+            FileManager.default.deleteFile(at: self.url)
 
             let error = NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Loaded descriptor from cache that does not have a task associated with it."])
             self.error = error // TODO: Whenever we set error delete local file? Same for download?
-            self.state = .Finished
+            self.state = .finished
             
             throw error
         }
@@ -141,7 +141,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.progress = progress
     }
     
-    override public func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    override public func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
     {
         self.currentTaskIdentifier = nil
 
@@ -152,7 +152,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             return
         }
 
-        if self.state == .Suspended
+        if self.state == .suspended
         {
             assertionFailure("taskDidComplete was called for a suspended descriptor.")
 
@@ -163,42 +163,42 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             if let taskError = task.error // task.error is reserved for client-side errors, so check it first
             {
-                self.error = taskError.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
+                self.error = (taskError as NSError).error(byAddingDomain: UploadErrorDomain.Upload.rawValue)
             }
             else if let error = error
             {
-                self.error = error.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
+                self.error = error.error(byAddingDomain: UploadErrorDomain.Upload.rawValue)
             }
         }
 
-        NSFileManager.defaultManager().deleteFileAtURL(self.url)
+        FileManager.default.deleteFile(at: self.url)
 
-        self.state = .Finished
+        self.state = .finished
     }
     
     // MARK: NSCoding
     
     required public init(coder aDecoder: NSCoder)
     {
-        let fileName = aDecoder.decodeObjectForKey(self.dynamicType.FileNameCoderKey) as! String 
-        let fileExtension = aDecoder.decodeObjectForKey(self.dynamicType.FileExtensionCoderKey) as! String
-        let path = NSURL.uploadDirectory().URLByAppendingPathComponent(fileName)!.URLByAppendingPathExtension(fileExtension)!.absoluteString
+        let fileName = aDecoder.decodeObject(forKey: type(of: self).FileNameCoderKey) as! String 
+        let fileExtension = aDecoder.decodeObject(forKey: type(of: self).FileExtensionCoderKey) as! String
+        let path = URL.uploadDirectory().appendingPathComponent(fileName).appendingPathExtension(fileExtension).absoluteString
         
-        self.url = NSURL.fileURLWithPath(path!)
-        self.uploadTicket = aDecoder.decodeObjectForKey(self.dynamicType.UploadTicketCoderKey) as! VIMUploadTicket
+        self.url = URL(fileURLWithPath: path)
+        self.uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as! VIMUploadTicket
 
         super.init(coder: aDecoder)
     }
 
-    override public func encodeWithCoder(aCoder: NSCoder)
+    override public func encode(with aCoder: NSCoder)
     {
-        let fileName = self.url.URLByDeletingPathExtension!.lastPathComponent
+        let fileName = self.url.deletingPathExtension().lastPathComponent
         let ext = self.url.pathExtension
 
-        aCoder.encodeObject(fileName, forKey: self.dynamicType.FileNameCoderKey)
-        aCoder.encodeObject(ext, forKey: self.dynamicType.FileExtensionCoderKey)
-        aCoder.encodeObject(self.uploadTicket, forKey: self.dynamicType.UploadTicketCoderKey)
+        aCoder.encode(fileName, forKey: type(of: self).FileNameCoderKey)
+        aCoder.encode(ext, forKey: type(of: self).FileExtensionCoderKey)
+        aCoder.encode(self.uploadTicket, forKey: type(of: self).UploadTicketCoderKey)
         
-        super.encodeWithCoder(aCoder)
+        super.encode(with: aCoder)
     }
 }

@@ -27,7 +27,7 @@
 import Foundation
 import AVFoundation
 
-public class DiskSpaceOperation: NSOperation
+public class DiskSpaceOperation: Operation
 {    
     private let fileSize: Float64
     
@@ -49,19 +49,19 @@ public class DiskSpaceOperation: NSOperation
     {
         do
         {
-            if let availableDiskSpace = try NSFileManager.defaultManager().availableDiskSpace()?.doubleValue
+            if let availableDiskSpace = try FileManager.default.availableDiskSpace()?.doubleValue
             {
                 let success = availableDiskSpace > self.fileSize
                 self.result = FileSizeCheckResult(fileSize: self.fileSize, availableSpace: availableDiskSpace, success: success)
             }
             else
             {
-                self.error = NSError.errorWithDomain(UploadErrorDomain.DiskSpaceOperation.rawValue, code: UploadLocalErrorCode.CannotCalculateDiskSpace.rawValue, description: "File system information did not contain NSFileSystemFreeSize key:value pair")
+                self.error = NSError.error(withDomain: UploadErrorDomain.DiskSpaceOperation.rawValue, code: UploadLocalErrorCode.cannotCalculateDiskSpace.rawValue, description: "File system information did not contain NSFileSystemFreeSize key:value pair")
             }
         }
         catch
         {
-            self.error = NSError.errorWithDomain(UploadErrorDomain.DiskSpaceOperation.rawValue, code: UploadLocalErrorCode.CannotCalculateDiskSpace.rawValue, description: "Unable to calculate available disk space")
+            self.error = NSError.error(withDomain: UploadErrorDomain.DiskSpaceOperation.rawValue, code: UploadLocalErrorCode.cannotCalculateDiskSpace.rawValue, description: "Unable to calculate available disk space")
         }
     }
 }

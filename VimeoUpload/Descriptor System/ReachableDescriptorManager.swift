@@ -47,7 +47,7 @@ import VimeoNetworking
     
     // MARK: - Initialization
     
-    public init(name: String, backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: VimeoRequestSerializer.AccessTokenProvider)
+    public init(name: String, backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider)
     {
         let backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, accessTokenProvider: accessTokenProvider)
         
@@ -65,12 +65,12 @@ import VimeoNetworking
     
     // MARK: ConnectivityManagerDelegate
 
-    func suspend(connectivityManager connectivityManager: ConnectivityManager)
+    func suspend(connectivityManager: ConnectivityManager)
     {
         self.suspend()
     }
     
-    func resume(connectivityManager connectivityManager: ConnectivityManager)
+    func resume(connectivityManager: ConnectivityManager)
     {
         self.resume()
     }

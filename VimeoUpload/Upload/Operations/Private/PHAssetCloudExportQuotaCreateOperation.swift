@@ -48,7 +48,7 @@ public class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
     
     // MARK: Overrides
 
-    override func makeExportQuotaOperation(me: VIMUser) -> ExportQuotaOperation?
+    override func makeExportQuotaOperation(with me: VIMUser) -> ExportQuotaOperation?
     {
         return PHAssetCloudExportQuotaOperation(me: me, phAsset: self.phAsset)
     }

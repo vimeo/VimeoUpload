@@ -32,7 +32,7 @@ public class VideoSettings: NSObject
     {
         didSet
         {
-            self.title = self.trim(self.title)
+            self.title = self.trim(text: self.title)
         }
     }
     
@@ -40,7 +40,7 @@ public class VideoSettings: NSObject
     {
         didSet
         {
-            self.desc = self.trim(self.desc)
+            self.desc = self.trim(text: self.desc)
         }
     }
     
@@ -55,34 +55,34 @@ public class VideoSettings: NSObject
         self.privacy = privacy
         self.users = users
         self.password = password
-        self.title = self.trim(title)
-        self.desc = self.trim(description)
+        self.title = self.trim(text: title)
+        self.desc = self.trim(text: description)
     }
     
     // MARK: Public API
     
-    public func parameterDictionary() -> [String: AnyObject]
+    public func parameterDictionary() -> [String: Any]
     {
-        var parameters: [String: AnyObject] = [:]
+        var parameters: [String: Any] = [:]
         
-        if let title = self.title where title.characters.count > 0
+        if let title = self.title, title.characters.count > 0
         {
             parameters["name"] = title
         }
         
-        if let description = self.desc where description.characters.count > 0
+        if let description = self.desc, description.characters.count > 0
         {
             parameters["description"] = description
         }
         
-        if let privacy = self.privacy where privacy.characters.count > 0
+        if let privacy = self.privacy, privacy.characters.count > 0
         {
-            parameters["privacy"] = ["view": privacy]
+            parameters["privacy"] = (["view": privacy])
         }
         
         if let users = self.users
         {
-            parameters["users"] = users.map { ["uri": $0] }
+            parameters["users"] = (users.map { ["uri": $0] })
         }
         
         if let password = self.password
@@ -97,26 +97,26 @@ public class VideoSettings: NSObject
     
     required public init(coder aDecoder: NSCoder)
     {
-        self.title = aDecoder.decodeObjectForKey("title") as? String
-        self.desc = aDecoder.decodeObjectForKey("desc") as? String
-        self.privacy = aDecoder.decodeObjectForKey("privacy") as? String
-        self.users = aDecoder.decodeObjectForKey("users") as? [String]
-        self.password = aDecoder.decodeObjectForKey("password") as? String
+        self.title = aDecoder.decodeObject(forKey: "title") as? String
+        self.desc = aDecoder.decodeObject(forKey: "desc") as? String
+        self.privacy = aDecoder.decodeObject(forKey: "privacy") as? String
+        self.users = aDecoder.decodeObject(forKey: "users") as? [String]
+        self.password = aDecoder.decodeObject(forKey: "password") as? String
     }
     
-    func encodeWithCoder(aCoder: NSCoder)
+    func encode(with aCoder: NSCoder)
     {
-        aCoder.encodeObject(self.title, forKey: "title")
-        aCoder.encodeObject(self.desc, forKey: "desc")
-        aCoder.encodeObject(self.privacy, forKey: "privacy")
-        aCoder.encodeObject(self.users, forKey: "users")
-        aCoder.encodeObject(self.password, forKey: "password")
+        aCoder.encode(self.title, forKey: "title")
+        aCoder.encode(self.desc, forKey: "desc")
+        aCoder.encode(self.privacy, forKey: "privacy")
+        aCoder.encode(self.users, forKey: "users")
+        aCoder.encode(self.password, forKey: "password")
     }
     
     // MARK : String Methods
     
     func trim(text: String?) -> String?
     {
-        return text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        return text?.trimmingCharacters(in: CharacterSet.whitespaces)
     }
 }
