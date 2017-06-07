@@ -66,8 +66,8 @@ typedef NS_ENUM(NSInteger, VIMUserAccountType)
 - (nullable VIMNotificationsConnection *)notificationsConnection;
 - (nullable VIMInteraction *)interactionWithName:(nonnull NSString *)name;
 
-- (BOOL)hasCopyrightMatch;
 - (BOOL)isFollowing;
+- (BOOL)hasModeratedChannels;
 
 - (nullable NSString *)accountTypeAnalyticsIdentifier;
 - (BOOL)hasSameBadgeCount:(nullable VIMUser *)newUser;

@@ -42,9 +42,20 @@ private protocol Cache
 /// Response cache handles the storage of JSON response dictionaries indexed by their associated `Request`.  It contains both memory and disk caching functionality
 final internal class ResponseCache
 {
-    struct Constant
+    private struct Constant
     {
         static let CacheDirectory = "com.vimeo.Caches"
+    }
+    
+    /**
+     Initializer
+     
+     - parameter cacheDirectory: the directory name where the cache files will be stored.  Defaults to com.vimeo.Caches.
+     */
+    init(cacheDirectory: String = Constant.CacheDirectory)
+    {
+        self.memoryCache = ResponseMemoryCache()
+        self.diskCache = ResponseDiskCache(cacheDirectory: cacheDirectory)
     }
     
     /**
@@ -109,7 +120,7 @@ final internal class ResponseCache
 
     // MARK: - Memory Cache
     
-    private let memoryCache = ResponseMemoryCache()
+    private let memoryCache: ResponseMemoryCache
     
     private class ResponseMemoryCache: Cache
     {
@@ -140,11 +151,17 @@ final internal class ResponseCache
     
     // MARK: - Disk Cache
     
-    private let diskCache = ResponseDiskCache()
+    private let diskCache: ResponseDiskCache
     
     private class ResponseDiskCache: Cache
     {
         private let queue = DispatchQueue(label: "com.vimeo.VIMCache.diskQueue", attributes: DispatchQueue.Attributes.concurrent)
+        private let cacheDirectory: String
+        
+        init(cacheDirectory: String)
+        {
+            self.cacheDirectory = cacheDirectory
+        }
         
         func setResponseDictionary(_ responseDictionary: VimeoClient.ResponseDictionary, forKey key: String)
         {
@@ -291,7 +308,7 @@ final internal class ResponseCache
             }
             
             // We need to create a directory in `../Library/Caches folder`. Otherwise, trying to remove the Apple /Caches folder will always fail. Note that it's noticeable while testing on a device.
-            return URL(fileURLWithPath: directory).appendingPathComponent(Constant.CacheDirectory, isDirectory: true)
+            return URL(fileURLWithPath: directory).appendingPathComponent(self.cacheDirectory, isDirectory: true)
         }
         
         private func fileURL(forKey key: String) -> URL?

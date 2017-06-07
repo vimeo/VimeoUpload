@@ -39,6 +39,7 @@ public struct AppConfiguration
     let keychainAccessGroup: String?
     
     public let apiVersion: String
+    public let baseUrl: URL
     
     /**
      Create a new `AppConfiguration`
@@ -49,6 +50,7 @@ public struct AppConfiguration
      - parameter keychainService:     Identifes your application to the system keychain, defaults to `KeychainServiceVimeo`
      - parameter keychainAccessGroup: Access group your application should use for the system keychain, defaults to nil
      - parameter apiVersion:          API version your requests should use, defaults to `VimeoDefaultAPIVersionString`
+     - parameter baseUrl:             The baseUrl for HTTP requests made using this configuration, defaults to `VimeoBaseURL`
      
      - returns: an initialized AppConfiguration
      */
@@ -57,7 +59,8 @@ public struct AppConfiguration
                 scopes: [Scope],
                 keychainService: String,
                 keychainAccessGroup: String? = nil,
-                apiVersion: String = VimeoDefaultAPIVersionString)
+                apiVersion: String = VimeoDefaultAPIVersionString,
+                baseUrl: URL = VimeoBaseURL)
     {
         self.clientIdentifier = clientIdentifier
         self.clientSecret = clientSecret
@@ -65,5 +68,6 @@ public struct AppConfiguration
         self.keychainService = keychainService
         self.keychainAccessGroup = keychainAccessGroup
         self.apiVersion = apiVersion
+        self.baseUrl = baseUrl
     }
 }
