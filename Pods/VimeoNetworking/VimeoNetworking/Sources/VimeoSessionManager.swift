@@ -37,14 +37,15 @@ final public class VimeoSessionManager: AFHTTPSessionManager
     /**
      Creates a new session manager
      
+     - parameter baseUrl: The base URL for the HTTP client
      - parameter sessionConfiguration: Object describing the URL session policies for this session manager
      - parameter requestSerializer:    Serializer to use for all requests handled by this session manager
      
      - returns: an initialized `VimeoSessionManager`
      */
-    required public init(sessionConfiguration: URLSessionConfiguration, requestSerializer: VimeoRequestSerializer)
+    required public init(baseUrl: URL, sessionConfiguration: URLSessionConfiguration, requestSerializer: VimeoRequestSerializer)
     {        
-        super.init(baseURL: VimeoBaseURLString, sessionConfiguration: sessionConfiguration)
+        super.init(baseURL: baseUrl, sessionConfiguration: sessionConfiguration)
         
         self.requestSerializer = requestSerializer
         self.responseSerializer = VimeoResponseSerializer()

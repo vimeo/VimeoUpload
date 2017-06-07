@@ -252,16 +252,16 @@
 
 #pragma mark - Helpers
 
-- (BOOL)hasCopyrightMatch
-{
-    VIMConnection *connection = [self connectionWithName:VIMConnectionNameViolations];
-    return (connection && connection.total.intValue > 0);
-}
-
 - (BOOL)isFollowing
 {
     VIMInteraction *interaction = [self interactionWithName:VIMInteractionNameFollow];
     return (interaction && interaction.added.boolValue);
+}
+
+- (BOOL)hasModeratedChannels
+{
+    VIMConnection *connection = [self connectionWithName:VIMConnectionNameModeratedChannels];
+    return (connection && connection.total.intValue > 0);
 }
 
 - (NSString *)accountTypeAnalyticsIdentifier

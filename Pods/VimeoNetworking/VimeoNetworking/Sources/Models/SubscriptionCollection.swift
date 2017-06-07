@@ -14,18 +14,17 @@ public class SubscriptionCollection: VIMModelObject
     /// Represents the uri
     public var uri: String?
     
-    /// Represents the modified time
-    public var modifiedTime: Date?
-    
     /// Represents the subscription
     public var subscription: Subscription?
+    
+    /// Represents the migration that indicates whether the user has migrated from the old system `VIMTrigger` to new new system `Localytics`.
+    public var migrated: NSNumber?
     
     // MARK: - VIMMappable
     
     public override func getObjectMapping() -> Any
     {
-        return ["modified_time": "modifiedTime",
-                "subscriptions": "subscription"]
+        return ["subscriptions": "subscription"]
     }
     
     public override func getClassForObjectKey(_ key: String!) -> AnyClass!
