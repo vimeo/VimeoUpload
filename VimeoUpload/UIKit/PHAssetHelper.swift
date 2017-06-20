@@ -31,7 +31,6 @@ import Photos
 {
     static let ErrorDomain = "PHAssetHelperErrorDomain"
     
-    private let imageManager = PHImageManager.default()
     private var activeImageRequests: [String: PHImageRequestID] = [:]
     private var activeAssetRequests: [String: PHImageRequestID] = [:]
 
@@ -41,13 +40,13 @@ import Photos
         
         for requestID in self.activeImageRequests.values
         {
-            self.imageManager.cancelImageRequest(requestID)
+            PHImageManager.default().cancelImageRequest(requestID)
         }
         self.activeImageRequests.removeAll()
         
         for requestID in self.activeAssetRequests.values
         {
-            self.imageManager.cancelImageRequest(requestID)
+            PHImageManager.default().cancelImageRequest(requestID)
         }
         self.activeAssetRequests.removeAll()
     }
@@ -67,7 +66,7 @@ import Photos
         options.version = .current
         options.resizeMode = .fast
         
-        let requestID = self.imageManager.requestImage(for: phAsset, targetSize: scaledSize, contentMode: .aspectFill, options: options, resultHandler: { [weak self] (image, info) -> Void in
+        let requestID = PHImageManager.default().requestImage(for: phAsset, targetSize: scaledSize, contentMode: .aspectFill, options: options, resultHandler: { [weak self] (image, info) -> Void in
             
             guard let strongSelf = self else
             {
@@ -116,7 +115,7 @@ import Photos
         options.isNetworkAccessAllowed = false
         options.deliveryMode = .highQualityFormat
         
-        let requestID = self.imageManager.requestAVAsset(forVideo: phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
+        let requestID = PHImageManager.default().requestAVAsset(forVideo: phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
             
             if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool, cancelled == true
             {
@@ -174,7 +173,7 @@ import Photos
         
         if let requestID = self.activeImageRequests[phAsset.localIdentifier]
         {
-            self.imageManager.cancelImageRequest(requestID)
+            PHImageManager.default().cancelImageRequest(requestID)
             self.activeImageRequests.removeValue(forKey: phAsset.localIdentifier)
         }
     }
@@ -185,7 +184,7 @@ import Photos
         
         if let requestID = self.activeAssetRequests[phAsset.localIdentifier]
         {
-            self.imageManager.cancelImageRequest(requestID)
+            PHImageManager.default().cancelImageRequest(requestID)
             self.activeAssetRequests.removeValue(forKey: phAsset.localIdentifier)
         }
     }
