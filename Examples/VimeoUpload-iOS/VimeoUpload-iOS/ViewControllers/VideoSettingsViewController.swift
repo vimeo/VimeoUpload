@@ -287,6 +287,16 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         guard let videoUri = self.uploadTicket?.video?.uri, let videoSettings = self.videoSettings else
         {
+            let alertController = UIAlertController(
+                title: "Cannot Upload Video",
+                message: "The video object in `uploadTicket` does not exist!",
+                preferredStyle: .alert
+            )
+            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self] (action) in
+                self?.activityIndicatorView.stopAnimating()
+            }))
+            self.present(alertController, animated: true, completion: nil)
+            
             return
         }
         
