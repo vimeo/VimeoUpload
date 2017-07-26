@@ -285,8 +285,10 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     private func applyVideoSettings()
     {
-        let videoUri = self.uploadTicket!.video!.uri!
-        let videoSettings = self.videoSettings!
+        guard let videoUri = self.uploadTicket?.video?.uri, let videoSettings = self.videoSettings else
+        {
+            return
+        }
         
         do
         {
