@@ -34,19 +34,19 @@ public class KeyedArchiver: ArchiverProtocol
 
     public init(basePath: String)
     {
-        assert(NSFileManager.defaultManager().fileExistsAtPath(basePath, isDirectory: nil), "Invalid basePath")
+        assert(FileManager.default.fileExists(atPath: basePath, isDirectory: nil), "Invalid basePath")
         
         self.basePath = basePath
     }
     
-    public func loadObjectForKey(key: String) -> AnyObject?
+    public func loadObject(for key: String) -> Any?
     {
         let path = self.archivePath(key: key)
         
-        return NSKeyedUnarchiver.unarchiveObjectWithFile(path)
+        return NSKeyedUnarchiver.unarchiveObject(withFile: path)
     }
     
-    public func saveObject(object: AnyObject, key: String)
+    public func save(object: Any, key: String)
     {
         let path = self.archivePath(key: key)
         
@@ -55,13 +55,13 @@ public class KeyedArchiver: ArchiverProtocol
     
     // MARK: Utilities
     
-    func archivePath(key key: String) -> String
+    func archivePath(key: String) -> String
     {
-        var URL = NSURL(string: self.basePath)!
+        var url = URL(string: self.basePath)!
         
-        URL = URL.URLByAppendingPathComponent(key)!
-        URL = URL.URLByAppendingPathExtension(self.dynamicType.ArchiveExtension)!
+        url = url.appendingPathComponent(key)
+        url = url.appendingPathExtension(type(of: self).ArchiveExtension)
         
-        return URL.absoluteString! as String
+        return url.absoluteString as String
     }
 }

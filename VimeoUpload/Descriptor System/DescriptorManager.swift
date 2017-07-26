@@ -36,10 +36,10 @@ public enum DescriptorManagerNotification: String
     case SessionDidBecomeInvalid = "SessionDidBecomeInvalidNotification"
 }
 
-public typealias TestClosure = (descriptor: Descriptor) -> Bool
+public typealias TestClosure = (Descriptor) -> Bool
 public typealias VoidClosure = () -> Void
 
-public class DescriptorManager: NSObject
+open class DescriptorManager: NSObject
 {
     private static let QueueName = "descriptor_manager.synchronization_queue"
     
@@ -52,18 +52,18 @@ public class DescriptorManager: NSObject
     // MARK:
     
     private let archiver: DescriptorManagerArchiver // This object handles persistence of descriptors and suspended state to disk
-    private let synchronizationQueue = dispatch_queue_create(DescriptorManager.QueueName, DISPATCH_QUEUE_SERIAL)
+    private let synchronizationQueue = DispatchQueue(label: DescriptorManager.QueueName, attributes: [])
 
     // MARK:
     
-    public var suspended: Bool
+    open var suspended: Bool
     {
         return self.archiver.suspended
     }
     
     // MARK:
     
-    public var backgroundEventsCompletionHandler: VoidClosure?
+    open var backgroundEventsCompletionHandler: VoidClosure?
 
     // MARK: - Initialization
     
@@ -103,10 +103,10 @@ public class DescriptorManager: NSObject
         
         for descriptor in failedDescriptors
         {
-            self.archiver.remove(descriptor)
+            self.archiver.remove(descriptor: descriptor)
             
             self.delegate?.descriptorDidFail?(descriptor)
-            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
         }
         
         self.archiver.save()
@@ -136,7 +136,7 @@ public class DescriptorManager: NSObject
                 return
             }
 
-            dispatch_async(strongSelf.synchronizationQueue, { [weak self] () -> Void in
+            strongSelf.synchronizationQueue.async(execute: { [weak self] () -> Void in
 
                 guard let strongSelf = self else
                 {
@@ -147,25 +147,25 @@ public class DescriptorManager: NSObject
                 
                 // TODO: Need to respond to this notification [AH] 2/22/2016 (remove from downloads store, delete active uploads etc.)
 
-                strongSelf.delegate?.sessionDidBecomeInvalid?(error: error)
+                strongSelf.delegate?.sessionDidBecomeInvalid?(error: error as NSError)
                 
-                NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.SessionDidBecomeInvalid.rawValue, object: error)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.SessionDidBecomeInvalid.rawValue), object: error)
             })
         }
         
-        self.sessionManager.setDownloadTaskDidFinishDownloadingBlock { [weak self] (session, task, url) -> NSURL? in
+        self.sessionManager.setDownloadTaskDidFinishDownloadingBlock { [weak self] (session, task, url) -> URL? in
 
             guard let strongSelf = self else
             {
                 return nil
             }
 
-            var destination: NSURL? = nil
+            var destination: URL? = nil
 
-            dispatch_sync(strongSelf.synchronizationQueue, { [weak self] () -> Void in
+            strongSelf.synchronizationQueue.sync(execute: { [weak self] () -> Void in
 
                 guard let strongSelf = self,
-                    let descriptor = strongSelf.descriptorForTask(task) else
+                    let descriptor = strongSelf.descriptor(for: task) else
                 {
                     return
                 }
@@ -188,17 +188,17 @@ public class DescriptorManager: NSObject
             return destination
         }
         
-        self.sessionManager.setTaskDidCompleteBlock { [weak self] (session, task, error) -> Void in
+        self.sessionManager.setTaskDidComplete { [weak self] (session, task, error) -> Void in
 
             guard let strongSelf = self else
             {
                 return
             }
 
-            dispatch_async(strongSelf.synchronizationQueue, { [weak self] () -> Void in
+            strongSelf.synchronizationQueue.async(execute: { [weak self] () -> Void in
 
                 guard let strongSelf = self,
-                    let descriptor = strongSelf.descriptorForTask(task) else
+                    let descriptor = strongSelf.descriptor(for: task) else
                 {
                     return
                 }
@@ -208,7 +208,7 @@ public class DescriptorManager: NSObject
                     return
                 }
 
-                if descriptor.state == .Suspended
+                if descriptor.state == .suspended
                 {
                     do
                     {
@@ -218,10 +218,10 @@ public class DescriptorManager: NSObject
                     }
                     catch
                     {
-                        strongSelf.archiver.remove(descriptor)
+                        strongSelf.archiver.remove(descriptor: descriptor)
                         
                         strongSelf.delegate?.descriptorDidFail?(descriptor)
-                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
+                        NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
                     }
 
                     return
@@ -229,7 +229,7 @@ public class DescriptorManager: NSObject
                 
                 // These types of errors can occur when connection drops and before suspend() is called,
                 // Or when connection drop is slow -> timeouts etc. [AH] 2/22/2016
-                let isConnectionError = (task.error?.isConnectionError() == true || error?.isConnectionError() == true)
+                let isConnectionError = ((task.error as? NSError)?.isConnectionError() == true || (error as? NSError)?.isConnectionError() == true)
                 if isConnectionError
                 {
                     do
@@ -241,19 +241,19 @@ public class DescriptorManager: NSObject
                     }
                     catch
                     {
-                        strongSelf.archiver.remove(descriptor)
+                        strongSelf.archiver.remove(descriptor: descriptor)
                         
                         strongSelf.delegate?.descriptorDidFail?(descriptor)
-                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
+                        NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
                     }
                     
                     return
                 }
                 
-                strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error)
-                descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error)
+                strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error as NSError?)
+                descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error as NSError?)
                 
-                if descriptor.state == .Finished
+                if descriptor.state == .finished
                 {
                     if let error = descriptor.error
                     {
@@ -265,18 +265,18 @@ public class DescriptorManager: NSObject
                         
                         if error.isNetworkTaskCancellationError() == false
                         {
-                            strongSelf.archiver.remove(descriptor)
+                            strongSelf.archiver.remove(descriptor: descriptor)
                         }
                         
                         strongSelf.delegate?.descriptorDidFail?(descriptor)
-                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
+                        NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
                     }
                     else
                     {
-                        strongSelf.archiver.remove(descriptor)
+                        strongSelf.archiver.remove(descriptor: descriptor)
 
                         strongSelf.delegate?.descriptorDidSucceed?(descriptor)
-                        NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidSucceed.rawValue, object: descriptor)
+                        NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidSucceed.rawValue), object: descriptor)
                     }
                 }
             })
@@ -289,7 +289,7 @@ public class DescriptorManager: NSObject
                 return
             }
             
-            dispatch_async(strongSelf.synchronizationQueue, { [weak self] () -> Void in
+            strongSelf.synchronizationQueue.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
@@ -299,7 +299,7 @@ public class DescriptorManager: NSObject
                 if let backgroundEventsCompletionHandler = strongSelf.backgroundEventsCompletionHandler
                 {
                     // The completionHandler must be called on the main thread
-                    dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+                    DispatchQueue.main.async(execute: { [weak self] () -> Void in
                         
                         guard let strongSelf = self else
                         {
@@ -317,7 +317,7 @@ public class DescriptorManager: NSObject
     
     // MARK: Public API
     
-    public func handleEventsForBackgroundURLSession(identifier identifier: String, completionHandler: VoidClosure) -> Bool
+    open func handleEventsForBackgroundURLSession(identifier: String, completionHandler: @escaping VoidClosure) -> Bool
     {
         guard identifier == self.sessionManager.session.configuration.identifier else
         {
@@ -331,7 +331,7 @@ public class DescriptorManager: NSObject
         return true
     }
     
-    public func suspend()
+    open func suspend()
     {
         if self.archiver.suspended == true
         {
@@ -341,7 +341,7 @@ public class DescriptorManager: NSObject
         self.doSuspend()
     }
     
-    public func resume()
+    open func resume()
     {
         if self.archiver.suspended == false
         {
@@ -351,18 +351,18 @@ public class DescriptorManager: NSObject
         self.doResume()
     }
     
-    public func addDescriptor(descriptor: Descriptor)
+    open func add(descriptor: Descriptor)
     {
-        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
+        self.synchronizationQueue.async(execute: { [weak self] () -> Void in
             
             guard let strongSelf = self else
             {
                 return
             }
 
-            strongSelf.archiver.insert(descriptor)
+            strongSelf.archiver.insert(descriptor: descriptor)
             strongSelf.delegate?.descriptorAdded?(descriptor)
-            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorAdded.rawValue, object: descriptor)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorAdded.rawValue), object: descriptor)
 
             do
             {
@@ -372,9 +372,9 @@ public class DescriptorManager: NSObject
             }
             catch
             {
-                strongSelf.archiver.remove(descriptor)
+                strongSelf.archiver.remove(descriptor: descriptor)
                 strongSelf.delegate?.descriptorDidFail?(descriptor)
-                NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidFail.rawValue, object: descriptor)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
                 
                 return
             }
@@ -392,28 +392,28 @@ public class DescriptorManager: NSObject
         })
     }
     
-    public func cancelDescriptor(descriptor: Descriptor)
+    open func cancel(descriptor: Descriptor)
     {
-        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
+        self.synchronizationQueue.async(execute: { [weak self] () -> Void in
 
             guard let strongSelf = self else
             {
                 return
             }
 
-            strongSelf.archiver.remove(descriptor)
+            strongSelf.archiver.remove(descriptor: descriptor)
 
             descriptor.cancel(sessionManager: strongSelf.sessionManager)
             
             strongSelf.delegate?.descriptorDidCancel?(descriptor)
-            NSNotificationCenter.defaultCenter().postNotificationName(DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: descriptor)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: descriptor)
 
         })
     }
     
-    public func killAllDescriptors(completion completion: VoidClosure)
+    open func killAllDescriptors(completion: @escaping VoidClosure)
     {
-        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
+        self.synchronizationQueue.async(execute: { [weak self] () -> Void in
             
             guard let strongSelf = self else
             {
@@ -436,24 +436,24 @@ public class DescriptorManager: NSObject
                 descriptor.cancel(sessionManager: strongSelf.sessionManager)
             }
             
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.async(execute: { () -> Void in
                 completion()
             })
         })
     }
     
-    public func descriptorPassingTest(test: TestClosure) -> Descriptor?
+    open func descriptor(passing test: @escaping TestClosure) -> Descriptor?
     {
         var descriptor: Descriptor?
         
-        dispatch_sync(self.synchronizationQueue, { [weak self] () -> Void in
+        self.synchronizationQueue.sync(execute: { [weak self] () -> Void in
             
             guard let strongSelf = self else
             {
                 return
             }
 
-            descriptor = strongSelf.archiver.descriptorPassingTest(test)
+            descriptor = strongSelf.archiver.descriptor(passing: test)
         })
         
         return descriptor
@@ -465,7 +465,7 @@ public class DescriptorManager: NSObject
     {
         self.archiver.suspended = true
         
-        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
+        self.synchronizationQueue.async(execute: { [weak self] () -> Void in
             
             guard let strongSelf = self else
             {
@@ -486,7 +486,7 @@ public class DescriptorManager: NSObject
     {
         self.archiver.suspended = false
         
-        dispatch_async(self.synchronizationQueue, { [weak self] () -> Void in
+        self.synchronizationQueue.async(execute: { [weak self] () -> Void in
             
             guard let strongSelf = self else
             {
@@ -509,11 +509,11 @@ public class DescriptorManager: NSObject
         self.delegate?.didSaveDescriptors?(count: self.archiver.descriptors.count)
     }
 
-    private func descriptorForTask(task: NSURLSessionTask) -> Descriptor?
+    private func descriptor(for task: URLSessionTask) -> Descriptor?
     {
-        let descriptor = self.archiver.descriptorPassingTest { (descriptor) -> Bool in
+        let descriptor = self.archiver.descriptor(passing: { (descriptor) -> Bool in
             return descriptor.currentTaskIdentifier == task.taskIdentifier
-        }
+        })
         
         // If the descriptor is not found then the session.tasks and self.descriptors are out of sync (his is a major problem)
         // Or we're using the background session for a standalone task, independent of a descriptor

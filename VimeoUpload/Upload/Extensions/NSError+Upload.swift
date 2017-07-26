@@ -67,14 +67,14 @@ public enum UploadErrorDomain: String
 
 public enum UploadLocalErrorCode: Int
 {
-    case CannotEvaluateDailyQuota = 0 // "User object did not contain uploadQuota.quota information"
-    case CannotCalculateDiskSpace = 1 // "File system information did not contain NSFileSystemFreeSize key:value pair"
-    case CannotEvaluateWeeklyQuota = 2 // "User object did not contain uploadQuota.space information"
+    case cannotEvaluateDailyQuota = 0 // "User object did not contain uploadQuota.quota information"
+    case cannotCalculateDiskSpace = 1 // "File system information did not contain NSFileSystemFreeSize key:value pair"
+    case cannotEvaluateWeeklyQuota = 2 // "User object did not contain uploadQuota.space information"
     
-    case DiskSpaceException = 3
-    case AssetIsNotExportable = 4    
-    case DailyQuotaException = 5
-    case WeeklyQuotaException = 6
+    case diskSpaceException = 3
+    case assetIsNotExportable = 4    
+    case dailyQuotaException = 5
+    case weeklyQuotaException = 6
 }
 
 public enum UploadErrorKey: String

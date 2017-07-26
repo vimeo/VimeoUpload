@@ -62,20 +62,20 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     private func setupTableView()
     {
-        let nib = UINib(nibName: UploadCell.NibName, bundle: NSBundle.mainBundle())
-        self.tableView.registerNib(nib, forCellReuseIdentifier: UploadCell.CellIdentifier)
+        let nib = UINib(nibName: UploadCell.NibName, bundle: Bundle.main)
+        self.tableView.register(nib, forCellReuseIdentifier: UploadCell.CellIdentifier)
     }
     
     // MARK: UITableViewDataSource
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return self.items.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCellWithIdentifier(UploadCell.CellIdentifier) as! UploadCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: UploadCell.CellIdentifier) as! UploadCell
         
         let assetIdentifier = self.items[indexPath.row]
         cell.assetIdentifier = assetIdentifier
@@ -83,7 +83,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         return cell
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
         return UploadCell.Height
     }
@@ -92,46 +92,46 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
     
     private func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(DescriptorManagerDelegate.descriptorAdded(_:)), name: DescriptorManagerNotification.DescriptorAdded.rawValue, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(DescriptorManagerDelegate.descriptorAdded(_:)), name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorAdded.rawValue), object: nil)
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(DescriptorManagerDelegate.descriptorDidCancel(_:)), name: DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(DescriptorManagerDelegate.descriptorDidCancel(_:)), name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
     private func removeObservers()
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: DescriptorManagerNotification.DescriptorAdded.rawValue, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorAdded.rawValue), object: nil)
 
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
-    func descriptorAdded(notification: NSNotification)
+    func descriptorAdded(_ notification: Notification)
     {
         // TODO: should we move this dispatch to within the descriptor manager itself?
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+        DispatchQueue.main.async { () -> Void in
             
             if let descriptor = notification.object as? OldUploadDescriptor,
                 let identifier = descriptor.identifier
             {
-                let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-                self.items.insert(identifier, atIndex: indexPath.row)
-                self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+                let indexPath = IndexPath(row: 0, section: 0)
+                self.items.insert(identifier, at: indexPath.row)
+                self.tableView.insertRows(at: [indexPath], with: .fade)
             }
         }
     }
     
-    func descriptorDidCancel(notification: NSNotification)
+    func descriptorDidCancel(_ notification: Notification)
     {
         // TODO: should we move this dispatch to within the descriptor manager itself?
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+        DispatchQueue.main.async { () -> Void in
             
             if let descriptor = notification.object as? OldUploadDescriptor,
                 let identifier = descriptor.identifier,
-                let index = self.items.indexOf(identifier)
+                let index = self.items.index(of: identifier)
             {
-                self.items.removeAtIndex(index)
+                self.items.remove(at: index)
 
-                let indexPath = NSIndexPath(forRow: index, inSection: 0)
-                self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+                let indexPath = IndexPath(row: index, section: 0)
+                self.tableView.deleteRows(at: [indexPath], with: .fade)
             }
         }
     }

@@ -30,7 +30,7 @@ import AFNetworking
 
 @objc public protocol VideoRefreshManagerDelegate
 {
-    func uploadingStateDidChangeForVideo(video: VIMVideo)
+    func uploadingStateDidChange(for video: VIMVideo)
 }
 
 @objc public class VideoRefreshManager: NSObject
@@ -45,7 +45,7 @@ import AFNetworking
     // MARK:
     
     private var videos: [VideoUri: Bool] = [:]
-    private let operationQueue: NSOperationQueue
+    private let operationQueue: OperationQueue
     
     // MARK: - Initialization
     
@@ -60,7 +60,7 @@ import AFNetworking
         self.sessionManager = sessionManager
         self.delegate = delegate
         
-        self.operationQueue = NSOperationQueue()
+        self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
         
         super.init()
@@ -77,12 +77,12 @@ import AFNetworking
         self.operationQueue.cancelAllOperations()
     }
     
-    public func cancelRefreshForVideoWithUri(uri: VideoUri)
+    public func cancelRefreshForVideo(withURI uri: VideoUri)
     {
-        self.videos.removeValueForKey(uri)
+        self.videos.removeValue(forKey: uri)
     }
 
-    public func refreshVideo(video: VIMVideo)
+    public func refresh(video: VIMVideo)
     {
         guard let uri = video.uri else
         {
@@ -95,17 +95,17 @@ import AFNetworking
             return // It's already scheduled for refresh
         }
 
-        guard self.dynamicType.isVideoStatusFinal(video) != true else
+        guard type(of: self).isStatusFinal(for: video) != true else
         {
             return // No need to refresh this video, it's already done
         }
 
-        self.doRefreshVideo(video)
+        self.doRefresh(video: video)
     }
     
     // MARK: Private API
 
-    private func doRefreshVideo(video: VIMVideo)
+    private func doRefresh(video: VIMVideo)
     {
         let uri = video.uri!
         
@@ -114,14 +114,14 @@ import AFNetworking
         let operation = VideoOperation(sessionManager: self.sessionManager, videoUri: uri)
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
@@ -133,21 +133,21 @@ import AFNetworking
                 
                 if let error = operation.error
                 {
-                    if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? NSHTTPURLResponse where response.statusCode == 404
+                    if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse, response.statusCode == 404
                     {
-                        strongSelf.videos.removeValueForKey(uri) // The video was deleted, remove it from consideration
+                        strongSelf.videos.removeValue(forKey: uri) // The video was deleted, remove it from consideration
                     }
                     else
                     {
-                        strongSelf.retryVideo(video)
+                        strongSelf.retry(video: video)
                     }
                 }
                 else if let freshVideo = operation.video
                 {
-                    if strongSelf.dynamicType.isVideoStatusFinal(freshVideo) == true // We're done!
+                    if type(of: strongSelf).isStatusFinal(for: freshVideo) == true // We're done!
                     {
-                        strongSelf.videos.removeValueForKey(uri)
-                        strongSelf.delegate?.uploadingStateDidChangeForVideo(freshVideo)
+                        strongSelf.videos.removeValue(forKey: uri)
+                        strongSelf.delegate?.uploadingStateDidChange(for: freshVideo)
                         
                         return
                     }
@@ -157,17 +157,17 @@ import AFNetworking
 
                     if existingStatus == newStatus
                     {
-                        strongSelf.retryVideo(freshVideo) // Nothing has changed, just retry
+                        strongSelf.retry(video: freshVideo) // Nothing has changed, just retry
                     }
                     else
                     {
-                        strongSelf.delegate?.uploadingStateDidChangeForVideo(freshVideo)
-                        strongSelf.retryVideo(freshVideo)
+                        strongSelf.delegate?.uploadingStateDidChange(for: freshVideo)
+                        strongSelf.retry(video: freshVideo)
                     }
                 }
                 else // Execution should never reach this point
                 {
-                    strongSelf.videos.removeValueForKey(uri)
+                    strongSelf.videos.removeValue(forKey: uri)
                 }
             })
         }
@@ -175,54 +175,54 @@ import AFNetworking
         self.operationQueue.addOperation(operation)
     }
 
-    private func retryVideo(video: VIMVideo)
+    private func retry(video: VIMVideo)
     {
-        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(self.dynamicType.RetryDelayInSeconds * Double(NSEC_PER_SEC)))
+        let delayTime = DispatchTime.now() + Double(Int64(type(of: self).RetryDelayInSeconds * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
         
-        dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] () -> Void in
-            self?.doRefreshVideo(video)
+        DispatchQueue.main.asyncAfter(deadline: delayTime) { [weak self] () -> Void in
+            self?.doRefresh(video: video)
         }
     }
     
-    private static func isVideoStatusFinal(video: VIMVideo) -> Bool
+    private static func isStatusFinal(for video: VIMVideo) -> Bool
     {
         let status = video.videoStatus
         
-        return status == .Available || status == .UploadingError || status == .TranscodingError || status == .QuotaExceeded
+        return status == .available || status == .uploadingError || status == .transcodingError || status == .quotaExceeded
     }
     
     // MARK: Notifications
     
     private func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(VideoRefreshManager.reachabilityDidChange(_:)), name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(VideoRefreshManager.reachabilityDidChange(_:)), name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
     private func removeObservers()
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillEnterForegroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidEnterBackgroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: AFNetworkingReachabilityDidChangeNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    func applicationWillEnterForeground(notification: NSNotification)
+    func applicationWillEnterForeground(_ notification: Notification)
     {
-        self.operationQueue.suspended = false 
+        self.operationQueue.isSuspended = false 
     }
     
-    func applicationDidEnterBackground(notification: NSNotification)
+    func applicationDidEnterBackground(_ notification: Notification)
     {
-        self.operationQueue.suspended = true
+        self.operationQueue.isSuspended = true
     }
     
-    func reachabilityDidChange(notification: NSNotification?)
+    func reachabilityDidChange(_ notification: Notification?)
     {
-        let currentlyReachable = AFNetworkReachabilityManager.sharedManager().reachable
+        let currentlyReachable = AFNetworkReachabilityManager.shared().isReachable
         
-        self.operationQueue.suspended = !currentlyReachable
+        self.operationQueue.isSuspended = !currentlyReachable
     }
 }

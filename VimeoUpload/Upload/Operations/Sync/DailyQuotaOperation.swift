@@ -28,7 +28,7 @@ import Foundation
 import AVFoundation
 import VimeoNetworking
 
-public class DailyQuotaOperation: NSOperation
+public class DailyQuotaOperation: Operation
 {    
     private let user: VIMUser
     
@@ -52,7 +52,7 @@ public class DailyQuotaOperation: NSOperation
         }
         else
         {
-            self.error = NSError.errorWithDomain(UploadErrorDomain.DailyQuotaOperation.rawValue, code: UploadLocalErrorCode.CannotEvaluateDailyQuota.rawValue, description: "User object did not contain uploadQuota.quota information")
+            self.error = NSError.error(withDomain: UploadErrorDomain.DailyQuotaOperation.rawValue, code: UploadLocalErrorCode.cannotEvaluateDailyQuota.rawValue, description: "User object did not contain uploadQuota.quota information")
         }
     }
 }

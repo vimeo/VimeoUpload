@@ -31,7 +31,7 @@ extension VimeoResponseSerializer
 {
     private static let LocationKey = "Location"
     
-    func processMeResponse(response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMUser
+    func process(meResponse response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMUser
     {
         do
         {
@@ -39,20 +39,20 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Me.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.Me.rawValue)
         }
         
         do
         {
-            return try self.userFromResponseObject(responseObject)
+            return try self.user(from: responseObject)
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Me.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.Me.rawValue)
         }
     }
 
-    func processMyVideosResponse(response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws -> [VIMVideo]
+    func process(myVideosResponse response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> [VIMVideo]
     {
         do
         {
@@ -60,35 +60,35 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.MyVideos.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.MyVideos.rawValue)
         }
         
         do
         {
-            return try self.videosFromResponseObject(responseObject)
+            return try self.videos(from: responseObject)
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.MyVideos.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.MyVideos.rawValue)
         }
     }
 
-    func processCreateVideoResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> VIMUploadTicket
+    func process(createVideoResponse response: URLResponse?, url: URL?, error: NSError?) throws -> VIMUploadTicket
     {
-        let responseObject: [String: AnyObject]?
+        let responseObject: [AnyHashable: Any]?
         do
         {
-            responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url, error: error)
+            responseObject = try responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.Create.rawValue)
         }
 
-        return try self.processCreateVideoResponse(response, responseObject: responseObject, error: error)
+        return try self.process(createVideoResponse: response, responseObject: responseObject as AnyObject?, error: error)
     }
     
-    func processCreateVideoResponse(response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMUploadTicket
+    func process(createVideoResponse response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMUploadTicket
     {
         do
         {
@@ -96,20 +96,20 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.Create.rawValue)
         }
         
         do
         {
-            return try self.uploadTicketFromResponseObject(responseObject)
+            return try self.uploadTicket(from: responseObject)
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Create.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.Create.rawValue)
         }
     }
 
-    func processUploadVideoResponse(response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws
+    func process(uploadVideoResponse response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws
     {
         do
         {
@@ -117,22 +117,22 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Upload.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.Upload.rawValue)
         }
     }
     
-    func processActivateVideoResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> String
+    func process(activateVideoResponse response: URLResponse?, url: URL?, error: NSError?) throws -> String
     {
         do
         {
-            try responseObjectFromDownloadTaskResponse(response: response, url: url, error: error)
+            _ = try responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Activate.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.Activate.rawValue)
         }
 
-        guard let HTTPResponse = response as? NSHTTPURLResponse, let location = HTTPResponse.allHeaderFields[self.dynamicType.LocationKey] as? String else
+        guard let HTTPResponse = response as? HTTPURLResponse, let location = HTTPResponse.allHeaderFields[type(of: self).LocationKey] as? String else
         {
             throw NSError(domain: UploadErrorDomain.Activate.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Activate response did not contain the required value."])
         }
@@ -140,22 +140,22 @@ extension VimeoResponseSerializer
         return location
     }
 
-    func processVideoSettingsResponse(response: NSURLResponse?, url: NSURL?, error: NSError?) throws -> VIMVideo
+    func process(videoSettingsResponse response: URLResponse?, url: URL?, error: NSError?) throws -> VIMVideo
     {
-        let responseObject: [String: AnyObject]?
+        let responseObject: [AnyHashable: Any]?
         do
         {
-            responseObject = try self.responseObjectFromDownloadTaskResponse(response: response, url: url, error: error)
+            responseObject = try self.responseObjectFromDownloadTaskResponse(response: response, url: url as URL?, error: error)
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.VideoSettings.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.VideoSettings.rawValue)
         }
         
-        return try self.processVideoSettingsResponse(response, responseObject: responseObject, error: error)
+        return try self.process(videoSettingsResponse: response, responseObject: responseObject as AnyObject?, error: error)
     }
     
-    func processVideoSettingsResponse(response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMVideo
+    func process(videoSettingsResponse response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMVideo
     {
         do
         {
@@ -163,20 +163,20 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.VideoSettings.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.VideoSettings.rawValue)
         }
         
         do
         {
-            return try self.videoFromResponseObject(responseObject)
+            return try self.video(from: responseObject)
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.VideoSettings.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.VideoSettings.rawValue)
         }
     }
 
-    func processDeleteVideoResponse(response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws
+    func process(deleteVideoResponse response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws
     {
         do
         {
@@ -184,11 +184,11 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Delete.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.Delete.rawValue)
         }
     }
 
-    func processVideoResponse(response: NSURLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMVideo
+    func process(videoResponse response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMVideo
     {
         do
         {
@@ -196,82 +196,82 @@ extension VimeoResponseSerializer
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Video.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.Video.rawValue)
         }
 
         do
         {
-            return try self.videoFromResponseObject(responseObject)
+            return try self.video(from: responseObject)
         }
         catch let error as NSError
         {
-            throw error.errorByAddingDomain(UploadErrorDomain.Video.rawValue)
+            throw error.error(byAddingDomain: UploadErrorDomain.Video.rawValue)
         }
     }
 
     // MARK: Private API
 
-    private func videosFromResponseObject(responseObject: AnyObject?) throws -> [VIMVideo]
+    private func videos(from responseObject: AnyObject?) throws -> [VIMVideo]
     {
         if let dictionary = responseObject as? [String: AnyObject]
         {
             let mapper = VIMObjectMapper()
             mapper.addMappingClass(VIMVideo.self, forKeypath: "data")
             
-            if let result = mapper.applyMappingToJSON(dictionary) as? [String: AnyObject], let videos = result["data"] as? [VIMVideo]
+            if let result = mapper.applyMapping(toJSON: dictionary) as? [String: AnyObject], let videos = result["data"] as? [VIMVideo]
             {
                 return videos
             }
         }
         
-        throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse videos array from responseObject failed")
+        throw NSError.error(withDomain: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse videos array from responseObject failed")
     }
 
-    private func videoFromResponseObject(responseObject: AnyObject?) throws -> VIMVideo
+    private func video(from responseObject: AnyObject?) throws -> VIMVideo
     {
         if let dictionary = responseObject as? [String: AnyObject]
         {
             let mapper = VIMObjectMapper()
             mapper.addMappingClass(VIMVideo.self, forKeypath: "")
             
-            if let video = mapper.applyMappingToJSON(dictionary) as? VIMVideo
+            if let video = mapper.applyMapping(toJSON: dictionary) as? VIMVideo
             {
                 return video
             }
         }
         
-        throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse video object from responseObject failed")
+        throw NSError.error(withDomain: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse video object from responseObject failed")
     }
 
-    private func userFromResponseObject(responseObject: AnyObject?) throws -> VIMUser
+    private func user(from responseObject: AnyObject?) throws -> VIMUser
     {
         if let dictionary = responseObject as? [String: AnyObject]
         {
             let mapper = VIMObjectMapper()
             mapper.addMappingClass(VIMUser.self, forKeypath: "")
             
-            if let user = mapper.applyMappingToJSON(dictionary) as? VIMUser
+            if let user = mapper.applyMapping(toJSON: dictionary) as? VIMUser
             {
                 return user
             }
         }
         
-        throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse user object from responseObject failed")
+        throw NSError.error(withDomain: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse user object from responseObject failed")
     }
 
-    private func uploadTicketFromResponseObject(responseObject: AnyObject?) throws -> VIMUploadTicket
+    private func uploadTicket(from responseObject: AnyObject?) throws -> VIMUploadTicket
     {
         if let dictionary = responseObject as? [String: AnyObject]
         {
             let mapper = VIMObjectMapper()
             mapper.addMappingClass(VIMUploadTicket.self, forKeypath: "")
          
-            if let uploadTicket = mapper.applyMappingToJSON(dictionary) as? VIMUploadTicket
+            if let uploadTicket = mapper.applyMapping(toJSON: dictionary) as? VIMUploadTicket
             {
                 return uploadTicket
             }
         }
         
-        throw NSError.errorWithDomain(UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse uploadTicket object from responseObject failed")
+        throw NSError.error(withDomain: UploadErrorDomain.VimeoResponseSerializer.rawValue, code: nil, description: "Attempt to parse uploadTicket object from responseObject failed")
     }
 }

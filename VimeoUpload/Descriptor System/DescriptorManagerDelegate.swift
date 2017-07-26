@@ -30,21 +30,21 @@ import Foundation
 
 @objc public protocol DescriptorManagerDelegate: class
 {
-    optional func didLoadDescriptors(descriptors descriptors: Set<Descriptor>)
-    optional func didSaveDescriptors(count count: Int)
-    optional func didFailToLoadDescriptor(error error: NSError)
+    @objc optional func didLoadDescriptors(descriptors: Set<Descriptor>)
+    @objc optional func didSaveDescriptors(count: Int)
+    @objc optional func didFailToLoadDescriptor(error: NSError)
     
-    optional func sessionDidBecomeInvalid(error error: NSError)
-    optional func willHandleEventsForBackgroundSession()
-    optional func didFinishEventsForBackgroundSession()
+    @objc optional func sessionDidBecomeInvalid(error: NSError)
+    @objc optional func willHandleEventsForBackgroundSession()
+    @objc optional func didFinishEventsForBackgroundSession()
     
-    optional func downloadTaskDidFinishDownloading(task task: NSURLSessionDownloadTask, descriptor: Descriptor)
-    optional func taskDidComplete(task task: NSURLSessionTask, descriptor: Descriptor, error: NSError?)
+    @objc optional func downloadTaskDidFinishDownloading(task: URLSessionDownloadTask, descriptor: Descriptor)
+    @objc optional func taskDidComplete(task: URLSessionTask, descriptor: Descriptor, error: NSError?)
 
-    optional func descriptorAdded(descriptor: Descriptor)
-    optional func descriptorDidSucceed(descriptor: Descriptor)
-    optional func descriptorDidCancel(descriptor: Descriptor)
-    optional func descriptorDidFail(descriptor: Descriptor)
+    @objc optional func descriptorAdded(_ descriptor: Descriptor)
+    @objc optional func descriptorDidSucceed(_ descriptor: Descriptor)
+    @objc optional func descriptorDidCancel(_ descriptor: Descriptor)
+    @objc optional func descriptorDidFail(_ descriptor: Descriptor)
     
-    optional func descriptorForTaskNotFound(task: NSURLSessionTask)
+    @objc optional func descriptorForTaskNotFound(_ task: URLSessionTask)
 }

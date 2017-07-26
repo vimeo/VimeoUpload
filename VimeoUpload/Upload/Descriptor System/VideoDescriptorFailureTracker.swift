@@ -44,7 +44,7 @@ import Foundation
     
     public init(name: String)
     {
-        self.archiver = self.dynamicType.setupArchiver(name: name)
+        self.archiver = type(of: self).setupArchiver(name: name)
 
         super.init()
         
@@ -55,29 +55,29 @@ import Foundation
     
     // MARK: Setup
     
-    private static func setupArchiver(name name: String) -> KeyedArchiver
+    private static func setupArchiver(name: String) -> KeyedArchiver
     {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         
-        var documentsURL = NSURL(string: documentsPath)!
-        documentsURL = documentsURL.URLByAppendingPathComponent(name)!
+        var documentsURL = URL(string: documentsPath)!
+        documentsURL = documentsURL.appendingPathComponent(name)
         
-        if NSFileManager.defaultManager().fileExistsAtPath(documentsURL.path!) == false
+        if FileManager.default.fileExists(atPath: documentsURL.path) == false
         {
-            try! NSFileManager.defaultManager().createDirectoryAtPath(documentsURL.path!, withIntermediateDirectories: true, attributes: nil)
+            try! FileManager.default.createDirectory(atPath: documentsURL.path, withIntermediateDirectories: true, attributes: nil)
         }
         
-        return KeyedArchiver(basePath: documentsURL.path!)
+        return KeyedArchiver(basePath: documentsURL.path)
     }
     
     private func load() -> [String: Descriptor]
     {
-        return self.archiver.loadObjectForKey(self.dynamicType.ArchiveKey) as? [String: Descriptor] ?? [:]
+        return self.archiver.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
     }
     
     private func save()
     {
-        self.archiver.saveObject(self.failedDescriptors, key: self.dynamicType.ArchiveKey)
+        self.archiver.save(object: self.failedDescriptors, key: type(of: self).ArchiveKey)
     }
     
     // MARK: Public API
@@ -88,9 +88,9 @@ import Foundation
         self.save()
     }
     
-    public func removeFailedDescriptorForKey(key: String) -> Descriptor?
+    public func removeFailedDescriptor(for key: String) -> Descriptor?
     {
-        guard let descriptor = self.failedDescriptors.removeValueForKey(key) else
+        guard let descriptor = self.failedDescriptors.removeValue(forKey: key) else
         {
             return nil
         }
@@ -100,7 +100,7 @@ import Foundation
         return descriptor
     }
     
-    public func failedDescriptorForKey(key: String) -> Descriptor?
+    public func failedDescriptor(for key: String) -> Descriptor?
     {
         return self.failedDescriptors[key]
     }
@@ -109,37 +109,36 @@ import Foundation
     
     private func addObservers()
     {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(VideoDescriptorFailureTracker.descriptorDidFail(_:)), name: DescriptorManagerNotification.DescriptorDidFail.rawValue, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(VideoDescriptorFailureTracker.descriptorDidFail(_:)), name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: nil)
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(VideoDescriptorFailureTracker.descriptorDidCancel(_:)), name: DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(VideoDescriptorFailureTracker.descriptorDidCancel(_:)), name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
     private func removeObservers()
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: DescriptorManagerNotification.DescriptorDidFail.rawValue, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: DescriptorManagerNotification.DescriptorDidCancel.rawValue, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
-    func descriptorDidFail(notification: NSNotification)
+    func descriptorDidFail(_ notification: Notification)
     {
         if let descriptor = notification.object as? Descriptor,
-            let key = descriptor.identifier
-            where descriptor.error != nil
+            let key = descriptor.identifier, descriptor.error != nil
         {
-            dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            DispatchQueue.main.async { () -> Void in
                 self.failedDescriptors[key] = descriptor
                 self.save()
             }
         }
     }
     
-    func descriptorDidCancel(notification: NSNotification)
+    func descriptorDidCancel(_ notification: Notification)
     {
         if let descriptor = notification.object as? Descriptor,
             let key = descriptor.identifier
         {
-            dispatch_async(dispatch_get_main_queue()) { () -> Void in
-                self.removeFailedDescriptorForKey(key)
+            DispatchQueue.main.async { () -> Void in
+                _ = self.removeFailedDescriptor(for: key)
             }
         }
     }

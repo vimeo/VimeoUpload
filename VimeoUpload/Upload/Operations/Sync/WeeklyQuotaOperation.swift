@@ -28,7 +28,7 @@ import Foundation
 import AVFoundation
 import VimeoNetworking
 
-public class WeeklyQuotaOperation: NSOperation
+public class WeeklyQuotaOperation: Operation
 {    
     private let user: VIMUser
     private let fileSize: Float64
@@ -57,7 +57,7 @@ public class WeeklyQuotaOperation: NSOperation
         }
         else
         {
-            self.error = NSError.errorWithDomain(UploadErrorDomain.WeeklyQuotaOperation.rawValue, code: UploadLocalErrorCode.CannotEvaluateWeeklyQuota.rawValue, description: "User object did not contain uploadQuota.space information")
+            self.error = NSError.error(withDomain: UploadErrorDomain.WeeklyQuotaOperation.rawValue, code: UploadLocalErrorCode.cannotEvaluateWeeklyQuota.rawValue, description: "User object did not contain uploadQuota.space information")
         }
     }
 }

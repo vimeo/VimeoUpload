@@ -32,28 +32,28 @@ import Foundation
     import CoreServices
 #endif
 
-public extension NSURL
+public extension URL
 {
-    static func uploadURLWithFilename(filename: String, fileType: String) throws -> NSURL
+    static func uploadURL(withFileName filename: String, fileType: String) throws -> URL
     {
-        let url = NSURL.uploadDirectory()
+        let url = URL.uploadDirectory()
         
-        if NSFileManager.defaultManager().fileExistsAtPath(url.absoluteString!) == false
+        if FileManager.default.fileExists(atPath: url.absoluteString) == false
         {
-            try NSFileManager.defaultManager().createDirectoryAtPath(url.absoluteString!, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(atPath: url.absoluteString, withIntermediateDirectories: true, attributes: nil)
         }
         
-        let unmanagedTag = UTTypeCopyPreferredTagWithClass(fileType, kUTTagClassFilenameExtension)!
+        let unmanagedTag = UTTypeCopyPreferredTagWithClass(fileType as CFString, kUTTagClassFilenameExtension)!
         let ext = unmanagedTag.takeRetainedValue() as String
-        let path = url.URLByAppendingPathComponent(filename)!.URLByAppendingPathExtension(ext)!.absoluteString
+        let path = url.appendingPathComponent(filename).appendingPathExtension(ext).absoluteString
         
-        return NSURL.fileURLWithPath(path!)
+        return URL(fileURLWithPath: path)
     }
     
-    static func uploadDirectory() -> NSURL
+    static func uploadDirectory() -> URL
     {
-        let documentsURL = NSURL(string: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])!
+        let documentsURL = URL(string: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])!
         
-        return documentsURL.URLByAppendingPathComponent("uploader")!.URLByAppendingPathComponent("videos")!
+        return documentsURL.appendingPathComponent("uploader").appendingPathComponent("videos")
     }
 }

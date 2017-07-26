@@ -21,10 +21,10 @@ public enum CAMUploadRequest: String
         return [.CreateVideo, .UploadVideo, .CreateThumbnail, .UploadThumbnail, .ActivateThumbnail]
     }
     
-    static func nextRequest(currentRequest: CAMUploadRequest) -> CAMUploadRequest?
+    static func nextRequest(_ currentRequest: CAMUploadRequest) -> CAMUploadRequest?
     {
         let orderedRequests = CAMUploadRequest.orderedRequests()
-        if let index = orderedRequests.indexOf(currentRequest) where index + 1 < orderedRequests.count
+        if let index = orderedRequests.index(of: currentRequest), index + 1 < orderedRequests.count
         {
             return orderedRequests[index + 1]
         }

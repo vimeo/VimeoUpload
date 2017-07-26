@@ -32,7 +32,7 @@ public class VideoOperation: ConcurrentOperation
     private let sessionManager: VimeoSessionManager
     private let videoUri: String
     
-    private var task: NSURLSessionDataTask?
+    private var task: URLSessionDataTask?
     
     private(set) var video: VIMVideo?
     private(set) var error: NSError?
@@ -56,7 +56,7 @@ public class VideoOperation: ConcurrentOperation
     
     override public func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
@@ -72,29 +72,29 @@ public class VideoOperation: ConcurrentOperation
                 
                 strongSelf.task = nil
                 
-                if strongSelf.cancelled
+                if strongSelf.isCancelled
                 {
                     return
                 }
                 
                 if let error = error
                 {
-                    strongSelf.error = error.errorByAddingDomain(UploadErrorDomain.VideoOperation.rawValue)
+                    strongSelf.error = error.error(byAddingDomain: UploadErrorDomain.VideoOperation.rawValue)
                 }
                 else
                 {
                     strongSelf.video = video
                 }
                 
-                strongSelf.state = .Finished
+                strongSelf.state = .finished
             })
             
             self.task?.resume()
         }
         catch let error as NSError
         {
-            self.error = error.errorByAddingDomain(UploadErrorDomain.VideoOperation.rawValue)
-            self.state = .Finished
+            self.error = error.error(byAddingDomain: UploadErrorDomain.VideoOperation.rawValue)
+            self.state = .finished
         }
     }
     

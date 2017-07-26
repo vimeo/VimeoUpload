@@ -28,32 +28,32 @@ import Foundation
 import AVFoundation
 import VimeoNetworking
 
-public typealias ExportProgressBlock = (exportSession: AVAssetExportSession, progress: Double) -> Void
+public typealias ExportProgressBlock = (AVAssetExportSession, Double) -> Void
 
-public class ExportQuotaOperation: ConcurrentOperation
+open class ExportQuotaOperation: ConcurrentOperation
 {
     let me: VIMUser
-    let operationQueue: NSOperationQueue
+    let operationQueue: OperationQueue
 
-    public var downloadProgressBlock: ProgressBlock?
-    public var exportProgressBlock: ExportProgressBlock?
+    open var downloadProgressBlock: ProgressBlock?
+    open var exportProgressBlock: ExportProgressBlock?
     
-    public var error: NSError?
+    open var error: NSError?
     {
         didSet
         {
             if self.error != nil
             {
-                self.state = .Finished
+                self.state = .finished
             }
         }
     }
-    public var result: NSURL?
+    open var result: URL?
     
     init(me: VIMUser)
     {
         self.me = me
-        self.operationQueue = NSOperationQueue()
+        self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
     }
     
@@ -64,9 +64,9 @@ public class ExportQuotaOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override public func main()
+    override open func main()
     {
-        if self.cancelled
+        if self.isCancelled
         {
             return
         }
@@ -74,7 +74,7 @@ public class ExportQuotaOperation: ConcurrentOperation
         self.requestExportSession()
     }
     
-    override public func cancel()
+    override open func cancel()
     {
         super.cancel()
         
@@ -82,7 +82,7 @@ public class ExportQuotaOperation: ConcurrentOperation
         
         if let url = self.result
         {
-            NSFileManager.defaultManager().deleteFileAtURL(url)
+            FileManager.default.deleteFile(at: url)
         }
     }
     
@@ -93,28 +93,28 @@ public class ExportQuotaOperation: ConcurrentOperation
         assertionFailure("Subclasses must override")
     }
     
-    func performExport(exportOperation exportOperation: ExportOperation)
+    func performExport(exportOperation: ExportOperation)
     {
         exportOperation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
             
             if let progressBlock = self?.exportProgressBlock
             {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    progressBlock(exportSession: exportOperation.exportSession, progress: progress)
+                DispatchQueue.main.async(execute: { () -> Void in
+                    progressBlock(exportOperation.exportSession, progress)
                 })
             }
         }
         
         exportOperation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if exportOperation.cancelled == true
+                if exportOperation.isCancelled == true
                 {
                     return
                 }
@@ -136,12 +136,12 @@ public class ExportQuotaOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    private func checkExactWeeklyQuota(url url: NSURL)
+    private func checkExactWeeklyQuota(url: URL)
     {
         let me = self.me
-        let avUrlAsset = AVURLAsset(URL: url)
+        let avUrlAsset = AVURLAsset(url: url)
         
-        let fileSize: NSNumber
+        let fileSize: Double
         do
         {
             fileSize = try avUrlAsset.fileSize()
@@ -153,32 +153,32 @@ public class ExportQuotaOperation: ConcurrentOperation
             return
         }
         
-        let operation = WeeklyQuotaOperation(user: me, fileSize: fileSize.doubleValue)
+        let operation = WeeklyQuotaOperation(user: me, fileSize: fileSize)
         operation.completionBlock = { [weak self] () -> Void in
             
-            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
                 guard let strongSelf = self else
                 {
                     return
                 }
                 
-                if operation.cancelled == true
+                if operation.isCancelled == true
                 {
                     return
                 }
                 
                 // Do not check error, allow to pass [AH]
 
-                if let result = operation.result where result.success == false
+                if let result = operation.result, result.success == false
                 {
                     let userInfo = [UploadErrorKey.FileSize.rawValue: result.fileSize, UploadErrorKey.AvailableSpace.rawValue: result.availableSpace]
-                    strongSelf.error = NSError.errorWithDomain(UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: UploadLocalErrorCode.WeeklyQuotaException.rawValue, description: "Upload would exceed weekly quota.").errorByAddingUserInfo(userInfo)
+                    strongSelf.error = NSError.error(withDomain: UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: UploadLocalErrorCode.weeklyQuotaException.rawValue, description: "Upload would exceed weekly quota.").error(byAddingUserInfo: userInfo as [String : AnyObject])
                 }
                 else
                 {
                     strongSelf.result = url
-                    strongSelf.state = .Finished
+                    strongSelf.state = .finished
                 }
             })
         }

@@ -29,13 +29,13 @@ import AFNetworking
 
 public enum DescriptorState: String
 {
-    case Ready = "Ready"
-    case Executing = "Executing"
-    case Suspended = "Suspended"
-    case Finished = "Finished"
+    case ready = "Ready"
+    case executing = "Executing"
+    case suspended = "Suspended"
+    case finished = "Finished"
 }
 
-public class Descriptor: NSObject, NSCoding
+open class Descriptor: NSObject, NSCoding
 {
     private static let StateCoderKey = "state"
     private static let IdentifierCoderKey = "identifier"
@@ -44,8 +44,8 @@ public class Descriptor: NSObject, NSCoding
 
     // MARK:
     
-    dynamic private(set) var stateObservable: String = DescriptorState.Ready.rawValue
-    public var state = DescriptorState.Ready
+    dynamic private(set) var stateObservable: String = DescriptorState.ready.rawValue
+    public var state = DescriptorState.ready
     {
         didSet
         {
@@ -59,7 +59,7 @@ public class Descriptor: NSObject, NSCoding
     public var currentTaskIdentifier: Int?
     public var error: NSError?
     
-    private(set) public var isCancelled = false
+    private(set) open var isCancelled = false
     
     // MARK: - Initialization
 
@@ -70,31 +70,31 @@ public class Descriptor: NSObject, NSCoding
     
     // MARK: Subclass Overrides
 
-    public func prepare(sessionManager sessionManager: AFURLSessionManager) throws
+    open func prepare(sessionManager: AFURLSessionManager) throws
     {
         fatalError("prepare(sessionManager:) has not been implemented")
     }
 
-    public func resume(sessionManager sessionManager: AFURLSessionManager)
+    open func resume(sessionManager: AFURLSessionManager)
     {
-        self.state = .Executing
+        self.state = .executing
         
         if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.taskForIdentifier(identifier)
+            let task = sessionManager.task(for: identifier)
         {
             task.resume()
         }
     }
     
-    public func suspend(sessionManager sessionManager: AFURLSessionManager)
+    open func suspend(sessionManager: AFURLSessionManager)
     {
         let originalState = self.state
         
-        self.state = .Suspended
+        self.state = .suspended
 
         // If we're suspending a just-enqueued descriptor, don't cancel it, just update it's state to .Suspended [AH] 2/24/2016
         
-        if originalState == .Ready
+        if originalState == .ready
         {
             return
         }
@@ -107,25 +107,25 @@ public class Descriptor: NSObject, NSCoding
         self.doCancel(sessionManager: sessionManager)
     }
 
-    public func cancel(sessionManager sessionManager: AFURLSessionManager)
+    open func cancel(sessionManager: AFURLSessionManager)
     {
         self.isCancelled = true
-        self.state = .Finished
+        self.state = .finished
 
         self.doCancel(sessionManager: sessionManager)
     }
     
-    public func didLoadFromCache(sessionManager sessionManager: AFURLSessionManager) throws
+    open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
         fatalError("didLoadFromCache(sessionManager:) has not been implemented")
     }
     
-    public func taskDidFinishDownloading(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionDownloadTask, url: NSURL) -> NSURL?
+    open func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
     {
         return nil
     }
 
-    public func taskDidComplete(sessionManager sessionManager: AFURLSessionManager, task: NSURLSessionTask, error: NSError?)
+    open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
     {
         fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
     }
@@ -134,10 +134,10 @@ public class Descriptor: NSObject, NSCoding
     
     // We need this method because we need to differentiate between suspend-initiated cancellations and user-initiated cancellations [AH] 2/17/2016
 
-    private func doCancel(sessionManager sessionManager: AFURLSessionManager)
+    private func doCancel(sessionManager: AFURLSessionManager)
     {
         if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.taskForIdentifier(identifier)
+            let task = sessionManager.task(for: identifier)
         {
             task.cancel()
         }
@@ -147,20 +147,20 @@ public class Descriptor: NSObject, NSCoding
     
     required public init(coder aDecoder: NSCoder)
     {
-        self.state = DescriptorState(rawValue: aDecoder.decodeObjectForKey(self.dynamicType.StateCoderKey) as! String)!
-        self.identifier = aDecoder.decodeObjectForKey(self.dynamicType.IdentifierCoderKey) as? String
-        self.error = aDecoder.decodeObjectForKey(self.dynamicType.ErrorCoderKey) as? NSError
-        self.currentTaskIdentifier = aDecoder.decodeIntegerForKey(self.dynamicType.CurrentTaskIdentifierCoderKey)
+        self.state = DescriptorState(rawValue: aDecoder.decodeObject(forKey: type(of: self).StateCoderKey) as! String)!
+        self.identifier = aDecoder.decodeObject(forKey: type(of: self).IdentifierCoderKey) as? String
+        self.error = aDecoder.decodeObject(forKey: type(of: self).ErrorCoderKey) as? NSError
+        self.currentTaskIdentifier = aDecoder.decodeInteger(forKey: type(of: self).CurrentTaskIdentifierCoderKey)
     }
     
-    public func encodeWithCoder(aCoder: NSCoder)
+    open func encode(with aCoder: NSCoder)
     {
-        aCoder.encodeObject(self.state.rawValue, forKey: self.dynamicType.StateCoderKey)
-        aCoder.encodeObject(self.identifier, forKey: self.dynamicType.IdentifierCoderKey)
-        aCoder.encodeObject(self.error, forKey: self.dynamicType.ErrorCoderKey)
+        aCoder.encode(self.state.rawValue, forKey: type(of: self).StateCoderKey)
+        aCoder.encode(self.identifier, forKey: type(of: self).IdentifierCoderKey)
+        aCoder.encode(self.error, forKey: type(of: self).ErrorCoderKey)
         if let currentTaskIdentifier = self.currentTaskIdentifier
         {
-            aCoder.encodeInteger(currentTaskIdentifier, forKey: self.dynamicType.CurrentTaskIdentifierCoderKey)
+            aCoder.encode(currentTaskIdentifier, forKey: type(of: self).CurrentTaskIdentifierCoderKey)
         }
     }
 }

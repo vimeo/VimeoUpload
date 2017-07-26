@@ -29,15 +29,14 @@ import VimeoNetworking
 
 extension VimeoSessionManager
 {
-    func createVideoDataTask(url url: NSURL, videoSettings: VideoSettings?, completionHandler: UploadTicketCompletionHandler) throws -> NSURLSessionDataTask
+    func createVideoDataTask(url: URL, videoSettings: VideoSettings?, completionHandler: @escaping UploadTicketCompletionHandler) throws -> URLSessionDataTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url, videoSettings: videoSettings)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings)
         
-        let task = self.dataTaskWithRequest(request, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+        let task = self.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
             // Do model parsing on a background thread
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] () -> Void in
-                
+            DispatchQueue.global(qos: .default).async(execute: { [weak self] () -> Void in
                 guard let strongSelf = self else
                 {
                     return
@@ -45,12 +44,12 @@ extension VimeoSessionManager
                 
                 do
                 {
-                    let uploadTicket = try (strongSelf.responseSerializer as! VimeoResponseSerializer).processCreateVideoResponse(response, responseObject: responseObject, error: error)
-                    completionHandler(uploadTicket: uploadTicket, error: nil)
+                    let uploadTicket = try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(createVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                    completionHandler(uploadTicket, nil)
                 }
                 catch let error as NSError
                 {
-                    completionHandler(uploadTicket: nil, error: error)
+                    completionHandler(nil, error)
                 }
             })
         })
@@ -60,11 +59,11 @@ extension VimeoSessionManager
         return task
     }
     
-    func createVideoDownloadTask(url url: NSURL, videoSettings: VideoSettings?) throws -> NSURLSessionDownloadTask
+    func createVideoDownloadTask(url: URL, videoSettings: VideoSettings?) throws -> URLSessionDownloadTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequestWithUrl(url, videoSettings: videoSettings)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings)
         
-        let task = self.downloadTaskWithRequest(request, progress: nil, destination: nil, completionHandler: nil)
+        let task = self.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         
         task.taskDescription = UploadTaskDescription.CreateVideo.rawValue
         

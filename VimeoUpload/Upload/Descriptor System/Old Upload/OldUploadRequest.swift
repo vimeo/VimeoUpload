@@ -38,10 +38,10 @@ public enum OldUploadRequest: String
         return [.Create, .Upload, .Activate, .Settings]
     }
     
-    static func nextRequest(currentRequest: OldUploadRequest) -> OldUploadRequest?
+    static func nextRequest(_ currentRequest: OldUploadRequest) -> OldUploadRequest?
     {
         let orderedRequests = OldUploadRequest.orderedRequests()
-        if let index = orderedRequests.indexOf(currentRequest) where index + 1 < orderedRequests.count
+        if let index = orderedRequests.index(of: currentRequest), index + 1 < orderedRequests.count
         {
             return orderedRequests[index + 1]
         }
