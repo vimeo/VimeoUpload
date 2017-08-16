@@ -285,7 +285,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     private func applyVideoSettings()
     {
-        guard let videoUri = self.uploadTicket?.video?.uri, let videoSettings = self.videoSettings else
+        guard let videoURI = self.uploadTicket?.video?.uri, let videoSettings = self.videoSettings else
         {
             let alertController = UIAlertController(
                 title: "Cannot Upload Video",
@@ -302,7 +302,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         do
         {
-            self.task = try NewVimeoUploader.sharedInstance.foregroundSessionManager.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+            self.task = try NewVimeoUploader.sharedInstance.foregroundSessionManager.videoSettingsDataTask(videoUri: videoURI, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 self?.task = nil
                 
