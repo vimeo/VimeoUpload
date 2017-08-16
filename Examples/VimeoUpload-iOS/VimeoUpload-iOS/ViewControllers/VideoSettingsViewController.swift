@@ -42,6 +42,16 @@ import VimeoUpload
 
 class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
+    private struct Constants
+    {
+        struct TwoStepUploadPermissionAlert
+        {
+            static let Title = "Cannot Upload Video"
+            static let Message = "Two-step upload is not available to third-party apps yet!"
+            static let ActionTitle = "OK"
+        }
+    }
+    
     static let UploadInitiatedNotification = "VideoSettingsViewControllerUploadInitiatedNotification"
     static let NibName = "VideoSettingsViewController"
     private static let PreUploadViewPrivacy = "pre_upload"
@@ -288,11 +298,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         guard let videoURI = self.uploadTicket?.video?.uri, let videoSettings = self.videoSettings else
         {
             let alertController = UIAlertController(
-                title: "Cannot Upload Video",
-                message: "The video object in `uploadTicket` does not exist!",
+                title: Constants.TwoStepUploadPermissionAlert.Title,
+                message: Constants.TwoStepUploadPermissionAlert.Message,
                 preferredStyle: .alert
             )
-            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self] (action) in
+            alertController.addAction(UIAlertAction(title: Constants.TwoStepUploadPermissionAlert.ActionTitle, style: .default, handler: { [weak self] (action) in
                 self?.activityIndicatorView.stopAnimating()
             }))
             self.present(alertController, animated: true, completion: nil)
