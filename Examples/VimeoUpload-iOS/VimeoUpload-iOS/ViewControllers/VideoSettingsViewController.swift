@@ -47,7 +47,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         struct TwoStepUploadPermissionAlert
         {
             static let Title = "Cannot Upload Video"
-            static let Message = "Check the project target to confirm you selected Old-Upload. New-upload is not available to third-party apps yet."
+            static let Message = "Check the project target to confirm you selected Old-Upload. New-Upload is not available to third-party apps yet."
             static let ActionTitle = "OK"
         }
     }
