@@ -26,7 +26,7 @@
 
 import Foundation
 
-public class VideoSettings: NSObject
+public class VideoSettings: NSObject, NSCoding
 {
     public var title: String?
     {
@@ -104,7 +104,7 @@ public class VideoSettings: NSObject
         self.password = aDecoder.decodeObject(forKey: "password") as? String
     }
     
-    func encode(with aCoder: NSCoder)
+    public func encode(with aCoder: NSCoder)
     {
         aCoder.encode(self.title, forKey: "title")
         aCoder.encode(self.desc, forKey: "desc")

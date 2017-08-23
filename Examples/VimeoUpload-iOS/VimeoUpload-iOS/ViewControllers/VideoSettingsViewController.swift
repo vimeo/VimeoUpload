@@ -42,6 +42,16 @@ import VimeoUpload
 
 class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 {
+    private struct Constants
+    {
+        struct TwoStepUploadPermissionAlert
+        {
+            static let Title = "Cannot Upload Video"
+            static let Message = "Check the project target to confirm you selected Old-Upload. New-Upload is not available to third-party apps yet."
+            static let ActionTitle = "OK"
+        }
+    }
+    
     static let UploadInitiatedNotification = "VideoSettingsViewControllerUploadInitiatedNotification"
     static let NibName = "VideoSettingsViewController"
     private static let PreUploadViewPrivacy = "pre_upload"
@@ -285,12 +295,24 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     private func applyVideoSettings()
     {
-        let videoUri = self.uploadTicket!.video!.uri!
-        let videoSettings = self.videoSettings!
+        guard let videoURI = self.uploadTicket?.video?.uri, let videoSettings = self.videoSettings else
+        {
+            let alertController = UIAlertController(
+                title: Constants.TwoStepUploadPermissionAlert.Title,
+                message: Constants.TwoStepUploadPermissionAlert.Message,
+                preferredStyle: .alert
+            )
+            alertController.addAction(UIAlertAction(title: Constants.TwoStepUploadPermissionAlert.ActionTitle, style: .default, handler: { [weak self] (action) in
+                self?.activityIndicatorView.stopAnimating()
+            }))
+            self.present(alertController, animated: true, completion: nil)
+            
+            return
+        }
         
         do
         {
-            self.task = try NewVimeoUploader.sharedInstance.foregroundSessionManager.videoSettingsDataTask(videoUri: videoUri, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+            self.task = try NewVimeoUploader.sharedInstance.foregroundSessionManager.videoSettingsDataTask(videoUri: videoURI, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 self?.task = nil
                 
