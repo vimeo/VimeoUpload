@@ -19,7 +19,6 @@ This library is under active development. We're shooting for a v1.0 release soon
 * [Uploading Videos](#uploading-videos)
      * [Starting an Upload](#starting-an-upload)
           * [Obtaining a File URL For a PHAsset](#obtaining-a-file-url-for-a-phasset)
-          * [Obtaining a File URL For an ALAsset](#obtaining-a-file-url-for-an-alasset)
           * [Obtaining a File URL For an Asset That You Manage](#obtaining-a-file-url-for-an-asset-that-you-manage)
           * [Start Your Upload](#start-your-upload)
      * [Inspecting Upload State and Progress](#inspecting-upload-state-and-progress)
@@ -47,19 +46,15 @@ A simplified flow that eliminates steps 3 and 4 above is in private beta right n
 
 We affectionately refer to this 2-step flow as New Upload.
 
-VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. The library currently contains support for both. However, New Upoad classes are currently marked as "private" and will not work for the general public until they are released from private beta.
+VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. The library currently contains support for both. However, New Upload classes are currently marked as "private" and will not work for the general public until they are released from private beta.
 
-The VimeoUpload APIs for New and Old Upload are very similar. The Old Upload API is documented below. Old upload will be deprecated as soon as possible and the README will be updated to reflec the New Upload API at that time.
+The VimeoUpload APIs for New and Old Upload are very similar. The Old Upload API is documented below. Old upload will be deprecated as soon as possible and the README will be updated to reflect the New Upload API at that time.
 
 ### Constraints
 
-* **iOS 7 Support Required** 
+* **No Direct Access to PHAsset Source Files** 
 
- Because the Vimeo iOS app supports iOS7, and because a bunch of other apps out there do too, we must support both the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) and [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) APIs.
-
-* **No Direct Access to PHAsset or ALAsset Source Files** 
-
- Because of how the Apple APIs are designed, we cannot upload directly from [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) and [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) source files. So we must export a copy of the asset using an [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) before starting the upload process. Asset export must happen when the app is in the foreground.
+ Because of how the Apple APIs are designed, we cannot upload directly from [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) source files. So we must export a copy of the asset using an [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) before starting the upload process. Asset export must happen when the app is in the foreground.
 
 * **iCloud Photos** 
 
@@ -177,9 +172,9 @@ You can obtain an OAuth token by using the authentication methods provided by [V
 
 In order to start an upload, you need a file URL pointing to the video file on disk that you would like to upload.
 
-The steps required to obtain the file URL will vary depending on whether you are uploading a [PHAsset](#obtaining-a-file-url-for-a-phasset), an [ALAsset](#obtaining-a-file-url-for-an-alasset), or an [asset that you manage](#obtaining-a-file-url-for-an-asset-that-you-manage) outside of the device Photos environment. Once you have a valid file URL, you will use it to [start your upload](#start-your-upload).
+The steps required to obtain the file URL will vary depending on whether you are uploading a [PHAsset](#obtaining-a-file-url-for-a-phasset) or an [asset that you manage](#obtaining-a-file-url-for-an-asset-that-you-manage) outside of the device Photos environment. Once you have a valid file URL, you will use it to [start your upload](#start-your-upload).
 
-Unfortunately, because of how Apple's [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) and [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) APIs are designed uploading directly from a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) or [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) resource URL is not possible. In order to upload [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html)s and [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/)s you will need to first create a copy of the asset itself and upload from that copy. See below for instructions on how to do this. 
+Unfortunately, because of how Apple's [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) APIs are designed, uploading directly from a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) resource URL is not possible. In order to upload [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html)s you will need to first create a copy of the asset itself and upload from that copy. See below for instructions on how to do this. 
 
 #### Obtaining a File URL For a PHAsset
 
@@ -222,44 +217,6 @@ Next, use VimeoUpload's `ExportOperation` to export a copy of the [PHAsset](http
 ```Swift
     let exportSession = ... // The export session you just generated (see above)
     let operation = ExportOperation(exportSession: exportSession)
-    
-    // Optionally set a progress block
-    operation.progressBlock = { (progress: Double) -> Void in
-        // Do something with progress
-    }
-    
-    operation.completionBlock = {
-        guard operation.cancelled == false else
-        {
-            return
-        }
-
-        if let error = operation.error
-        {
-            // Do something with the error
-        }
-        else if let url = operation.outputURL
-        {
-            // Use the url to start your upload (see below)
-        }
-        else
-        {
-            assertionFailure("error and outputURL are mutually exclusive, this should never happen.")
-        }
-    }
-    
-    operation.start()
-```
-
-#### Obtaining a File URL For an ALAsset
-
-Use VimeoUpload's `ExportOperation` to export a copy of the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you intend to upload. You can then use the resulting `url` to [start your upload](#start-your-upload).
-
-```Swift
-    let alAsset = ... // The ALAsset you intend to upload
-    let url = alAsset.defaultRepresentation().url() // For example
-    let avAsset = AVURLAsset(URL: url)
-    let operation = ExportOperation(asset: avAsset)
     
     // Optionally set a progress block
     operation.progressBlock = { (progress: Double) -> Void in
