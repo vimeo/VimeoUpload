@@ -5,7 +5,7 @@ This library is under active development. All comments, questions, pull requests
 * [Getting Started](#getting-started)
      * [Prerequisites](#prerequisites)
      * [Example Projects](#example-projects)
-     * [Submodule](#submodule)
+     * [Setup your Submodules](#submodule)
      * [Initialization](#initialization)
 * [Design Considerations](#design-considerations)
      * [Old Upload, New Upload 👴👶](#old-upload-new-upload)
