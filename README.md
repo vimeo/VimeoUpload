@@ -1,7 +1,13 @@
 # VimeoUpload [![](https://circleci.com/gh/vimeo/VimeoUpload.png?style=shield&circle-token=2e7f762969ca311fc851e32d6ef2038f797f7e23)](https://circleci.com/gh/vimeo/VimeoUpload)
-This library is under active development. We're shooting for a v1.0 release soon. All comments, questions, pull requests, and issues are welcome. See below for details.
+This library is under active development. All comments, questions, pull requests, and issues are welcome. See below for details.
 
 ## Contents
+* [Getting Started](#getting-started)
+     * [Prerequisites](#prerequisites)
+     * [Example Projects](#example-projects)
+     * [CocoaPods](#cocoapods)
+     * [Submodule](#submodule)
+     * [Initialization](#initialization)
 * [Design Considerations](#design-considerations)
      * [Old Upload, New Upload 👴👶](#old-upload-new-upload)
      * [Constraints](#constraints)
@@ -10,12 +16,6 @@ This library is under active development. We're shooting for a v1.0 release soon
           * [NSURLSession](#nsurlsession)
           * [AFNetworking](#afnetworking)
           * [VimeoUpload](#vimeoupload)
-* [Getting Started](#getting-started)
-     * [Prerequisites](#prerequisites)
-     * [Example Projects](#example-projects)
-     * [CocoaPods](#cocoapods)
-     * [Submodule](#submodule)
-     * [Initialization](#initialization)
 * [Uploading Videos](#uploading-videos)
      * [Starting an Upload](#starting-an-upload)
           * [Obtaining a File URL For a PHAsset](#obtaining-a-file-url-for-a-phasset)
@@ -28,6 +28,52 @@ This library is under active development. We're shooting for a v1.0 release soon
 * [Found an Issue?](#found-an-issue)
 * [Questions](#questions)
 * [License](#license)
+
+
+## Getting Started
+
+We recommend you read the the entire `ReadMe` to gain a full understanding of this library. However, the following steps are what you need to get up and running ASAP.
+
+### Prerequisites
+
+1. Ensure that you've verified your Vimeo account. When you create an account, you'll receive an email asking that you verify your account. **Until you verify your account you will not be able to upload videos using the API**. 
+2. Ensure you have been granted permission to use the "upload" scope. This permission must explicitly be granted by Vimeo API admins. You can request this permission on your "My Apps" page under "Request upload access". Visit [developer.vimeo.com](https://developer.vimeo.com/).
+3. Ensure that the OAuth token that you're using to make your requests has the "upload" scope included.
+
+### Example Projects
+
+1. If you would like to get started using an example project, **you must set your build target to be `VimeoUpload-iOS-OldUpload`**. 
+
+2. In order to run this project, **you will have to insert a valid OAuth token into the `init` method of the class called `OldVimeoUploader`** where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token. Without a valid OAuth token, you will be presented with a "Request failed: unauthorized (401)" error alert when you try to upload a video.
+
+
+### Setup your Submodules
+
+If you are adding this library to your own project, follow the steps outlined in [Getting Started with Submodules as Development Pods](https://paper.dropbox.com/doc/Getting-Started-with-Submodules-as-Development-Pods-yRpNbPxIOjzGlcEbecuOC). 
+
+### Initialization
+
+Create an instance of `VimeoUpload`, or modify `VimeoUpload` to act as a singleton: 
+
+```Swift
+    let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
+    let authToken = "YOUR_OAUTH_TOKEN"
+    
+    let vimeoUpload = VimeoUpload<OldUploadDescriptor>(backgroundSessionIdentifier: backgroundSessionIdentifier, authToken: authToken)
+```
+
+If your OAuth token can change during the course of a session, use the constructor whose second argument is an `authTokenBlock`:
+
+```Swift
+    let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
+    var authToken = "YOUR_OAUTH_TOKEN"
+
+    let vimeoUpload = VimeoUpload<OldUploadDescriptor>(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: { () -> String? in
+        return authToken 
+    })
+```
+
+You can obtain an OAuth token by using the authentication methods provided by [VIMNetworking](https://github.com/vimeo/VIMNetworking) or by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
 
 ## Design Considerations
 
@@ -121,50 +167,6 @@ TODO
 #### VimeoUpload
 
 TODO
-
-## Getting Started
-
-### Prerequisites
-
-1. Ensure that you've verified your Vimeo account. When you create an account, you'll receive an email asking that you verify your account. Until you verify your account you will not be able to upload videos using the API. 
-2. Ensure you have been granted permission to use the "upload" scope. This permission must explicitly be granted by Vimeo API admins. You can request this permission on your app page under "Request upload access". Visit [developer.vimeo.com](https://developer.vimeo.com/).
-3. Ensure that the OAuth token that you're using to make your requests has the "upload" scope included.
-
-### Example Projects
-
-There's an example project for New Upload and one for Old Upload. In order to run them you'll have to drop a valid OAuth token into the example project's `VimeoUpload` subclass' `init` method where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
-
-### CocoaPods
-
-TODO
-
-### Submodule
-
-TODO
-
-### Initialization
-
-Create an instance of `VimeoUpload`, or modify `VimeoUpload` to act as a singleton: 
-
-```Swift
-    let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
-    let authToken = "YOUR_OAUTH_TOKEN"
-    
-    let vimeoUpload = VimeoUpload<OldUploadDescriptor>(backgroundSessionIdentifier: backgroundSessionIdentifier, authToken: authToken)
-```
-
-If your OAuth token can change during the course of a session, use the constructor whose second argument is an `authTokenBlock`:
-
-```Swift
-    let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
-    var authToken = "YOUR_OAUTH_TOKEN"
-
-    let vimeoUpload = VimeoUpload<OldUploadDescriptor>(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: { () -> String? in
-        return authToken 
-    })
-```
-
-You can obtain an OAuth token by using the authentication methods provided by [VIMNetworking](https://github.com/vimeo/VIMNetworking) or by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
 
 ## Uploading Videos
 
