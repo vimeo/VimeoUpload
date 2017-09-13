@@ -297,6 +297,38 @@ Or by using the `identifier` of the `OldUploadDescriptor` in question:
     vimeoUpload.cancelUpload(identifier: identifier)
 ```
 
+### Locating your uploaded video on Vimeo
+
+The video object you receive from Vimeo's API has a link object that specifies the URL of the video: `self.video?.link`. Once the upload process has completed the "Settings" phase, you can access this URL from the descriptor's video property.
+ 
+Inside of class `OldUploadDescriptor`, see method 
+
+```swift
+override public func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
+{
+    ...
+    
+    do
+    {
+        switch self.currentRequest
+        {
+        case .Create:
+        	...            
+        case .Upload:
+        	...  
+        case .Activate:
+        	...     
+        case .Settings:
+        	// Once the line below is executed, `video` has a valid link.
+            self.video = try responseSerializer.process(videoSettingsResponse: task.response, url: url, error: error) 
+        }
+    }    
+    ...
+}
+```
+
+Note: ellipses indicate code excluded for brevity. 
+
 ## Design Considerations
 
 ### Old Upload, New Upload
