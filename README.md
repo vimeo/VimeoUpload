@@ -306,7 +306,6 @@ For example, inside of class `OldUploadDescriptor`, see the following method imp
 override public func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
 {
     ...
-    
     do
     {
         switch self.currentRequest
