@@ -14,6 +14,7 @@ This library is under active development. All comments, questions, pull requests
           * [Start Your Upload](#start-your-upload)
      * [Inspecting Upload State and Progress](#inspecting-upload-state-and-progress)
      * [Canceling an Upload](#canceling-an-upload)
+     * [Locating your uploaded video on Vimeo](locating-your-uploaded-video-on-vimeo)
 * [Design Considerations](#design-considerations)
      * [Old Upload, New Upload 👴👶](#old-upload-new-upload)
      * [Constraints](#constraints)
@@ -73,7 +74,6 @@ If your OAuth token can change during the course of a session, use the construct
 ```
 
 You can obtain an OAuth token by using the authentication methods provided by [VIMNetworking](https://github.com/vimeo/VIMNetworking) or by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
-
 
 ## Uploading Videos
 
@@ -298,9 +298,9 @@ Or by using the `identifier` of the `OldUploadDescriptor` in question:
 
 ### Locating your uploaded video on Vimeo
 
-The video object you receive from Vimeo's API has a link object that specifies the URL of the video: `self.video?.link`. Once the upload process has completed the "Settings" phase, you can access this URL from the descriptor's video property.
+Once the upload process has completed the "Settings" step, you can access the video object on the descriptor to get the video's URL: `descriptor.video?.link`. 
  
-Inside of class `OldUploadDescriptor`, see method 
+For example, inside of class `OldUploadDescriptor`, see the following method implementation:
 
 ```swift
 override public func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
