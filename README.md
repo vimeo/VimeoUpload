@@ -75,98 +75,6 @@ If your OAuth token can change during the course of a session, use the construct
 
 You can obtain an OAuth token by using the authentication methods provided by [VIMNetworking](https://github.com/vimeo/VIMNetworking) or by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
 
-## Design Considerations
-
-### Old Upload, New Upload
-
-The current (public) server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More requests means a process that's challenging to communicate to the developer and in turn to the user. The 4 requests are: 
-
-1. Create a video object 
-2. Upload the video file
-3. Activate the video object 
-4. Optionally set the video object's metadata (e.g. title, description, privacy, etc.)
-
-We affectionately refer to this 4-step flow as Old Upload. 
-
-A simplified flow that eliminates steps 3 and 4 above is in private beta right now. It's being used in the current [Vimeo iOS](https://itunes.apple.com/app/id425194759) and [Vimeo Android](https://play.google.com/store/apps/details?id=com.vimeo.android.videoapp) apps and it's slated to be made available to the public later this year.
-
-We affectionately refer to this 2-step flow as New Upload.
-
-VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. The library currently contains support for both. However, New Upload classes are currently marked as "private" and will not work for the general public until they are released from private beta.
-
-The VimeoUpload APIs for New and Old Upload are very similar. The Old Upload API is documented below. Old upload will be deprecated as soon as possible and the README will be updated to reflect the New Upload API at that time.
-
-### Constraints
-
-* **No Direct Access to PHAsset Source Files** 
-
- Because of how the Apple APIs are designed, we cannot upload directly from [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) source files. So we must export a copy of the asset using an [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) before starting the upload process. Asset export must happen when the app is in the foreground.
-
-* **iCloud Photos** 
-
- If a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) is in iCloud and not resident on device we need to download it to the device before asset export. Download must happen when the app is in the foreground.
-
-* **Background Sessions** 
-
- Because an upload can take a significant amount of time, we must design for the user potentially backgrounding the application at any point in the process. Therefore all requests must be handled by an [NSURLSession](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSURLSession_class/) configured with a background [NSURLSessionConfiguration](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionConfiguration_class/index.html). This means we must rely exclusively on the [NSURLSessionDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionDelegate_protocol/index.html), [NSURLSessionTaskDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionTaskDelegate_protocol/index.html#//apple_ref/occ/intf/NSURLSessionTaskDelegate), and [NSURLSessionDownloadDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionDownloadDelegate_protocol/index.html#//apple_ref/occ/intf/NSURLSessionDownloadDelegate) protocols. We cannot rely on an [NSURLSessionTask](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionTask_class/index.html) subclasses' completion blocks.
- 
-* **Resumable Uploads**
-
- The [NSURLSession](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSURLSession_class/) API does not support resuming an interrupted background upload from an offset. The initial release of this library will use these APIs exclusively and therefore will also not support resuming an upload from an offset. 
-
-* **Fault Tolerance** 
-
- The app process could be backgrounded, terminated, or crash at any time. This means that we need to persist the state of the upload system to disk so that it can be reconstructed as needed. Crashes should not adversely impact uploads or the upload system.
-
-* **Concurrent File Uploads** 
-
- We want to be able to conduct concurrent uploads.
-
-* **State Introspection**
-
- We want to be able to communicate upload progress and state to the user in a variety of locations.  Including communicating state for uploads initiated on other devices and other platforms.
-
-* **Reachability Awareness** 
-
- The app could lose connectivity at any time. We want to be able to pause and resume the upload system when we lose connectivity. And we want to be able to allow the user to restrict uploads to wifi.
-
-* **Upload Quotas** 
-
- We need to be able to communicate information to users about their [upload quota](https://vimeo.com/help/faq/uploading-to-vimeo/uploading-basics). 
-
-* **iOS SDK Quirks** 
-
- NSURLSessionTask's `suspend` method doesn't quite do what we want it to `TODO: Provide details`
- 
- NSURLRequest's and NSURLSessionConfiguration's `allowsCellularAccess` properties don't quite do what we want them to `TODO: provide details`
- 
- AFURLSessionManager's `tasks` property behaves differently on iOS7 vs. iOS8+ `TODO: provide details`
- 
- And more...
-
-### Goals
-
-1. A simplified server-side upload API
-
-1. An upload system that addresses each [constraint](#constraints) listed above
-
-1. Clear and concise upload system initialization, management, and introspection
-
-1. An upload system that accommodates as many UX futures as possible
-
-### Anatomy
-
-#### NSURLSession
-
-TODO
-
-#### AFNetworking
-
-TODO
-
-#### VimeoUpload
-
-TODO
 
 ## Uploading Videos
 
@@ -388,6 +296,99 @@ Or by using the `identifier` of the `OldUploadDescriptor` in question:
     let identifier = phAsset.localIdentifier
     vimeoUpload.cancelUpload(identifier: identifier)
 ```
+
+## Design Considerations
+
+### Old Upload, New Upload
+
+The current (public) server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More requests means a process that's challenging to communicate to the developer and in turn to the user. The 4 requests are: 
+
+1. Create a video object 
+2. Upload the video file
+3. Activate the video object 
+4. Optionally set the video object's metadata (e.g. title, description, privacy, etc.)
+
+We affectionately refer to this 4-step flow as Old Upload. 
+
+A simplified flow that eliminates steps 3 and 4 above is in private beta right now. It's being used in the current [Vimeo iOS](https://itunes.apple.com/app/id425194759) and [Vimeo Android](https://play.google.com/store/apps/details?id=com.vimeo.android.videoapp) apps and it's slated to be made available to the public later this year.
+
+We affectionately refer to this 2-step flow as New Upload.
+
+VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. The library currently contains support for both. However, New Upload classes are currently marked as "private" and will not work for the general public until they are released from private beta.
+
+The VimeoUpload APIs for New and Old Upload are very similar. The Old Upload API is documented below. Old upload will be deprecated as soon as possible and the README will be updated to reflect the New Upload API at that time.
+
+### Constraints
+
+* **No Direct Access to PHAsset Source Files** 
+
+ Because of how the Apple APIs are designed, we cannot upload directly from [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) source files. So we must export a copy of the asset using an [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) before starting the upload process. Asset export must happen when the app is in the foreground.
+
+* **iCloud Photos** 
+
+ If a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) is in iCloud and not resident on device we need to download it to the device before asset export. Download must happen when the app is in the foreground.
+
+* **Background Sessions** 
+
+ Because an upload can take a significant amount of time, we must design for the user potentially backgrounding the application at any point in the process. Therefore all requests must be handled by an [NSURLSession](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSURLSession_class/) configured with a background [NSURLSessionConfiguration](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionConfiguration_class/index.html). This means we must rely exclusively on the [NSURLSessionDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionDelegate_protocol/index.html), [NSURLSessionTaskDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionTaskDelegate_protocol/index.html#//apple_ref/occ/intf/NSURLSessionTaskDelegate), and [NSURLSessionDownloadDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionDownloadDelegate_protocol/index.html#//apple_ref/occ/intf/NSURLSessionDownloadDelegate) protocols. We cannot rely on an [NSURLSessionTask](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionTask_class/index.html) subclasses' completion blocks.
+ 
+* **Resumable Uploads**
+
+ The [NSURLSession](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSURLSession_class/) API does not support resuming an interrupted background upload from an offset. The initial release of this library will use these APIs exclusively and therefore will also not support resuming an upload from an offset. 
+
+* **Fault Tolerance** 
+
+ The app process could be backgrounded, terminated, or crash at any time. This means that we need to persist the state of the upload system to disk so that it can be reconstructed as needed. Crashes should not adversely impact uploads or the upload system.
+
+* **Concurrent File Uploads** 
+
+ We want to be able to conduct concurrent uploads.
+
+* **State Introspection**
+
+ We want to be able to communicate upload progress and state to the user in a variety of locations.  Including communicating state for uploads initiated on other devices and other platforms.
+
+* **Reachability Awareness** 
+
+ The app could lose connectivity at any time. We want to be able to pause and resume the upload system when we lose connectivity. And we want to be able to allow the user to restrict uploads to wifi.
+
+* **Upload Quotas** 
+
+ We need to be able to communicate information to users about their [upload quota](https://vimeo.com/help/faq/uploading-to-vimeo/uploading-basics). 
+
+* **iOS SDK Quirks** 
+
+ NSURLSessionTask's `suspend` method doesn't quite do what we want it to `TODO: Provide details`
+ 
+ NSURLRequest's and NSURLSessionConfiguration's `allowsCellularAccess` properties don't quite do what we want them to `TODO: provide details`
+ 
+ AFURLSessionManager's `tasks` property behaves differently on iOS7 vs. iOS8+ `TODO: provide details`
+ 
+ And more...
+
+### Goals
+
+1. A simplified server-side upload API
+
+1. An upload system that addresses each [constraint](#constraints) listed above
+
+1. Clear and concise upload system initialization, management, and introspection
+
+1. An upload system that accommodates as many UX futures as possible
+
+### Anatomy
+
+#### NSURLSession
+
+TODO
+
+#### AFNetworking
+
+TODO
+
+#### VimeoUpload
+
+TODO
 
 ## Custom Workflows
 
