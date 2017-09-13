@@ -5,7 +5,6 @@ This library is under active development. All comments, questions, pull requests
 * [Getting Started](#getting-started)
      * [Prerequisites](#prerequisites)
      * [Example Projects](#example-projects)
-     * [CocoaPods](#cocoapods)
      * [Submodule](#submodule)
      * [Initialization](#initialization)
 * [Design Considerations](#design-considerations)
