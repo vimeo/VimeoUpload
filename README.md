@@ -31,8 +31,6 @@ This library is under active development. All comments, questions, pull requests
 
 ## Getting Started
 
-We recommend you read the the entire `ReadMe` to gain a full understanding of this library. However, the following steps are what you need to get up and running ASAP.
-
 ### Prerequisites
 
 1. Ensure that you've verified your Vimeo account. When you create an account, you'll receive an email asking that you verify your account. **Until you verify your account you will not be able to upload videos using the API**. 
