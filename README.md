@@ -4,8 +4,7 @@ This library is under active development. All comments, questions, pull requests
 ## Contents
 * [Getting Started](#getting-started)
      * [Prerequisites](#prerequisites)
-     * [Which example project should I use?
-](#which-example-project-should-i-use)
+     * [Which example project should I use?](#which-example-project-should-i-use)
      * [Setup your Submodules](#setup-your-submodules)
      * [Initialization](#initialization)
 * [Uploading Videos](#uploading-videos)
