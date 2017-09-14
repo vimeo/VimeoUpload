@@ -4,7 +4,8 @@ This library is under active development. All comments, questions, pull requests
 ## Contents
 * [Getting Started](#getting-started)
      * [Prerequisites](#prerequisites)
-     * [Example Projects](#example-projects)
+     * [Which example project should I use?
+](#which-example-project-should-i-use)
      * [Setup your Submodules](#setup-your-submodules)
      * [Initialization](#initialization)
 * [Uploading Videos](#uploading-videos)
@@ -16,7 +17,6 @@ This library is under active development. All comments, questions, pull requests
      * [Canceling an Upload](#canceling-an-upload)
      * [Locating your uploaded video on Vimeo](locating-your-uploaded-video-on-vimeo)
 * [Design Considerations](#design-considerations)
-     * [Old Upload, New Upload 👴👶](#old-upload-new-upload)
      * [Constraints](#constraints)
      * [Goals](#goals)
      * [Anatomy](#anatomy)
@@ -40,9 +40,20 @@ We recommend you read the the entire `ReadMe` to gain a full understanding of th
 2. Ensure you have been granted permission to use the "upload" scope. This permission must explicitly be granted by Vimeo API admins. You can request this permission on your "My Apps" page under "Request upload access". Visit [developer.vimeo.com](https://developer.vimeo.com/).
 3. Ensure that the OAuth token that you're using to make your requests has the "upload" scope included.
 
-### Example Projects
+### Which example project should I use?
 
-1. If you would like to get started using an example project, **you must set your build target to be `VimeoUpload-iOS-OldUpload`**. 
+The publicly available server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. The 4 requests are: 
+
+1. Create a video object 
+2. Upload the video file
+3. Activate the video object 
+4. Optionally set the video object's metadata (e.g. title, description, privacy, etc.)
+
+A simplified server-side flow that eliminates steps 3 and 4 is being used in the current [Vimeo iOS](https://itunes.apple.com/app/id425194759) and [Vimeo Android](https://play.google.com/store/apps/details?id=com.vimeo.android.videoapp) mobile apps. While it's currently for internal use only, we're actively working on making it available to the public before the end of 2017.
+
+While VimeoUpload contains support for both of these flows, the public only has access to the 4-step upload process. That means the following: 
+
+1. If you would like to get started using an example project, **you must set your build target to be `VimeoUpload-iOS-OldUpload`**. This is the example that uses the publicly accessible 4-step flow.
 
 2. In order to run this project, **you will have to insert a valid OAuth token into the `init` method of the class called `OldVimeoUploader`** where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token. Without a valid OAuth token, you will be presented with a "Request failed: unauthorized (401)" error alert when you try to upload a video.
 
@@ -329,24 +340,7 @@ Note: ellipses indicate code excluded for brevity.
 
 ## Design Considerations
 
-### Old Upload, New Upload
-
-The current (public) server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More requests means a process that's challenging to communicate to the developer and in turn to the user. The 4 requests are: 
-
-1. Create a video object 
-2. Upload the video file
-3. Activate the video object 
-4. Optionally set the video object's metadata (e.g. title, description, privacy, etc.)
-
-We affectionately refer to this 4-step flow as Old Upload. 
-
-A simplified flow that eliminates steps 3 and 4 above is in private beta right now. It's being used in the current [Vimeo iOS](https://itunes.apple.com/app/id425194759) and [Vimeo Android](https://play.google.com/store/apps/details?id=com.vimeo.android.videoapp) apps and it's slated to be made available to the public later this year.
-
-We affectionately refer to this 2-step flow as New Upload.
-
-VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. The library currently contains support for both. However, New Upload classes are currently marked as "private" and will not work for the general public until they are released from private beta.
-
-The VimeoUpload APIs for New and Old Upload are very similar. The Old Upload API is documented below. Old upload will be deprecated as soon as possible and the README will be updated to reflect the New Upload API at that time.
+The following sections provide more insight into the motivation behind VimeoUpload's design, given some identified constraints and goals.
 
 ### Constraints
 
