@@ -25,6 +25,7 @@ This library is under active development. All comments, questions, pull requests
 * [Custom Workflows 🍪🎉](#custom-workflows)
 * [Want to Contribute?](#want-to-contribute)
 * [Found an Issue?](#found-an-issue)
+* [Troubleshooting](#troubleshooting)
 * [Questions](#questions)
 * [License](#license)
 
@@ -417,7 +418,11 @@ TODO
 
 ## Found an Issue?
 
-Please file it in the git [issue tracker](https://github.com/vimeo/VimeoUpload/issues).
+If you find any bugs or technical issues with this library, please [create an issue](https://github.com/vimeo/VimeoUpload/issues) and provide relevant code snippets, specific details about the issue, and steps to replicate behavior.
+
+## Troubleshooting
+
+If you have any questions about using this library, please [contact us directly](https://help.vimeo.com), post in the [Vimeo API Forum](https://vimeo.com/forums/api), or check out [StackOverflow](https://stackoverflow.com/tags/vimeo).
 
 ## Want to Contribute?
 
