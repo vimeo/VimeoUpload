@@ -307,9 +307,9 @@ Or by using the `identifier` of the `OldUploadDescriptor` in question:
 
 ### Locating your uploaded video on Vimeo
 
-Once the upload process has completed the "Settings" step, you can access the video object on the descriptor to get the video's URL: `descriptor.video?.link`. 
+One can access a video's URL by inspecting the link property on the video that's associated with the upload descriptor: `descriptor.video.link`. 
  
-For example, inside of class `OldUploadDescriptor`, see the following method implementation:
+For example, one could use the results of either the `Activation` or `Settings` stage to access the video object. See the following method implementation inside of `OldUploadDescriptor`:
 
 ```swift
 override public func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
@@ -324,9 +324,10 @@ override public func taskDidFinishDownloading(sessionManager: AFURLSessionManage
         case .Upload:
         	...  
         case .Activate:
-        	...     
+        	// Use the `self.videoURI` to request a video object and inspect its `link`.
+        	self.videoUri = try responseSerializer.process(activateVideoResponse: task.response, url: url, error: error)
         case .Settings:
-        	// Once the line below is executed, `video` has a valid link.
+        	// Or, wait for the Settings step to complete and access `self.video.link`.
             self.video = try responseSerializer.process(videoSettingsResponse: task.response, url: url, error: error) 
         }
     }    
