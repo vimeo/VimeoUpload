@@ -14,7 +14,7 @@ This library is under active development. All comments, questions, pull requests
           * [Start Your Upload](#start-your-upload)
      * [Inspecting Upload State and Progress](#inspecting-upload-state-and-progress)
      * [Canceling an Upload](#canceling-an-upload)
-     * [Locating your uploaded video on Vimeo](locating-your-uploaded-video-on-vimeo)
+     * [Locating your uploaded video on Vimeo](#locating-your-uploaded-video-on-vimeo)
 * [Design Considerations](#design-considerations)
      * [Constraints](#constraints)
      * [Goals](#goals)
