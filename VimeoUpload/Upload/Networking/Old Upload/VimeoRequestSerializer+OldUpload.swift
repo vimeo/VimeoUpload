@@ -29,21 +29,7 @@ import AVFoundation
 import VimeoNetworking
 
 extension VimeoRequestSerializer
-{    
-    func meRequest() throws -> NSMutableURLRequest
-    {
-        let url = URL(string: "/me", relativeTo: VimeoBaseURL)!
-        var error: NSError?
-        
-        let request = self.request(withMethod: "GET", urlString: url.absoluteString, parameters: nil, error: &error)
-        if let error = error
-        {
-            throw error.error(byAddingDomain: UploadErrorDomain.Me.rawValue)
-        }
-        
-        return request
-    }
-
+{
     func myVideosRequest() throws -> NSMutableURLRequest
     {
         let url = URL(string: "/me/videos", relativeTo: VimeoBaseURL)!

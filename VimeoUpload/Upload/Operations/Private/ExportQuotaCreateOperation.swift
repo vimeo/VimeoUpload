@@ -30,7 +30,6 @@ import VimeoNetworking
 
 open class ExportQuotaCreateOperation: ConcurrentOperation
 {
-    let me: VIMUser
     let sessionManager: VimeoSessionManager
     open var videoSettings: VideoSettings?
     let operationQueue: OperationQueue
@@ -57,14 +56,15 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
-    public init(me: VIMUser, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    public init(sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {
-        self.me = me
         self.sessionManager = sessionManager
         self.videoSettings = videoSettings
         
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        super.init()
     }
     
     deinit
@@ -81,7 +81,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
             return
         }
         
-        let operation = self.makeExportQuotaOperation(with: self.me)!
+        let operation = self.makeExportQuotaOperation()!
         self.perform(exportQuotaOperation: operation)
     }
     
@@ -99,7 +99,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: Public API
     
-    func makeExportQuotaOperation(with me: VIMUser) -> ExportQuotaOperation?
+    func makeExportQuotaOperation() -> ExportQuotaOperation?
     {
         assertionFailure("Subclasses must override")
         
@@ -168,15 +168,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
                 
                 if let error = operation.error
                 {
-                    if let fileSize = try? AVURLAsset(url: url).fileSize(), let availableSpace = strongSelf.me.uploadQuota?.sizeQuota?.free?.doubleValue
-                    {
-                        let userInfo = [UploadErrorKey.FileSize.rawValue: fileSize, UploadErrorKey.AvailableSpace.rawValue: availableSpace]
-                        strongSelf.error = error.error(byAddingUserInfo: userInfo)
-                    }
-                    else
-                    {
-                        strongSelf.error = error
-                    }
+                    strongSelf.error = error
                 }
                 else
                 {

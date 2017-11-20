@@ -60,6 +60,8 @@ public class RetryUploadOperation: ConcurrentOperation
         self.sessionManager = sessionManager
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        super.init()
     }
     
     deinit
@@ -76,7 +78,8 @@ public class RetryUploadOperation: ConcurrentOperation
             return
         }
         
-        self.performMeQuotaOperation()
+        let exportQuotaOperation = self.makeExportQuotaOperation()!
+        self.perform(exportQuotaOperation: exportQuotaOperation)
     }
     
     override public func cancel()
@@ -87,41 +90,6 @@ public class RetryUploadOperation: ConcurrentOperation
     }
     
     // MARK: Private API
-    
-    private func performMeQuotaOperation()
-    {
-        let operation = MeQuotaOperation(sessionManager: self.sessionManager)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            DispatchQueue.main.async(execute: { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if strongSelf.isCancelled
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else
-                {
-                    let user = operation.me!
-                    let exportQuotaOperation = strongSelf.makeExportQuotaOperation(user: user)!
-                    strongSelf.perform(exportQuotaOperation: exportQuotaOperation)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
-        
-        operation.fulfillSelection(avAsset: nil)
-    }
     
     private func perform(exportQuotaOperation operation: ExportQuotaOperation)
     {
@@ -164,7 +132,7 @@ public class RetryUploadOperation: ConcurrentOperation
 
     // MARK: Public API
     
-    func makeExportQuotaOperation(user: VIMUser) -> ExportQuotaOperation?
+    func makeExportQuotaOperation() -> ExportQuotaOperation?
     {
         assertionFailure("Subclasses must override")
         

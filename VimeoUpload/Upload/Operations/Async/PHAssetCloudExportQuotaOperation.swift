@@ -36,11 +36,11 @@ public class PHAssetCloudExportQuotaOperation: ExportQuotaOperation
 {
     let phAsset: PHAsset
 
-    public init(me: VIMUser, phAsset: PHAsset)
+    public init(phAsset: PHAsset)
     {
         self.phAsset = phAsset
 
-        super.init(me: me)
+        super.init()
     }
     
     // MARK: Subclass Overrides

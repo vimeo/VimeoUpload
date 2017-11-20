@@ -32,7 +32,6 @@ public typealias ExportProgressBlock = (AVAssetExportSession, Double) -> Void
 
 open class ExportQuotaOperation: ConcurrentOperation
 {
-    let me: VIMUser
     let operationQueue: OperationQueue
 
     open var downloadProgressBlock: ProgressBlock?
@@ -50,11 +49,12 @@ open class ExportQuotaOperation: ConcurrentOperation
     }
     open var result: URL?
     
-    init(me: VIMUser)
+    override init()
     {
-        self.me = me
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        super.init()
     }
     
     deinit
@@ -126,63 +126,12 @@ open class ExportQuotaOperation: ConcurrentOperation
                 else
                 {
                     let url = exportOperation.outputURL!
-                    strongSelf.checkExactWeeklyQuota(url: url)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(exportOperation)
-    }
-    
-    // MARK: Private API
-    
-    private func checkExactWeeklyQuota(url: URL)
-    {
-        let me = self.me
-        let avUrlAsset = AVURLAsset(url: url)
-        
-        let fileSize: Double
-        do
-        {
-            fileSize = try avUrlAsset.fileSize()
-        }
-        catch let error as NSError
-        {
-            self.error = error
-            
-            return
-        }
-        
-        let operation = WeeklyQuotaOperation(user: me, fileSize: fileSize)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            DispatchQueue.main.async(execute: { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.isCancelled == true
-                {
-                    return
-                }
-                
-                // Do not check error, allow to pass [AH]
-
-                if let result = operation.result, result.success == false
-                {
-                    let userInfo = [UploadErrorKey.FileSize.rawValue: result.fileSize, UploadErrorKey.AvailableSpace.rawValue: result.availableSpace]
-                    strongSelf.error = NSError.error(withDomain: UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: UploadLocalErrorCode.weeklyQuotaException.rawValue, description: "Upload would exceed weekly quota.").error(byAddingUserInfo: userInfo as [String : AnyObject])
-                }
-                else
-                {
                     strongSelf.result = url
                     strongSelf.state = .finished
                 }
             })
         }
         
-        self.operationQueue.addOperation(operation)
+        self.operationQueue.addOperation(exportOperation)
     }
 }

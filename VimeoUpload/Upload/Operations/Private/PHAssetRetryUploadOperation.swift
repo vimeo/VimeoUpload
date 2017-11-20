@@ -48,8 +48,8 @@ public class PHAssetRetryUploadOperation: RetryUploadOperation
     
     // MARK: Overrides
     
-    override func makeExportQuotaOperation(user: VIMUser) -> ExportQuotaOperation?
+    override func makeExportQuotaOperation() -> ExportQuotaOperation?
     {
-        return PHAssetCloudExportQuotaOperation(me: user, phAsset: self.phAsset)
+        return PHAssetCloudExportQuotaOperation(phAsset: self.phAsset)
     }
 }

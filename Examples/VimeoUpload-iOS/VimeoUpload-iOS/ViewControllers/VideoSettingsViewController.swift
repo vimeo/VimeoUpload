@@ -64,7 +64,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK:
     
-    var input: UploadUserAndCameraRollAsset?
+    private var asset: VIMPHAsset
     
     // MARK:
     
@@ -89,6 +89,18 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: Lifecycle
     
+    init(asset: VIMPHAsset)
+    {
+        self.asset = asset
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder)
+    {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     deinit
     {
         // Do not cancel operation, it will delete the source file
@@ -98,9 +110,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
-        assert(self.input != nil, "self.input cannot be nil")
-        
+                
         self.edgesForExtendedLayout = []
         
         self.setupNavigationBar()
@@ -120,13 +130,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     private func setupAndStartOperation()
     {
-        let me = self.input!.user
-        let cameraRollAsset = self.input!.cameraRollAsset
         let sessionManager = NewVimeoUploader.sharedInstance.foregroundSessionManager
         let videoSettings = self.videoSettings
         
-        let phAsset = cameraRollAsset.phAsset
-        let operation = PHAssetCloudExportQuotaCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
+        let phAsset = self.asset.phAsset
+        let operation = PHAssetCloudExportQuotaCreateOperation(phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print(String(format: "Download progress: %.2f", progress)) // TODO: Dispatch to main thread
@@ -190,7 +198,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     {
         let url = self.url!
         let uploadTicket = self.uploadTicket!
-        let assetIdentifier = self.input!.cameraRollAsset.identifier
+        let assetIdentifier = self.asset.identifier
         
         let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket)
         descriptor.identifier = assetIdentifier

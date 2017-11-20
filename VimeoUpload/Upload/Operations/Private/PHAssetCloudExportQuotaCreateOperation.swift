@@ -39,17 +39,17 @@ public class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
 
     // MARK: - Initialization
     
-    public init(me: VIMUser, phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {
         self.phAsset = phAsset
 
-        super.init(me: me, sessionManager: sessionManager, videoSettings: videoSettings)
+        super.init(sessionManager: sessionManager, videoSettings: videoSettings)
     }
     
     // MARK: Overrides
 
-    override func makeExportQuotaOperation(with me: VIMUser) -> ExportQuotaOperation?
+    override func makeExportQuotaOperation() -> ExportQuotaOperation?
     {
-        return PHAssetCloudExportQuotaOperation(me: me, phAsset: self.phAsset)
+        return PHAssetCloudExportQuotaOperation(phAsset: self.phAsset)
     }
 }

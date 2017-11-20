@@ -26,6 +26,7 @@
 
 import Foundation
 import UIKit
+import VimeoUpload
 
 class CameraRollViewController: BaseCameraRollViewController
 {
@@ -45,10 +46,9 @@ class CameraRollViewController: BaseCameraRollViewController
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(CameraRollViewController.didTapCancel(_:)))
     }
     
-    override func didFinish(with result: UploadUserAndCameraRollAsset)
+    override func didSelect(_ asset: VIMPHAsset)
     {
-        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:Bundle.main)
-        viewController.input = result
+        let viewController = VideoSettingsViewController(asset: asset)
         
         self.navigationController?.pushViewController(viewController, animated: true)
     }
