@@ -57,7 +57,7 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
-    init(phAsset: PHAsset, sessionManager: VimeoSessionManager)
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager)
     {
         self.phAsset = phAsset
         
