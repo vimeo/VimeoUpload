@@ -186,9 +186,14 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     private func presentErrorAlert(at indexPath: IndexPath, error: NSError)
     {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: {(action) -> Void in
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
             
-            self.collectionView.indexPathsForSelectedItems?.forEach({ self.collectionView.deselectItem(at: $0, animated: true) })
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            strongSelf.collectionView.indexPathsForSelectedItems?.forEach({ strongSelf.collectionView.deselectItem(at: $0, animated: true) })
         }))
 
         alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
