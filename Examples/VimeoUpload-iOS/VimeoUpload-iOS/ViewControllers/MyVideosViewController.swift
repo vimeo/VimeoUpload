@@ -156,26 +156,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func cellDidRetryUploadDescriptor(cell: VideoCell, descriptor: UploadDescriptor)
     {
-        let videoUri = descriptor.uploadTicket.video!.uri!
-
-        self.retry(uploadDescriptor: descriptor, completion: { [weak self] (error) in
-         
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            if error != nil
-            {
-                return
-            }
-            
-            // Reload the cell so that it reflects the state of the newly retried upload
-            if let indexPath = strongSelf.indexPath(for: videoUri)
-            {
-                strongSelf.tableView.reloadRows(at: [indexPath], with: .none)
-            }
-        })
+        // TODO: Implement retry
     }
     
     private func indexPath(for videoUri: String) -> IndexPath?
@@ -302,58 +283,5 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
         
         self.present(alert, animated: true, completion: nil)
-    }
-    
-    // MARK: Private API
-    
-    private func retry(uploadDescriptor descriptor: UploadDescriptor, completion: ErrorBlock)
-    {
-        // TODO: This should be cancellable
-
-//        guard let phAsset = descriptor.phAssetForRetry() else
-//        {
-//            return
-//        }
-//        
-//        let operation = PHAssetRetryUploadOperation(sessionManager: UploadManager.sharedInstance.foregroundSessionManager, phAsset: phAsset)
-//
-//        operation.downloadProgressBlock = { (progress: Double) -> Void in
-//            print("Download progress (settings): \(progress)") // TODO: Dispatch to main thread
-//        }
-//        
-//        operation.exportProgressBlock = { (progress: Double) -> Void in
-//            print("Export progress (settings): \(progress)")
-//        }
-//        operation.completionBlock = { [weak self] () -> Void in
-//            
-//            dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-//                
-//                guard let strongSelf = self else
-//                {
-//                    return
-//                }
-//                
-//                if operation.cancelled == true
-//                {
-//                    return
-//                }
-//                
-//                if let error = operation.error
-//                {
-//                    strongSelf.presentUploadRetryErrorAlert(error)
-//                }
-//                else
-//                {
-//                    // Initiate the retry
-//
-//                    let url = operation.url!
-//                    UploadManager.sharedInstance.retryUpload(descriptor: descriptor, url: url)
-//                }
-//                
-//                completion(error: operation.error)
-//            })
-//        }
-//        
-//        operation.start()
     }
 }
