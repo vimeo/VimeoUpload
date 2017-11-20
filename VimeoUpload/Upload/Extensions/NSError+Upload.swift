@@ -41,12 +41,9 @@ public enum UploadErrorDomain: String
     case Video = "VideoErrorDomain"
 
     case DiskSpaceOperation = "DiskSpaceOperationErrorDomain"
-    case RetryUploadOperation = "RetryUploadOperationErrorDomain"
-    case ExportQuotaCreateOperation = "ExportQuotaCreateOperationErrorDomain"
     case CreateVideoOperation = "CreateVideoOperationErrorDomain"
     case VideoOperation = "VideoOperationErrorDomain"
-    case PHAssetCloudExportQuotaOperation = "PHAssetCloudExportQuotaOperationErrorDomain"
-    case PHAssetExportSessionOperation = "PHAssetExportSessionOperationErrorDomain"
+    case ExportSessionOperation = "ExportSessionOperationErrorDomain"
     case ExportOperation = "ExportOperationErrorDomain"
     case DeleteVideoOperation = "DeleteVideoOperationErrorDomain"
     
