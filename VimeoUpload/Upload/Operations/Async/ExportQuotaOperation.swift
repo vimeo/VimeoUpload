@@ -27,6 +27,7 @@
 import Foundation
 import AVFoundation
 import VimeoNetworking
+import Photos
 
 public typealias ExportProgressBlock = (AVAssetExportSession, Double) -> Void
 
@@ -37,6 +38,8 @@ open class ExportQuotaOperation: ConcurrentOperation
     open var downloadProgressBlock: ProgressBlock?
     open var exportProgressBlock: ExportProgressBlock?
     
+    private let phAsset: PHAsset
+
     open var error: NSError?
     {
         didSet
@@ -49,8 +52,10 @@ open class ExportQuotaOperation: ConcurrentOperation
     }
     open var result: URL?
     
-    override init()
+    public init(phAsset: PHAsset)
     {
+        self.phAsset = phAsset
+        
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
         
@@ -90,7 +95,36 @@ open class ExportQuotaOperation: ConcurrentOperation
 
     func requestExportSession()
     {
-        assertionFailure("Subclasses must override")
+        let operation = PHAssetExportSessionOperation(phAsset: self.phAsset)
+        operation.progressBlock = self.downloadProgressBlock
+        operation.completionBlock = { [weak self] () -> Void in
+            
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.isCancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else
+                {
+                    let exportSession = operation.result!
+                    let exportOperation = ExportOperation(exportSession: exportSession)
+                    strongSelf.performExport(exportOperation: exportOperation)
+                }
+            })
+        }
+        
+        self.operationQueue.addOperation(operation)
     }
     
     func performExport(exportOperation: ExportOperation)

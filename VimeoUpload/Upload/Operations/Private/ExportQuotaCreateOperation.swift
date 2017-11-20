@@ -27,6 +27,7 @@
 import Foundation
 import AVFoundation
 import VimeoNetworking
+import Photos
 
 open class ExportQuotaCreateOperation: ConcurrentOperation
 {
@@ -41,6 +42,8 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK:
     
+    private let phAsset: PHAsset
+
     open var url: URL?
     open var uploadTicket: VIMUploadTicket?
     open var error: NSError?
@@ -56,8 +59,10 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
-    public init(sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {
+        self.phAsset = phAsset
+        
         self.sessionManager = sessionManager
         self.videoSettings = videoSettings
         
@@ -81,7 +86,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
             return
         }
         
-        let operation = self.makeExportQuotaOperation()!
+        let operation = ExportQuotaOperation(phAsset: self.phAsset)
         self.perform(exportQuotaOperation: operation)
     }
     
@@ -95,15 +100,6 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
         {
             FileManager.default.deleteFile(at: url)
         }
-    }
-    
-    // MARK: Public API
-    
-    func makeExportQuotaOperation() -> ExportQuotaOperation?
-    {
-        assertionFailure("Subclasses must override")
-        
-        return nil
     }
     
     // MARK: Private API

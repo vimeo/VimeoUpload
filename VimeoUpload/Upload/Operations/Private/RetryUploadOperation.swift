@@ -27,6 +27,7 @@
 import Foundation
 import VimeoNetworking
 import AVFoundation
+import Photos
 
 public class RetryUploadOperation: ConcurrentOperation
 {
@@ -40,8 +41,9 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK:
     
+    private let phAsset: PHAsset
+
     private(set) public var url: URL?
-    
     private(set) public var error: NSError?
     {
         didSet
@@ -55,8 +57,10 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
-    init(sessionManager: VimeoSessionManager)
+    init(phAsset: PHAsset, sessionManager: VimeoSessionManager)
     {
+        self.phAsset = phAsset
+        
         self.sessionManager = sessionManager
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
@@ -78,7 +82,7 @@ public class RetryUploadOperation: ConcurrentOperation
             return
         }
         
-        let exportQuotaOperation = self.makeExportQuotaOperation()!
+        let exportQuotaOperation = ExportQuotaOperation(phAsset: self.phAsset)
         self.perform(exportQuotaOperation: exportQuotaOperation)
     }
     
@@ -128,14 +132,5 @@ public class RetryUploadOperation: ConcurrentOperation
         }
         
         self.operationQueue.addOperation(operation)
-    }
-
-    // MARK: Public API
-    
-    func makeExportQuotaOperation() -> ExportQuotaOperation?
-    {
-        assertionFailure("Subclasses must override")
-        
-        return nil
     }
 }

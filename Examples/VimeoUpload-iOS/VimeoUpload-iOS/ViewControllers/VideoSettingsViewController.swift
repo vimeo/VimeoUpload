@@ -134,7 +134,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let videoSettings = self.videoSettings
         
         let phAsset = self.asset.phAsset
-        let operation = PHAssetCloudExportQuotaCreateOperation(phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
+        let operation = ExportQuotaCreateOperation(phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print(String(format: "Download progress: %.2f", progress)) // TODO: Dispatch to main thread
