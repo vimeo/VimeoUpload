@@ -12,7 +12,7 @@
 		3C53EC261D219C8500B7AA6D /* VimeoRequestSerializer+Thumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C53EC211D219C8500B7AA6D /* VimeoRequestSerializer+Thumbnail.swift */; };
 		3C53EC271D219C8500B7AA6D /* VimeoResponseSerializer+Thumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C53EC221D219C8500B7AA6D /* VimeoResponseSerializer+Thumbnail.swift */; };
 		3C53EC281D219C8500B7AA6D /* VimeoSessionManager+ThumbnailUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C53EC231D219C8500B7AA6D /* VimeoSessionManager+ThumbnailUpload.swift */; };
-		3EA2DAD81DFF3E0F006E2C65 /* PHAssetExportSessionOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA2DAD51DFF3E0F006E2C65 /* PHAssetExportSessionOperation.swift */; };
+		3EA2DAD81DFF3E0F006E2C65 /* ExportSessionOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA2DAD51DFF3E0F006E2C65 /* ExportSessionOperation.swift */; };
 		5C9E3CA51EA66187000D1F6B /* DescriptorKVObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9E3CA41EA66187000D1F6B /* DescriptorKVObserver.swift */; };
 		8D9A15BCC5ABADC2D001B20C /* Pods_VimeoUpload.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4E8D665288660F1F668B91 /* Pods_VimeoUpload.framework */; };
 		AF40D4E51CCE9CB600753ABA /* VimeoUpload.h in Headers */ = {isa = PBXBuildFile; fileRef = AF40D4E41CCE9CB600753ABA /* VimeoUpload.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -83,7 +83,7 @@
 		3C53EC211D219C8500B7AA6D /* VimeoRequestSerializer+Thumbnail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "VimeoRequestSerializer+Thumbnail.swift"; path = "Cameo/VimeoRequestSerializer+Thumbnail.swift"; sourceTree = "<group>"; };
 		3C53EC221D219C8500B7AA6D /* VimeoResponseSerializer+Thumbnail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "VimeoResponseSerializer+Thumbnail.swift"; path = "Cameo/VimeoResponseSerializer+Thumbnail.swift"; sourceTree = "<group>"; };
 		3C53EC231D219C8500B7AA6D /* VimeoSessionManager+ThumbnailUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "VimeoSessionManager+ThumbnailUpload.swift"; path = "Cameo/VimeoSessionManager+ThumbnailUpload.swift"; sourceTree = "<group>"; };
-		3EA2DAD51DFF3E0F006E2C65 /* PHAssetExportSessionOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHAssetExportSessionOperation.swift; sourceTree = "<group>"; };
+		3EA2DAD51DFF3E0F006E2C65 /* ExportSessionOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportSessionOperation.swift; sourceTree = "<group>"; };
 		4D4E8D665288660F1F668B91 /* Pods_VimeoUpload.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VimeoUpload.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C9E3CA41EA66187000D1F6B /* DescriptorKVObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorKVObserver.swift; sourceTree = "<group>"; };
 		AF40D4E11CCE9CB600753ABA /* VimeoUpload.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VimeoUpload.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -415,7 +415,7 @@
 		AF40D5341CCE9DEB00753ABA /* Async */ = {
 			isa = PBXGroup;
 			children = (
-				3EA2DAD51DFF3E0F006E2C65 /* PHAssetExportSessionOperation.swift */,
+				3EA2DAD51DFF3E0F006E2C65 /* ExportSessionOperation.swift */,
 				AF40D5371CCE9DEB00753ABA /* ExportOperation.swift */,
 				AF40D5381CCE9DEB00753ABA /* ExportQuotaOperation.swift */,
 				AF40D5411CCE9DEB00753ABA /* VideoOperation.swift */,
@@ -633,7 +633,7 @@
 				3C53EC241D219C8500B7AA6D /* CAMUploadDescriptor.swift in Sources */,
 				AF40D5581CCE9DEB00753ABA /* ProgressDescriptor.swift in Sources */,
 				AF40D55A1CCE9DEB00753ABA /* AFURLSessionManager+Extensions.swift in Sources */,
-				3EA2DAD81DFF3E0F006E2C65 /* PHAssetExportSessionOperation.swift in Sources */,
+				3EA2DAD81DFF3E0F006E2C65 /* ExportSessionOperation.swift in Sources */,
 				AF40D5791CCE9DEB00753ABA /* ConcurrentOperation.swift in Sources */,
 				AF40D5781CCE9DEB00753ABA /* VimeoSessionManager+OldUpload.swift in Sources */,
 				AF40D5721CCE9DEB00753ABA /* BlockTypes.swift in Sources */,

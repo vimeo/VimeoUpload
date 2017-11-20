@@ -95,7 +95,7 @@ open class ExportQuotaOperation: ConcurrentOperation
 
     func requestExportSession()
     {
-        let operation = PHAssetExportSessionOperation(phAsset: self.phAsset)
+        let operation = ExportSessionOperation(phAsset: self.phAsset)
         operation.progressBlock = self.downloadProgressBlock
         operation.completionBlock = { [weak self] () -> Void in
             

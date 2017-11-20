@@ -1,5 +1,5 @@
 //
-//  PHAssetExportSessionOperation.swift
+//  ExportSessionOperation.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 11/10/15.
@@ -27,7 +27,7 @@
 import Foundation
 import Photos
 
-class PHAssetExportSessionOperation: ConcurrentOperation
+class ExportSessionOperation: ConcurrentOperation
 {
     private let phAsset: PHAsset
     private let exportPreset: String
