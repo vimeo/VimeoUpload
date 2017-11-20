@@ -1,5 +1,5 @@
 //
-//  ExportQuotaOperation.swift
+//  ExportSessionExportOperation.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 12/22/15.
@@ -31,7 +31,7 @@ import Photos
 
 public typealias ExportProgressBlock = (AVAssetExportSession, Double) -> Void
 
-open class ExportQuotaOperation: ConcurrentOperation
+open class ExportSessionExportOperation: ConcurrentOperation
 {
     let operationQueue: OperationQueue
 

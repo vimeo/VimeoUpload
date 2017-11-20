@@ -100,7 +100,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func setupAndStartOperation()
     {
         let phAsset = self.asset.phAsset
-        let operation = ExportQuotaOperation(phAsset: phAsset)
+        let operation = ExportSessionExportOperation(phAsset: phAsset)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print(String(format: "Download progress: %.2f", progress)) // TODO: Dispatch to main thread
@@ -173,7 +173,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     func didTapUpload(_ sender: UIBarButtonItem)
     {
-        let operation = self.operation as? ExportQuotaOperation
+        let operation = self.operation as? ExportSessionExportOperation
         
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text

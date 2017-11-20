@@ -86,8 +86,8 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
             return
         }
         
-        let operation = ExportQuotaOperation(phAsset: self.phAsset)
-        self.perform(exportQuotaOperation: operation)
+        let operation = ExportSessionExportOperation(phAsset: self.phAsset)
+        self.perform(exportSessionExportOperation: operation)
     }
     
     override open func cancel()
@@ -104,7 +104,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: Private API
 
-    private func perform(exportQuotaOperation operation: ExportQuotaOperation)
+    private func perform(exportSessionExportOperation operation: ExportSessionExportOperation)
     {
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
             self?.downloadProgressBlock?(progress)

@@ -57,7 +57,7 @@
 		AF40D5791CCE9DEB00753ABA /* ConcurrentOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5351CCE9DEB00753ABA /* ConcurrentOperation.swift */; };
 		AF40D57A1CCE9DEB00753ABA /* DeleteVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5361CCE9DEB00753ABA /* DeleteVideoOperation.swift */; };
 		AF40D57B1CCE9DEB00753ABA /* ExportOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5371CCE9DEB00753ABA /* ExportOperation.swift */; };
-		AF40D57C1CCE9DEB00753ABA /* ExportQuotaOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5381CCE9DEB00753ABA /* ExportQuotaOperation.swift */; };
+		AF40D57C1CCE9DEB00753ABA /* ExportSessionExportOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5381CCE9DEB00753ABA /* ExportSessionExportOperation.swift */; };
 		AF40D5831CCE9DEB00753ABA /* VideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5411CCE9DEB00753ABA /* VideoOperation.swift */; };
 		AF40D5841CCE9DEB00753ABA /* CreateVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5431CCE9DEB00753ABA /* CreateVideoOperation.swift */; };
 		AF40D5851CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5441CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift */; };
@@ -131,7 +131,7 @@
 		AF40D5351CCE9DEB00753ABA /* ConcurrentOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentOperation.swift; sourceTree = "<group>"; };
 		AF40D5361CCE9DEB00753ABA /* DeleteVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteVideoOperation.swift; sourceTree = "<group>"; };
 		AF40D5371CCE9DEB00753ABA /* ExportOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportOperation.swift; sourceTree = "<group>"; };
-		AF40D5381CCE9DEB00753ABA /* ExportQuotaOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportQuotaOperation.swift; sourceTree = "<group>"; };
+		AF40D5381CCE9DEB00753ABA /* ExportSessionExportOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportSessionExportOperation.swift; sourceTree = "<group>"; };
 		AF40D5411CCE9DEB00753ABA /* VideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoOperation.swift; sourceTree = "<group>"; };
 		AF40D5431CCE9DEB00753ABA /* CreateVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateVideoOperation.swift; sourceTree = "<group>"; };
 		AF40D5441CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportQuotaCreateOperation.swift; sourceTree = "<group>"; };
@@ -407,11 +407,11 @@
 			children = (
 				3EA2DAD51DFF3E0F006E2C65 /* ExportSessionOperation.swift */,
 				AF40D5371CCE9DEB00753ABA /* ExportOperation.swift */,
-				AF40D5381CCE9DEB00753ABA /* ExportQuotaOperation.swift */,
+				AF40D5381CCE9DEB00753ABA /* ExportSessionExportOperation.swift */,
+				AF40D5441CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift */,
 				AF40D5411CCE9DEB00753ABA /* VideoOperation.swift */,
 				AF40D5361CCE9DEB00753ABA /* DeleteVideoOperation.swift */,
 				AF40D5431CCE9DEB00753ABA /* CreateVideoOperation.swift */,
-				AF40D5441CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift */,
 				AF40D54B1CCE9DEB00753ABA /* RetryUploadOperation.swift */,
 			);
 			path = Async;
@@ -587,7 +587,7 @@
 				AF40D5601CCE9DEB00753ABA /* NSString+Conversions.swift in Sources */,
 				AF40D5701CCE9DEB00753ABA /* NSError+Upload.swift in Sources */,
 				AF40D5731CCE9DEB00753ABA /* VideoSettings.swift in Sources */,
-				AF40D57C1CCE9DEB00753ABA /* ExportQuotaOperation.swift in Sources */,
+				AF40D57C1CCE9DEB00753ABA /* ExportSessionExportOperation.swift in Sources */,
 				AF40D55C1CCE9DEB00753ABA /* NSFileManager+Extensions.swift in Sources */,
 				AF40D5651CCE9DEB00753ABA /* VideoDeletionManager.swift in Sources */,
 				AF40D57A1CCE9DEB00753ABA /* DeleteVideoOperation.swift in Sources */,
