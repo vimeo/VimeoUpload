@@ -216,7 +216,6 @@
 				AF40D4E41CCE9CB600753ABA /* VimeoUpload.h */,
 				AF40D4FB1CCE9DEB00753ABA /* Descriptor System */,
 				AF40D5051CCE9DEB00753ABA /* Extensions */,
-				AF40D5091CCE9DEB00753ABA /* Networking */,
 				AF40D50A1CCE9DEB00753ABA /* UIKit */,
 				AF40D5151CCE9DEB00753ABA /* Upload */,
 				AF40D5501CCE9DEB00753ABA /* VimeoUploader.swift */,
@@ -260,14 +259,6 @@
 			);
 			name = Extensions;
 			path = ../../../VimeoUpload/Extensions;
-			sourceTree = "<group>";
-		};
-		AF40D5091CCE9DEB00753ABA /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Networking;
-			path = ../../../VimeoUpload/Networking;
 			sourceTree = "<group>";
 		};
 		AF40D50A1CCE9DEB00753ABA /* UIKit */ = {
@@ -406,7 +397,6 @@
 			children = (
 				AF40D5351CCE9DEB00753ABA /* ConcurrentOperation.swift */,
 				AF40D5341CCE9DEB00753ABA /* Async */,
-				AF40D5421CCE9DEB00753ABA /* Private */,
 				AF40D54C1CCE9DEB00753ABA /* Sync */,
 			);
 			path = Operations;
@@ -425,13 +415,6 @@
 				AF40D54B1CCE9DEB00753ABA /* RetryUploadOperation.swift */,
 			);
 			path = Async;
-			sourceTree = "<group>";
-		};
-		AF40D5421CCE9DEB00753ABA /* Private */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Private;
 			sourceTree = "<group>";
 		};
 		AF40D54C1CCE9DEB00753ABA /* Sync */ = {
