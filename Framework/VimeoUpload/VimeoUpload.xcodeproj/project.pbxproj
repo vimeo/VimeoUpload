@@ -405,9 +405,9 @@
 		AF40D5341CCE9DEB00753ABA /* Async */ = {
 			isa = PBXGroup;
 			children = (
+				AF40D5381CCE9DEB00753ABA /* ExportSessionExportOperation.swift */,
 				3EA2DAD51DFF3E0F006E2C65 /* ExportSessionOperation.swift */,
 				AF40D5371CCE9DEB00753ABA /* ExportOperation.swift */,
-				AF40D5381CCE9DEB00753ABA /* ExportSessionExportOperation.swift */,
 				AF40D5441CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift */,
 				AF40D5411CCE9DEB00753ABA /* VideoOperation.swift */,
 				AF40D5361CCE9DEB00753ABA /* DeleteVideoOperation.swift */,
