@@ -404,6 +404,7 @@
 		AF40D5331CCE9DEB00753ABA /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				AF40D5351CCE9DEB00753ABA /* ConcurrentOperation.swift */,
 				AF40D5341CCE9DEB00753ABA /* Async */,
 				AF40D5421CCE9DEB00753ABA /* Private */,
 				AF40D54C1CCE9DEB00753ABA /* Sync */,
@@ -414,12 +415,14 @@
 		AF40D5341CCE9DEB00753ABA /* Async */ = {
 			isa = PBXGroup;
 			children = (
-				AF40D5351CCE9DEB00753ABA /* ConcurrentOperation.swift */,
 				3EA2DAD51DFF3E0F006E2C65 /* PHAssetExportSessionOperation.swift */,
 				AF40D5371CCE9DEB00753ABA /* ExportOperation.swift */,
 				AF40D5381CCE9DEB00753ABA /* ExportQuotaOperation.swift */,
 				AF40D5411CCE9DEB00753ABA /* VideoOperation.swift */,
 				AF40D5361CCE9DEB00753ABA /* DeleteVideoOperation.swift */,
+				AF40D5431CCE9DEB00753ABA /* CreateVideoOperation.swift */,
+				AF40D5441CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift */,
+				AF40D54B1CCE9DEB00753ABA /* RetryUploadOperation.swift */,
 			);
 			path = Async;
 			sourceTree = "<group>";
@@ -427,9 +430,6 @@
 		AF40D5421CCE9DEB00753ABA /* Private */ = {
 			isa = PBXGroup;
 			children = (
-				AF40D5431CCE9DEB00753ABA /* CreateVideoOperation.swift */,
-				AF40D5441CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift */,
-				AF40D54B1CCE9DEB00753ABA /* RetryUploadOperation.swift */,
 			);
 			path = Private;
 			sourceTree = "<group>";
