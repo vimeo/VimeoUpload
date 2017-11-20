@@ -31,16 +31,6 @@ import VimeoNetworking
 import AFNetworking
 import VimeoUpload
 
-/*
-    This viewController displays the device camera roll video contents. 
-
-    It starts an operation on load that requests a fresh version of the authenticated user, checks that user's daily quota, and if the user selects a non-iCloud asset it checks the weekly quota and available diskspace. 
-
-    Essentially, it performs all checks possible at this UX juncture to determine if we can proceed with the upload.
-
-    [AH] 12/03/2015
-*/
-
 class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
 {
     static let NibName = "BaseCameraRollViewController"
