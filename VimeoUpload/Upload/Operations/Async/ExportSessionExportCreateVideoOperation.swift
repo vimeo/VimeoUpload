@@ -1,5 +1,5 @@
 //
-//  ExportQuotaCreateOperation.swift
+//  ExportSessionExportCreateVideoOperation.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 12/22/15.
@@ -29,7 +29,7 @@ import AVFoundation
 import VimeoNetworking
 import Photos
 
-open class ExportQuotaCreateOperation: ConcurrentOperation
+open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
 {
     let sessionManager: VimeoSessionManager
     open var videoSettings: VideoSettings?

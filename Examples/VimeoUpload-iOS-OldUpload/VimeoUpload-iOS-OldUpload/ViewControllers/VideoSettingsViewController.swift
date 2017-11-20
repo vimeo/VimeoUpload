@@ -44,7 +44,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK:
     
-    private var operation: ConcurrentOperation?
+    private var operation: ExportSessionExportOperation?
     private var descriptor: Descriptor?
 
     // MARK:
@@ -173,17 +173,15 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     func didTapUpload(_ sender: UIBarButtonItem)
     {
-        let operation = self.operation as? ExportSessionExportOperation
-        
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil, password: nil)
         
-        if operation?.state == .executing
+        if self.operation?.state == .executing
         {
             self.activityIndicatorView.startAnimating() // Listen for operation completion, dismiss
         }
-        else if let error = operation?.error
+        else if let error = self.operation?.error
         {
             self.presentOperationErrorAlert(with: error)
         }

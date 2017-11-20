@@ -68,7 +68,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK:
     
-    private var operation: ConcurrentOperation?
+    private var operation: ExportSessionExportCreateVideoOperation?
     private var task: URLSessionDataTask?
     
     // MARK:
@@ -134,7 +134,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let videoSettings = self.videoSettings
         
         let phAsset = self.asset.phAsset
-        let operation = ExportQuotaCreateOperation(phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
+        let operation = ExportSessionExportCreateVideoOperation(phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print(String(format: "Download progress: %.2f", progress)) // TODO: Dispatch to main thread
@@ -225,16 +225,14 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil, password: nil)
-     
-        let operation = self.operation as! ExportQuotaCreateOperation
         
-        if operation.state == .executing
+        if self.operation?.state == .executing
         {
-            operation.videoSettings = self.videoSettings
+            self.operation?.videoSettings = self.videoSettings
 
             self.activityIndicatorView.startAnimating() // Listen for operation completion, dismiss
         }
-        else if let error = operation.error
+        else if let error = self.operation?.error
         {
             self.presentOperationErrorAlert(with: error)
         }

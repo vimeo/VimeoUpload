@@ -60,7 +60,7 @@
 		AF40D57C1CCE9DEB00753ABA /* ExportSessionExportOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5381CCE9DEB00753ABA /* ExportSessionExportOperation.swift */; };
 		AF40D5831CCE9DEB00753ABA /* VideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5411CCE9DEB00753ABA /* VideoOperation.swift */; };
 		AF40D5841CCE9DEB00753ABA /* CreateVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5431CCE9DEB00753ABA /* CreateVideoOperation.swift */; };
-		AF40D5851CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5441CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift */; };
+		AF40D5851CCE9DEB00753ABA /* ExportSessionExportCreateVideoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5441CCE9DEB00753ABA /* ExportSessionExportCreateVideoOperation.swift */; };
 		AF40D58A1CCE9DEB00753ABA /* RetryUploadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D54B1CCE9DEB00753ABA /* RetryUploadOperation.swift */; };
 		AF40D58C1CCE9DEB00753ABA /* DiskSpaceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D54E1CCE9DEB00753ABA /* DiskSpaceOperation.swift */; };
 		AF40D58E1CCE9DEB00753ABA /* VimeoUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5501CCE9DEB00753ABA /* VimeoUploader.swift */; };
@@ -134,7 +134,7 @@
 		AF40D5381CCE9DEB00753ABA /* ExportSessionExportOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportSessionExportOperation.swift; sourceTree = "<group>"; };
 		AF40D5411CCE9DEB00753ABA /* VideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoOperation.swift; sourceTree = "<group>"; };
 		AF40D5431CCE9DEB00753ABA /* CreateVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateVideoOperation.swift; sourceTree = "<group>"; };
-		AF40D5441CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportQuotaCreateOperation.swift; sourceTree = "<group>"; };
+		AF40D5441CCE9DEB00753ABA /* ExportSessionExportCreateVideoOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportSessionExportCreateVideoOperation.swift; sourceTree = "<group>"; };
 		AF40D54B1CCE9DEB00753ABA /* RetryUploadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryUploadOperation.swift; sourceTree = "<group>"; };
 		AF40D54E1CCE9DEB00753ABA /* DiskSpaceOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskSpaceOperation.swift; sourceTree = "<group>"; };
 		AF40D5501CCE9DEB00753ABA /* VimeoUploader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VimeoUploader.swift; path = ../../../VimeoUpload/VimeoUploader.swift; sourceTree = "<group>"; };
@@ -408,10 +408,10 @@
 				AF40D5381CCE9DEB00753ABA /* ExportSessionExportOperation.swift */,
 				3EA2DAD51DFF3E0F006E2C65 /* ExportSessionOperation.swift */,
 				AF40D5371CCE9DEB00753ABA /* ExportOperation.swift */,
-				AF40D5441CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift */,
+				AF40D5441CCE9DEB00753ABA /* ExportSessionExportCreateVideoOperation.swift */,
+				AF40D5431CCE9DEB00753ABA /* CreateVideoOperation.swift */,
 				AF40D5411CCE9DEB00753ABA /* VideoOperation.swift */,
 				AF40D5361CCE9DEB00753ABA /* DeleteVideoOperation.swift */,
-				AF40D5431CCE9DEB00753ABA /* CreateVideoOperation.swift */,
 				AF40D54B1CCE9DEB00753ABA /* RetryUploadOperation.swift */,
 			);
 			path = Async;
@@ -591,7 +591,7 @@
 				AF40D55C1CCE9DEB00753ABA /* NSFileManager+Extensions.swift in Sources */,
 				AF40D5651CCE9DEB00753ABA /* VideoDeletionManager.swift in Sources */,
 				AF40D57A1CCE9DEB00753ABA /* DeleteVideoOperation.swift in Sources */,
-				AF40D5851CCE9DEB00753ABA /* ExportQuotaCreateOperation.swift in Sources */,
+				AF40D5851CCE9DEB00753ABA /* ExportSessionExportCreateVideoOperation.swift in Sources */,
 				3C53EC251D219C8500B7AA6D /* CAMUploadReqest.swift in Sources */,
 				AF40D5571CCE9DEB00753ABA /* KeyedArchiver.swift in Sources */,
 				AF40D5661CCE9DEB00753ABA /* VideoRefreshManager.swift in Sources */,
