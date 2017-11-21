@@ -29,12 +29,9 @@ import Foundation
 public enum UploadErrorDomain: String
 {
     case PHAssetExportSession = "PHAssetExportSessionErrorDomain"
-    case DailyQuota = "DailyQuotaErrorDomain"
-    case WeeklyQuota = "WeeklyQuotaErrorDomain"
     case DiskSpace = "DiskSpaceErrorDomain"
     case Export = "ExportVideoErrorDomain"
 
-    case Me = "MeErrorDomain"
     case MyVideos = "MyVideosErrorDomain"
     case Create = "CreateVideoErrorDomain"
     case Upload = "VideoUploadErrorDomain"
@@ -44,17 +41,9 @@ public enum UploadErrorDomain: String
     case Video = "VideoErrorDomain"
 
     case DiskSpaceOperation = "DiskSpaceOperationErrorDomain"
-    case WeeklyQuotaOperation = "WeeklyQuotaOperationErrorDomain"
-    case DailyQuotaOperation = "DailyQuotaOperationErrorDomain"
-    case RetryUploadOperation = "RetryUploadOperationErrorDomain"
-    case ExportQuotaCreateOperation = "ExportQuotaCreateOperationErrorDomain"
     case CreateVideoOperation = "CreateVideoOperationErrorDomain"
     case VideoOperation = "VideoOperationErrorDomain"
-    case MeQuotaOperation = "MeQuotaOperationErrorDomain"
-    case MeOperation = "MeOperationErrorDomain"
-    case PHAssetCloudExportQuotaOperation = "PHAssetCloudExportQuotaOperationErrorDomain"
-    case PHAssetExportSessionOperation = "PHAssetExportSessionOperationErrorDomain"
-    case PHAssetDownloadOperation = "PHAssetDownloadOperationErrorDomain"
+    case ExportSessionOperation = "ExportSessionOperationErrorDomain"
     case ExportOperation = "ExportOperationErrorDomain"
     case DeleteVideoOperation = "DeleteVideoOperationErrorDomain"
     
@@ -67,14 +56,9 @@ public enum UploadErrorDomain: String
 
 public enum UploadLocalErrorCode: Int
 {
-    case cannotEvaluateDailyQuota = 0 // "User object did not contain uploadQuota.quota information"
-    case cannotCalculateDiskSpace = 1 // "File system information did not contain NSFileSystemFreeSize key:value pair"
-    case cannotEvaluateWeeklyQuota = 2 // "User object did not contain uploadQuota.space information"
-    
-    case diskSpaceException = 3
-    case assetIsNotExportable = 4    
-    case dailyQuotaException = 5
-    case weeklyQuotaException = 6
+    case cannotCalculateDiskSpace // "File system information did not contain NSFileSystemFreeSize key:value pair"
+    case diskSpaceException
+    case assetIsNotExportable
 }
 
 public enum UploadErrorKey: String

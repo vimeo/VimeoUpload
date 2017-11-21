@@ -29,7 +29,6 @@ import VimeoNetworking
 
 enum UploadTaskDescription: String
 {
-    case Me = "Me"
     case MyVideos = "MyVideos"
     case CreateVideo = "CreateVideo"
     case UploadVideo = "UploadVideo"
@@ -44,36 +43,6 @@ enum UploadTaskDescription: String
 
 extension VimeoSessionManager
 {
-    public func meDataTask(completionHandler: @escaping UserCompletionHandler) throws -> URLSessionDataTask
-    {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).meRequest()
-
-        let task = self.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
-            
-            // Do model parsing on a background thread
-            DispatchQueue.global(qos: .default).async(execute: { [weak self] () -> Void in
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                do
-                {
-                    let user = try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(meResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
-                    completionHandler(user, nil)
-                }
-                catch let error as NSError
-                {
-                    completionHandler(nil, error)
-                }
-            })
-        })
-        
-        task.taskDescription = UploadTaskDescription.Me.rawValue
-        
-        return task
-    }
-
     public func myVideosDataTask(completionHandler: @escaping VideosCompletionHandler) throws -> URLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).myVideosRequest()

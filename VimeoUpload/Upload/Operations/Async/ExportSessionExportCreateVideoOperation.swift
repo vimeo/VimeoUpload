@@ -1,5 +1,5 @@
 //
-//  ExportQuotaOperation.swift
+//  ExportSessionExportCreateVideoOperation.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 12/22/15.
@@ -27,17 +27,25 @@
 import Foundation
 import AVFoundation
 import VimeoNetworking
+import Photos
 
-public typealias ExportProgressBlock = (AVAssetExportSession, Double) -> Void
-
-open class ExportQuotaOperation: ConcurrentOperation
+open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
 {
-    let me: VIMUser
+    let sessionManager: VimeoSessionManager
+    open var videoSettings: VideoSettings?
     let operationQueue: OperationQueue
+    
+    // MARK:
 
     open var downloadProgressBlock: ProgressBlock?
     open var exportProgressBlock: ExportProgressBlock?
     
+    // MARK:
+    
+    private let phAsset: PHAsset
+
+    open var url: URL?
+    open var uploadTicket: VIMUploadTicket?
     open var error: NSError?
     {
         didSet
@@ -48,13 +56,20 @@ open class ExportQuotaOperation: ConcurrentOperation
             }
         }
     }
-    open var result: URL?
     
-    init(me: VIMUser)
+    // MARK: - Initialization
+    
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
     {
-        self.me = me
+        self.phAsset = phAsset
+        
+        self.sessionManager = sessionManager
+        self.videoSettings = videoSettings
+        
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        super.init()
     }
     
     deinit
@@ -71,7 +86,8 @@ open class ExportQuotaOperation: ConcurrentOperation
             return
         }
         
-        self.requestExportSession()
+        let operation = ExportSessionExportOperation(phAsset: self.phAsset)
+        self.perform(exportSessionExportOperation: operation)
     }
     
     override open func cancel()
@@ -80,80 +96,24 @@ open class ExportQuotaOperation: ConcurrentOperation
         
         self.operationQueue.cancelAllOperations()
         
-        if let url = self.result
+        if let url = self.url
         {
             FileManager.default.deleteFile(at: url)
         }
     }
     
-    // MARK: Public API
-
-    func requestExportSession()
-    {
-        assertionFailure("Subclasses must override")
-    }
-    
-    func performExport(exportOperation: ExportOperation)
-    {
-        exportOperation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
-            
-            if let progressBlock = self?.exportProgressBlock
-            {
-                DispatchQueue.main.async(execute: { () -> Void in
-                    progressBlock(exportOperation.exportSession, progress)
-                })
-            }
-        }
-        
-        exportOperation.completionBlock = { [weak self] () -> Void in
-            
-            DispatchQueue.main.async(execute: { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if exportOperation.isCancelled == true
-                {
-                    return
-                }
-                
-                if let error = exportOperation.error
-                {
-                    strongSelf.error = error
-                }
-                else
-                {
-                    let url = exportOperation.outputURL!
-                    strongSelf.checkExactWeeklyQuota(url: url)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(exportOperation)
-    }
-    
     // MARK: Private API
-    
-    private func checkExactWeeklyQuota(url: URL)
+
+    private func perform(exportSessionExportOperation operation: ExportSessionExportOperation)
     {
-        let me = self.me
-        let avUrlAsset = AVURLAsset(url: url)
-        
-        let fileSize: Double
-        do
-        {
-            fileSize = try avUrlAsset.fileSize()
-        }
-        catch let error as NSError
-        {
-            self.error = error
-            
-            return
+        operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
+            self?.downloadProgressBlock?(progress)
         }
         
-        let operation = WeeklyQuotaOperation(user: me, fileSize: fileSize)
+        operation.exportProgressBlock = { [weak self] (exportSession: AVAssetExportSession, progress: Double) -> Void in
+            self?.exportProgressBlock?(exportSession, progress)
+        }
+        
         operation.completionBlock = { [weak self] () -> Void in
             
             DispatchQueue.main.async(execute: { [weak self] () -> Void in
@@ -168,16 +128,48 @@ open class ExportQuotaOperation: ConcurrentOperation
                     return
                 }
                 
-                // Do not check error, allow to pass [AH]
-
-                if let result = operation.result, result.success == false
+                if let error = operation.error
                 {
-                    let userInfo = [UploadErrorKey.FileSize.rawValue: result.fileSize, UploadErrorKey.AvailableSpace.rawValue: result.availableSpace]
-                    strongSelf.error = NSError.error(withDomain: UploadErrorDomain.PHAssetCloudExportQuotaOperation.rawValue, code: UploadLocalErrorCode.weeklyQuotaException.rawValue, description: "Upload would exceed weekly quota.").error(byAddingUserInfo: userInfo as [String : AnyObject])
+                    strongSelf.error = error
                 }
                 else
                 {
-                    strongSelf.result = url
+                    let url = operation.result!
+                    strongSelf.createVideo(url: url)
+                }
+            })
+        }
+        
+        self.operationQueue.addOperation(operation)
+    }
+    
+    private func createVideo(url: URL)
+    {
+        let videoSettings = self.videoSettings
+        
+        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
+        operation.completionBlock = { [weak self] () -> Void in
+            
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if operation.isCancelled == true
+                {
+                    return
+                }
+                
+                if let error = operation.error
+                {
+                    strongSelf.error = error
+                }
+                else
+                {
+                    strongSelf.url = url
+                    strongSelf.uploadTicket = operation.result!
                     strongSelf.state = .finished
                 }
             })

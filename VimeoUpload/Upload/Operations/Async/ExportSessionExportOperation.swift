@@ -1,5 +1,5 @@
 //
-//  ExportQuotaCreateOperation.swift
+//  ExportSessionExportOperation.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 12/22/15.
@@ -27,23 +27,19 @@
 import Foundation
 import AVFoundation
 import VimeoNetworking
+import Photos
 
-open class ExportQuotaCreateOperation: ConcurrentOperation
+public typealias ExportProgressBlock = (AVAssetExportSession, Double) -> Void
+
+open class ExportSessionExportOperation: ConcurrentOperation
 {
-    let me: VIMUser
-    let sessionManager: VimeoSessionManager
-    open var videoSettings: VideoSettings?
     let operationQueue: OperationQueue
-    
-    // MARK:
 
     open var downloadProgressBlock: ProgressBlock?
     open var exportProgressBlock: ExportProgressBlock?
     
-    // MARK:
-    
-    open var url: URL?
-    open var uploadTicket: VIMUploadTicket?
+    private let phAsset: PHAsset
+
     open var error: NSError?
     {
         didSet
@@ -54,17 +50,16 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
             }
         }
     }
+    open var result: URL?
     
-    // MARK: - Initialization
-    
-    public init(me: VIMUser, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    public init(phAsset: PHAsset)
     {
-        self.me = me
-        self.sessionManager = sessionManager
-        self.videoSettings = videoSettings
+        self.phAsset = phAsset
         
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        super.init()
     }
     
     deinit
@@ -81,8 +76,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
             return
         }
         
-        let operation = self.makeExportQuotaOperation(with: self.me)!
-        self.perform(exportQuotaOperation: operation)
+        self.requestExportSession()
     }
     
     override open func cancel()
@@ -91,33 +85,18 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
         
         self.operationQueue.cancelAllOperations()
         
-        if let url = self.url
+        if let url = self.result
         {
             FileManager.default.deleteFile(at: url)
         }
     }
     
     // MARK: Public API
-    
-    func makeExportQuotaOperation(with me: VIMUser) -> ExportQuotaOperation?
-    {
-        assertionFailure("Subclasses must override")
-        
-        return nil
-    }
-    
-    // MARK: Private API
 
-    private func perform(exportQuotaOperation operation: ExportQuotaOperation)
+    func requestExportSession()
     {
-        operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
-            self?.downloadProgressBlock?(progress)
-        }
-        
-        operation.exportProgressBlock = { [weak self] (exportSession: AVAssetExportSession, progress: Double) -> Void in
-            self?.exportProgressBlock?(exportSession, progress)
-        }
-        
+        let operation = ExportSessionOperation(phAsset: self.phAsset)
+        operation.progressBlock = self.downloadProgressBlock
         operation.completionBlock = { [weak self] () -> Void in
             
             DispatchQueue.main.async(execute: { [weak self] () -> Void in
@@ -138,8 +117,9 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
                 }
                 else
                 {
-                    let url = operation.result!
-                    strongSelf.createVideo(url: url)
+                    let exportSession = operation.result!
+                    let exportOperation = ExportOperation(exportSession: exportSession)
+                    strongSelf.performExport(exportOperation: exportOperation)
                 }
             })
         }
@@ -147,12 +127,19 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
         self.operationQueue.addOperation(operation)
     }
     
-    private func createVideo(url: URL)
+    func performExport(exportOperation: ExportOperation)
     {
-        let videoSettings = self.videoSettings
+        exportOperation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
+            
+            if let progressBlock = self?.exportProgressBlock
+            {
+                DispatchQueue.main.async(execute: { () -> Void in
+                    progressBlock(exportOperation.exportSession, progress)
+                })
+            }
+        }
         
-        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
-        operation.completionBlock = { [weak self] () -> Void in
+        exportOperation.completionBlock = { [weak self] () -> Void in
             
             DispatchQueue.main.async(execute: { [weak self] () -> Void in
                 
@@ -161,32 +148,24 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
                     return
                 }
                 
-                if operation.isCancelled == true
+                if exportOperation.isCancelled == true
                 {
                     return
                 }
                 
-                if let error = operation.error
+                if let error = exportOperation.error
                 {
-                    if let fileSize = try? AVURLAsset(url: url).fileSize(), let availableSpace = strongSelf.me.uploadQuota?.sizeQuota?.free?.doubleValue
-                    {
-                        let userInfo = [UploadErrorKey.FileSize.rawValue: fileSize, UploadErrorKey.AvailableSpace.rawValue: availableSpace]
-                        strongSelf.error = error.error(byAddingUserInfo: userInfo)
-                    }
-                    else
-                    {
-                        strongSelf.error = error
-                    }
+                    strongSelf.error = error
                 }
                 else
                 {
-                    strongSelf.url = url
-                    strongSelf.uploadTicket = operation.result!
+                    let url = exportOperation.outputURL!
+                    strongSelf.result = url
                     strongSelf.state = .finished
                 }
             })
         }
         
-        self.operationQueue.addOperation(operation)
+        self.operationQueue.addOperation(exportOperation)
     }
 }

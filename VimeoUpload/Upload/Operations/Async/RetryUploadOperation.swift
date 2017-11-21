@@ -27,6 +27,7 @@
 import Foundation
 import VimeoNetworking
 import AVFoundation
+import Photos
 
 public class RetryUploadOperation: ConcurrentOperation
 {
@@ -40,8 +41,9 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK:
     
+    private let phAsset: PHAsset
+
     private(set) public var url: URL?
-    
     private(set) public var error: NSError?
     {
         didSet
@@ -55,11 +57,15 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
-    init(sessionManager: VimeoSessionManager)
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager)
     {
+        self.phAsset = phAsset
+        
         self.sessionManager = sessionManager
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        super.init()
     }
     
     deinit
@@ -76,7 +82,8 @@ public class RetryUploadOperation: ConcurrentOperation
             return
         }
         
-        self.performMeQuotaOperation()
+        let operation = ExportSessionExportOperation(phAsset: self.phAsset)
+        self.perform(exportSessionExportOperation: operation)
     }
     
     override public func cancel()
@@ -88,42 +95,7 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Private API
     
-    private func performMeQuotaOperation()
-    {
-        let operation = MeQuotaOperation(sessionManager: self.sessionManager)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            DispatchQueue.main.async(execute: { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if strongSelf.isCancelled
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else
-                {
-                    let user = operation.me!
-                    let exportQuotaOperation = strongSelf.makeExportQuotaOperation(user: user)!
-                    strongSelf.perform(exportQuotaOperation: exportQuotaOperation)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
-        
-        operation.fulfillSelection(avAsset: nil)
-    }
-    
-    private func perform(exportQuotaOperation operation: ExportQuotaOperation)
+    private func perform(exportSessionExportOperation operation: ExportSessionExportOperation)
     {
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
             self?.downloadProgressBlock?(progress)
@@ -160,14 +132,5 @@ public class RetryUploadOperation: ConcurrentOperation
         }
         
         self.operationQueue.addOperation(operation)
-    }
-
-    // MARK: Public API
-    
-    func makeExportQuotaOperation(user: VIMUser) -> ExportQuotaOperation?
-    {
-        assertionFailure("Subclasses must override")
-        
-        return nil
     }
 }

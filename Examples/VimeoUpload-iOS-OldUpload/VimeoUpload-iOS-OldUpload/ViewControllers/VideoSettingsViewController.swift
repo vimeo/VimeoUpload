@@ -40,11 +40,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK:
     
-    var input: UploadUserAndCameraRollAsset?
+    private var asset: VIMPHAsset
     
     // MARK:
     
-    private var operation: ConcurrentOperation?
+    private var operation: ExportSessionExportOperation?
     private var descriptor: Descriptor?
 
     // MARK:
@@ -62,14 +62,23 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
     }
     
-    // MARK:
     // MARK: Lifecycle
+    
+    init(asset: VIMPHAsset)
+    {
+        self.asset = asset
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder)
+    {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
-        assert(self.input != nil, "self.input cannot be nil")
         
         self.edgesForExtendedLayout = []
         
@@ -90,9 +99,8 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     private func setupAndStartOperation()
     {
-        let me = self.input!.user
-        let phAsset = (self.input!.cameraRollAsset ).phAsset
-        let operation = PHAssetCloudExportQuotaOperation(me: me, phAsset: phAsset)
+        let phAsset = self.asset.phAsset
+        let operation = ExportSessionExportOperation(phAsset: phAsset)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print(String(format: "Download progress: %.2f", progress)) // TODO: Dispatch to main thread
@@ -145,7 +153,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func startUpload()
     {
         let url = self.url!
-        let phAsset = (self.input!.cameraRollAsset ).phAsset
+        let phAsset = self.asset.phAsset
         let assetIdentifier = phAsset.localIdentifier
         
         let descriptor = OldUploadDescriptor(url: url, videoSettings: self.videoSettings)
@@ -165,17 +173,15 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     func didTapUpload(_ sender: UIBarButtonItem)
     {
-        let operation = self.operation as? PHAssetCloudExportQuotaOperation
-        
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil, password: nil)
         
-        if operation?.state == .executing
+        if self.operation?.state == .executing
         {
             self.activityIndicatorView.startAnimating() // Listen for operation completion, dismiss
         }
-        else if let error = operation?.error
+        else if let error = self.operation?.error
         {
             self.presentOperationErrorAlert(with: error)
         }

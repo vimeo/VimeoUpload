@@ -31,27 +31,6 @@ extension VimeoResponseSerializer
 {
     private static let LocationKey = "Location"
     
-    func process(meResponse response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> VIMUser
-    {
-        do
-        {
-            try checkDataResponseForError(response: response, responseObject: responseObject, error: error)
-        }
-        catch let error as NSError
-        {
-            throw error.error(byAddingDomain: UploadErrorDomain.Me.rawValue)
-        }
-        
-        do
-        {
-            return try self.user(from: responseObject)
-        }
-        catch let error as NSError
-        {
-            throw error.error(byAddingDomain: UploadErrorDomain.Me.rawValue)
-        }
-    }
-
     func process(myVideosResponse response: URLResponse?, responseObject: AnyObject?, error: NSError?) throws -> [VIMVideo]
     {
         do
