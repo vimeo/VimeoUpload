@@ -162,9 +162,23 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
                     return
                 }
                 
-                if let error = operation.error
+                if var error = operation.error
                 {
-                    strongSelf.error = error
+                    var userInfo = error.userInfo
+                    
+                    
+                    let asset = AVURLAsset(url: url)
+                    do
+                    {
+                        let fileSize = try asset.fileSize()
+                        userInfo.append([UploadErrorKey.FileSize.rawValue : fileSize])
+                    }
+                    catch
+                    {
+                        
+                    }
+                    
+                    strongSelf.error = NSError(domain: error.domain, code: error.code, userInfo: userInfo)
                 }
                 else
                 {
