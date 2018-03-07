@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
 
   s.social_media_url = "http://twitter.com/vimeo"
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '9.0'
 #  s.osx.deployment_target = '10.9'
 
   s.source       = { :git => "https://github.com/vimeo/VimeoUpload.git", :tag => s.version.to_s }
