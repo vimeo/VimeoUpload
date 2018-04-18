@@ -1,5 +1,5 @@
 //
-//  VimeoRequestSerializer+Upload.swift
+//  VimeoRequestSerializer+SharedUpload.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 10/21/15.
@@ -30,6 +30,21 @@ import VimeoNetworking
 
 extension VimeoRequestSerializer
 {
+    struct Constants
+    {
+        static let UploadKey = "upload"
+        static let ApproachKey = "approach"
+        static let SizeKey = "size"
+        
+        struct Approach
+        {
+            static let Streaming = "streaming"
+            static let Post = "post"
+            static let Pull = "pull"
+            static let TUS = "tus"
+        }
+    }
+    
     func myVideosRequest() throws -> NSMutableURLRequest
     {
         let url = URL(string: "/me/videos", relativeTo: VimeoBaseURL)!
@@ -80,7 +95,9 @@ extension VimeoRequestSerializer
             throw error.error(byAddingDomain: UploadErrorDomain.Create.rawValue)
         }
         
-        return ["type": "streaming", "size": fileSize]
+        let fileSizeString = String(fileSize)
+        
+        return [Constants.UploadKey: [Constants.ApproachKey: Constants.Approach.Streaming, Constants.SizeKey: fileSizeString]]
     }
 
     func uploadVideoRequest(with source: URL, destination: String) throws -> NSMutableURLRequest
