@@ -1,5 +1,5 @@
 //
-//  VimeoRequestSerializer+SimpleUpload.swift
+//  VimeoRequestSerializer+Upload.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/20/15.
@@ -32,7 +32,7 @@ extension VimeoRequestSerializer
     func createVideoRequest(with url: URL, videoSettings: VideoSettings?) throws -> NSMutableURLRequest
     {
         var parameters = try self.createVideoRequestBaseParameters(url: url)
-        parameters["create_clip"] = "true"
+        parameters["_pre_upload"] = true
         
         if let videoSettings = videoSettings
         {

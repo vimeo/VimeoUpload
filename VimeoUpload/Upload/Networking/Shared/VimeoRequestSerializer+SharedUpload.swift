@@ -30,7 +30,7 @@ import VimeoNetworking
 
 extension VimeoRequestSerializer
 {
-    struct Constants
+    private struct Constants
     {
         static let UploadKey = "upload"
         static let ApproachKey = "approach"
