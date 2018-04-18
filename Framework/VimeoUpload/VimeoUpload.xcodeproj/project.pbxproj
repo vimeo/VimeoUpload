@@ -13,6 +13,7 @@
 		3C53EC271D219C8500B7AA6D /* VimeoResponseSerializer+Thumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C53EC221D219C8500B7AA6D /* VimeoResponseSerializer+Thumbnail.swift */; };
 		3C53EC281D219C8500B7AA6D /* VimeoSessionManager+ThumbnailUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C53EC231D219C8500B7AA6D /* VimeoSessionManager+ThumbnailUpload.swift */; };
 		3EA2DAD81DFF3E0F006E2C65 /* ExportSessionOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA2DAD51DFF3E0F006E2C65 /* ExportSessionOperation.swift */; };
+		3EC62D4E2087D82D001E8C00 /* VimeoRequestSerializer+SharedUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC62D4D2087D82D001E8C00 /* VimeoRequestSerializer+SharedUpload.swift */; };
 		5C9E3CA51EA66187000D1F6B /* DescriptorKVObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9E3CA41EA66187000D1F6B /* DescriptorKVObserver.swift */; };
 		8D9A15BCC5ABADC2D001B20C /* Pods_VimeoUpload.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4E8D665288660F1F668B91 /* Pods_VimeoUpload.framework */; };
 		AF40D4E51CCE9CB600753ABA /* VimeoUpload.h in Headers */ = {isa = PBXBuildFile; fileRef = AF40D4E41CCE9CB600753ABA /* VimeoUpload.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -51,7 +52,6 @@
 		AF40D5731CCE9DEB00753ABA /* VideoSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D52A1CCE9DEB00753ABA /* VideoSettings.swift */; };
 		AF40D5741CCE9DEB00753ABA /* VimeoRequestSerializer+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D52D1CCE9DEB00753ABA /* VimeoRequestSerializer+Upload.swift */; };
 		AF40D5751CCE9DEB00753ABA /* VimeoSessionManager+Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D52E1CCE9DEB00753ABA /* VimeoSessionManager+Upload.swift */; };
-		AF40D5761CCE9DEB00753ABA /* VimeoRequestSerializer+OldUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5301CCE9DEB00753ABA /* VimeoRequestSerializer+OldUpload.swift */; };
 		AF40D5771CCE9DEB00753ABA /* VimeoResponseSerializer+OldUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5311CCE9DEB00753ABA /* VimeoResponseSerializer+OldUpload.swift */; };
 		AF40D5781CCE9DEB00753ABA /* VimeoSessionManager+OldUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5321CCE9DEB00753ABA /* VimeoSessionManager+OldUpload.swift */; };
 		AF40D5791CCE9DEB00753ABA /* ConcurrentOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D5351CCE9DEB00753ABA /* ConcurrentOperation.swift */; };
@@ -84,6 +84,7 @@
 		3C53EC221D219C8500B7AA6D /* VimeoResponseSerializer+Thumbnail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "VimeoResponseSerializer+Thumbnail.swift"; path = "Cameo/VimeoResponseSerializer+Thumbnail.swift"; sourceTree = "<group>"; };
 		3C53EC231D219C8500B7AA6D /* VimeoSessionManager+ThumbnailUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "VimeoSessionManager+ThumbnailUpload.swift"; path = "Cameo/VimeoSessionManager+ThumbnailUpload.swift"; sourceTree = "<group>"; };
 		3EA2DAD51DFF3E0F006E2C65 /* ExportSessionOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExportSessionOperation.swift; sourceTree = "<group>"; };
+		3EC62D4D2087D82D001E8C00 /* VimeoRequestSerializer+SharedUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "VimeoRequestSerializer+SharedUpload.swift"; path = "../Shared/VimeoRequestSerializer+SharedUpload.swift"; sourceTree = "<group>"; };
 		4D4E8D665288660F1F668B91 /* Pods_VimeoUpload.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VimeoUpload.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C9E3CA41EA66187000D1F6B /* DescriptorKVObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorKVObserver.swift; sourceTree = "<group>"; };
 		AF40D4E11CCE9CB600753ABA /* VimeoUpload.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VimeoUpload.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,7 +126,6 @@
 		AF40D52A1CCE9DEB00753ABA /* VideoSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoSettings.swift; sourceTree = "<group>"; };
 		AF40D52D1CCE9DEB00753ABA /* VimeoRequestSerializer+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoRequestSerializer+Upload.swift"; sourceTree = "<group>"; };
 		AF40D52E1CCE9DEB00753ABA /* VimeoSessionManager+Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoSessionManager+Upload.swift"; sourceTree = "<group>"; };
-		AF40D5301CCE9DEB00753ABA /* VimeoRequestSerializer+OldUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoRequestSerializer+OldUpload.swift"; sourceTree = "<group>"; };
 		AF40D5311CCE9DEB00753ABA /* VimeoResponseSerializer+OldUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoResponseSerializer+OldUpload.swift"; sourceTree = "<group>"; };
 		AF40D5321CCE9DEB00753ABA /* VimeoSessionManager+OldUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoSessionManager+OldUpload.swift"; sourceTree = "<group>"; };
 		AF40D5351CCE9DEB00753ABA /* ConcurrentOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcurrentOperation.swift; sourceTree = "<group>"; };
@@ -171,6 +171,15 @@
 				3C53EC231D219C8500B7AA6D /* VimeoSessionManager+ThumbnailUpload.swift */,
 			);
 			name = "Cameo (Private)";
+			sourceTree = "<group>";
+		};
+		3EC62D4C2087D7FB001E8C00 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				3EC62D4D2087D82D001E8C00 /* VimeoRequestSerializer+SharedUpload.swift */,
+			);
+			name = Shared;
+			path = "New Group1";
 			sourceTree = "<group>";
 		};
 		5DE6B4A5D1C90E1783FCACAB /* Pods */ = {
@@ -367,6 +376,7 @@
 		AF40D52B1CCE9DEB00753ABA /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				3EC62D4C2087D7FB001E8C00 /* Shared */,
 				AF40D52C1CCE9DEB00753ABA /* New Upload (Private) */,
 				AF40D52F1CCE9DEB00753ABA /* Old Upload */,
 			);
@@ -385,7 +395,6 @@
 		AF40D52F1CCE9DEB00753ABA /* Old Upload */ = {
 			isa = PBXGroup;
 			children = (
-				AF40D5301CCE9DEB00753ABA /* VimeoRequestSerializer+OldUpload.swift */,
 				AF40D5311CCE9DEB00753ABA /* VimeoResponseSerializer+OldUpload.swift */,
 				AF40D5321CCE9DEB00753ABA /* VimeoSessionManager+OldUpload.swift */,
 			);
@@ -580,7 +589,6 @@
 				AF40D5841CCE9DEB00753ABA /* CreateVideoOperation.swift in Sources */,
 				AF40D5831CCE9DEB00753ABA /* VideoOperation.swift in Sources */,
 				AF40D56B1CCE9DEB00753ABA /* VideoDescriptor.swift in Sources */,
-				AF40D5761CCE9DEB00753ABA /* VimeoRequestSerializer+OldUpload.swift in Sources */,
 				AF40D58A1CCE9DEB00753ABA /* RetryUploadOperation.swift in Sources */,
 				AF40D5671CCE9DEB00753ABA /* DescriptorManagerTracker.swift in Sources */,
 				AF40D5681CCE9DEB00753ABA /* UploadDescriptor.swift in Sources */,
@@ -593,6 +601,7 @@
 				AF40D57A1CCE9DEB00753ABA /* DeleteVideoOperation.swift in Sources */,
 				AF40D5851CCE9DEB00753ABA /* ExportSessionExportCreateVideoOperation.swift in Sources */,
 				3C53EC251D219C8500B7AA6D /* CAMUploadReqest.swift in Sources */,
+				3EC62D4E2087D82D001E8C00 /* VimeoRequestSerializer+SharedUpload.swift in Sources */,
 				AF40D5571CCE9DEB00753ABA /* KeyedArchiver.swift in Sources */,
 				AF40D5661CCE9DEB00753ABA /* VideoRefreshManager.swift in Sources */,
 				AF40D5541CCE9DEB00753ABA /* DescriptorManager.swift in Sources */,

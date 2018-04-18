@@ -29,10 +29,16 @@ import VimeoNetworking
 
 extension VimeoRequestSerializer
 {
+    private struct Constants
+    {
+        static let PreUploadKey = "_pre_upload"
+        static let PreUploadDefaultValue = true
+    }
+    
     func createVideoRequest(with url: URL, videoSettings: VideoSettings?) throws -> NSMutableURLRequest
     {
         var parameters = try self.createVideoRequestBaseParameters(url: url)
-        parameters["_pre_upload"] = true
+        parameters[Constants.PreUploadKey] = Constants.PreUploadDefaultValue
         
         if let videoSettings = videoSettings
         {
