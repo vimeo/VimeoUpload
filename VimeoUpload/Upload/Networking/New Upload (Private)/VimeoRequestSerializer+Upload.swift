@@ -33,11 +33,23 @@ extension VimeoRequestSerializer
     {
         static let PreUploadKey = "_pre_upload"
         static let PreUploadDefaultValue = true
+        static let ApproachKey = "approach"
+        static let ApproachDefaultValue = "streaming"
+        static let UploadKey = "upload"
     }
     
     func createVideoRequest(with url: URL, videoSettings: VideoSettings?) throws -> NSMutableURLRequest
     {
-        var parameters = try self.createVideoRequestBaseParameters(url: url)
+        // Create a dictionary containing the file size parameters
+        var uploadParameters = try self.createFileSizeParameters(url: url)
+        
+        // Add on the key-value pair for approach type
+        uploadParameters[Constants.ApproachKey] = Constants.ApproachDefaultValue
+        
+        // Store `uploadParameters` dictionary as the value to "upload" key inside `parameters` dictionary.
+        var parameters = [Constants.UploadKey : uploadParameters as Any]
+        
+        // Add on pre-upload key-value pair to `parameters` dictionary.
         parameters[Constants.PreUploadKey] = Constants.PreUploadDefaultValue
         
         if let videoSettings = videoSettings
