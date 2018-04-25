@@ -29,20 +29,13 @@ import AVFoundation
 import VimeoNetworking
 
 extension VimeoRequestSerializer
-{
+{    
     private struct Constants
     {
-        static let UploadKey = "upload"
-        static let ApproachKey = "approach"
+        static let CreateVideoURI = "/me/videos"
+        static let TypeKey = "type"
+        static let TypeDefaultValue = "streaming"
         static let SizeKey = "size"
-        
-        struct Approach
-        {
-            static let Streaming = "streaming"
-            static let Post = "post"
-            static let Pull = "pull"
-            static let TUS = "tus"
-        }
     }
     
     func myVideosRequest() throws -> NSMutableURLRequest
@@ -58,15 +51,14 @@ extension VimeoRequestSerializer
         
         return request
     }
-
-    //old upload
+    
     func createVideoRequest(with url: URL) throws -> NSMutableURLRequest
     {
         var parameters = try self.createFileSizeParameters(url: url)
         
-        parameters["type"] = "streaming"
+        parameters[Constants.TypeKey] = Constants.TypeDefaultValue
         
-        let url = URL(string: "/me/videos", relativeTo: VimeoBaseURL)!
+        let url = URL(string: Constants.CreateVideoURI, relativeTo: VimeoBaseURL)!
 
         return try self.createVideoRequest(with: url, parameters: parameters)
     }
@@ -82,25 +74,6 @@ extension VimeoRequestSerializer
         }
         
         return request
-    }
-
-    func createVideoRequestBaseParameters(url: URL) throws -> [String: Any]
-    {
-        let asset = AVURLAsset(url: url)
-        
-        let fileSize: Double
-        do
-        {
-            fileSize = try asset.fileSize()
-        }
-        catch let error as NSError
-        {
-            throw error.error(byAddingDomain: UploadErrorDomain.Create.rawValue)
-        }
-        
-        let fileSizeString = String(fileSize)
-        
-        return [Constants.UploadKey: [Constants.ApproachKey: Constants.Approach.Streaming, Constants.SizeKey: fileSizeString]]
     }
     
     func createFileSizeParameters(url: URL) throws -> [String: Any]
