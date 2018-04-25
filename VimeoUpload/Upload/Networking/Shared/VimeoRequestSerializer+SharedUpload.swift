@@ -59,9 +59,12 @@ extension VimeoRequestSerializer
         return request
     }
 
+    //old upload
     func createVideoRequest(with url: URL) throws -> NSMutableURLRequest
     {
-        let parameters = try self.createVideoRequestBaseParameters(url: url)
+        var parameters = try self.createFileSizeParameters(url: url)
+        
+        parameters["type"] = "streaming"
         
         let url = URL(string: "/me/videos", relativeTo: VimeoBaseURL)!
 
@@ -98,6 +101,25 @@ extension VimeoRequestSerializer
         let fileSizeString = String(fileSize)
         
         return [Constants.UploadKey: [Constants.ApproachKey: Constants.Approach.Streaming, Constants.SizeKey: fileSizeString]]
+    }
+    
+    func createFileSizeParameters(url: URL) throws -> [String: Any]
+    {
+        let asset = AVURLAsset(url: url)
+        
+        let fileSize: Double
+        do
+        {
+            fileSize = try asset.fileSize()
+        }
+        catch let error as NSError
+        {
+            throw error.error(byAddingDomain: UploadErrorDomain.Create.rawValue)
+        }
+        
+        let fileSizeString = fileSize
+        
+        return [Constants.SizeKey: fileSizeString]
     }
 
     func uploadVideoRequest(with source: URL, destination: String) throws -> NSMutableURLRequest
