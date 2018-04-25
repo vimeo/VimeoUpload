@@ -49,9 +49,16 @@ import VimeoNetworking
     
     public init(name: String, backgroundSessionIdentifier: String, sharedContainerIdentifier: String? = nil, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider)
     {
-        let backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider)
+        let backgroundSessionManager: VimeoSessionManager
         
-        backgroundSessionManager.session.configuration.sharedContainerIdentifier = sharedContainerIdentifier
+        if let sharedContainerIdentifier = sharedContainerIdentifier
+        {
+            backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, baseUrl: VimeoBaseURL, sharedContainerIdentifier: sharedContainerIdentifier, accessTokenProvider: accessTokenProvider)
+        }
+        else
+        {
+            backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider)
+        }
         
         super.init(sessionManager: backgroundSessionManager, name: name, delegate: descriptorManagerDelegate)
         
