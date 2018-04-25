@@ -29,6 +29,11 @@ import VimeoNetworking
 
 open class VimeoUploader<T: VideoDescriptor>
 {
+    public static var DefaultAPIVersion: String
+    {
+        return "3.4"
+    }
+    
     public static var Name: String
     {
         return "vimeo_upload" // Generic types don't yet support static properties [AH] 3/19/2016
@@ -45,21 +50,21 @@ open class VimeoUploader<T: VideoDescriptor>
 
     // MARK: - Initialization
 
-    public convenience init(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessToken: String)
+    public convenience init(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessToken: String, apiVersion: String)
     {
         self.init(backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: descriptorManagerDelegate, accessTokenProvider: { () -> String? in
             return accessToken
-        })
+        }, apiVersion: apiVersion)
     }
     
-    public init(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider)
+    public init(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
     {
-        self.foregroundSessionManager = VimeoSessionManager.defaultSessionManager(baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider)
+        self.foregroundSessionManager = VimeoSessionManager.defaultSessionManager(baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
         
         self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager)
         
         self.descriptorManager = ReachableDescriptorManager(name: type(of: self).Name, backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: descriptorManagerDelegate,
-                                                            accessTokenProvider: accessTokenProvider)
+                                                            accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
     }
     
     // MARK: Public API - Starting
