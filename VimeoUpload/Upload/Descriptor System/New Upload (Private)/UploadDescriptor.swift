@@ -33,11 +33,12 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     private static let FileNameCoderKey = "fileName"
     private static let FileExtensionCoderKey = "fileExtension"
     private static let UploadTicketCoderKey = "uploadTicket"
+    private static let VideoCoderKey = "video"
 
     // MARK: 
     
     public var url: URL
-    public var video: VIMVideo
+    public var video: VIMVideo?
     
     // MARK: VideoDescriptor
     
@@ -48,7 +49,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     public var videoUri: VideoUri?
     {
-        return self.video.uri
+        return self.video?.uri
     }
     
     public var progressDescriptor: ProgressDescriptor
@@ -79,7 +80,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         do
         {
-            guard let uploadLink = self.video.upload?.uploadLink else
+            guard let uploadLink = self.video?.upload?.uploadLink else
             {
                 // TODO: delete file here? Same in download?
                 
@@ -185,11 +186,13 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         let path = URL.uploadDirectory().appendingPathComponent(fileName).appendingPathExtension(fileExtension).absoluteString
         
         self.url = URL(fileURLWithPath: path)
-        
-        // TODO: encode new type, and migrate old.
-        // self.uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as! VIMUploadTicket
-        self.video = VIMVideo()
-        
+
+        // Support migrating archived uploadTickets to videos for API versions less than v3.4
+        if let uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as? VIMUploadTicket
+        {
+            self.video = uploadTicket.video
+        }
+
         super.init(coder: aDecoder)
     }
 
@@ -200,9 +203,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
         aCoder.encode(fileName, forKey: type(of: self).FileNameCoderKey)
         aCoder.encode(ext, forKey: type(of: self).FileExtensionCoderKey)
-        
-        // TODO: encode new type, and migrate old.
-        // aCoder.encode(self.uploadTicket, forKey: type(of: self).UploadTicketCoderKey)
+        aCoder.encode(self.video, forKey: type(of: self).VideoCoderKey)
         
         super.encode(with: aCoder)
     }
