@@ -1,9 +1,9 @@
 //
-//  ExceptionCatcher+Swift.swift
+//  VIMLiveQuota.swift
 //  VimeoNetworking
 //
-//  Created by Huebner, Rob on 4/26/16.
-//  Copyright © 2016 Vimeo. All rights reserved.
+//  Created by Van Nguyen on 09/11/2017.
+//  Copyright (c) Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -26,20 +26,34 @@
 
 import Foundation
 
-public class ExceptionCatcher: ObjC_ExceptionCatcher
+/// An object that represents the `live_quota`
+/// field in a `user` response.
+public class VIMLiveQuota: VIMModelObject
 {
-    /**
-     Execute a block of code that could potentially throw Objective-C exceptions
-     
-     - parameter unsafeBlock: The unsafe block of code to execute
-     
-     - throws: an error containing any thrown exception information
-     */
-    @nonobjc public static func doUnsafe(unsafeBlock: @escaping (() -> Void)) throws
+    private struct Constants
     {
-        if let error = self._doUnsafe(unsafeBlock)
+        static let StreamsKey = "streams"
+        static let TimeKey = "time"
+    }
+    
+    /// The `streams` field in a `live_quota` response.
+    @objc dynamic public private(set) var streams: VIMLiveStreams?
+    
+    /// The `time` field in a `live_quota` response.
+    @objc dynamic public private(set) var time: VIMLiveTime?
+    
+    override public func getClassForObjectKey(_ key: String!) -> AnyClass!
+    {
+        if key == Constants.StreamsKey
         {
-            throw error
+            return VIMLiveStreams.self
         }
+        
+        if key == Constants.TimeKey
+        {
+            return VIMLiveTime.self
+        }
+        
+        return nil
     }
 }
