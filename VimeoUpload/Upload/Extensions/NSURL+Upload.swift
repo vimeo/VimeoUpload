@@ -34,6 +34,8 @@ import Foundation
 
 public extension URL
 {
+    static let VimeoBaseURL = URL(string: "https://api.vimeo.com")!
+    
     static func uploadURL(withFileName filename: String, fileType: String) throws -> URL
     {
         let url = URL.uploadDirectory()
