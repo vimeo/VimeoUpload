@@ -49,7 +49,7 @@ import VimeoNetworking
     
     public init(name: String, backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider)
     {
-        let backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider)
+        let backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, baseUrl: URL.VimeoBaseURL, accessTokenProvider: accessTokenProvider)
         
         super.init(sessionManager: backgroundSessionManager, name: name, delegate: descriptorManagerDelegate)
         

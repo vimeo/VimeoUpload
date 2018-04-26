@@ -14,7 +14,7 @@ extension VimeoRequestSerializer
 {
     func createThumbnailRequest(with uri: String) throws -> NSMutableURLRequest
     {
-        let url = URL(string: "\(uri)/pictures", relativeTo: VimeoBaseURL)!
+        let url = URL(string: "\(uri)/pictures", relativeTo: URL.VimeoBaseURL)!
         
         var error: NSError?
         let request = self.request(withMethod: "POST", urlString: url.absoluteString, parameters: nil, error: &error)
@@ -29,7 +29,7 @@ extension VimeoRequestSerializer
     
     func activateThumbnailRequest(with uri: String) throws -> NSMutableURLRequest
     {
-        let url = URL(string: "\(uri)", relativeTo: VimeoBaseURL)!
+        let url = URL(string: "\(uri)", relativeTo: URL.VimeoBaseURL)!
         
         var error: NSError?
         let activationParams = ["active" : "true"]
