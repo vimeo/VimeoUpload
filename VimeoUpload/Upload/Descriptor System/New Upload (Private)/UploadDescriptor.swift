@@ -37,7 +37,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     // MARK: 
     
     public var url: URL
-    public var uploadTicket: VIMUploadTicket
+    public var video: VIMVideo
     
     // MARK: VideoDescriptor
     
@@ -48,7 +48,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     public var videoUri: VideoUri?
     {
-        return self.uploadTicket.video?.uri
+        return self.video.uri
     }
     
     public var progressDescriptor: ProgressDescriptor
@@ -63,10 +63,10 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         fatalError("init() has not been implemented")
     }
 
-    public init(url: URL, uploadTicket: VIMUploadTicket)
+    public init(url: URL, video: VIMVideo)
     {
         self.url = url
-        self.uploadTicket = uploadTicket
+        self.video = video
         
         super.init()
     }
@@ -79,7 +79,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         do
         {
-            guard let uploadLinkSecure = self.uploadTicket.uploadLinkSecure else
+            guard let uploadLink = self.video.upload?.uploadLink else
             {
                 // TODO: delete file here? Same in download?
                 
@@ -87,7 +87,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             }
             
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, completionHandler: nil)
+            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLink, completionHandler: nil)
             
             self.currentTaskIdentifier = task.taskIdentifier
         }
@@ -185,8 +185,11 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         let path = URL.uploadDirectory().appendingPathComponent(fileName).appendingPathExtension(fileExtension).absoluteString
         
         self.url = URL(fileURLWithPath: path)
-        self.uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as! VIMUploadTicket
-
+        
+        // TODO: encode new type, and migrate old.
+        // self.uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as! VIMUploadTicket
+        self.video = VIMVideo()
+        
         super.init(coder: aDecoder)
     }
 
@@ -197,7 +200,9 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
         aCoder.encode(fileName, forKey: type(of: self).FileNameCoderKey)
         aCoder.encode(ext, forKey: type(of: self).FileExtensionCoderKey)
-        aCoder.encode(self.uploadTicket, forKey: type(of: self).UploadTicketCoderKey)
+        
+        // TODO: encode new type, and migrate old.
+        // aCoder.encode(self.uploadTicket, forKey: type(of: self).UploadTicketCoderKey)
         
         super.encode(with: aCoder)
     }

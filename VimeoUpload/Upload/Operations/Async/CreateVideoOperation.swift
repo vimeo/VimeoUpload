@@ -35,7 +35,7 @@ public class CreateVideoOperation: ConcurrentOperation
     
     private var task: URLSessionDataTask?
 
-    public var result: VIMUploadTicket?
+    public var result: VIMVideo?
     public var error: NSError?
     
     // MARK: - Initialization

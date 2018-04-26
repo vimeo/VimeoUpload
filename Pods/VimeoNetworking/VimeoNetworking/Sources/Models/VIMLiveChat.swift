@@ -1,9 +1,9 @@
 //
-//  VIMUploadQuota.m
+//  VIMLiveChat.swift
 //  VimeoNetworking
 //
-//  Created by Hanssen, Alfie on 11/6/15.
-//  Copyright (c) 2015 Vimeo (https://vimeo.com)
+//  Created by Van Nguyen on 10/10/2017.
+//  Copyright (c) Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,33 +24,31 @@
 //  THE SOFTWARE.
 //
 
-#import "VIMUploadQuota.h"
-#import "VIMQuantityQuota.h"
-#import "VIMSizeQuota.h"
-
-@implementation VIMUploadQuota
-
-#pragma mark - VIMMappable
-
-- (NSDictionary *)getObjectMapping
+/// An object representing the `chat` field in a `live` response. This
+/// `live` response is part of the `clip` representation.
+public class VIMLiveChat: VIMModelObject
 {
-    return @{@"quota": @"quantityQuota",
-             @"space": @"sizeQuota"};
-}
-
-- (Class)getClassForObjectKey:(NSString *)key
-{
-    if ([key isEqualToString:@"quota"])
+    private struct Constants
     {
-        return [VIMQuantityQuota class];
+        static let UserKey = "user"
     }
-
-    if ([key isEqualToString:@"space"])
+    
+    /// The ID of the live event chat room.
+    public private(set) var roomId: NSNumber?
+    
+    /// JWT for the user to access the live event chat room.
+    public private(set) var token: String?
+    
+    /// The current user.
+    public private(set) var user: VIMLiveChatUser?
+    
+    public override func getClassForObjectKey(_ key: String!) -> AnyClass?
     {
-        return [VIMSizeQuota class];
+        if key == Constants.UserKey
+        {
+            return VIMLiveChatUser.self
+        }
+        
+        return nil
     }
-
-    return nil;
 }
-
-@end

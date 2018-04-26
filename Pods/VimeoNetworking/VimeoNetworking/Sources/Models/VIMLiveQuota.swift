@@ -1,9 +1,9 @@
 //
-//  PinCodeInfo.swift
+//  VIMLiveQuota.swift
 //  VimeoNetworking
 //
-//  Created by Huebner, Rob on 5/9/16.
-//  Copyright © 2016 Vimeo. All rights reserved.
+//  Created by Van Nguyen on 09/11/2017.
+//  Copyright (c) Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -26,16 +26,34 @@
 
 import Foundation
 
-public class PinCodeInfo: VIMModelObject
+/// An object that represents the `live_quota`
+/// field in a `user` response.
+public class VIMLiveQuota: VIMModelObject
 {
-    @objc dynamic public private(set) var deviceCode: String?
-    @objc dynamic public private(set) var userCode: String?
-    @objc dynamic public private(set) var authorizeLink: String?
-    @objc dynamic public private(set) var activateLink: String?
+    private struct Constants
+    {
+        static let StreamsKey = "streams"
+        static let TimeKey = "time"
+    }
     
-    // TODO: These are non-optional Ints with -1 invalid sentinel values because
-    // an optional Int can't be represented in Objective-C and can't be marked
-    // dynamic, which leads to it not getting parsed by VIMObjectMapper [RH]
-    @objc dynamic public private(set) var expiresIn: Int = -1
-    @objc dynamic public private(set) var interval: Int = -1
+    /// The `streams` field in a `live_quota` response.
+    @objc dynamic public private(set) var streams: VIMLiveStreams?
+    
+    /// The `time` field in a `live_quota` response.
+    @objc dynamic public private(set) var time: VIMLiveTime?
+    
+    override public func getClassForObjectKey(_ key: String!) -> AnyClass!
+    {
+        if key == Constants.StreamsKey
+        {
+            return VIMLiveStreams.self
+        }
+        
+        if key == Constants.TimeKey
+        {
+            return VIMLiveTime.self
+        }
+        
+        return nil
+    }
 }
