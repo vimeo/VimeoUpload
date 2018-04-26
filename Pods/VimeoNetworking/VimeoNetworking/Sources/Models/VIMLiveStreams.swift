@@ -1,9 +1,9 @@
 //
-//  ExceptionCatcher+Swift.swift
+//  VIMLiveStreams.swift
 //  VimeoNetworking
 //
-//  Created by Huebner, Rob on 4/26/16.
-//  Copyright © 2016 Vimeo. All rights reserved.
+//  Created by Van Nguyen on 09/11/2017.
+//  Copyright (c) Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -26,20 +26,18 @@
 
 import Foundation
 
-public class ExceptionCatcher: ObjC_ExceptionCatcher
+/// An object that represents the `streams` field
+/// in a `live_quota` response.
+public class VIMLiveStreams: VIMModelObject
 {
-    /**
-     Execute a block of code that could potentially throw Objective-C exceptions
-     
-     - parameter unsafeBlock: The unsafe block of code to execute
-     
-     - throws: an error containing any thrown exception information
-     */
-    @nonobjc public static func doUnsafe(unsafeBlock: @escaping (() -> Void)) throws
+    /// The maximum streams a user can make.
+    @objc dynamic public private(set) var maxStreams: NSNumber?
+
+    /// The remaining streams a user can make.
+    @objc dynamic public private(set) var remainingStreams: NSNumber?
+    
+    override public func getObjectMapping() -> Any!
     {
-        if let error = self._doUnsafe(unsafeBlock)
-        {
-            throw error
-        }
+        return ["remaining": "remainingStreams", "maximum": "maxStreams"]
     }
 }

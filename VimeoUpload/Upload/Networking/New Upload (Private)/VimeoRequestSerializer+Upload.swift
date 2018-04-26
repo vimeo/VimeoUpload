@@ -42,7 +42,7 @@ extension VimeoRequestSerializer
             }
         }
 
-        let url = URL(string: "/me/videos", relativeTo: VimeoBaseURL)!
+        let url = URL(string: "/me/videos", relativeTo: URL.VimeoBaseURL)!
         
         return try self.createVideoRequest(with: url, parameters: parameters)
     }

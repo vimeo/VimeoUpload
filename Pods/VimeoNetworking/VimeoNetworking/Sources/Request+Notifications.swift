@@ -10,7 +10,7 @@ public extension Request
 {
     private static var Path: String { return "/me/notifications/subscriptions" }
 
-    private typealias ParameterDictionary = [AnyHashable: Any]
+    private typealias ParameterDictionary = [String: Any]
 
     private static var SubscriptionsPathComponent: String { return "/subscriptions" }
 

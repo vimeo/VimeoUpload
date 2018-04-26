@@ -28,13 +28,13 @@ import Foundation
 
 public class VIMProgrammedContent: VIMModelObject
 {
-    dynamic public var uri: String?
-    dynamic public var name: String?
-    dynamic public var type: String?
-    dynamic public var content: NSArray?
+    @objc dynamic public private(set) var uri: String?
+    @objc dynamic public private(set) var name: String?
+    @objc dynamic public private(set) var type: String?
+    @objc dynamic public private(set) var content: NSArray?
  
-    dynamic private var metadata: [AnyHashable: Any]?
-    dynamic private var connections: [AnyHashable: Any]?
+    @objc dynamic private var metadata: [String: Any]?
+    @objc dynamic private var connections: [String: Any]?
     
     private struct Constants
     {
@@ -90,15 +90,15 @@ public class VIMProgrammedContent: VIMModelObject
     
     private func parseConnections()
     {
-        guard let dict = self.metadata?[Constants.ConnectionsKey] as? [AnyHashable: Any] else
+        guard let dict = self.metadata?[Constants.ConnectionsKey] as? [String: Any] else
         {
             return
         }
      
-        self.connections = [AnyHashable: Any]()
+        self.connections = [String: Any]()
         for (key, value) in dict
         {
-            if let valueDict = value as? [AnyHashable: Any]
+            if let valueDict = value as? [String: Any]
             {
                 self.connections?[key] = VIMConnection(keyValueDictionary: valueDict)
             }

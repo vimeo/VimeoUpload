@@ -1,9 +1,9 @@
 //
-//  ExceptionCatcher+Swift.swift
+//  VIMLiveTime.swift
 //  VimeoNetworking
 //
-//  Created by Huebner, Rob on 4/26/16.
-//  Copyright © 2016 Vimeo. All rights reserved.
+//  Created by Van Nguyen on 09/11/2017.
+//  Copyright (c) Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -26,20 +26,21 @@
 
 import Foundation
 
-public class ExceptionCatcher: ObjC_ExceptionCatcher
+/// An object that represents the `time` field in
+/// a `live_quota` response.
+public class VIMLiveTime: VIMModelObject
 {
-    /**
-     Execute a block of code that could potentially throw Objective-C exceptions
-     
-     - parameter unsafeBlock: The unsafe block of code to execute
-     
-     - throws: an error containing any thrown exception information
-     */
-    @nonobjc public static func doUnsafe(unsafeBlock: @escaping (() -> Void)) throws
+    /// The maximum time (in seconds) per event a user can stream.
+    @objc dynamic public private(set) var maxTimePerEvent: NSNumber?
+    
+    /// The maximum time (in seconds) per month a user can stream.
+    @objc dynamic public private(set) var maxTimePerMonth: NSNumber?
+    
+    /// The remaining time (in seconds) this month a user can stream.
+    @objc dynamic public private(set) var remainingTimeThisMonth: NSNumber?
+    
+    override public func getObjectMapping() -> Any!
     {
-        if let error = self._doUnsafe(unsafeBlock)
-        {
-            throw error
-        }
+        return ["monthly_remaining": "remainingTimeThisMonth", "monthly_maximum": "maxTimePerMonth", "event_maximum": "maxTimePerEvent"]
     }
 }
