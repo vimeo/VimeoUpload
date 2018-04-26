@@ -1,5 +1,5 @@
 //
-//  VimeoRequestSerializer+Upload.swift
+//  VimeoRequestSerializer+SharedUpload.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 10/21/15.
@@ -29,7 +29,15 @@ import AVFoundation
 import VimeoNetworking
 
 extension VimeoRequestSerializer
-{
+{    
+    private struct Constants
+    {
+        static let CreateVideoURI = "/me/videos"
+        static let TypeKey = "type"
+        static let TypeDefaultValue = "streaming"
+        static let SizeKey = "size"
+    }
+    
     func myVideosRequest() throws -> NSMutableURLRequest
     {
         let url = URL(string: "/me/videos", relativeTo: VimeoBaseURL)!
@@ -43,12 +51,14 @@ extension VimeoRequestSerializer
         
         return request
     }
-
+    
     func createVideoRequest(with url: URL) throws -> NSMutableURLRequest
     {
-        let parameters = try self.createVideoRequestBaseParameters(url: url)
+        var parameters = try self.createFileSizeParameters(url: url)
         
-        let url = URL(string: "/me/videos", relativeTo: VimeoBaseURL)!
+        parameters[Constants.TypeKey] = Constants.TypeDefaultValue
+        
+        let url = URL(string: Constants.CreateVideoURI, relativeTo: VimeoBaseURL)!
 
         return try self.createVideoRequest(with: url, parameters: parameters)
     }
@@ -65,8 +75,8 @@ extension VimeoRequestSerializer
         
         return request
     }
-
-    func createVideoRequestBaseParameters(url: URL) throws -> [String: Any]
+    
+    func createFileSizeParameters(url: URL) throws -> [String: Any]
     {
         let asset = AVURLAsset(url: url)
         
@@ -80,7 +90,9 @@ extension VimeoRequestSerializer
             throw error.error(byAddingDomain: UploadErrorDomain.Create.rawValue)
         }
         
-        return ["type": "streaming", "size": fileSize]
+        let fileSizeString = fileSize
+        
+        return [Constants.SizeKey: fileSizeString]
     }
 
     func uploadVideoRequest(with source: URL, destination: String) throws -> NSMutableURLRequest
