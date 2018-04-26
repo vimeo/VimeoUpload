@@ -240,7 +240,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         {
             if let video = self.video, let viewPrivacy = video.privacy?.view, viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
             {
-                NotificationCenter.default.post(name: Notification.Name(rawValue: type(of: self).UploadInitiatedNotification), object: self.video)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: type(of: self).UploadInitiatedNotification), object: video)
                 
                 self.dismiss(animated: true, completion: nil)
             }
