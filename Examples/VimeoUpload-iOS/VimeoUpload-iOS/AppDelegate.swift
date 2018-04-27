@@ -34,6 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
     {
+        NSKeyedUnarchiver.setLegacyClassNameMigrations()
+        
         AFNetworkReachabilityManager.shared().startMonitoring()
         NewVimeoUploader.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
 
