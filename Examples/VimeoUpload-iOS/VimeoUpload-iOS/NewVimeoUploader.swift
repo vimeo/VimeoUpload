@@ -29,7 +29,7 @@ import VimeoUpload
 
 class NewVimeoUploader: VimeoUploader<UploadDescriptor>
 {
-    public static var NewUploadDefaultAPIVersion: String
+    private static var APIVersionString: String
     {
         return "3.4"
     }
@@ -42,6 +42,6 @@ class NewVimeoUploader: VimeoUploader<UploadDescriptor>
     
     init(backgroundSessionIdentifier: String, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider)
     {
-        super.init(backgroundSessionIdentifier: backgroundSessionIdentifier, accessTokenProvider: accessTokenProvider, apiVersion: NewVimeoUploader.NewUploadDefaultAPIVersion)
+        super.init(backgroundSessionIdentifier: backgroundSessionIdentifier, accessTokenProvider: accessTokenProvider, apiVersion: NewVimeoUploader.APIVersionString)
     }
 }

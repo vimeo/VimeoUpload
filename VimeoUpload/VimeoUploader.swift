@@ -29,11 +29,6 @@ import VimeoNetworking
 
 open class VimeoUploader<T: VideoDescriptor>
 {
-    public static var DefaultAPIVersion: String
-    {
-        return "3.4"
-    }
-    
     public static var Name: String
     {
         return "vimeo_upload" // Generic types don't yet support static properties [AH] 3/19/2016
