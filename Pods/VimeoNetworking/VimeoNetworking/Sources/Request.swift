@@ -169,7 +169,7 @@ public struct Request<ModelType: MappableResponse>
         {
             let queryString = AFQueryStringFromParameters(parameters)
             
-            if queryString.characters.count > 0
+            if queryString.count > 0
             {
                 components?.query = queryString
             }

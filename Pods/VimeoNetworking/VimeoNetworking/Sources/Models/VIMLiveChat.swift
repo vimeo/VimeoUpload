@@ -1,9 +1,9 @@
 //
-//  ExceptionCatcher+Swift.swift
+//  VIMLiveChat.swift
 //  VimeoNetworking
 //
-//  Created by Huebner, Rob on 4/26/16.
-//  Copyright © 2016 Vimeo. All rights reserved.
+//  Created by Van Nguyen on 10/10/2017.
+//  Copyright (c) Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,31 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
-
-public class ExceptionCatcher: ObjC_ExceptionCatcher
+/// An object representing the `chat` field in a `live` response. This
+/// `live` response is part of the `clip` representation.
+public class VIMLiveChat: VIMModelObject
 {
-    /**
-     Execute a block of code that could potentially throw Objective-C exceptions
-     
-     - parameter unsafeBlock: The unsafe block of code to execute
-     
-     - throws: an error containing any thrown exception information
-     */
-    @nonobjc public static func doUnsafe(unsafeBlock: @escaping (() -> Void)) throws
+    private struct Constants
     {
-        if let error = self._doUnsafe(unsafeBlock)
+        static let UserKey = "user"
+    }
+    
+    /// The ID of the live event chat room.
+    @objc public private(set) var roomId: NSNumber?
+    
+    /// JWT for the user to access the live event chat room.
+    @objc public private(set) var token: String?
+    
+    /// The current user.
+    @objc public private(set) var user: VIMLiveChatUser?
+    
+    @objc public override func getClassForObjectKey(_ key: String!) -> AnyClass?
+    {
+        if key == Constants.UserKey
         {
-            throw error
+            return VIMLiveChatUser.self
         }
+        
+        return nil
     }
 }
