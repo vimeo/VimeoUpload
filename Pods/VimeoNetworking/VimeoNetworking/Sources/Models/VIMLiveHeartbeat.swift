@@ -1,9 +1,9 @@
 //
-//  ExceptionCatcher+Swift.swift
+//  VIMLiveHeartbeat.swift
 //  VimeoNetworking
 //
-//  Created by Huebner, Rob on 4/26/16.
-//  Copyright © 2016 Vimeo. All rights reserved.
+//  Created by Van Nguyen on 10/04/2017.
+//  Copyright (c) Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -26,20 +26,19 @@
 
 import Foundation
 
-public class ExceptionCatcher: ObjC_ExceptionCatcher
+/// An object representing the `live` object in either an `hls` or a `dash` response.
+public class VIMLiveHeartbeat: VIMModelObject
 {
-    /**
-     Execute a block of code that could potentially throw Objective-C exceptions
-     
-     - parameter unsafeBlock: The unsafe block of code to execute
-     
-     - throws: an error containing any thrown exception information
-     */
-    @nonobjc public static func doUnsafe(unsafeBlock: @escaping (() -> Void)) throws
+    private struct Constants
     {
-        if let error = self._doUnsafe(unsafeBlock)
-        {
-            throw error
-        }
+        static let HeartbeatUrlKey = "heartbeat"
+    }
+    
+    /// The heartbeat URL that the client should send requests to.
+    @objc dynamic public private(set) var heartbeatUrl: String?
+    
+    override public func getObjectMapping() -> Any?
+    {
+        return [Constants.HeartbeatUrlKey: "heartbeatUrl"]
     }
 }

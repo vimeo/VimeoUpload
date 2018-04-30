@@ -30,4 +30,4 @@ import Foundation
 public let VimeoBaseURL = URL(string: "https://api.vimeo.com")!
 
  /// Default API version to use for requests
-internal let VimeoDefaultAPIVersionString = "3.2"
+let VimeoDefaultAPIVersionString = "3.2"

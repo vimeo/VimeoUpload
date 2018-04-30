@@ -38,6 +38,8 @@ public extension Request
     
     private static var VideosPath: String { return "/videos" }
     
+    private static var SelectedUsersPrivacyPath: String { return "/privacy/users" }
+    
     // MARK: - 
     
     /**
@@ -92,7 +94,9 @@ public extension Request
     {
         let parameters = [VimeoClient.Constants.PerPageKey: 100]
         
-        return Request(path: videoURI, parameters: parameters)
+        let path = videoURI + self.SelectedUsersPrivacyPath
+        
+        return Request(path: path, parameters: parameters)
     }
     
     // MARK: - Search

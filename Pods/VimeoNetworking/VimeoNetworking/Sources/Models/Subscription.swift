@@ -12,50 +12,54 @@ public class Subscription: VIMModelObject
     // MARK: - Properties
     
     /// Represents wether the user is subscribed to the `comment` notification.
-    var comment: NSNumber?
+    @objc dynamic public private(set) var comment: NSNumber?
     
     /// Represents wether the user is subscribed to the `credit` notification.
-    var credit: NSNumber?
+    @objc dynamic public private(set) var credit: NSNumber?
     
     /// Represents wether the user is subscribed to the `like` notification.
-    var like: NSNumber?
+    @objc dynamic public private(set) var like: NSNumber?
     
     /// Represents wether the user is subscribed to the `mention` notification.
-    var mention: NSNumber?
+    @objc dynamic public private(set) var mention: NSNumber?
     
     /// Represents wether the user is subscribed to the `reply` notification.
-    var reply: NSNumber?
+    @objc dynamic public private(set) var reply: NSNumber?
     
     /// Represents wether the user is subscribed to the `follow` notification.
-    var follow: NSNumber?
+    @objc dynamic public private(set) var follow: NSNumber?
     
     /// Represents wether the user is subscribed to the `video available` notification.
-    var videoAvailable: NSNumber?
+    @objc dynamic public private(set) var videoAvailable: NSNumber?
     
     /// Represents wether the user is subscribed to the `vod pre order available` notification.
-    var vodPreorderAvailable: NSNumber?
+    @objc dynamic public private(set) var vodPreorderAvailable: NSNumber?
     
     /// Represents wether the user is subscribed to the `vod rental expiration warning` notification.
-    var vodRentalExpirationWarning: NSNumber?
+    @objc dynamic public private(set) var vodRentalExpirationWarning: NSNumber?
     
     /// Represents wether the user is subscribed to the `account expiration warning` notification.
-    var accountExpirationWarning: NSNumber?
+    @objc dynamic public private(set) var accountExpirationWarning: NSNumber?
     
     /// Represents wether the user is subscribed to the `share` notification.
-    var share: NSNumber?
+    @objc dynamic public private(set) var share: NSNumber?
+    
+    /// Represents wether the is subscribed to the `New video available from followed user` notification.
+    @objc dynamic public private(set) var followedUserVideoAvailable: NSNumber?
     
     /// Represents the Subscription object as a Dictionary
-    public var toDictionary: [AnyHashable: Any]
+    @objc public var toDictionary: [String: Any]
     {
-        let dictionary = ["comment": self.comment ?? false,
-                          "credit": self.credit ?? false,
-                          "like": self.like ?? false,
-                          "mention": self.mention ?? false,
-                          "reply": self.reply ?? false,
-                          "follow": self.follow ?? false,
-                          "vod_preorder_available": self.vodPreorderAvailable ?? false,
-                          "video_available": self.videoAvailable ?? false,
-                          "share": self.share ?? false]
+        let dictionary: [String: Any] = ["comment": self.comment ?? false,
+                                              "credit": self.credit ?? false,
+                                              "like": self.like ?? false,
+                                              "mention": self.mention ?? false,
+                                              "reply": self.reply ?? false,
+                                              "follow": self.follow ?? false,
+                                              "vod_preorder_available": self.vodPreorderAvailable ?? false,
+                                              "video_available": self.videoAvailable ?? false,
+                                              "share": self.share ?? false,
+                                              "followed_user_video_available": self.followedUserVideoAvailable ?? false]
         
         return dictionary
     }
@@ -68,7 +72,8 @@ public class Subscription: VIMModelObject
             "video_available": "videoAvailable",
             "vod_preorder_available": "vodPreorderAvailable",
             "vod_rental_expiration_warning": "vodRentalExpirationWarning",
-            "account_expiration_warning": "accountExpirationWarning"]
+            "account_expiration_warning": "accountExpirationWarning",
+            "followed_user_video_available": "followedUserVideoAvailable"]
     }
     
     // MARK: - Helpers
@@ -76,7 +81,7 @@ public class Subscription: VIMModelObject
     /// Helper method that determine whether a user has all the subscription settings turned off.
     ///
     /// - Returns: A boolean that indicates whether the user has all the settings for push notifications disabled.
-    public func areSubscriptionsDisabled() -> Bool
+    @objc public func areSubscriptionsDisabled() -> Bool
     {
         return (self.comment == false &&
                 self.credit == false &&
@@ -86,6 +91,7 @@ public class Subscription: VIMModelObject
                 self.follow == false &&
                 self.vodPreorderAvailable == false &&
                 self.videoAvailable == false &&
-                self.share == false)
+                self.share == false &&
+                self.followedUserVideoAvailable == false)
     }
 }
