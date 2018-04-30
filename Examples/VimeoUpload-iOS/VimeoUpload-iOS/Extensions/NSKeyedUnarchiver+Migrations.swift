@@ -26,9 +26,9 @@
 
 import VimeoNetworking
 
-extension NSKeyedUnarchiver
+internal extension NSKeyedUnarchiver
 {
-    @objc public static func setLegacyClassNameMigrations()
+    @objc static func setLegacyClassNameMigrations()
     {
         // In older version of this project, it's possible that `VIMUploadQuota` was archived as an Objective-C object. It will now be unarchived in Swift.
         // Swift classes include their module name for archiving and unarchiving, whereas Objective-C classes do not. Thus we need to explictly specify the class name here
