@@ -51,7 +51,7 @@ public class VIMUpload: VIMModelObject
     {
         case complete
         case error
-        case underway = "in_progress"
+        case inProgress = "in_progress"
     }
     
     /// The approach for uploading the video
@@ -70,10 +70,10 @@ public class VIMUpload: VIMModelObject
     @objc dynamic public private(set) var link: String?
 
     /// The URI for completing the upload
-    @objc dynamic public private(set) var completeUri: String?
+    @objc dynamic public private(set) var completeURI: String?
     
     /// The redirect URL for the upload app
-    @objc dynamic public private(set) var redirectUrl: String?
+    @objc dynamic public private(set) var redirectURL: String?
 
     /// The link for sending video file data
     @objc dynamic public private(set) var uploadLink: String?
@@ -98,5 +98,14 @@ public class VIMUpload: VIMModelObject
         {
             self.uploadStatus = UploadStatus(rawValue: statusString)
         }
+    }
+    
+    /// Maps the property name that mirrors the literal JSON response to another property name.
+    /// Typically used to rename a property to one that follows this project's naming conventions.
+    ///
+    /// - Returns: A dictionary where the keys are the JSON response names and the values are the new property names.
+    public override func getObjectMapping() -> Any
+    {
+        return ["complete_uri": "completeURI", "redirect_url": "redirectURL"]
     }
 }

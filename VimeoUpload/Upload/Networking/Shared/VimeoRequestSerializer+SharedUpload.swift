@@ -34,7 +34,7 @@ extension VimeoRequestSerializer
     {
         static let CreateVideoURI = "/me/videos"
         static let TypeKey = "type"
-        static let TypeDefaultValue = "streaming"
+        static let TypeDefaultValue = VIMUpload.UploadApproach.streaming.rawValue
         static let SizeKey = "size"
     }
     

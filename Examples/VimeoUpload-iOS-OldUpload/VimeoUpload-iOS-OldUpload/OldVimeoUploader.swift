@@ -29,9 +29,10 @@ import VimeoUpload
 
 class OldVimeoUploader: VimeoUploader<OldUploadDescriptor>
 {
+    /// Latest supported API version for the `VimeoUpload-iOS-OldUpload` target.
     private static var APIVersionString: String
     {
-        return "3.2"
+        return "3.3.1"
     }
     
     static let sharedInstance = OldVimeoUploader(backgroundSessionIdentifier: "com.vimeo.upload") { () -> String? in
