@@ -47,7 +47,7 @@ extension VimeoRequestSerializer
         uploadParameters[Constants.ApproachKey] = Constants.ApproachDefaultValue
         
         // Store `uploadParameters` dictionary as the value to "upload" key inside `parameters` dictionary.
-        var parameters = [Constants.UploadKey : uploadParameters as Any]
+        var parameters = [Constants.UploadKey: uploadParameters as Any]
         
         // Add on pre-upload key-value pair to `parameters` dictionary.
         parameters[Constants.PreUploadKey] = Constants.PreUploadDefaultValue

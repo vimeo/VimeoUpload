@@ -1,9 +1,9 @@
 //
-//  PinCodeInfo.swift
+//  VIMLiveChat.swift
 //  VimeoNetworking
 //
-//  Created by Huebner, Rob on 5/9/16.
-//  Copyright © 2016 Vimeo. All rights reserved.
+//  Created by Van Nguyen on 10/10/2017.
+//  Copyright (c) Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,18 +24,31 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
-
-public class PinCodeInfo: VIMModelObject
+/// An object representing the `chat` field in a `live` response. This
+/// `live` response is part of the `clip` representation.
+public class VIMLiveChat: VIMModelObject
 {
-    @objc dynamic public private(set) var deviceCode: String?
-    @objc dynamic public private(set) var userCode: String?
-    @objc dynamic public private(set) var authorizeLink: String?
-    @objc dynamic public private(set) var activateLink: String?
+    private struct Constants
+    {
+        static let UserKey = "user"
+    }
     
-    // TODO: These are non-optional Ints with -1 invalid sentinel values because
-    // an optional Int can't be represented in Objective-C and can't be marked
-    // dynamic, which leads to it not getting parsed by VIMObjectMapper [RH]
-    @objc dynamic public private(set) var expiresIn: Int = -1
-    @objc dynamic public private(set) var interval: Int = -1
+    /// The ID of the live event chat room.
+    public private(set) var roomId: NSNumber?
+    
+    /// JWT for the user to access the live event chat room.
+    public private(set) var token: String?
+    
+    /// The current user.
+    public private(set) var user: VIMLiveChatUser?
+    
+    public override func getClassForObjectKey(_ key: String!) -> AnyClass?
+    {
+        if key == Constants.UserKey
+        {
+            return VIMLiveChatUser.self
+        }
+        
+        return nil
+    }
 }

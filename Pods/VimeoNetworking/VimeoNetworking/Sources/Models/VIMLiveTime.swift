@@ -1,9 +1,9 @@
 //
-//  VIMSizeQuota.h
+//  VIMLiveTime.swift
 //  VimeoNetworking
 //
-//  Created by Hanssen, Alfie on 11/6/15.
-//  Copyright (c) 2015 Vimeo (https://vimeo.com)
+//  Created by Van Nguyen on 09/11/2017.
+//  Copyright (c) Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,23 @@
 //  THE SOFTWARE.
 //
 
-#import "VIMModelObject.h"
+import Foundation
 
-@interface VIMSizeQuota : VIMModelObject
-
-@property (nonatomic, strong, nullable) NSNumber *free;
-@property (nonatomic, strong, nullable) NSNumber *max;
-@property (nonatomic, strong, nullable) NSNumber *used;
-
-@end
+/// An object that represents the `time` field in
+/// a `live_quota` response.
+public class VIMLiveTime: VIMModelObject
+{
+    /// The maximum time (in seconds) per event a user can stream.
+    @objc dynamic public private(set) var maxTimePerEvent: NSNumber?
+    
+    /// The maximum time (in seconds) per month a user can stream.
+    @objc dynamic public private(set) var maxTimePerMonth: NSNumber?
+    
+    /// The remaining time (in seconds) this month a user can stream.
+    @objc dynamic public private(set) var remainingTimeThisMonth: NSNumber?
+    
+    override public func getObjectMapping() -> Any!
+    {
+        return ["monthly_remaining": "remainingTimeThisMonth", "monthly_maximum": "maxTimePerMonth", "event_maximum": "maxTimePerEvent"]
+    }
+}

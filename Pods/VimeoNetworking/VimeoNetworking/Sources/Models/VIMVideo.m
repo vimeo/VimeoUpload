@@ -77,7 +77,9 @@ NSString *VIMContentRating_Safe = @"safe";
 {
     return @{@"description": @"videoDescription",
              @"pictures": @"pictureCollection",
-             @"play": @"playRepresentation"};
+             @"play": @"playRepresentation",
+             @"review_page": @"reviewPage",
+             };
 }
 
 - (Class)getClassForCollectionKey:(NSString *)key
@@ -133,7 +135,22 @@ NSString *VIMContentRating_Safe = @"safe";
     
     if ([key isEqualToString:@"spatial"])
     {
-            return [Spatial class];
+        return [Spatial class];
+    }
+    
+    if ([key isEqualToString:@"live"])
+    {
+        return [VIMLive class];
+    }
+    
+    if ([key isEqualToString:@"review_page"])
+    {
+        return [VIMReviewPage class];
+    }
+    
+    if ([key isEqualToString:@"upload"])
+    {
+        return [VIMUpload class];
     }
     
     return nil;
@@ -309,6 +326,7 @@ NSString *VIMContentRating_Safe = @"safe";
 - (void)setVideoStatus
 {
     NSDictionary *statusDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                      [NSNumber numberWithInt:VIMVideoProcessingStatusUnavailable], @"unavailable",
                                       [NSNumber numberWithInt:VIMVideoProcessingStatusAvailable], @"available",
                                       [NSNumber numberWithInt:VIMVideoProcessingStatusUploading], @"uploading",
                                       [NSNumber numberWithInt:VIMVideoProcessingStatusTranscoding], @"transcoding",
@@ -494,6 +512,46 @@ NSString *VIMContentRating_Safe = @"safe";
 - (BOOL)is360
 {
     return self.spatial != nil;
+}
+
+- (BOOL)isLive
+{
+    return self.live != nil;
+}
+
+- (BOOL)isLiveEventInProgress
+{
+    return self.live != nil && (self.isPreBroadcast || self.isMidBroadcast || self.isArchivingBroadcast);
+}
+
+- (BOOL)isPreBroadcast
+{
+    return self.isLive && ([self.live.status isEqual: VIMLive.LiveStreamStatusUnavailable] || [self.live.status isEqual: VIMLive.LiveStreamStatusReady] || [self.live.status isEqual: VIMLive.LiveStreamStatusPending]);
+}
+
+- (BOOL)isMidBroadcast
+{
+    return self.isLive && [self.live.status isEqual: VIMLive.LiveStreamStatusStreaming];
+}
+
+- (BOOL)isArchivingBroadcast
+{
+    return self.isLive && [self.live.status isEqualToString:VIMLive.LiveStreamStatusArchiving];
+}
+
+- (BOOL)isPostBroadcast
+{
+    return self.isLive && ([self.live.status isEqual: VIMLive.LiveStreamStatusDone]);
+}
+
+- (BOOL)hasReviewPage
+{
+    NSString *trimmedReviewLink = [self.reviewPage.link stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    return  self.reviewPage != nil &&
+            self.reviewPage.isActive.boolValue == true &&
+            self.reviewPage.link != nil &&
+            trimmedReviewLink.length > 0;
 }
 
 @end
