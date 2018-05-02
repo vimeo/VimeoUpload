@@ -18,22 +18,22 @@ PODS:
     - AFNetworking (= 3.1.0)
 
 DEPENDENCIES:
-  - VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, branch `VIM-6117-deprecate-upload-ticket`)
+  - VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, branch `feature/total-storage`)
 
 EXTERNAL SOURCES:
   VimeoNetworking:
-    :branch: VIM-6117-deprecate-upload-ticket
+    :branch: feature/total-storage
     :git: git@github.com:vimeo/VimeoNetworking.git
 
 CHECKOUT OPTIONS:
   VimeoNetworking:
-    :commit: d8bbe2a32d649d47f1e80ecec6c86052fa0bb622
+    :commit: be1b1857db718ac4d56083fd631322821842a534
     :git: git@github.com:vimeo/VimeoNetworking.git
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   VimeoNetworking: 5d30e46c8561e2e0a7472e93b915ec1a26a6acfd
 
-PODFILE CHECKSUM: 9c23c184f803bf34c9406f0f738866d7033eaa6f
+PODFILE CHECKSUM: 9617200be883dda88c56994e7dded4960f4db895
 
 COCOAPODS: 1.2.0
