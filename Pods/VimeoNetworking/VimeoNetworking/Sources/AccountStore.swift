@@ -133,7 +133,7 @@ final class AccountStore
                 throw error
             }
             
-            if let userJSON = account.userJSON
+            if let userJSON = account.userJSON as? [String: Any]
             {
                 try account.user = VIMObjectMapper.mapObject(responseDictionary: userJSON) as VIMUser
             }
