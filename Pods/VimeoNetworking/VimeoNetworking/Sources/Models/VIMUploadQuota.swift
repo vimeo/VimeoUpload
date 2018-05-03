@@ -1,8 +1,9 @@
 //
-//  ExceptionCatcher+Swift.swift
+//  VIMUploadQuota.swift
 //  VimeoNetworking
 //
-//  Created by Huebner, Rob on 4/26/16.
+//  Created by Lim, Jennifer on 3/26/18.
+//
 //  Copyright © 2016 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,20 +27,37 @@
 
 import Foundation
 
-public class ExceptionCatcher: ObjC_ExceptionCatcher
+public class VIMUploadQuota: VIMModelObject
 {
-    /**
-     Execute a block of code that could potentially throw Objective-C exceptions
-     
-     - parameter unsafeBlock: The unsafe block of code to execute
-     
-     - throws: an error containing any thrown exception information
-     */
-    @nonobjc public static func doUnsafe(unsafeBlock: @escaping (() -> Void)) throws
+    /// The values within `VIMSpace` reflect the lowest of lifetime or period for free and max.
+    @objc dynamic public private(set) var space: VIMSpace?
+    
+    /// Represents the current quota period
+    @objc dynamic public private(set) var periodic: VIMPeriodic?
+    
+    /// Represents the lifetime quota period
+    @objc dynamic public private(set) var lifetime: VIMSizeQuota?
+    
+    public override func getClassForObjectKey(_ key: String!) -> AnyClass!
     {
-        if let error = self._doUnsafe(unsafeBlock)
+        if key == "space"
         {
-            throw error
+            return VIMSpace.self
         }
+        else if key == "periodic"
+        {
+            return VIMPeriodic.self
+        }
+        else if key == "lifetime"
+        {
+            return VIMSizeQuota.self
+        }
+        
+        return nil
     }
+
+    /// Determines whether the user has a periodic storage quota limit or has a lifetime upload quota storage limit only.
+    @objc public lazy var isPeriodicQuota: Bool = {
+        return self.space?.type == "periodic"
+    }()
 }

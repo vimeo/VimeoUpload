@@ -35,7 +35,7 @@ public class CreateVideoOperation: ConcurrentOperation
     
     private var task: URLSessionDataTask?
 
-    public var result: VIMUploadTicket?
+    public var result: VIMVideo?
     public var error: NSError?
     
     // MARK: - Initialization
@@ -65,7 +65,7 @@ public class CreateVideoOperation: ConcurrentOperation
         
         do
         {
-            self.task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, completionHandler: { [weak self] (uploadTicket, error) -> Void in
+            self.task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 guard let strongSelf = self else
                 {
@@ -83,9 +83,9 @@ public class CreateVideoOperation: ConcurrentOperation
                 {
                     strongSelf.error = error.error(byAddingDomain: UploadErrorDomain.CreateVideoOperation.rawValue)
                 }
-                else if let uploadTicket = uploadTicket
+                else if let video = video
                 {
-                    strongSelf.result = uploadTicket
+                    strongSelf.result = video
                 }
                 else
                 {

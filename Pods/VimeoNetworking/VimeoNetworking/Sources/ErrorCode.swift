@@ -32,7 +32,8 @@ public enum VimeoErrorCode: Int
     // Upload
     case uploadStorageQuotaExceeded = 4101
     case uploadDailyQuotaExceeded = 4102
-    
+    case uploadQuotaSizeExceededCap = 3428
+
     case invalidRequestInput = 2204 // root error code for all invalid parameters errors below
     
     // Password-protected video playback
@@ -68,6 +69,19 @@ public enum VimeoErrorCode: Int
     case facebookInvalidToken = 2300
     case facebookMissingProperty = 2301
     case facebookMalformedToken = 2302
+    case googleUnableToCreateUserMissingEmail = 2325
+    case googleUnableToCreateUserTokenTooLong = 2326
+    case googleUnableToLoginNoToken = 2327
+    case googleUnableToLoginNonExistentProperty = 2328
+    case googleUnableToLoginEmailNotFoundViaToken = 2329
+    case googleUnableToCreateUserInsufficientPermissions = 2330
+    case googleUnableToCreateUserCannotValidateToken = 2331
+    case googleUnableToCreateUserDailyLimit = 2332
+    case googleUnableToLoginInsufficientPermissions = 2333
+    case googleUnableToLoginCannotValidateToken = 2334
+    case googleUnableToLoginDailyLimit = 2335
+    case googleUnableToLoginCouldNotVerifyToken = 2336
+    case googleUnableToCreateUserCouldNotVerifyToken = 2337
     case emailAlreadyRegistered = 2400
     case emailBlocked = 2401
     case emailSpammer = 2402
@@ -88,6 +102,11 @@ public enum VimeoErrorCode: Int
     case userNotAllowedToFollowChannels = 3418
     case batchFollowUserRequestFailed = 4005
     case batchSubscribeChannelRequestFailed = 4006
+    
+    // Live Streaming
+    case userNotAllowedToLiveStream = 3422
+    case userHitSimultaneousLiveStreamingLimit = 3423
+    case userHitMonthlyLiveStreamingMinutesQuota = 3424
 }
 
 /// `HTTPStatusCode` contains HTTP status code constants used to inspect response status

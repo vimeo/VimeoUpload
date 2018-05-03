@@ -1,9 +1,10 @@
 //
-//  VIMUploadQuota.m
+//  VIMSpace.swift
 //  VimeoNetworking
 //
-//  Created by Hanssen, Alfie on 11/6/15.
-//  Copyright (c) 2015 Vimeo (https://vimeo.com)
+//  Created by Lim, Jennifer on 4/3/18.
+//
+//  Copyright © 2016 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,33 +25,15 @@
 //  THE SOFTWARE.
 //
 
-#import "VIMUploadQuota.h"
-#import "VIMQuantityQuota.h"
-#import "VIMSizeQuota.h"
-
-@implementation VIMUploadQuota
-
-#pragma mark - VIMMappable
-
-- (NSDictionary *)getObjectMapping
+public class VIMSpace: VIMSizeQuota
 {
-    return @{@"quota": @"quantityQuota",
-             @"space": @"sizeQuota"};
-}
-
-- (Class)getClassForObjectKey:(NSString *)key
-{
-    if ([key isEqualToString:@"quota"])
+    /// Whether the values of the upload_quota.space fields are for the lifetime quota or the periodic quota. Values can be `lifetime` or `periodic`.
+    @objc dynamic public private(set) var type: String?
+    
+    // MARK: - VIMMappable
+    
+    public override func getObjectMapping() -> Any
     {
-        return [VIMQuantityQuota class];
+        return ["showing" : "type"]
     }
-
-    if ([key isEqualToString:@"space"])
-    {
-        return [VIMSizeQuota class];
-    }
-
-    return nil;
 }
-
-@end

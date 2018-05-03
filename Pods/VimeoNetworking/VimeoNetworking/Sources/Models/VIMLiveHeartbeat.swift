@@ -1,9 +1,9 @@
 //
-//  VIMSizeQuota.m
+//  VIMLiveHeartbeat.swift
 //  VimeoNetworking
 //
-//  Created by Hanssen, Alfie on 11/6/15.
-//  Copyright (c) 2015 Vimeo (https://vimeo.com)
+//  Created by Van Nguyen on 10/04/2017.
+//  Copyright (c) Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,21 @@
 //  THE SOFTWARE.
 //
 
-#import "VIMSizeQuota.h"
+import Foundation
 
-@implementation VIMSizeQuota
-
-@end
+/// An object representing the `live` object in either an `hls` or a `dash` response.
+public class VIMLiveHeartbeat: VIMModelObject
+{
+    private struct Constants
+    {
+        static let HeartbeatUrlKey = "heartbeat"
+    }
+    
+    /// The heartbeat URL that the client should send requests to.
+    @objc dynamic public private(set) var heartbeatUrl: String?
+    
+    override public func getObjectMapping() -> Any?
+    {
+        return [Constants.HeartbeatUrlKey: "heartbeatUrl"]
+    }
+}

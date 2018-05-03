@@ -1,8 +1,9 @@
 //
-//  ExceptionCatcher+Swift.swift
+//  VIMPeriodic.swift
 //  VimeoNetworking
 //
-//  Created by Huebner, Rob on 4/26/16.
+//  Created by Lim, Jennifer on 4/3/18.
+//
 //  Copyright © 2016 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,22 +25,15 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
-
-public class ExceptionCatcher: ObjC_ExceptionCatcher
+public class VIMPeriodic: VIMSizeQuota
 {
-    /**
-     Execute a block of code that could potentially throw Objective-C exceptions
-     
-     - parameter unsafeBlock: The unsafe block of code to execute
-     
-     - throws: an error containing any thrown exception information
-     */
-    @nonobjc public static func doUnsafe(unsafeBlock: @escaping (() -> Void)) throws
+    /// The time in ISO 8601 format when your upload quota resets.
+    @objc dynamic public private(set) var resetDate: NSDate?
+    
+    // MARK: - VIMMappable
+    
+    public override func getObjectMapping() -> Any
     {
-        if let error = self._doUnsafe(unsafeBlock)
-        {
-            throw error
-        }
+        return ["reset_date" : "resetDate"]
     }
 }

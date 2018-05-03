@@ -38,7 +38,8 @@ typedef NS_ENUM(NSUInteger, VIMNotificationType) {
     VIMNotificationTypeFollow,
     VIMNotificationTypeLike,
     VIMNotificationTypeReply,
-    VIMNotificationTypeVideoAvailable
+    VIMNotificationTypeVideoAvailable, // User new video available
+    VIMNotificationTypeFollowedUserVideoAvailable // Followed user new video available
 };
 
 @interface VIMNotification : VIMModelObject
@@ -56,5 +57,7 @@ typedef NS_ENUM(NSUInteger, VIMNotificationType) {
 @property (nonatomic) VIMNotificationType notificationType;
 
 + (nonnull NSDictionary<NSString *, NSNumber *> *)supportedTypeMap;
+
+@property (nonatomic, strong, nullable) NSNumber *typeUnseenCount;
 
 @end

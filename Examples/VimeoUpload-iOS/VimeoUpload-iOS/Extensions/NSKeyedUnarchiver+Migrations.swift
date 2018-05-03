@@ -1,9 +1,9 @@
 //
-//  ExceptionCatcher+Swift.swift
-//  VimeoNetworking
+//  NSKeyedUnarchiver+Migrations.swift
+//  VimeoUpload
 //
-//  Created by Huebner, Rob on 4/26/16.
-//  Copyright © 2016 Vimeo. All rights reserved.
+//  Created by Lehrer, Nicole on 4/27/18.
+//  Copyright © 2018 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,16 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
+import VimeoNetworking
 
-public class ExceptionCatcher: ObjC_ExceptionCatcher
+internal extension NSKeyedUnarchiver
 {
-    /**
-     Execute a block of code that could potentially throw Objective-C exceptions
-     
-     - parameter unsafeBlock: The unsafe block of code to execute
-     
-     - throws: an error containing any thrown exception information
-     */
-    @nonobjc public static func doUnsafe(unsafeBlock: @escaping (() -> Void)) throws
+    @objc static func setLegacyClassNameMigrations()
     {
-        if let error = self._doUnsafe(unsafeBlock)
-        {
-            throw error
-        }
+        // In older version of this project, it's possible that `VIMUploadQuota` was archived as an Objective-C object. It will now be unarchived in Swift.
+        // Swift classes include their module name for archiving and unarchiving, whereas Objective-C classes do not. Thus we need to explictly specify the class name here
+        // for legacy archived objects. NAL [04/27/2018]
+        
+        self.setClass(VIMUploadQuota.self, forClassName: "VIMUploadQuota")
     }
 }
