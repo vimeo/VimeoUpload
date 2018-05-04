@@ -317,18 +317,11 @@ open class DescriptorManager: NSObject
     
     // MARK: Public API
     
-    open func handleEventsForBackgroundURLSession(identifier: String, completionHandler: @escaping VoidClosure) -> Bool
+    open func handleEventsForBackgroundURLSession(identifier: String, completionHandler: @escaping VoidClosure)
     {
-        guard identifier == self.sessionManager.session.configuration.identifier else
-        {
-            return false
-        }
-        
         self.delegate?.willHandleEventsForBackgroundSession?()
 
         self.backgroundEventsCompletionHandler = completionHandler
-        
-        return true
     }
     
     open func suspend()
