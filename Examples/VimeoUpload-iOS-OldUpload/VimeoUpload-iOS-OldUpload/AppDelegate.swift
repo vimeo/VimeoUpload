@@ -66,7 +66,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void)
     {
-        OldVimeoUploader.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler)
+        let descriptorManager = OldVimeoUploader.sharedInstance.descriptorManager
+        
+        if descriptorManager.canHandleEventsForBackgroundURLSession(withIdentifier: identifier)
+        {
+            descriptorManager.handleEventsForBackgroundURLSession(completionHandler: completionHandler)
+        }
     }
     
     private func requestCameraRollAccessIfNecessary()

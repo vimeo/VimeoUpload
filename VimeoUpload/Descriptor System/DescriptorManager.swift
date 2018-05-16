@@ -317,7 +317,27 @@ open class DescriptorManager: NSObject
     
     // MARK: Public API
     
-    open func handleEventsForBackgroundURLSession(identifier: String, completionHandler: @escaping VoidClosure)
+    /// Determines if the manager can handle events from a background upload
+    /// session.
+    ///
+    /// Each descriptor manager is backed with a background upload session.
+    /// If the upload is in progress, and your app enters background mode,
+    /// this upload session still continues its progress. Once the upload
+    /// task either completes or fails, it will ping your app delegate so
+    /// that your app has an opportunity to handle the session's events.
+    /// Use or override this method to check if the descriptor manager
+    /// should handle events from the background session.
+    ///
+    /// - Parameter identifier: The identifier of a background session.
+    /// - Returns: `true` if the identifier is the same as the underlying
+    /// background upload session and thus the descriptor manager should
+    /// handle the events. `false` otherwise.
+    open func canHandleEventsForBackgroundURLSession(withIdentifier identifier: String) -> Bool
+    {
+        return identifier == self.sessionManager.session.configuration.identifier
+    }
+    
+    open func handleEventsForBackgroundURLSession(completionHandler: @escaping VoidClosure)
     {
         self.delegate?.willHandleEventsForBackgroundSession?()
 
