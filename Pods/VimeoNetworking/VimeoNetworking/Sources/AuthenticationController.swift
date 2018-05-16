@@ -259,7 +259,7 @@ final public class AuthenticationController
      */
     public func accessToken(token: String, completion: @escaping AuthenticationCompletion)
     {
-        let customSessionManager =  VimeoSessionManager.defaultSessionManager(baseUrl: self.configuration.baseUrl, accessTokenProvider: {token})
+        let customSessionManager =  VimeoSessionManager.defaultSessionManager(baseUrl: self.configuration.baseUrl, accessTokenProvider: {token}, apiVersion: self.configuration.apiVersion)
         let adhocClient = VimeoClient(appConfiguration: self.configuration, sessionManager: customSessionManager)
         let request = AuthenticationRequest.verifyAccessTokenRequest()
 

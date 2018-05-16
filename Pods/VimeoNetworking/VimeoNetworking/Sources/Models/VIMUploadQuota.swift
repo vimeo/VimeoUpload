@@ -1,9 +1,10 @@
 //
-//  NewVimeoUploader.swift
-//  VimeoUpload
+//  VIMUploadQuota.swift
+//  VimeoNetworking
 //
-//  Created by Alfred Hanssen on 10/18/15.
-//  Copyright © 2015 Vimeo. All rights reserved.
+//  Created by Lim, Jennifer on 3/26/18.
+//
+//  Copyright © 2016 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -25,23 +26,38 @@
 //
 
 import Foundation
-import VimeoUpload
 
-class NewVimeoUploader: VimeoUploader<UploadDescriptor>
+public class VIMUploadQuota: VIMModelObject
 {
-    private static var APIVersionString: String
+    /// The values within `VIMSpace` reflect the lowest of lifetime or period for free and max.
+    @objc dynamic public private(set) var space: VIMSpace?
+    
+    /// Represents the current quota period
+    @objc dynamic public private(set) var periodic: VIMPeriodic?
+    
+    /// Represents the lifetime quota period
+    @objc dynamic public private(set) var lifetime: VIMSizeQuota?
+    
+    public override func getClassForObjectKey(_ key: String!) -> AnyClass!
     {
-        return "3.4"
+        if key == "space"
+        {
+            return VIMSpace.self
+        }
+        else if key == "periodic"
+        {
+            return VIMPeriodic.self
+        }
+        else if key == "lifetime"
+        {
+            return VIMSizeQuota.self
+        }
+        
+        return nil
     }
-    
-    static let sharedInstance = NewVimeoUploader(backgroundSessionIdentifier: "com.vimeo.upload") { () -> String? in
-        return "YOUR_OAUTH_TOKEN" // See README for details on how to obtain and OAuth token
-    }
-    
-    // MARK: - Initialization
-    
-    init(backgroundSessionIdentifier: String, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider)
-    {
-        super.init(backgroundSessionIdentifier: backgroundSessionIdentifier, accessTokenProvider: accessTokenProvider, apiVersion: NewVimeoUploader.APIVersionString)
-    }
+
+    /// Determines whether the user has a periodic storage quota limit or has a lifetime upload quota storage limit only.
+    @objc public lazy var isPeriodicQuota: Bool = {
+        return self.space?.type == "periodic"
+    }()
 }

@@ -148,6 +148,11 @@ NSString *VIMContentRating_Safe = @"safe";
         return [VIMReviewPage class];
     }
     
+    if ([key isEqualToString:@"upload"])
+    {
+        return [VIMUpload class];
+    }
+    
     return nil;
 }
 

@@ -18,22 +18,22 @@ PODS:
     - AFNetworking (= 3.1.0)
 
 DEPENDENCIES:
-  - VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, branch `feature/VIM-6124-Perform-Upload-Task`)
+  - VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, branch `feature/VIM-5876-Share-Extension`)
 
 EXTERNAL SOURCES:
   VimeoNetworking:
-    :branch: feature/VIM-6124-Perform-Upload-Task
+    :branch: feature/VIM-5876-Share-Extension
     :git: git@github.com:vimeo/VimeoNetworking.git
 
 CHECKOUT OPTIONS:
   VimeoNetworking:
-    :commit: 469435314d27df0354c6585802e754ffce1220e5
+    :commit: e46c908862baca78bef3496acff5cdd6c21ea679
     :git: git@github.com:vimeo/VimeoNetworking.git
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   VimeoNetworking: 64fe0a9f12d106c2fe1c54f4114b25a80931bf37
 
-PODFILE CHECKSUM: 9e12286bfda5079b5ad3c4de593e1712f6b515f4
+PODFILE CHECKSUM: b99f0640652fedc418368de2440c51afd1125a48
 
 COCOAPODS: 1.2.0

@@ -45,7 +45,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     private let phAsset: PHAsset
 
     open var url: URL?
-    open var uploadTicket: VIMUploadTicket?
+    open var video: VIMVideo?
     open var error: NSError?
     {
         didSet
@@ -178,7 +178,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
                 else
                 {
                     strongSelf.url = url
-                    strongSelf.uploadTicket = operation.result!
+                    strongSelf.video = operation.result!
                     strongSelf.state = .finished
                 }
             })

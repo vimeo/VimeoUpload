@@ -55,7 +55,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     static let UploadInitiatedNotification = "VideoSettingsViewControllerUploadInitiatedNotification"
     static let NibName = "VideoSettingsViewController"
     private static let PreUploadViewPrivacy = "pre_upload"
-    
+
     // MARK: 
     
     @IBOutlet weak var titleTextField: UITextField!
@@ -74,7 +74,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     // MARK:
     
     private var url: URL?
-    private var uploadTicket: VIMUploadTicket?
+    private var video: VIMVideo?
     private var videoSettings: VideoSettings?
 
     // MARK:
@@ -161,7 +161,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                 if operation.error == nil
                 {
                     strongSelf.url = operation.url!
-                    strongSelf.uploadTicket = operation.uploadTicket!
+                    strongSelf.video = operation.video!
                     strongSelf.startUpload()
                 }
                 
@@ -174,9 +174,9 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     }
                     else
                     {
-                        if let video = strongSelf.uploadTicket?.video, let viewPrivacy = video.privacy?.view, viewPrivacy != type(of: strongSelf).PreUploadViewPrivacy
+                        if let video = strongSelf.video, let viewPrivacy = video.privacy?.view, viewPrivacy != type(of: strongSelf).PreUploadViewPrivacy
                         {
-                            NotificationCenter.default.post(name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: video)
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: strongSelf.video)
                             
                             strongSelf.activityIndicatorView.stopAnimating()
                             strongSelf.dismiss(animated: true, completion: nil)
@@ -197,10 +197,10 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func startUpload()
     {
         let url = self.url!
-        let uploadTicket = self.uploadTicket!
+        let video = self.video!
         let assetIdentifier = self.asset.identifier
         
-        let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket)
+        let descriptor = UploadDescriptor(url: url, video: video)
         descriptor.identifier = assetIdentifier
         
         NewVimeoUploader.sharedInstance.uploadVideo(descriptor: descriptor)
@@ -214,7 +214,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.activityIndicatorView.stopAnimating()
         _ = self.navigationController?.popViewController(animated: true)
         
-        if let videoUri = self.uploadTicket?.video?.uri
+        if let videoUri = self.video?.uri
         {
             NewVimeoUploader.sharedInstance.cancelUpload(videoUri: videoUri)
         }
@@ -238,7 +238,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         }
         else
         {
-            if let video = self.uploadTicket?.video, let viewPrivacy = video.privacy?.view, viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
+            if let video = self.video, let viewPrivacy = video.privacy?.view, viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
             {
                 NotificationCenter.default.post(name: Notification.Name(rawValue: type(of: self).UploadInitiatedNotification), object: video)
                 
@@ -301,7 +301,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     private func applyVideoSettings()
     {
-        guard let videoURI = self.uploadTicket?.video?.uri, let videoSettings = self.videoSettings else
+        guard let videoURI = self.video?.uri, let videoSettings = self.videoSettings else
         {
             let alertController = UIAlertController(
                 title: Constants.TwoStepUploadPermissionAlert.Title,

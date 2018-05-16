@@ -31,7 +31,6 @@
 #import "VIMPictureCollection.h"
 #import "VIMPicture.h"
 #import "VIMPreference.h"
-#import "VIMUploadQuota.h"
 #import "VIMUserBadge.h"
 #import <VimeoNetworking/VimeoNetworking-Swift.h>
 

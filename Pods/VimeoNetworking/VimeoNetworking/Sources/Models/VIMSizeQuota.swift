@@ -1,9 +1,10 @@
 //
-//  VIMSizeQuota.m
+//  VIMSizeQuota.swift
 //  VimeoNetworking
 //
-//  Created by Hanssen, Alfie on 11/6/15.
-//  Copyright (c) 2015 Vimeo (https://vimeo.com)
+//  Created by Lim, Jennifer on 4/3/18.
+//
+//  Copyright © 2016 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +25,14 @@
 //  THE SOFTWARE.
 //
 
-#import "VIMSizeQuota.h"
+public class VIMSizeQuota: VIMModelObject
+{
+    /// Indicates the free space size
+    @objc dynamic public private(set) var free: NSNumber?
 
-@implementation VIMSizeQuota
+    /// Indicates the maximum size quota
+    @objc dynamic public private(set) var max: NSNumber?
 
-@end
+    /// Indicates the used size quota
+    @objc dynamic public private(set) var used: NSNumber?
+}
