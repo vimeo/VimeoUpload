@@ -32,7 +32,7 @@ import Foundation
 
     // MARK: 
     
-    private let archiver: KeyedArchiver
+    private let archiver: KeyedArchiver?
     private var failedDescriptors: [String: Descriptor] = [:]
 
     // MARK: - Initialization
@@ -42,9 +42,9 @@ import Foundation
         self.removeObservers()
     }
     
-    public init(name: String)
+    public init(name: String, parentFolderURL: URL)
     {
-        self.archiver = type(of: self).setupArchiver(name: name)
+        self.archiver = type(of: self).setupArchiver(name: name, parentFolderURL: parentFolderURL)
 
         super.init()
         
@@ -55,29 +55,33 @@ import Foundation
     
     // MARK: Setup
     
-    private static func setupArchiver(name: String) -> KeyedArchiver
+    private static func setupArchiver(name: String, parentFolderURL: URL) -> KeyedArchiver?
     {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        let typeFolderURL = parentFolderURL.appendingPathComponent(name)
         
-        var documentsURL = URL(string: documentsPath)!
-        documentsURL = documentsURL.appendingPathComponent(name)
-        
-        if FileManager.default.fileExists(atPath: documentsURL.path) == false
+        if FileManager.default.fileExists(atPath: typeFolderURL.path) == false
         {
-            try! FileManager.default.createDirectory(atPath: documentsURL.path, withIntermediateDirectories: true, attributes: nil)
+            do
+            {
+                try FileManager.default.createDirectory(at: typeFolderURL, withIntermediateDirectories: true, attributes: nil)
+            }
+            catch
+            {
+                return nil
+            }
         }
         
-        return KeyedArchiver(basePath: documentsURL.path)
+        return KeyedArchiver(basePath: typeFolderURL.path)
     }
     
     private func load() -> [String: Descriptor]
     {
-        return self.archiver.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
+        return self.archiver?.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
     }
     
     private func save()
     {
-        self.archiver.save(object: self.failedDescriptors, key: type(of: self).ArchiveKey)
+        self.archiver?.save(object: self.failedDescriptors, key: type(of: self).ArchiveKey)
     }
     
     // MARK: Public API
