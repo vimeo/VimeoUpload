@@ -42,6 +42,21 @@ import Foundation
         self.removeObservers()
     }
     
+    /// Initializes a descriptor failure tracker object. Upon creation, the
+    /// object will attempt to create a folder to save the description of
+    /// failed uploads if needed. If the folder already exists, it will
+    /// attempt to load that information into memory.
+    ///
+    /// The folder is created with the following scheme:
+    ///
+    /// ```
+    /// parentFolder/name
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - name: The name of the uploader.
+    ///   - parentFolderURL: The parent folder's URL of the folder in which
+    ///   failed uploads' description will be stored.
     public init(name: String, parentFolderURL: URL)
     {
         self.archiver = type(of: self).setupArchiver(name: name, parentFolderURL: parentFolderURL)
