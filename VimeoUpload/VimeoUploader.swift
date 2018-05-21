@@ -56,10 +56,17 @@ open class VimeoUploader<T: VideoDescriptor>
     {
         self.foregroundSessionManager = VimeoSessionManager.defaultSessionManager(baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
         
-        self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager)
+        do
+        {
+            let documentsFolderURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager, parentFolderURL: documentsFolderURL)
         
-        self.descriptorManager = ReachableDescriptorManager(name: type(of: self).Name, backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: descriptorManagerDelegate,
-                                                            accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
+        self.descriptorManager = ReachableDescriptorManager(name: type(of: self).Name, backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: descriptorManagerDelegate, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
+        }
+        catch
+        {
+            fatalError("Failure: Documents folder not found")
+        }
     }
     
     // MARK: Public API - Starting
