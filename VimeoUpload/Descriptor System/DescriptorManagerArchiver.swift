@@ -35,7 +35,7 @@ class DescriptorManagerArchiver
 
     // MARK: 
     
-    private let archiver: KeyedArchiver
+    private let archiver: KeyedArchiver?
     private(set) var descriptors = Set<Descriptor>()
     var suspended = false
     {
@@ -47,9 +47,9 @@ class DescriptorManagerArchiver
 
     // MARK: - Initialization
     
-    init(name: String)
+    init(name: String, parentFolderURL: URL)
     {
-        self.archiver = type(of: self).setupArchiver(name: name)
+        self.archiver = type(of: self).setupArchiver(name: name, parentFolderURL: parentFolderURL)
         
         self.descriptors = self.loadDescriptors()
         self.suspended = self.loadSuspendedState()
@@ -57,39 +57,43 @@ class DescriptorManagerArchiver
     
     // MARK: Setup - Archiving
     
-    private static func setupArchiver(name: String) -> KeyedArchiver
+    private static func setupArchiver(name: String, parentFolderURL: URL) -> KeyedArchiver?
     {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        var documentsURL = URL(string: documentsPath)!
-        
-        documentsURL = documentsURL.appendingPathComponent(name)
+        let typeFolderURL = parentFolderURL.appendingPathComponent(name)
 
-        if FileManager.default.fileExists(atPath: documentsURL.path) == false
+        if FileManager.default.fileExists(atPath: typeFolderURL.path) == false
         {
-            try! FileManager.default.createDirectory(atPath: documentsURL.path, withIntermediateDirectories: true, attributes: nil)
+            do
+            {
+                try FileManager.default.createDirectory(at: typeFolderURL, withIntermediateDirectories: true, attributes: nil)
+            }
+            catch
+            {
+                return nil
+            }
         }
         
-        return KeyedArchiver(basePath: documentsURL.path)
+        return KeyedArchiver(basePath: typeFolderURL.path)
     }
     
     private func loadDescriptors() -> Set<Descriptor>
     {
-        return self.archiver.loadObject(for: type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
+        return self.archiver?.loadObject(for: type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
     }
     
     private func saveDescriptors()
     {
-        self.archiver.save(object: self.descriptors, key: type(of: self).DescriptorsArchiveKey)
+        self.archiver?.save(object: self.descriptors, key: type(of: self).DescriptorsArchiveKey)
     }
     
     private func loadSuspendedState() -> Bool
     {
-        return self.archiver.loadObject(for: type(of: self).SuspendedArchiveKey) as? Bool ?? false
+        return self.archiver?.loadObject(for: type(of: self).SuspendedArchiveKey) as? Bool ?? false
     }
     
     private func saveSuspendedState()
     {
-        self.archiver.save(object: self.suspended, key: type(of: self).SuspendedArchiveKey)
+        self.archiver?.save(object: self.suspended, key: type(of: self).SuspendedArchiveKey)
     }
     
     // MARK: Public API

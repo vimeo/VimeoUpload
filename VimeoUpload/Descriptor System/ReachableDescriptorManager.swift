@@ -47,7 +47,7 @@ import VimeoNetworking
     
     // MARK: - Initialization
     
-    public init(name: String, backgroundSessionIdentifier: String, sharedContainerIdentifier: String? = nil, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
+    public init(name: String, parentFolderURL: URL, backgroundSessionIdentifier: String, sharedContainerIdentifier: String? = nil, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
     {
         let backgroundSessionManager: VimeoSessionManager
         
@@ -60,7 +60,7 @@ import VimeoNetworking
             backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
         }
         
-        super.init(sessionManager: backgroundSessionManager, name: name, delegate: descriptorManagerDelegate)
+        super.init(sessionManager: backgroundSessionManager, name: name, parentFolderURL: parentFolderURL, delegate: descriptorManagerDelegate)
         
         self.connectivityManager.delegate = self
     }
