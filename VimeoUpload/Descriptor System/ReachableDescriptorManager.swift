@@ -47,6 +47,23 @@ import VimeoNetworking
     
     // MARK: - Initialization
     
+    /// Initializes a reachable descriptor manager object.
+    ///
+    /// - Parameters:
+    ///   - name: The name of the descriptor manager.
+    ///   - parentFolderURL: The parent folder's URL of the folder in which
+    ///   the upload description will be stored. That folder has the same
+    ///   name as the first argument.
+    ///   - backgroundSessionIdentifier: An ID of the background upload
+    ///   session.
+    ///   - sharedContainerIdentifier: An ID of a shared sandbox. By default
+    ///   this value is `nil`, but if `VimeoUpload` is used in an app
+    ///   extension, this value must be set.
+    ///   - descriptorManagerDelegate: A delegate object of this descriptor
+    ///   manager.
+    ///   - accessTokenProvider: A closure that provides an authenticated
+    ///   token. Any upload needs this token in order to work properly.
+    ///   - apiVersion: The API version to use.
     public init(name: String, parentFolderURL: URL, backgroundSessionIdentifier: String, sharedContainerIdentifier: String? = nil, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
     {
         let backgroundSessionManager: VimeoSessionManager
