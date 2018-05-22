@@ -187,12 +187,17 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         self.url = URL(fileURLWithPath: path)
 
-        // Support migrating archived uploadTickets to videos for API versions less than v3.4
+        // Support migrating unarchived uploadTickets to videos for API versions less than v3.4
         if let uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as? VIMUploadTicket
         {
             self.video = uploadTicket.video
         }
-
+        // Otherwise, support unarchived videos for API versions greater than v3.4
+        else if let video = aDecoder.decodeObject(forKey: type(of: self).VideoCoderKey) as? VIMVideo
+        {
+            self.video = video
+        }
+        
         super.init(coder: aDecoder)
     }
 
