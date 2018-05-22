@@ -192,7 +192,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.video = uploadTicket.video
         }
-        // Otherwise, support unarchived videos for API versions greater than v3.4
+        // Otherwise, support unarchived videos for API version v3.4
         else if let video = aDecoder.decodeObject(forKey: type(of: self).VideoCoderKey) as? VIMVideo
         {
             self.video = video
