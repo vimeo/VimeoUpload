@@ -34,9 +34,9 @@ import Foundation
 
 public extension URL
 {
-    static func uploadURL(withFileName filename: String, fileType: String) throws -> URL
+    static func uploadURL(documentsFolderURL: URL? = nil, withFileName filename: String, fileType: String) throws -> URL
     {
-        let url = URL.uploadDirectory()
+        let url = URL.uploadDirectory(documentsFolderURL: documentsFolderURL)
         
         if FileManager.default.fileExists(atPath: url.absoluteString) == false
         {
@@ -50,9 +50,18 @@ public extension URL
         return URL(fileURLWithPath: path)
     }
     
-    static func uploadDirectory() -> URL
+    static func uploadDirectory(documentsFolderURL: URL? = nil) -> URL
     {
-        let documentsURL = URL(string: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])!
+        let documentsURL: URL
+        
+        if let documentsFolderURL = documentsFolderURL
+        {
+            documentsURL = documentsFolderURL
+        }
+        else
+        {
+            documentsURL = URL(string: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])!
+        }
         
         return documentsURL.appendingPathComponent("uploader").appendingPathComponent("videos")
     }

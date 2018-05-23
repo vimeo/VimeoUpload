@@ -43,6 +43,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     // MARK:
     
     private let phAsset: PHAsset
+    private let documentsFolderURL: URL
 
     open var url: URL?
     open var video: VIMVideo?
@@ -59,7 +60,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
-    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL)
     {
         self.phAsset = phAsset
         
@@ -68,6 +69,8 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
         
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        self.documentsFolderURL = documentsFolderURL
         
         super.init()
     }
@@ -86,7 +89,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
             return
         }
         
-        let operation = ExportSessionExportOperation(phAsset: self.phAsset)
+        let operation = ExportSessionExportOperation(phAsset: self.phAsset, documentsFolderURL: self.documentsFolderURL)
         self.perform(exportSessionExportOperation: operation)
     }
     
