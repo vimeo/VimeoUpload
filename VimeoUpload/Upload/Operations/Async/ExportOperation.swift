@@ -50,14 +50,14 @@ public class ExportOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
-    convenience init(asset: AVAsset, documentsFolderURL: URL)
+    convenience init(asset: AVAsset, documentsFolderURL: URL? = nil)
     {
         let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetPassthrough)!
         
         self.init(exportSession: exportSession, documentsFolderURL: documentsFolderURL)
     }
 
-    init(exportSession: AVAssetExportSession, documentsFolderURL: URL)
+    init(exportSession: AVAssetExportSession, documentsFolderURL: URL? = nil)
     {
         // exportSession.timeRange must be valid so that the exportSession's estimatedOutputFileLength is non zero
         // We use estimatedOutputFileLength below to check that there is ample disk space to perform the export [AH] 10/15/2015
