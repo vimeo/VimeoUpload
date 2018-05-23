@@ -52,12 +52,16 @@ open class ExportSessionExportOperation: ConcurrentOperation
     }
     open var result: URL?
     
-    public init(phAsset: PHAsset)
+    private let documentsFolderURL: URL
+    
+    public init(phAsset: PHAsset, documentsFolderURL: URL)
     {
         self.phAsset = phAsset
         
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        self.documentsFolderURL = documentsFolderURL
         
         super.init()
     }
@@ -118,7 +122,7 @@ open class ExportSessionExportOperation: ConcurrentOperation
                 else
                 {
                     let exportSession = operation.result!
-                    let exportOperation = ExportOperation(exportSession: exportSession)
+                    let exportOperation = ExportOperation(exportSession: exportSession, documentsFolderURL: strongSelf.documentsFolderURL)
                     strongSelf.performExport(exportOperation: exportOperation)
                 }
             })

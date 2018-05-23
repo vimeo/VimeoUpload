@@ -55,15 +55,19 @@ public class RetryUploadOperation: ConcurrentOperation
         }
     }
     
+    private let documentsFolderURL: URL
+    
     // MARK: - Initialization
     
-    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager)
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, documentsFolderURL: URL)
     {
         self.phAsset = phAsset
         
         self.sessionManager = sessionManager
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        self.documentsFolderURL = documentsFolderURL
         
         super.init()
     }
@@ -82,7 +86,7 @@ public class RetryUploadOperation: ConcurrentOperation
             return
         }
         
-        let operation = ExportSessionExportOperation(phAsset: self.phAsset)
+        let operation = ExportSessionExportOperation(phAsset: self.phAsset, documentsFolderURL: self.documentsFolderURL)
         self.perform(exportSessionExportOperation: operation)
     }
     
