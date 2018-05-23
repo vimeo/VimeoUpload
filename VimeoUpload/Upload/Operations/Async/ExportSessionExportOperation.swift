@@ -52,9 +52,9 @@ open class ExportSessionExportOperation: ConcurrentOperation
     }
     open var result: URL?
     
-    private let documentsFolderURL: URL
+    private let documentsFolderURL: URL?
     
-    public init(phAsset: PHAsset, documentsFolderURL: URL)
+    public init(phAsset: PHAsset, documentsFolderURL: URL? = nil)
     {
         self.phAsset = phAsset
         

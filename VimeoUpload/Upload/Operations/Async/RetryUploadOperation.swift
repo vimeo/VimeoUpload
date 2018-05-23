@@ -55,11 +55,11 @@ public class RetryUploadOperation: ConcurrentOperation
         }
     }
     
-    private let documentsFolderURL: URL
+    private let documentsFolderURL: URL?
     
     // MARK: - Initialization
     
-    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, documentsFolderURL: URL)
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, documentsFolderURL: URL? = nil)
     {
         self.phAsset = phAsset
         

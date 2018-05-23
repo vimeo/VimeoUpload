@@ -43,7 +43,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     // MARK:
     
     private let phAsset: PHAsset
-    private let documentsFolderURL: URL
+    private let documentsFolderURL: URL?
 
     open var url: URL?
     open var video: VIMVideo?
@@ -60,7 +60,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
-    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL)
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil)
     {
         self.phAsset = phAsset
         
