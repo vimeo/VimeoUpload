@@ -28,7 +28,7 @@ import Foundation
 import VimeoNetworking
 import AFNetworking
 
-public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
+open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
     private static let FileNameCoderKey = "fileName"
     private static let FileExtensionCoderKey = "fileExtension"
@@ -74,7 +74,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: Overrides
     
-    override public func prepare(sessionManager: AFURLSessionManager) throws
+    override open func prepare(sessionManager: AFURLSessionManager) throws
     {
         // TODO: Do we need to set self.state == .Ready here? [AH] 2/22/2016
         
@@ -102,7 +102,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override public func resume(sessionManager: AFURLSessionManager)
+    override open func resume(sessionManager: AFURLSessionManager)
     {
         super.resume(sessionManager: sessionManager)
         
@@ -114,14 +114,14 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override public func cancel(sessionManager: AFURLSessionManager)
+    override open func cancel(sessionManager: AFURLSessionManager)
     {
         super.cancel(sessionManager: sessionManager)
         
         FileManager.default.deleteFile(at: self.url)
     }
 
-    override public func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    override open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
             let task = sessionManager.uploadTask(for: identifier),
@@ -142,7 +142,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.progress = progress
     }
     
-    override public func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
+    override open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
     {
         self.currentTaskIdentifier = nil
 
@@ -196,7 +196,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         super.init(coder: aDecoder)
     }
 
-    override public func encode(with aCoder: NSCoder)
+    override open func encode(with aCoder: NSCoder)
     {
         let fileName = self.url.deletingPathExtension().lastPathComponent
         let ext = self.url.pathExtension
