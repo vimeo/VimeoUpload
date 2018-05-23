@@ -38,16 +38,16 @@ public extension URL
     {
         let url = URL.uploadDirectory(documentsFolderURL: documentsFolderURL)
         
-        if FileManager.default.fileExists(atPath: url.absoluteString) == false
+        if FileManager.default.fileExists(atPath: url.path) == false
         {
-            try FileManager.default.createDirectory(atPath: url.absoluteString, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(atPath: url.path, withIntermediateDirectories: true, attributes: nil)
         }
         
         let unmanagedTag = UTTypeCopyPreferredTagWithClass(fileType as CFString, kUTTagClassFilenameExtension)!
         let ext = unmanagedTag.takeRetainedValue() as String
-        let path = url.appendingPathComponent(filename).appendingPathExtension(ext).absoluteString
+        let path = url.appendingPathComponent(filename).appendingPathExtension(ext)
         
-        return URL(fileURLWithPath: path)
+        return path
     }
     
     static func uploadDirectory(documentsFolderURL: URL? = nil) -> URL
