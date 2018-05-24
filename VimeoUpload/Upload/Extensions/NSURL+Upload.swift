@@ -60,7 +60,14 @@ public extension URL
         }
         else
         {
-            documentsURL = URL(string: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])!
+            do
+            {
+                documentsURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            }
+            catch
+            {
+                fatalError("Failure: Documents folder does not exist.")
+            }
         }
         
         return documentsURL.appendingPathComponent("uploader").appendingPathComponent("videos")
