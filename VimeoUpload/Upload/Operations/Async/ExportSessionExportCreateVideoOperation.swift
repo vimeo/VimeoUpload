@@ -60,6 +60,18 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
+    /// Initializes an instance of `ExportSessionExportCreateVideoOperation`.
+    ///
+    /// - Parameters:
+    ///   - phAsset: An instance of `PHAsset` representing a media that the
+    ///   user picks from the Photos app.
+    ///   - sessionManager: An instance of `VimeoSessionManager` that will
+    ///   be used for creating an upload ticket.
+    ///   - videoSettings: An instance of `VideoSettings` representing the
+    ///   title, description, and privacy option that the user has edited.
+    ///   - documentsFolderURL: An URL pointing to a Documents folder;
+    ///   default to `nil`. For third-party use, this argument should not be
+    ///   filled.
     public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil)
     {
         self.phAsset = phAsset
