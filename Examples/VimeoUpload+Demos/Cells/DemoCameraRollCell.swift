@@ -89,7 +89,7 @@ class DemoCameraRollCell: UICollectionViewCell, CameraRollAssetCell
 
         if seconds > 0
         {
-            string = String.stringFromDuration(inSeconds: seconds) as String
+            string = NSString.stringFromDuration(inSeconds: seconds) as String
         }
 
         self.durationlabel?.text = string
