@@ -60,23 +60,23 @@ public class VideoDeletionManager: NSObject
     /// The folder is created with the following scheme:
     ///
     /// ```
-    /// parentFolder/deletions
+    /// Documents/deletions
     /// ```
     ///
     /// - Parameters:
     ///   - sessionManager: A session manager object capable of deleting
     ///   uploads.
-    ///   - parentFolderURL: The parent folder's URL of the folder in which
-    ///   deletion description will be stored.
+    ///   - documentsFolderURL: The Documents folder's URL in which the folder
+    /// is located.
     ///   - retryCount: The number of retries. The default value is `3`.
-    public init(sessionManager: VimeoSessionManager, parentFolderURL: URL, retryCount: Int = VideoDeletionManager.DefaultRetryCount)
+    public init(sessionManager: VimeoSessionManager, documentsFolderURL: URL, retryCount: Int = VideoDeletionManager.DefaultRetryCount)
     {
         self.sessionManager = sessionManager
         self.retryCount = retryCount
      
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
-        self.archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey, parentFolderURL: parentFolderURL)
+        self.archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey, documentsFolderURL: documentsFolderURL)
         
         super.init()
         
@@ -89,9 +89,9 @@ public class VideoDeletionManager: NSObject
     
     // MARK: Setup
     
-    private static func setupArchiver(name: String, parentFolderURL: URL) -> KeyedArchiver?
+    private static func setupArchiver(name: String, documentsFolderURL: URL) -> KeyedArchiver?
     {
-        let deletionsFolder = parentFolderURL.appendingPathComponent(name)
+        let deletionsFolder = documentsFolderURL.appendingPathComponent(name)
         let deletionsArchiveDirectory = deletionsFolder.appendingPathComponent(VideoDeletionManager.DeletionsArchiveKey)
         
         if FileManager.default.fileExists(atPath: deletionsArchiveDirectory.path) == false

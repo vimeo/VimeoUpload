@@ -51,9 +51,9 @@ import VimeoNetworking
     ///
     /// - Parameters:
     ///   - name: The name of the descriptor manager.
-    ///   - parentFolderURL: The parent folder's URL of the folder in which
-    ///   the upload description will be stored. That folder has the same
-    ///   name as the first argument.
+    ///   - documentsFolderURL: The Documents folder's URL of the folder in
+    ///   which the upload description will be stored. That folder has the
+    ///   same name as the first argument.
     ///   - backgroundSessionIdentifier: An ID of the background upload
     ///   session.
     ///   - sharedContainerIdentifier: An ID of a shared sandbox. By default
@@ -64,7 +64,7 @@ import VimeoNetworking
     ///   - accessTokenProvider: A closure that provides an authenticated
     ///   token. Any upload needs this token in order to work properly.
     ///   - apiVersion: The API version to use.
-    public init(name: String, parentFolderURL: URL, backgroundSessionIdentifier: String, sharedContainerIdentifier: String? = nil, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
+    public init(name: String, documentsFolderURL: URL, backgroundSessionIdentifier: String, sharedContainerIdentifier: String? = nil, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
     {
         let backgroundSessionManager: VimeoSessionManager
         
@@ -77,7 +77,7 @@ import VimeoNetworking
             backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
         }
         
-        super.init(sessionManager: backgroundSessionManager, name: name, parentFolderURL: parentFolderURL, delegate: descriptorManagerDelegate)
+        super.init(sessionManager: backgroundSessionManager, name: name, documentsFolderURL: documentsFolderURL, delegate: descriptorManagerDelegate)
         
         self.connectivityManager.delegate = self
     }

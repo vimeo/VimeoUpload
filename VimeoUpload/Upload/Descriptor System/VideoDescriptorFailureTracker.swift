@@ -50,16 +50,16 @@ import Foundation
     /// The folder is created with the following scheme:
     ///
     /// ```
-    /// parentFolder/name
+    /// Documents/name
     /// ```
     ///
     /// - Parameters:
     ///   - name: The name of the uploader.
-    ///   - parentFolderURL: The parent folder's URL of the folder in which
-    ///   failed uploads' description will be stored.
-    public init(name: String, parentFolderURL: URL)
+    ///   - documentsFolderURL: The Documents folder's URL in which the folder
+    /// is located.
+    public init(name: String, documentsFolderURL: URL)
     {
-        self.archiver = type(of: self).setupArchiver(name: name, parentFolderURL: parentFolderURL)
+        self.archiver = type(of: self).setupArchiver(name: name, documentsFolderURL: documentsFolderURL)
 
         super.init()
         
@@ -70,9 +70,9 @@ import Foundation
     
     // MARK: Setup
     
-    private static func setupArchiver(name: String, parentFolderURL: URL) -> KeyedArchiver?
+    private static func setupArchiver(name: String, documentsFolderURL: URL) -> KeyedArchiver?
     {
-        let typeFolderURL = parentFolderURL.appendingPathComponent(name)
+        let typeFolderURL = documentsFolderURL.appendingPathComponent(name)
         
         if FileManager.default.fileExists(atPath: typeFolderURL.path) == false
         {
