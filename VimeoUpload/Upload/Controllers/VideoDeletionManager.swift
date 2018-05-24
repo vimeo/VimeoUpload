@@ -52,7 +52,7 @@ public class VideoDeletionManager: NSObject
         self.removeObservers()
     }
         
-    public init(sessionManager: VimeoSessionManager, retryCount: Int = VideoDeletionManager.DefaultRetryCount)
+    public init(sessionManager: VimeoSessionManager, retryCount: Int = VideoDeletionManager.DefaultRetryCount, archiveName: String = VideoDeletionManager.DeletionsArchiveKey)
     {
         self.sessionManager = sessionManager
         self.retryCount = retryCount

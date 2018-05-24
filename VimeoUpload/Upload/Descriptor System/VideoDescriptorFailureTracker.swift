@@ -42,7 +42,7 @@ import Foundation
         self.removeObservers()
     }
     
-    public init(name: String)
+    public init(name: String, archiveName: String = VideoDescriptorFailureTracker.ArchiveKey)
     {
         self.archiver = type(of: self).setupArchiver(name: name)
 
