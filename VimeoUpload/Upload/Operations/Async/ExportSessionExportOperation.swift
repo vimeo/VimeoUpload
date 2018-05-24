@@ -54,6 +54,14 @@ open class ExportSessionExportOperation: ConcurrentOperation
     
     private let documentsFolderURL: URL?
     
+    /// Initializes an instance of `ExportSessionExportOperation`.
+    ///
+    /// - Parameters:
+    ///   - phAsset: An instance of `PHAsset` representing a media that the
+    ///   user picks from the Photos app.
+    ///   - documentsFolderURL: An URL pointing to a Documents folder;
+    ///   default to `nil`. For third-party use, this argument should not be
+    ///   filled.
     public init(phAsset: PHAsset, documentsFolderURL: URL? = nil)
     {
         self.phAsset = phAsset

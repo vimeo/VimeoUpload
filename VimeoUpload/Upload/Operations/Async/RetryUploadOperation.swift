@@ -59,6 +59,15 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
+    /// Initializes an instance of `ExportSessionExportOperation`.
+    ///
+    /// - Parameters:
+    ///   - phAsset: An instance of `PHAsset` representing a media that the
+    ///   user picks from the Photos app.
+    ///   - sessionManager: An instance of `VimeoSessionManager`.
+    ///   - documentsFolderURL: An URL pointing to a Documents folder;
+    ///   default to `nil`. For third-party use, this argument should not be
+    ///   filled.
     public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, documentsFolderURL: URL? = nil)
     {
         self.phAsset = phAsset
