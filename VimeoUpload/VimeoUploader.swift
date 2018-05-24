@@ -59,9 +59,9 @@ open class VimeoUploader<T: VideoDescriptor>
         do
         {
             let documentsFolderURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-            self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager, parentFolderURL: documentsFolderURL)
+            self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager, documentsFolderURL: documentsFolderURL)
         
-            self.descriptorManager = ReachableDescriptorManager(name: type(of: self).Name, parentFolderURL: documentsFolderURL, backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: descriptorManagerDelegate, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
+            self.descriptorManager = ReachableDescriptorManager(name: type(of: self).Name, documentsFolderURL: documentsFolderURL, backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: descriptorManagerDelegate, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
         }
         catch
         {

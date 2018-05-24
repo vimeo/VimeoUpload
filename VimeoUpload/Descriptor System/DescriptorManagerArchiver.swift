@@ -47,9 +47,9 @@ class DescriptorManagerArchiver
 
     // MARK: - Initialization
     
-    init(name: String, parentFolderURL: URL)
+    init(name: String, documentsFolderURL: URL)
     {
-        self.archiver = type(of: self).setupArchiver(name: name, parentFolderURL: parentFolderURL)
+        self.archiver = type(of: self).setupArchiver(name: name, documentsFolderURL: documentsFolderURL)
         
         self.descriptors = self.loadDescriptors()
         self.suspended = self.loadSuspendedState()
@@ -57,9 +57,9 @@ class DescriptorManagerArchiver
     
     // MARK: Setup - Archiving
     
-    private static func setupArchiver(name: String, parentFolderURL: URL) -> KeyedArchiver?
+    private static func setupArchiver(name: String, documentsFolderURL: URL) -> KeyedArchiver?
     {
-        let typeFolderURL = parentFolderURL.appendingPathComponent(name)
+        let typeFolderURL = documentsFolderURL.appendingPathComponent(name)
 
         if FileManager.default.fileExists(atPath: typeFolderURL.path) == false
         {
