@@ -52,14 +52,14 @@ public class VideoDeletionManager: NSObject
         self.removeObservers()
     }
         
-    public init(sessionManager: VimeoSessionManager, retryCount: Int = VideoDeletionManager.DefaultRetryCount, archiveName: String = VideoDeletionManager.DeletionsArchiveKey)
+    public init(sessionManager: VimeoSessionManager, retryCount: Int = VideoDeletionManager.DefaultRetryCount, archivePrefix: String? = nil)
     {
         self.sessionManager = sessionManager
         self.retryCount = retryCount
      
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
-        self.archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey, archiveName: archiveName)
+        self.archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey, archivePrefix: archivePrefix)
         
         super.init()
         
@@ -72,7 +72,7 @@ public class VideoDeletionManager: NSObject
     
     // MARK: Setup
     
-    private static func setupArchiver(name: String, archiveName: String) -> KeyedArchiver
+    private static func setupArchiver(name: String, archivePrefix: String?) -> KeyedArchiver
     {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         var documentsURL = URL(string: documentsPath)!

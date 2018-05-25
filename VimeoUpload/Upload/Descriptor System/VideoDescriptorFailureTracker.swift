@@ -42,9 +42,9 @@ import Foundation
         self.removeObservers()
     }
     
-    public init(name: String, archiveName: String = VideoDescriptorFailureTracker.ArchiveKey)
+    public init(name: String, archivePrefix: String? = nil)
     {
-        self.archiver = type(of: self).setupArchiver(name: name, archiveName: archiveName)
+        self.archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix)
 
         super.init()
         
@@ -55,7 +55,7 @@ import Foundation
     
     // MARK: Setup
     
-    private static func setupArchiver(name: String, archiveName: String) -> KeyedArchiver
+    private static func setupArchiver(name: String, archivePrefix: String?) -> KeyedArchiver
     {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         
