@@ -43,6 +43,7 @@ public class VideoDeletionManager: NSObject
     private var deletions: [VideoUri: Int] = [:]
     private let operationQueue: OperationQueue
     private let archiver: KeyedArchiver
+    private let shouldLoadArchive: Bool
     
     // MARK: - Initialization
     
@@ -52,10 +53,11 @@ public class VideoDeletionManager: NSObject
         self.removeObservers()
     }
         
-    public init(sessionManager: VimeoSessionManager, retryCount: Int = VideoDeletionManager.DefaultRetryCount, archivePrefix: String? = nil)
+    public init(sessionManager: VimeoSessionManager, retryCount: Int = VideoDeletionManager.DefaultRetryCount, archivePrefix: String? = nil, shouldLoadArchive: Bool = true)
     {
         self.sessionManager = sessionManager
         self.retryCount = retryCount
+        self.shouldLoadArchive = shouldLoadArchive
      
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
@@ -92,6 +94,11 @@ public class VideoDeletionManager: NSObject
     
     private func loadDeletions() -> [VideoUri: Int]
     {
+        guard self.shouldLoadArchive == true else
+        {
+            return [:]
+        }
+        
         if let deletions = self.archiver.loadObject(for: type(of: self).DeletionsArchiveKey) as? [VideoUri: Int]
         {
             return deletions

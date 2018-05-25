@@ -34,6 +34,7 @@ import Foundation
     
     private let archiver: KeyedArchiver
     private var failedDescriptors: [String: Descriptor] = [:]
+    private let shouldLoadArchive: Bool
 
     // MARK: - Initialization
     
@@ -42,9 +43,11 @@ import Foundation
         self.removeObservers()
     }
     
-    public init(name: String, archivePrefix: String? = nil)
+    public init(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true)
     {
         self.archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix)
+        
+        self.shouldLoadArchive = shouldLoadArchive
 
         super.init()
         
@@ -72,6 +75,11 @@ import Foundation
     
     private func load() -> [String: Descriptor]
     {
+        guard self.shouldLoadArchive == true else
+        {
+            return [:]
+        }
+        
         return self.archiver.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
     }
     
