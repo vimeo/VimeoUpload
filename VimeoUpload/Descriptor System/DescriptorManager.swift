@@ -75,7 +75,7 @@ open class DescriptorManager: NSObject
         self.sessionManager = sessionManager
         self.name = name
         self.delegate = delegate
-        self.archiver = DescriptorManagerArchiver(name: name)
+        self.archiver = DescriptorManagerArchiver(name: name, archiveName: archiveName)
         
         super.init()
 

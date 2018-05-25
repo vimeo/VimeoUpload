@@ -47,9 +47,9 @@ class DescriptorManagerArchiver
 
     // MARK: - Initialization
     
-    init(name: String)
+    init(name: String, archiveName: String?)
     {
-        self.archiver = type(of: self).setupArchiver(name: name)
+        self.archiver = type(of: self).setupArchiver(name: name, archiveName: archiveName)
         
         self.descriptors = self.loadDescriptors()
         self.suspended = self.loadSuspendedState()
@@ -57,7 +57,7 @@ class DescriptorManagerArchiver
     
     // MARK: Setup - Archiving
     
-    private static func setupArchiver(name: String) -> KeyedArchiver
+    private static func setupArchiver(name: String, archiveName: String?) -> KeyedArchiver
     {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         var documentsURL = URL(string: documentsPath)!

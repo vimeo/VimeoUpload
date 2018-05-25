@@ -60,7 +60,7 @@ import VimeoNetworking
             backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
         }
         
-        super.init(sessionManager: backgroundSessionManager, name: name, archiveName: nil, delegate: descriptorManagerDelegate)
+        super.init(sessionManager: backgroundSessionManager, name: name, archiveName: archiveName, delegate: descriptorManagerDelegate)
         
         self.connectivityManager.delegate = self
     }
