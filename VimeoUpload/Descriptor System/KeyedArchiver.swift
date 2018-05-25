@@ -33,7 +33,7 @@ public class KeyedArchiver: ArchiverProtocol
     private let basePath: String
     private let prefix: String
 
-    public init(basePath: String, archivePrefix: String?)
+    public init(basePath: String, archivePrefix: String? = nil)
     {
         assert(FileManager.default.fileExists(atPath: basePath, isDirectory: nil), "Invalid basePath")
         
