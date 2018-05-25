@@ -67,7 +67,7 @@ import Foundation
             try! FileManager.default.createDirectory(atPath: documentsURL.path, withIntermediateDirectories: true, attributes: nil)
         }
         
-        return KeyedArchiver(basePath: documentsURL.path)
+        return KeyedArchiver(basePath: documentsURL.path, archivePrefix: archivePrefix)
     }
     
     private func load() -> [String: Descriptor]

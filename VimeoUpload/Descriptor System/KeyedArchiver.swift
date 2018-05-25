@@ -31,12 +31,22 @@ public class KeyedArchiver: ArchiverProtocol
     private static let ArchiveExtension = "archive"
     
     private let basePath: String
+    private let prefix: String
 
-    public init(basePath: String)
+    public init(basePath: String, archivePrefix: String?)
     {
         assert(FileManager.default.fileExists(atPath: basePath, isDirectory: nil), "Invalid basePath")
         
         self.basePath = basePath
+        
+        if let prefix = archivePrefix
+        {
+            self.prefix = prefix
+        }
+        else
+        {
+            self.prefix = ""
+        }
     }
     
     public func loadObject(for key: String) -> Any?
