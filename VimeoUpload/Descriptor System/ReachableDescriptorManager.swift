@@ -64,6 +64,7 @@ import VimeoNetworking
     ///   - accessTokenProvider: A closure that provides an authenticated
     ///   token. Any upload needs this token in order to work properly.
     ///   - apiVersion: The API version to use.
+    /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
     public init?(name: String, documentsFolderURL: URL, backgroundSessionIdentifier: String, sharedContainerIdentifier: String? = nil, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
     {
         let backgroundSessionManager: VimeoSessionManager
