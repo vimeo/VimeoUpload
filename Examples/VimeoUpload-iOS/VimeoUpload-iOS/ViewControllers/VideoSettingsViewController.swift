@@ -130,7 +130,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     private func setupAndStartOperation()
     {
-        let sessionManager = NewVimeoUploader.sharedInstance.foregroundSessionManager
+        guard let sessionManager = NewVimeoUploader.sharedInstance?.foregroundSessionManager else
+        {
+            return
+        }
+        
         let videoSettings = self.videoSettings
         
         let phAsset = self.asset.phAsset
@@ -203,7 +207,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let descriptor = UploadDescriptor(url: url, video: video)
         descriptor.identifier = assetIdentifier
         
-        NewVimeoUploader.sharedInstance.uploadVideo(descriptor: descriptor)
+        NewVimeoUploader.sharedInstance?.uploadVideo(descriptor: descriptor)
     }
 
     // MARK: Actions
@@ -216,7 +220,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         if let videoUri = self.video?.uri
         {
-            NewVimeoUploader.sharedInstance.cancelUpload(videoUri: videoUri)
+            NewVimeoUploader.sharedInstance?.cancelUpload(videoUri: videoUri)
         }
     }
 
@@ -318,7 +322,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         do
         {
-            self.task = try NewVimeoUploader.sharedInstance.foregroundSessionManager.videoSettingsDataTask(videoUri: videoURI, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+            self.task = try NewVimeoUploader.sharedInstance?.foregroundSessionManager.videoSettingsDataTask(videoUri: videoURI, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 self?.task = nil
                 
