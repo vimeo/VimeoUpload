@@ -47,9 +47,14 @@ class DescriptorManagerArchiver
 
     // MARK: - Initialization
     
-    init(name: String, documentsFolderURL: URL)
+    init?(name: String, documentsFolderURL: URL)
     {
-        self.archiver = type(of: self).setupArchiver(name: name, documentsFolderURL: documentsFolderURL)
+        guard let archiver = type(of: self).setupArchiver(name: name, documentsFolderURL: documentsFolderURL) else
+        {
+            return nil
+        }
+        
+        self.archiver = archiver
         
         self.descriptors = self.loadDescriptors()
         self.suspended = self.loadSuspendedState()

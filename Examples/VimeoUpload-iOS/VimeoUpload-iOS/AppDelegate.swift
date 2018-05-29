@@ -37,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         NSKeyedUnarchiver.setLegacyClassNameMigrations()
         
         AFNetworkReachabilityManager.shared().startMonitoring()
-        NewVimeoUploader.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
+        NewVimeoUploader.sharedInstance?.applicationDidFinishLaunching() // Ensure init is called on launch
 
         let settings = UIUserNotificationSettings(types: .alert, categories: nil)
         application.registerUserNotificationSettings(settings)
@@ -55,7 +55,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void)
     {
-        let descriptorManager = NewVimeoUploader.sharedInstance.descriptorManager
+        guard let descriptorManager = NewVimeoUploader.sharedInstance?.descriptorManager else
+        {
+            return
+        }
         
         if descriptorManager.canHandleEventsForBackgroundURLSession(withIdentifier: identifier)
         {

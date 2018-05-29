@@ -91,7 +91,7 @@ class VideoCell: UITableViewCell
             {
                 self.setupImageView(video: video)
                 self.setupStatusLabel(video: video)
-                self.descriptor = NewVimeoUploader.sharedInstance.descriptorForVideo(videoUri: uri)
+                self.descriptor = NewVimeoUploader.sharedInstance?.descriptorForVideo(videoUri: uri)
             }
         }
     }
