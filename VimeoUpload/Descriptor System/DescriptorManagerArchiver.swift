@@ -35,7 +35,7 @@ class DescriptorManagerArchiver
 
     // MARK: 
     
-    private let archiver: KeyedArchiver?
+    private let archiver: KeyedArchiver
     private(set) var descriptors = Set<Descriptor>()
     var suspended = false
     {
@@ -83,17 +83,17 @@ class DescriptorManagerArchiver
     
     private func loadDescriptors() -> Set<Descriptor>
     {
-        return self.archiver?.loadObject(for: type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
+        return self.archiver.loadObject(for: type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
     }
     
     private func saveDescriptors()
     {
-        self.archiver?.save(object: self.descriptors, key: type(of: self).DescriptorsArchiveKey)
+        self.archiver.save(object: self.descriptors, key: type(of: self).DescriptorsArchiveKey)
     }
     
     private func loadSuspendedState() -> Bool
     {
-        return self.archiver?.loadObject(for: type(of: self).SuspendedArchiveKey) as? Bool ?? false
+        return self.archiver.loadObject(for: type(of: self).SuspendedArchiveKey) as? Bool ?? false
     }
     
     private func saveSuspendedState()
