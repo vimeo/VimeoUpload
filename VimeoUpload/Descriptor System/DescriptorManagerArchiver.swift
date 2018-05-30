@@ -98,7 +98,7 @@ class DescriptorManagerArchiver
     
     private func saveSuspendedState()
     {
-        self.archiver?.save(object: self.suspended, key: type(of: self).SuspendedArchiveKey)
+        self.archiver.save(object: self.suspended, key: type(of: self).SuspendedArchiveKey)
     }
     
     // MARK: Public API
