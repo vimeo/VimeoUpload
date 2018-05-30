@@ -72,14 +72,14 @@ open class DescriptorManager: NSObject
     
     init?(sessionManager: AFURLSessionManager, name: String, documentsFolderURL: URL, delegate: DescriptorManagerDelegate? = nil)
     {
-        self.sessionManager = sessionManager
-        self.name = name
-        self.delegate = delegate
-        
         guard let archiver = DescriptorManagerArchiver(name: name, documentsFolderURL: documentsFolderURL) else
         {
             return nil
         }
+        
+        self.sessionManager = sessionManager
+        self.name = name
+        self.delegate = delegate
         
         self.archiver = archiver
         
