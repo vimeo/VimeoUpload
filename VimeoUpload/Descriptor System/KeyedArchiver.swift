@@ -51,14 +51,14 @@ public class KeyedArchiver: ArchiverProtocol
     
     public func loadObject(for key: String) -> Any?
     {
-        let path = self.archivePath(key: self.prefix + "_" + key)
+        let path = self.archivePath(key: self.key(withPrefix: self.prefix, key: key))
         
         return NSKeyedUnarchiver.unarchiveObject(withFile: path)
     }
     
     public func save(object: Any, key: String)
     {
-        let path = self.archivePath(key: self.prefix + "_" + key)
+        let path = self.archivePath(key: self.key(withPrefix: self.prefix, key: key))
         
         NSKeyedArchiver.archiveRootObject(object, toFile: path)
     }
@@ -73,5 +73,17 @@ public class KeyedArchiver: ArchiverProtocol
         url = url.appendingPathExtension(type(of: self).ArchiveExtension)
         
         return url.absoluteString as String
+    }
+    
+    private func key(withPrefix prefix: String, key: String) -> String
+    {
+        if prefix == ""
+        {
+            return key
+        }
+        else
+        {
+            return prefix + "_" + key
+        }
     }
 }
