@@ -28,25 +28,21 @@ import Foundation
 
 public class KeyedArchiver: ArchiverProtocol
 {
-    private static let ArchiveExtension = "archive"
+    private struct Constants
+    {
+        static let ArchiveExtension = "archive"
+        static let UnderscoreText = "_"
+    }
     
     private let basePath: String
-    private let prefix: String
+    private let prefix: String?
 
     public init(basePath: String, archivePrefix: String? = nil)
     {
         assert(FileManager.default.fileExists(atPath: basePath, isDirectory: nil), "Invalid basePath")
         
         self.basePath = basePath
-        
-        if let prefix = archivePrefix
-        {
-            self.prefix = prefix
-        }
-        else
-        {
-            self.prefix = ""
-        }
+        self.prefix = archivePrefix
     }
     
     public func loadObject(for key: String) -> Any?
@@ -70,20 +66,18 @@ public class KeyedArchiver: ArchiverProtocol
         var url = URL(string: self.basePath)!
         
         url = url.appendingPathComponent(key)
-        url = url.appendingPathExtension(type(of: self).ArchiveExtension)
+        url = url.appendingPathExtension(Constants.ArchiveExtension)
         
         return url.absoluteString as String
     }
     
-    private func key(withPrefix prefix: String, key: String) -> String
+    private func key(withPrefix prefix: String?, key: String) -> String
     {
-        if prefix == ""
+        guard let prefix = prefix else
         {
             return key
         }
-        else
-        {
-            return prefix + "_" + key
-        }
+        
+        return prefix + Constants.UnderscoreText + key
     }
 }
