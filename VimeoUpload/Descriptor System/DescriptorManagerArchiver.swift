@@ -44,11 +44,15 @@ class DescriptorManagerArchiver
             self.saveSuspendedState()
         }
     }
+    
+    private let shouldLoadArchive: Bool
 
     // MARK: - Initialization
     
-    init(name: String, archivePrefix: String?)
+    init(name: String, archivePrefix: String?, shouldLoadArchive: Bool = true)
     {
+        self.shouldLoadArchive = shouldLoadArchive
+        
         self.archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix)
         
         self.descriptors = self.loadDescriptors()
@@ -74,6 +78,11 @@ class DescriptorManagerArchiver
     
     private func loadDescriptors() -> Set<Descriptor>
     {
+        guard self.shouldLoadArchive == true else
+        {
+            return Set<Descriptor>()
+        }
+        
         return self.archiver.loadObject(for: type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
     }
     
@@ -84,6 +93,11 @@ class DescriptorManagerArchiver
     
     private func loadSuspendedState() -> Bool
     {
+        guard self.shouldLoadArchive == true else
+        {
+            return false
+        }
+        
         return self.archiver.loadObject(for: type(of: self).SuspendedArchiveKey) as? Bool ?? false
     }
     
