@@ -42,7 +42,7 @@ public class VideoDeletionManager: NSObject
     
     private var deletions: [VideoUri: Int] = [:]
     private let operationQueue: OperationQueue
-    private let archiver: KeyedArchiver?
+    private let archiver: KeyedArchiver
     private let shouldLoadArchive: Bool
     
     // MARK: - Initialization
@@ -70,15 +70,21 @@ public class VideoDeletionManager: NSObject
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
     /// is located.
     ///   - retryCount: The number of retries. The default value is `3`.
-    public init(sessionManager: VimeoSessionManager, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL, retryCount: Int = VideoDeletionManager.DefaultRetryCount)
+    public init?(sessionManager: VimeoSessionManager, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL, retryCount: Int = VideoDeletionManager.DefaultRetryCount)
     {
+        guard let archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
+        {
+            return nil
+        }
+        
+        self.archiver = archiver
+        
         self.sessionManager = sessionManager
         self.retryCount = retryCount
         self.shouldLoadArchive = shouldLoadArchive
      
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
-        self.archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL)
         
         super.init()
         
@@ -120,7 +126,7 @@ public class VideoDeletionManager: NSObject
             return [:]
         }
         
-        if let deletions = self.archiver?.loadObject(for: type(of: self).DeletionsArchiveKey) as? [VideoUri: Int]
+        if let deletions = self.archiver.loadObject(for: type(of: self).DeletionsArchiveKey) as? [VideoUri: Int]
         {
             return deletions
         }
@@ -138,7 +144,7 @@ public class VideoDeletionManager: NSObject
     
     private func save()
     {
-        self.archiver?.save(object: self.deletions, key: type(of: self).DeletionsArchiveKey)
+        self.archiver.save(object: self.deletions, key: type(of: self).DeletionsArchiveKey)
     }
     
     // MARK: Public API

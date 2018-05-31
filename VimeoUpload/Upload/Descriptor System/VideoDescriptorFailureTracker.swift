@@ -32,7 +32,7 @@ import Foundation
 
     // MARK: 
     
-    private let archiver: KeyedArchiver?
+    private let archiver: KeyedArchiver
     private var failedDescriptors: [String: Descriptor] = [:]
     private let shouldLoadArchive: Bool
 
@@ -58,9 +58,14 @@ import Foundation
     ///   - name: The name of the uploader.
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
     /// is located.
-    public init(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL)
+    public init?(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL)
     {
-        self.archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL)
+        guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
+        {
+            return nil
+        }
+        
+        self.archiver = archiver
         
         self.shouldLoadArchive = shouldLoadArchive
 
@@ -99,12 +104,12 @@ import Foundation
             return [:]
         }
         
-        return self.archiver?.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
+        return self.archiver.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
     }
     
     private func save()
     {
-        self.archiver?.save(object: self.failedDescriptors, key: type(of: self).ArchiveKey)
+        self.archiver.save(object: self.failedDescriptors, key: type(of: self).ArchiveKey)
     }
     
     // MARK: Public API
