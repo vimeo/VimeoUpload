@@ -32,7 +32,7 @@ import Foundation
 
     // MARK: 
     
-    private let archiver: KeyedArchiver
+    private let archiver: KeyedArchiver?
     private var failedDescriptors: [String: Descriptor] = [:]
     private let shouldLoadArchive: Bool
 
@@ -43,9 +43,24 @@ import Foundation
         self.removeObservers()
     }
     
-    public init(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true)
+    /// Initializes a descriptor failure tracker object. Upon creation, the
+    /// object will attempt to create a folder to save the description of
+    /// failed uploads if needed. If the folder already exists, it will
+    /// attempt to load that information into memory.
+    ///
+    /// The folder is created with the following scheme:
+    ///
+    /// ```
+    /// Documents/name
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - name: The name of the uploader.
+    ///   - documentsFolderURL: The Documents folder's URL in which the folder
+    /// is located.
+    public init(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL)
     {
-        self.archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix)
+        self.archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL)
         
         self.shouldLoadArchive = shouldLoadArchive
 
@@ -58,19 +73,23 @@ import Foundation
     
     // MARK: Setup
     
-    private static func setupArchiver(name: String, archivePrefix: String?) -> KeyedArchiver
+    private static func setupArchiver(name: String, archivePrefix: String?, documentsFolderURL: URL) -> KeyedArchiver?
     {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        let typeFolderURL = documentsFolderURL.appendingPathComponent(name)
         
-        var documentsURL = URL(string: documentsPath)!
-        documentsURL = documentsURL.appendingPathComponent(name)
-        
-        if FileManager.default.fileExists(atPath: documentsURL.path) == false
+        if FileManager.default.fileExists(atPath: typeFolderURL.path) == false
         {
-            try! FileManager.default.createDirectory(atPath: documentsURL.path, withIntermediateDirectories: true, attributes: nil)
+            do
+            {
+                try FileManager.default.createDirectory(at: typeFolderURL, withIntermediateDirectories: true, attributes: nil)
+            }
+            catch
+            {
+                return nil
+            }
         }
         
-        return KeyedArchiver(basePath: documentsURL.path, archivePrefix: archivePrefix)
+        return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
     }
     
     private func load() -> [String: Descriptor]
@@ -80,12 +99,12 @@ import Foundation
             return [:]
         }
         
-        return self.archiver.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
+        return self.archiver?.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
     }
     
     private func save()
     {
-        self.archiver.save(object: self.failedDescriptors, key: type(of: self).ArchiveKey)
+        self.archiver?.save(object: self.failedDescriptors, key: type(of: self).ArchiveKey)
     }
     
     // MARK: Public API

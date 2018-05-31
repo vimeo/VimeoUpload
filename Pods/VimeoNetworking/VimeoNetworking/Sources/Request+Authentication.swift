@@ -40,6 +40,7 @@ private let TokenKey = "token"
 private let PinCodeKey = "user_code"
 private let DeviceCodeKey = "device_code"
 private let AccessTokenKey = "access_token"
+private let MarketingOptIn = "marketing_opt_in"
 
 private let GrantTypeClientCredentials = "client_credentials"
 private let GrantTypeAuthorizationCode = "authorization_code"
@@ -134,12 +135,13 @@ extension Request where ModelType: VIMAccount
      
      - returns: a new `Request`
      */
-    static func joinRequest(withName name: String, email: String, password: String, scopes: [Scope]) -> Request
+    static func joinRequest(withName name: String, email: String, password: String, marketingOptIn: String, scopes: [Scope]) -> Request
     {
         let parameters = [ScopeKey: Scope.combine(scopes),
                           DisplayNameKey: name,
                           EmailKey: email,
-                          PasswordKey: password]
+                          PasswordKey: password,
+                          MarketingOptIn: marketingOptIn]
         
         return Request(method: .POST, path: AuthenticationPathUsers, parameters: parameters)
     }
@@ -169,10 +171,11 @@ extension Request where ModelType: VIMAccount
      
      - returns: a new `Request`
      */
-    static func joinFacebookRequest(withToken facebookToken: String, scopes: [Scope]) -> Request
+    static func joinFacebookRequest(withToken facebookToken: String, marketingOptIn: String, scopes: [Scope]) -> Request
     {
         let parameters = [ScopeKey: Scope.combine(scopes),
-                          TokenKey: facebookToken]
+                          TokenKey: facebookToken,
+                          MarketingOptIn: marketingOptIn]
         
         return Request(method: .POST, path: AuthenticationPathUsers, parameters: parameters)
     }

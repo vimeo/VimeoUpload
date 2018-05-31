@@ -47,7 +47,25 @@ import VimeoNetworking
     
     // MARK: - Initialization
     
-    public init(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, backgroundSessionIdentifier: String, sharedContainerIdentifier: String? = nil, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
+    /// Initializes a reachable descriptor manager object.
+    ///
+    /// - Parameters:
+    ///   - name: The name of the descriptor manager.
+    ///   - documentsFolderURL: The Documents folder's URL of the folder in
+    ///   which the upload description will be stored. That folder has the
+    ///   same name as the first argument.
+    ///   - backgroundSessionIdentifier: An ID of the background upload
+    ///   session.
+    ///   - sharedContainerIdentifier: An ID of a shared sandbox. By default
+    ///   this value is `nil`, but if `VimeoUpload` is used in an app
+    ///   extension, this value must be set.
+    ///   - descriptorManagerDelegate: A delegate object of this descriptor
+    ///   manager.
+    ///   - accessTokenProvider: A closure that provides an authenticated
+    ///   token. Any upload needs this token in order to work properly.
+    ///   - apiVersion: The API version to use.
+    /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
+    public init?(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL, backgroundSessionIdentifier: String, sharedContainerIdentifier: String? = nil, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
     {
         let backgroundSessionManager: VimeoSessionManager
         
@@ -60,7 +78,7 @@ import VimeoNetworking
             backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
         }
         
-        super.init(sessionManager: backgroundSessionManager, name: name, archivePrefix: archivePrefix, shouldLoadArchive: shouldLoadArchive, delegate: descriptorManagerDelegate)
+        super.init(sessionManager: backgroundSessionManager, name: name, archivePrefix: archivePrefix, shouldLoadArchive: shouldLoadArchive, documentsFolderURL: documentsFolderURL, delegate: descriptorManagerDelegate)
         
         self.connectivityManager.delegate = self
     }

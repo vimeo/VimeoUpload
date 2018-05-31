@@ -45,21 +45,33 @@ open class VimeoUploader<T: VideoDescriptor>
 
     // MARK: - Initialization
 
-    public convenience init(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessToken: String, apiVersion: String)
+    public convenience init?(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessToken: String, apiVersion: String)
     {
         self.init(backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: descriptorManagerDelegate, accessTokenProvider: { () -> String? in
             return accessToken
         }, apiVersion: apiVersion)
     }
     
-    public init(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
+    public init?(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
     {
         self.foregroundSessionManager = VimeoSessionManager.defaultSessionManager(baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
         
-        self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager)
+        do
+        {
+            let documentsFolderURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager, documentsFolderURL: documentsFolderURL)
         
-        self.descriptorManager = ReachableDescriptorManager(name: type(of: self).Name, backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: descriptorManagerDelegate,
-                                                            accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
+            guard let descriptorManager = ReachableDescriptorManager(name: type(of: self).Name, documentsFolderURL: documentsFolderURL, backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: descriptorManagerDelegate, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion) else
+            {
+                return nil
+            }
+            
+            self.descriptorManager = descriptorManager
+        }
+        catch
+        {
+            return nil
+        }
     }
     
     // MARK: Public API - Starting

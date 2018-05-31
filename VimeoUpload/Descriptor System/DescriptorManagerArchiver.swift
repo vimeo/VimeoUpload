@@ -49,11 +49,16 @@ class DescriptorManagerArchiver
 
     // MARK: - Initialization
     
-    init(name: String, archivePrefix: String?, shouldLoadArchive: Bool = true)
+    init?(name: String, archivePrefix: String?, shouldLoadArchive: Bool = true, documentsFolderURL: URL)
     {
-        self.shouldLoadArchive = shouldLoadArchive
+        guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
+        {
+            return nil
+        }
         
-        self.archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix)
+        self.archiver = archiver
+
+        self.shouldLoadArchive = shouldLoadArchive
         
         self.descriptors = self.loadDescriptors()
         self.suspended = self.loadSuspendedState()
@@ -61,19 +66,23 @@ class DescriptorManagerArchiver
     
     // MARK: Setup - Archiving
     
-    private static func setupArchiver(name: String, archivePrefix: String?) -> KeyedArchiver
+    private static func setupArchiver(name: String, archivePrefix: String?, documentsFolderURL: URL) -> KeyedArchiver?
     {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        var documentsURL = URL(string: documentsPath)!
-        
-        documentsURL = documentsURL.appendingPathComponent(name)
+        let typeFolderURL = documentsFolderURL.appendingPathComponent(name)
 
-        if FileManager.default.fileExists(atPath: documentsURL.path) == false
+        if FileManager.default.fileExists(atPath: typeFolderURL.path) == false
         {
-            try! FileManager.default.createDirectory(atPath: documentsURL.path, withIntermediateDirectories: true, attributes: nil)
+            do
+            {
+                try FileManager.default.createDirectory(at: typeFolderURL, withIntermediateDirectories: true, attributes: nil)
+            }
+            catch
+            {
+                return nil
+            }
         }
         
-        return KeyedArchiver(basePath: documentsURL.path, archivePrefix: archivePrefix)
+        return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
     }
     
     private func loadDescriptors() -> Set<Descriptor>
