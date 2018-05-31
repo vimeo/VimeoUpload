@@ -46,7 +46,7 @@ import Foundation
     /// Initializes a descriptor failure tracker object. Upon creation, the
     /// object will attempt to create a folder to save the description of
     /// failed uploads if needed. If the folder already exists, it will
-    /// attempt to load that information into memory.
+    /// attempt to load that information into memory if desired.
     ///
     /// The folder is created with the following scheme:
     ///
@@ -56,8 +56,16 @@ import Foundation
     ///
     /// - Parameters:
     ///   - name: The name of the uploader.
+    ///   - archivePrefix: The prefix of the archive file. You pass in the
+    ///   prefix if you want to keep track of multiple archive files. By
+    ///   default, it has the value of `nil`.
+    ///   - shouldLoadArchive: A Boolean value that determines if the
+    ///   descriptor manager should load descriptors from the archive file
+    ///   upon instantiating. By default, this argument has the value of
+    ///   `true`.
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
-    /// is located.
+    ///   is located.
+    /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
     public init?(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL)
     {
         guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
