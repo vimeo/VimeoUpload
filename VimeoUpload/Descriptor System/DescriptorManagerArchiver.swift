@@ -61,7 +61,7 @@ class DescriptorManagerArchiver
         self.shouldLoadArchive = shouldLoadArchive
         
         self.descriptors = self.loadDescriptors(withMigrator: migrator, uploaderName: name)
-        self.suspended = self.loadSuspendedState()
+        self.suspended = self.loadSuspendedState(withMigrator: migrator, uploaderName: name)
     }
     
     // MARK: Setup - Archiving
@@ -105,14 +105,19 @@ class DescriptorManagerArchiver
         self.archiver.save(object: self.descriptors, key: type(of: self).DescriptorsArchiveKey)
     }
     
-    private func loadSuspendedState() -> Bool
+    private func loadSuspendedState(withMigrator migrator: ArchiveMigrating?, uploaderName: String) -> Bool
     {
         guard self.shouldLoadArchive == true else
         {
             return false
         }
         
-        return self.archiver.loadObject(for: type(of: self).SuspendedArchiveKey) as? Bool ?? false
+        guard let suspendedState = self.value(withUploaderName: uploaderName, migrator: migrator, forKey: DescriptorManagerArchiver.SuspendedArchiveKey) as? Bool else
+        {
+            return false
+        }
+        
+        return suspendedState
     }
     
     private func saveSuspendedState()
