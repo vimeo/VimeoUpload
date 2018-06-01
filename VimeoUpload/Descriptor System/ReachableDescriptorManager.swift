@@ -76,6 +76,7 @@ import VimeoNetworking
                  archivePrefix: String? = nil,
                  shouldLoadArchive: Bool = true,
                  documentsFolderURL: URL,
+                 migrator: ArchiveMigrating? = nil,
                  backgroundSessionIdentifier: String,
                  sharedContainerIdentifier: String? = nil,
                  descriptorManagerDelegate: DescriptorManagerDelegate? = nil,
@@ -93,7 +94,7 @@ import VimeoNetworking
             backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
         }
         
-        super.init(sessionManager: backgroundSessionManager, name: name, archivePrefix: archivePrefix, shouldLoadArchive: shouldLoadArchive, documentsFolderURL: documentsFolderURL, delegate: descriptorManagerDelegate)
+        super.init(sessionManager: backgroundSessionManager, name: name, archivePrefix: archivePrefix, shouldLoadArchive: shouldLoadArchive, documentsFolderURL: documentsFolderURL, migrator: migrator, delegate: descriptorManagerDelegate)
         
         self.connectivityManager.delegate = self
     }
