@@ -6,7 +6,7 @@
 //  Copyright © 2018 Vimeo. All rights reserved.
 //
 
-protocol AppSandboxUploadDescriptorsMigrating
+public protocol AppSandboxUploadDescriptorsMigrating
 {
     var archiveFileExists: Bool { get }
     
