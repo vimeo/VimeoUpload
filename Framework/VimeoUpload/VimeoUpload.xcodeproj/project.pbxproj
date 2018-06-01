@@ -16,7 +16,7 @@
 		3EA4C84D209017FB009F3D9B /* VimeoRequestSerializer+SharedUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA4C84C209017FB009F3D9B /* VimeoRequestSerializer+SharedUpload.swift */; };
 		5C9E3CA51EA66187000D1F6B /* DescriptorKVObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9E3CA41EA66187000D1F6B /* DescriptorKVObserver.swift */; };
 		8D9A15BCC5ABADC2D001B20C /* Pods_VimeoUpload.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4E8D665288660F1F668B91 /* Pods_VimeoUpload.framework */; };
-		8E233B0D20C196C6002B6248 /* UploadDescriptorMigrating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E233B0C20C196C6002B6248 /* UploadDescriptorMigrating.swift */; };
+		8E233B0D20C196C6002B6248 /* AppSandboxUploadDescriptorsMigrating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E233B0C20C196C6002B6248 /* AppSandboxUploadDescriptorsMigrating.swift */; };
 		AF40D4E51CCE9CB600753ABA /* VimeoUpload.h in Headers */ = {isa = PBXBuildFile; fileRef = AF40D4E41CCE9CB600753ABA /* VimeoUpload.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AF40D4EC1CCE9CB600753ABA /* VimeoUpload.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF40D4E11CCE9CB600753ABA /* VimeoUpload.framework */; };
 		AF40D4F11CCE9CB600753ABA /* VimeoUploadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF40D4F01CCE9CB600753ABA /* VimeoUploadTests.swift */; };
@@ -88,7 +88,7 @@
 		3EA4C84C209017FB009F3D9B /* VimeoRequestSerializer+SharedUpload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VimeoRequestSerializer+SharedUpload.swift"; sourceTree = "<group>"; };
 		4D4E8D665288660F1F668B91 /* Pods_VimeoUpload.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VimeoUpload.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C9E3CA41EA66187000D1F6B /* DescriptorKVObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DescriptorKVObserver.swift; sourceTree = "<group>"; };
-		8E233B0C20C196C6002B6248 /* UploadDescriptorMigrating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadDescriptorMigrating.swift; sourceTree = "<group>"; };
+		8E233B0C20C196C6002B6248 /* AppSandboxUploadDescriptorsMigrating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSandboxUploadDescriptorsMigrating.swift; sourceTree = "<group>"; };
 		AF40D4E11CCE9CB600753ABA /* VimeoUpload.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VimeoUpload.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF40D4E41CCE9CB600753ABA /* VimeoUpload.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VimeoUpload.h; sourceTree = "<group>"; };
 		AF40D4E61CCE9CB600753ABA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -266,7 +266,7 @@
 				AF40D5061CCE9DEB00753ABA /* AFURLSessionManager+Extensions.swift */,
 				AF40D5071CCE9DEB00753ABA /* NSError+Extensions.swift */,
 				AF40D5081CCE9DEB00753ABA /* NSFileManager+Extensions.swift */,
-				8E233B0C20C196C6002B6248 /* UploadDescriptorMigrating.swift */,
+				8E233B0C20C196C6002B6248 /* AppSandboxUploadDescriptorsMigrating.swift */,
 			);
 			name = Extensions;
 			path = ../../../VimeoUpload/Extensions;
@@ -619,7 +619,7 @@
 				AF40D5781CCE9DEB00753ABA /* VimeoSessionManager+OldUpload.swift in Sources */,
 				AF40D5721CCE9DEB00753ABA /* BlockTypes.swift in Sources */,
 				3C53EC281D219C8500B7AA6D /* VimeoSessionManager+ThumbnailUpload.swift in Sources */,
-				8E233B0D20C196C6002B6248 /* UploadDescriptorMigrating.swift in Sources */,
+				8E233B0D20C196C6002B6248 /* AppSandboxUploadDescriptorsMigrating.swift in Sources */,
 				AF40D56A1CCE9DEB00753ABA /* OldUploadRequest.swift in Sources */,
 				AF40D57B1CCE9DEB00753ABA /* ExportOperation.swift in Sources */,
 				AF40D55B1CCE9DEB00753ABA /* NSError+Extensions.swift in Sources */,

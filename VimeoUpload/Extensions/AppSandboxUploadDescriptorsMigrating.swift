@@ -1,15 +1,13 @@
 //
-//  UploadDescriptorMigrating.swift
+//  AppSandboxUploadDescriptorsMigrating.swift
 //  VimeoUpload
 //
 //  Created by Nguyen, Van on 6/1/18.
 //  Copyright © 2018 Vimeo. All rights reserved.
 //
 
-protocol UploadDescriptorMigrating
+protocol AppSandboxUploadDescriptorsMigrating
 {
-    init(appSandboxDocumentsFolderURL: URL)
-    
     var archiveFileExists: Bool { get }
     
     func loadArchiveFile() -> Set<Descriptor>
