@@ -49,7 +49,7 @@ class DescriptorManagerArchiver
 
     // MARK: - Initialization
     
-    init?(name: String, archivePrefix: String?, shouldLoadArchive: Bool = true, documentsFolderURL: URL)
+    init?(name: String, archivePrefix: String?, shouldLoadArchive: Bool = true, documentsFolderURL: URL, migrator: ArchiveMigrating? = nil)
     {
         guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {
@@ -60,7 +60,7 @@ class DescriptorManagerArchiver
 
         self.shouldLoadArchive = shouldLoadArchive
         
-        self.descriptors = self.loadDescriptors()
+        self.descriptors = self.loadDescriptors(withMigrator: migrator, uploaderName: name)
         self.suspended = self.loadSuspendedState()
     }
     
@@ -85,14 +85,35 @@ class DescriptorManagerArchiver
         return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
     }
     
-    private func loadDescriptors() -> Set<Descriptor>
+    private func loadDescriptors(withMigrator migrator: ArchiveMigrating?, uploaderName: String) -> Set<Descriptor>
     {
         guard self.shouldLoadArchive == true else
         {
             return Set<Descriptor>()
         }
         
-        return self.archiver.loadObject(for: type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
+        let descriptorsAtNewLocation = self.archiver.loadObject(for: type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
+
+        guard let migrator = migrator else
+        {
+            return descriptorsAtNewLocation
+        }
+        
+        let relativeFilePath = uploaderName + "/" + DescriptorManagerArchiver.DescriptorsArchiveKey + ".archive"
+        
+        guard migrator.archiveFileExists(relativeFilePath: relativeFilePath) == true else
+        {
+            return descriptorsAtNewLocation
+        }
+        
+        guard let descriptorsAtOldLocation = migrator.loadArchiveFile(relativeFilePath: relativeFilePath) as? Set<Descriptor> else
+        {
+            return descriptorsAtNewLocation
+        }
+        
+        migrator.deleteArchiveFile(relativeFilePath: relativeFilePath)
+        
+        return descriptorsAtOldLocation
     }
     
     private func saveDescriptors()
