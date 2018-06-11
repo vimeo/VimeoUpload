@@ -1,5 +1,5 @@
 //
-//  DescriptorMerging.swift
+//  ArchiveMerging.swift
 //  VimeoUpload
 //
 //  Created by Van Nguyen on 06/11/2018.
@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 //
 
-public protocol DescriptorMerging
+public protocol ArchiveMerging
 {
     
 }
