@@ -28,27 +28,33 @@ import Foundation
 
 public class KeyedArchiver: ArchiverProtocol
 {
-    private static let ArchiveExtension = "archive"
+    private struct Constants
+    {
+        static let ArchiveExtension = "archive"
+        static let UnderscoreText = "_"
+    }
     
     private let basePath: String
+    private let prefix: String?
 
-    public init(basePath: String)
+    public init(basePath: String, archivePrefix: String? = nil)
     {
         assert(FileManager.default.fileExists(atPath: basePath, isDirectory: nil), "Invalid basePath")
         
         self.basePath = basePath
+        self.prefix = archivePrefix
     }
     
     public func loadObject(for key: String) -> Any?
     {
-        let path = self.archivePath(key: key)
+        let path = self.archivePath(key: self.key(withPrefix: self.prefix, key: key))
         
         return NSKeyedUnarchiver.unarchiveObject(withFile: path)
     }
     
     public func save(object: Any, key: String)
     {
-        let path = self.archivePath(key: key)
+        let path = self.archivePath(key: self.key(withPrefix: self.prefix, key: key))
         
         NSKeyedArchiver.archiveRootObject(object, toFile: path)
     }
@@ -60,8 +66,18 @@ public class KeyedArchiver: ArchiverProtocol
         var url = URL(string: self.basePath)!
         
         url = url.appendingPathComponent(key)
-        url = url.appendingPathExtension(type(of: self).ArchiveExtension)
+        url = url.appendingPathExtension(Constants.ArchiveExtension)
         
         return url.absoluteString as String
+    }
+    
+    private func key(withPrefix prefix: String?, key: String) -> String
+    {
+        guard let prefix = prefix else
+        {
+            return key
+        }
+        
+        return prefix + Constants.UnderscoreText + key
     }
 }

@@ -32,8 +32,9 @@ import Foundation
 
     // MARK: 
     
-    private let archiver: KeyedArchiver?
-    private var failedDescriptors: [String: Descriptor] = [:]
+    private let archiver: KeyedArchiver
+    private var failedDescriptors: [String: Descriptor]?
+    private let shouldLoadArchive: Bool
 
     // MARK: - Initialization
     
@@ -45,7 +46,7 @@ import Foundation
     /// Initializes a descriptor failure tracker object. Upon creation, the
     /// object will attempt to create a folder to save the description of
     /// failed uploads if needed. If the folder already exists, it will
-    /// attempt to load that information into memory.
+    /// attempt to load that information into memory if desired.
     ///
     /// The folder is created with the following scheme:
     ///
@@ -55,11 +56,26 @@ import Foundation
     ///
     /// - Parameters:
     ///   - name: The name of the uploader.
+    ///   - archivePrefix: The prefix of the archive file. You pass in the
+    ///   prefix if you want to keep track of multiple archive files. By
+    ///   default, it has the value of `nil`.
+    ///   - shouldLoadArchive: A Boolean value that determines if the
+    ///   descriptor manager should load descriptors from the archive file
+    ///   upon instantiating. By default, this argument has the value of
+    ///   `true`.
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
-    /// is located.
-    public init(name: String, documentsFolderURL: URL)
+    ///   is located.
+    /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
+    public init?(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL)
     {
-        self.archiver = type(of: self).setupArchiver(name: name, documentsFolderURL: documentsFolderURL)
+        guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
+        {
+            return nil
+        }
+        
+        self.archiver = archiver
+        
+        self.shouldLoadArchive = shouldLoadArchive
 
         super.init()
         
@@ -70,7 +86,7 @@ import Foundation
     
     // MARK: Setup
     
-    private static func setupArchiver(name: String, documentsFolderURL: URL) -> KeyedArchiver?
+    private static func setupArchiver(name: String, archivePrefix: String?, documentsFolderURL: URL) -> KeyedArchiver?
     {
         let typeFolderURL = documentsFolderURL.appendingPathComponent(name)
         
@@ -86,30 +102,40 @@ import Foundation
             }
         }
         
-        return KeyedArchiver(basePath: typeFolderURL.path)
+        return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
     }
     
-    private func load() -> [String: Descriptor]
+    private func load() -> [String: Descriptor]?
     {
-        return self.archiver?.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
+        guard self.shouldLoadArchive == true else
+        {
+            return nil
+        }
+        
+        return self.archiver.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
     }
     
     private func save()
     {
-        self.archiver?.save(object: self.failedDescriptors, key: type(of: self).ArchiveKey)
+        guard let failedDescriptors = self.failedDescriptors else
+        {
+            return
+        }
+        
+        self.archiver.save(object: failedDescriptors, key: type(of: self).ArchiveKey)
     }
     
     // MARK: Public API
     
     public func removeAllFailures()
     {
-        self.failedDescriptors.removeAll()
+        self.failedDescriptors?.removeAll()
         self.save()
     }
     
     public func removeFailedDescriptor(for key: String) -> Descriptor?
     {
-        guard let descriptor = self.failedDescriptors.removeValue(forKey: key) else
+        guard let descriptor = self.failedDescriptors?.removeValue(forKey: key) else
         {
             return nil
         }
@@ -121,7 +147,7 @@ import Foundation
     
     public func failedDescriptor(for key: String) -> Descriptor?
     {
-        return self.failedDescriptors[key]
+        return self.failedDescriptors?[key]
     }
     
     // MARK: Notifications
@@ -145,7 +171,7 @@ import Foundation
             let key = descriptor.identifier, descriptor.error != nil
         {
             DispatchQueue.main.async { () -> Void in
-                self.failedDescriptors[key] = descriptor
+                self.failedDescriptors?[key] = descriptor
                 self.save()
             }
         }

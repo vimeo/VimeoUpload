@@ -44,17 +44,21 @@ class DescriptorManagerArchiver
             self.saveSuspendedState()
         }
     }
+    
+    private let shouldLoadArchive: Bool
 
     // MARK: - Initialization
     
-    init?(name: String, documentsFolderURL: URL)
+    init?(name: String, archivePrefix: String?, shouldLoadArchive: Bool = true, documentsFolderURL: URL)
     {
-        guard let archiver = type(of: self).setupArchiver(name: name, documentsFolderURL: documentsFolderURL) else
+        guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {
             return nil
         }
         
         self.archiver = archiver
+
+        self.shouldLoadArchive = shouldLoadArchive
         
         self.descriptors = self.loadDescriptors()
         self.suspended = self.loadSuspendedState()
@@ -62,7 +66,7 @@ class DescriptorManagerArchiver
     
     // MARK: Setup - Archiving
     
-    private static func setupArchiver(name: String, documentsFolderURL: URL) -> KeyedArchiver?
+    private static func setupArchiver(name: String, archivePrefix: String?, documentsFolderURL: URL) -> KeyedArchiver?
     {
         let typeFolderURL = documentsFolderURL.appendingPathComponent(name)
 
@@ -78,11 +82,16 @@ class DescriptorManagerArchiver
             }
         }
         
-        return KeyedArchiver(basePath: typeFolderURL.path)
+        return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
     }
     
     private func loadDescriptors() -> Set<Descriptor>
     {
+        guard self.shouldLoadArchive == true else
+        {
+            return Set<Descriptor>()
+        }
+        
         return self.archiver.loadObject(for: type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
     }
     
@@ -93,6 +102,11 @@ class DescriptorManagerArchiver
     
     private func loadSuspendedState() -> Bool
     {
+        guard self.shouldLoadArchive == true else
+        {
+            return false
+        }
+        
         return self.archiver.loadObject(for: type(of: self).SuspendedArchiveKey) as? Bool ?? false
     }
     

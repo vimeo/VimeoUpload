@@ -51,6 +51,13 @@ import VimeoNetworking
     ///
     /// - Parameters:
     ///   - name: The name of the descriptor manager.
+    ///   - archivePrefix: The prefix of the archive file. You pass in the
+    ///   prefix if you want to keep track of multiple archive files. By
+    ///   default, it has the value of `nil`.
+    ///   - shouldLoadArchive: A Boolean value that determines if the
+    ///   descriptor manager should load descriptors from the archive file
+    ///   upon instantiating. By default, this argument has the value of
+    ///   `true`.
     ///   - documentsFolderURL: The Documents folder's URL of the folder in
     ///   which the upload description will be stored. That folder has the
     ///   same name as the first argument.
@@ -65,7 +72,15 @@ import VimeoNetworking
     ///   token. Any upload needs this token in order to work properly.
     ///   - apiVersion: The API version to use.
     /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
-    public init?(name: String, documentsFolderURL: URL, backgroundSessionIdentifier: String, sharedContainerIdentifier: String? = nil, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
+    public init?(name: String,
+                 archivePrefix: String? = nil,
+                 shouldLoadArchive: Bool = true,
+                 documentsFolderURL: URL,
+                 backgroundSessionIdentifier: String,
+                 sharedContainerIdentifier: String? = nil,
+                 descriptorManagerDelegate: DescriptorManagerDelegate? = nil,
+                 accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider,
+                 apiVersion: String)
     {
         let backgroundSessionManager: VimeoSessionManager
         
@@ -78,7 +93,7 @@ import VimeoNetworking
             backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
         }
         
-        super.init(sessionManager: backgroundSessionManager, name: name, documentsFolderURL: documentsFolderURL, delegate: descriptorManagerDelegate)
+        super.init(sessionManager: backgroundSessionManager, name: name, archivePrefix: archivePrefix, shouldLoadArchive: shouldLoadArchive, documentsFolderURL: documentsFolderURL, delegate: descriptorManagerDelegate)
         
         self.connectivityManager.delegate = self
     }
