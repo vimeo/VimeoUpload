@@ -33,7 +33,7 @@ import Foundation
     // MARK: 
     
     private let archiver: KeyedArchiver
-    private var failedDescriptors: [String: Descriptor] = [:]
+    private var failedDescriptors: [String: Descriptor]?
     private let shouldLoadArchive: Bool
 
     // MARK: - Initialization
@@ -105,11 +105,11 @@ import Foundation
         return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
     }
     
-    private func load() -> [String: Descriptor]
+    private func load() -> [String: Descriptor]?
     {
         guard self.shouldLoadArchive == true else
         {
-            return [:]
+            return nil
         }
         
         return self.archiver.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
@@ -117,20 +117,25 @@ import Foundation
     
     private func save()
     {
-        self.archiver.save(object: self.failedDescriptors, key: type(of: self).ArchiveKey)
+        guard let failedDescriptors = self.failedDescriptors else
+        {
+            return
+        }
+        
+        self.archiver.save(object: failedDescriptors, key: type(of: self).ArchiveKey)
     }
     
     // MARK: Public API
     
     public func removeAllFailures()
     {
-        self.failedDescriptors.removeAll()
+        self.failedDescriptors?.removeAll()
         self.save()
     }
     
     public func removeFailedDescriptor(for key: String) -> Descriptor?
     {
-        guard let descriptor = self.failedDescriptors.removeValue(forKey: key) else
+        guard let descriptor = self.failedDescriptors?.removeValue(forKey: key) else
         {
             return nil
         }
@@ -142,7 +147,7 @@ import Foundation
     
     public func failedDescriptor(for key: String) -> Descriptor?
     {
-        return self.failedDescriptors[key]
+        return self.failedDescriptors?[key]
     }
     
     // MARK: Notifications
@@ -166,7 +171,7 @@ import Foundation
             let key = descriptor.identifier, descriptor.error != nil
         {
             DispatchQueue.main.async { () -> Void in
-                self.failedDescriptors[key] = descriptor
+                self.failedDescriptors?[key] = descriptor
                 self.save()
             }
         }
