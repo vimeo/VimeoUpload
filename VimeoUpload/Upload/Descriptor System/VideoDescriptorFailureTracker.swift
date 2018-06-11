@@ -112,7 +112,7 @@ import Foundation
             return nil
         }
         
-        return self.archiver.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
+        return self.archiver.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor]
     }
     
     private func save()

@@ -139,12 +139,7 @@ public class VideoDeletionManager: NSObject
             return nil
         }
         
-        if let deletions = self.archiver.loadObject(for: type(of: self).DeletionsArchiveKey) as? [VideoUri: Int]
-        {
-            return deletions
-        }
-        
-        return nil
+        return self.archiver.loadObject(for: type(of: self).DeletionsArchiveKey) as? [VideoUri: Int]
     }
 
     private func startDeletions()
