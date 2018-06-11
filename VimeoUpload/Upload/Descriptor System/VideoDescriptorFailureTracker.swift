@@ -79,7 +79,7 @@ import Foundation
 
         super.init()
         
-        self.failedDescriptors = self.load(withMigrator: migrator)
+        self.failedDescriptors = self.load(withUploaderName: name, migrator: migrator)
 
         self.addObservers()
     }
@@ -105,14 +105,23 @@ import Foundation
         return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
     }
     
-    private func load(withMigrator migrator: ArchiveMigrating?) -> [String: Descriptor]
+    private func load(withUploaderName uploaderName: String, migrator: ArchiveMigrating?) -> [String: Descriptor]
     {
         guard self.shouldLoadArchive == true else
         {
             return [:]
         }
         
-        return self.archiver.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
+        guard let failedDescriptors = ArchiveDataLoader.loadData(withUploaderName: uploaderName,
+                                                                 archiver: self.archiver,
+                                                                 key: VideoDescriptorFailureTracker.ArchiveKey,
+                                                                 migrator: migrator) as? [String: Descriptor]
+        else
+        {
+            return [:]
+        }
+        
+        return failedDescriptors
     }
     
     private func save()

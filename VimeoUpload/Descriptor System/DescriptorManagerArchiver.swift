@@ -92,7 +92,11 @@ class DescriptorManagerArchiver
             return Set<Descriptor>()
         }
         
-        guard let descriptors = self.value(withUploaderName: uploaderName, migrator: migrator, forKey: DescriptorManagerArchiver.DescriptorsArchiveKey) as? Set<Descriptor> else
+        guard let descriptors = ArchiveDataLoader.loadData(withUploaderName: uploaderName,
+                                                           archiver: self.archiver,
+                                                           key: DescriptorManagerArchiver.DescriptorsArchiveKey,
+                                                           migrator: migrator) as? Set<Descriptor>
+        else
         {
             return Set<Descriptor>()
         }
@@ -112,7 +116,11 @@ class DescriptorManagerArchiver
             return false
         }
         
-        guard let suspendedState = self.value(withUploaderName: uploaderName, migrator: migrator, forKey: DescriptorManagerArchiver.SuspendedArchiveKey) as? Bool else
+        guard let suspendedState = ArchiveDataLoader.loadData(withUploaderName: uploaderName,
+                                                              archiver: self.archiver,
+                                                              key: DescriptorManagerArchiver.SuspendedArchiveKey,
+                                                              migrator: migrator) as? Bool
+        else
         {
             return false
         }
@@ -125,31 +133,31 @@ class DescriptorManagerArchiver
         self.archiver.save(object: self.suspended, key: type(of: self).SuspendedArchiveKey)
     }
     
-    private func value(withUploaderName uploaderName: String, migrator: ArchiveMigrating?, forKey key: String) -> Any?
-    {
-        let dataAtNewLocation = self.archiver.loadObject(for: key)
-        
-        guard let migrator = migrator else
-        {
-            return dataAtNewLocation
-        }
-        
-        let relativeFilePath = uploaderName + "/" + key + ".archive"
-        
-        guard migrator.archiveFileExists(relativeFilePath: relativeFilePath) == true else
-        {
-            return dataAtNewLocation
-        }
-        
-        guard let dataAtOldLocation = migrator.loadArchiveFile(relativeFilePath: relativeFilePath) else
-        {
-            return dataAtNewLocation
-        }
-        
-        migrator.deleteArchiveFile(relativeFilePath: relativeFilePath)
-        
-        return dataAtOldLocation
-    }
+//    private func value(withUploaderName uploaderName: String, migrator: ArchiveMigrating?, forKey key: String) -> Any?
+//    {
+//        let dataAtNewLocation = self.archiver.loadObject(for: key)
+//
+//        guard let migrator = migrator else
+//        {
+//            return dataAtNewLocation
+//        }
+//
+//        let relativeFilePath = uploaderName + "/" + key + ".archive"
+//
+//        guard migrator.archiveFileExists(relativeFilePath: relativeFilePath) == true else
+//        {
+//            return dataAtNewLocation
+//        }
+//
+//        guard let dataAtOldLocation = migrator.loadArchiveFile(relativeFilePath: relativeFilePath) else
+//        {
+//            return dataAtNewLocation
+//        }
+//
+//        migrator.deleteArchiveFile(relativeFilePath: relativeFilePath)
+//
+//        return dataAtOldLocation
+//    }
     
     // MARK: Public API
     
