@@ -66,7 +66,7 @@ import Foundation
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
     ///   is located.
     /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
-    public init?(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL)
+    public init?(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL, migrator: ArchiveMigrating? = nil)
     {
         guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {
@@ -79,7 +79,7 @@ import Foundation
 
         super.init()
         
-        self.failedDescriptors = self.load()
+        self.failedDescriptors = self.load(withMigrator: migrator)
 
         self.addObservers()
     }
@@ -105,7 +105,7 @@ import Foundation
         return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
     }
     
-    private func load() -> [String: Descriptor]?
+    private func load(withMigrator migrator: ArchiveMigrating?) -> [String: Descriptor]?
     {
         guard self.shouldLoadArchive == true else
         {

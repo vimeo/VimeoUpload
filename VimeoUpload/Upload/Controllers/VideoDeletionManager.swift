@@ -82,7 +82,8 @@ public class VideoDeletionManager: NSObject
                  archivePrefix: String? = nil,
                  shouldLoadArchive: Bool = true,
                  documentsFolderURL: URL,
-                 retryCount: Int = VideoDeletionManager.DefaultRetryCount)
+                 retryCount: Int = VideoDeletionManager.DefaultRetryCount,
+                 migrator: ArchiveMigrating? = nil)
     {
         guard let archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {
@@ -103,7 +104,7 @@ public class VideoDeletionManager: NSObject
         self.addObservers()
         self.reachabilityDidChange(nil) // Set suspended state
         
-        self.deletions = self.loadDeletions()
+        self.deletions = self.loadDeletions(withMigrator: migrator)
         self.startDeletions()
     }
     
@@ -131,7 +132,7 @@ public class VideoDeletionManager: NSObject
     
     // MARK: Archiving
     
-    private func loadDeletions() -> [VideoUri: Int]?
+    private func loadDeletions(withMigrator migrator: ArchiveMigrating?) -> [VideoUri: Int]?
     {
         guard self.shouldLoadArchive == true else
         {
