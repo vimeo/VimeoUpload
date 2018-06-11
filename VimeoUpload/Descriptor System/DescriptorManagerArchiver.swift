@@ -49,7 +49,11 @@ class DescriptorManagerArchiver
 
     // MARK: - Initialization
     
-    init?(name: String, archivePrefix: String?, shouldLoadArchive: Bool = true, documentsFolderURL: URL, migrator: ArchiveMigrating? = nil)
+    init?(name: String,
+          archivePrefix: String?,
+          shouldLoadArchive: Bool = true,
+          documentsFolderURL: URL,
+          migrator: ArchiveMigrating? = nil)
     {
         guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {

@@ -83,7 +83,8 @@ public class VideoDeletionManager: NSObject
                  shouldLoadArchive: Bool = true,
                  documentsFolderURL: URL,
                  retryCount: Int = VideoDeletionManager.DefaultRetryCount,
-                 migrator: ArchiveMigrating? = nil)
+                 migrator: ArchiveMigrating? = nil,
+                 merger: ArchiveMerging? = nil)
     {
         guard let archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {

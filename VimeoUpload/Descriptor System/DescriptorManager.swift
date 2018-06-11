@@ -70,9 +70,21 @@ open class DescriptorManager: NSObject
     // By passing the delegate into the constructor (as opposed to using a public property)
     // We ensure that early events like "load" can be reported [AH] 11/25/2015
     
-    init?(sessionManager: AFURLSessionManager, name: String, archivePrefix: String?, shouldLoadArchive: Bool, documentsFolderURL: URL, migrator: ArchiveMigrating? = nil, delegate: DescriptorManagerDelegate? = nil)
+    init?(sessionManager: AFURLSessionManager,
+          name: String,
+          archivePrefix: String?,
+          shouldLoadArchive: Bool,
+          documentsFolderURL: URL,
+          migrator: ArchiveMigrating? = nil,
+          merger: ArchiveMerging? = nil,
+          delegate: DescriptorManagerDelegate? = nil)
     {
-        guard let archiver = DescriptorManagerArchiver(name: name, archivePrefix: archivePrefix, shouldLoadArchive: shouldLoadArchive, documentsFolderURL: documentsFolderURL, migrator: migrator) else
+        guard let archiver = DescriptorManagerArchiver(name: name,
+                                                       archivePrefix: archivePrefix,
+                                                       shouldLoadArchive: shouldLoadArchive,
+                                                       documentsFolderURL: documentsFolderURL,
+                                                       migrator: migrator)
+        else
         {
             return nil
         }

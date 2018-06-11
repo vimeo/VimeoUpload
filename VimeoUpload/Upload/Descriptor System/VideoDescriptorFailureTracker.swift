@@ -66,7 +66,7 @@ import Foundation
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
     ///   is located.
     /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
-    public init?(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL, migrator: ArchiveMigrating? = nil)
+    public init?(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL, migrator: ArchiveMigrating? = nil, merger: ArchiveMerging? = nil)
     {
         guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {
