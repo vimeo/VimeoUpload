@@ -133,32 +133,6 @@ class DescriptorManagerArchiver
         self.archiver.save(object: self.suspended, key: type(of: self).SuspendedArchiveKey)
     }
     
-//    private func value(withUploaderName uploaderName: String, migrator: ArchiveMigrating?, forKey key: String) -> Any?
-//    {
-//        let dataAtNewLocation = self.archiver.loadObject(for: key)
-//
-//        guard let migrator = migrator else
-//        {
-//            return dataAtNewLocation
-//        }
-//
-//        let relativeFilePath = uploaderName + "/" + key + ".archive"
-//
-//        guard migrator.archiveFileExists(relativeFilePath: relativeFilePath) == true else
-//        {
-//            return dataAtNewLocation
-//        }
-//
-//        guard let dataAtOldLocation = migrator.loadArchiveFile(relativeFilePath: relativeFilePath) else
-//        {
-//            return dataAtNewLocation
-//        }
-//
-//        migrator.deleteArchiveFile(relativeFilePath: relativeFilePath)
-//
-//        return dataAtOldLocation
-//    }
-    
     // MARK: Public API
     
     func save()
