@@ -105,7 +105,7 @@ public class VideoDeletionManager: NSObject
         self.addObservers()
         self.reachabilityDidChange(nil) // Set suspended state
         
-        self.deletions = self.loadDeletions(withMigrator: migrator)
+        self.deletions = self.loadDeletions(withMigrator: migrator, merger: merger)
         self.startDeletions()
     }
     
@@ -133,14 +133,16 @@ public class VideoDeletionManager: NSObject
     
     // MARK: Archiving
     
-    private func loadDeletions(withMigrator migrator: ArchiveMigrating?) -> [VideoUri: Int]
+    private func loadDeletions(withMigrator migrator: ArchiveMigrating?, merger: ArchiveMerging?) -> [VideoUri: Int]
     {
         guard self.shouldLoadArchive == true else
         {
             return [:]
         }
         
-        guard let retries = ArchiveDataLoader.loadData(relativeFolderPath: VideoDeletionManager.DeletionsArchiveKey,
+        let relativeFolderPath = VideoDeletionManager.DeletionsArchiveKey + "/" + VideoDeletionManager.DeletionsArchiveKey
+        
+        guard let retries = ArchiveDataLoader.loadData(relativeFolderPath: relativeFolderPath,
                                                        archiver: self.archiver,
                                                        key: VideoDeletionManager.DeletionsArchiveKey,
                                                        migrator: migrator) as? [VideoUri: Int]
@@ -149,7 +151,12 @@ public class VideoDeletionManager: NSObject
             return [:]
         }
         
-        return retries
+        guard let merger = merger else
+        {
+            return retries
+        }
+        
+        return merger.mergeSecondaryDeletions(relativeFolderPath: relativeFolderPath, key: VideoDeletionManager.DeletionsArchiveKey, intoDeletions: retries)
     }
 
     private func startDeletions()
