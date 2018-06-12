@@ -26,11 +26,11 @@
 
 public protocol ArchiveMerging
 {
-    init(secondaryArchivePrefix: String?)
+    init?(secondaryArchivePrefix: String)
     
-    func mergeSecondaryDescriptors(into descriptors: Set<Descriptor>) -> Set<Descriptor>
+    func mergeSecondaryDescriptors(atRelativePath relativePath: String, key: String, intoDescriptors descriptors: Set<Descriptor>) -> Set<Descriptor>
     
-    func mergeSecondaryDeletions(into deletions: [VideoUri: Int]) -> [VideoUri: Int]
+    func mergeSecondaryDeletions(atRelativePath relativePath: String, key: String, intoDeletions deletions: [VideoUri: Int]) -> [VideoUri: Int]
     
-    func mergeSecondaryFailedDescriptors(into failedDescriptors: [String: Descriptor]) -> [String: Descriptor]
+    func mergeSecondaryFailedDescriptors(atRelativePath relativePath: String, key: String, intoFailedDescriptors failedDescriptors: [String: Descriptor]) -> [String: Descriptor]
 }
