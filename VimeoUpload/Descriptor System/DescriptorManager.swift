@@ -83,7 +83,8 @@ open class DescriptorManager: NSObject
                                                        archivePrefix: archivePrefix,
                                                        shouldLoadArchive: shouldLoadArchive,
                                                        documentsFolderURL: documentsFolderURL,
-                                                       migrator: migrator)
+                                                       migrator: migrator,
+                                                       merger: merger)
         else
         {
             return nil
@@ -313,7 +314,7 @@ open class DescriptorManager: NSObject
                 {
                     return
                 }
-
+ 
                 if let backgroundEventsCompletionHandler = strongSelf.backgroundEventsCompletionHandler
                 {
                     // The completionHandler must be called on the main thread

@@ -53,7 +53,8 @@ class DescriptorManagerArchiver
           archivePrefix: String?,
           shouldLoadArchive: Bool = true,
           documentsFolderURL: URL,
-          migrator: ArchiveMigrating? = nil)
+          migrator: ArchiveMigrating?,
+          merger: ArchiveMerging?)
     {
         guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {
@@ -64,8 +65,8 @@ class DescriptorManagerArchiver
 
         self.shouldLoadArchive = shouldLoadArchive
         
-        self.descriptors = self.loadDescriptors(withMigrator: migrator, uploaderName: name)
-        self.suspended = self.loadSuspendedState(withMigrator: migrator, uploaderName: name)
+        self.descriptors = self.loadDescriptors(withMigrator: migrator, merger: merger, relativeFolderPath: name)
+        self.suspended = self.loadSuspendedState(withMigrator: migrator, merger: merger, relativeFolderPath: name)
     }
     
     // MARK: Setup - Archiving
@@ -89,14 +90,14 @@ class DescriptorManagerArchiver
         return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
     }
     
-    private func loadDescriptors(withMigrator migrator: ArchiveMigrating?, uploaderName: String) -> Set<Descriptor>
+    private func loadDescriptors(withMigrator migrator: ArchiveMigrating?, merger: ArchiveMerging?, relativeFolderPath: String) -> Set<Descriptor>
     {
         guard self.shouldLoadArchive == true else
         {
             return Set<Descriptor>()
         }
         
-        guard let descriptors = ArchiveDataLoader.loadData(relativeFolderPath: uploaderName,
+        guard let descriptors = ArchiveDataLoader.loadData(relativeFolderPath: relativeFolderPath,
                                                            archiver: self.archiver,
                                                            key: DescriptorManagerArchiver.DescriptorsArchiveKey,
                                                            migrator: migrator) as? Set<Descriptor>
@@ -105,7 +106,12 @@ class DescriptorManagerArchiver
             return Set<Descriptor>()
         }
         
-        return descriptors
+        guard let merger = merger else
+        {
+            return descriptors
+        }
+        
+        return merger.mergeSecondaryDescriptors(relativeFolderPath: relativeFolderPath, key: DescriptorManagerArchiver.DescriptorsArchiveKey, intoDescriptors: descriptors)
     }
     
     private func saveDescriptors()
@@ -113,14 +119,14 @@ class DescriptorManagerArchiver
         self.archiver.save(object: self.descriptors, key: type(of: self).DescriptorsArchiveKey)
     }
     
-    private func loadSuspendedState(withMigrator migrator: ArchiveMigrating?, uploaderName: String) -> Bool
+    private func loadSuspendedState(withMigrator migrator: ArchiveMigrating?, merger: ArchiveMerging?, relativeFolderPath: String) -> Bool
     {
         guard self.shouldLoadArchive == true else
         {
             return false
         }
         
-        guard let suspendedState = ArchiveDataLoader.loadData(relativeFolderPath: uploaderName,
+        guard let suspendedState = ArchiveDataLoader.loadData(relativeFolderPath: relativeFolderPath,
                                                               archiver: self.archiver,
                                                               key: DescriptorManagerArchiver.SuspendedArchiveKey,
                                                               migrator: migrator) as? Bool
