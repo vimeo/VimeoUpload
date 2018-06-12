@@ -55,7 +55,7 @@ import Foundation
     /// ```
     ///
     /// - Parameters:
-    ///   - name: The name of the uploader.
+    ///   - name: The name of the folder that we'll store the archive.
     ///   - archivePrefix: The prefix of the archive file. You pass in the
     ///   prefix if you want to keep track of multiple archive files. By
     ///   default, it has the value of `nil`.
@@ -66,9 +66,14 @@ import Foundation
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
     ///   is located.
     /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
-    public init?(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL, migrator: ArchiveMigrating? = nil, merger: ArchiveMerging? = nil)
+    public init?(name: String,
+                 archivePrefix: String? = nil,
+                 shouldLoadArchive: Bool = true,
+                 documentsFolderURL: URL,
+                 migrator: ArchiveMigrating? = nil,
+                 merger: ArchiveMerging? = nil)
     {
-        guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
+        guard let archiver = type(of: self).setupArchiver(folderName: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {
             return nil
         }
@@ -79,22 +84,22 @@ import Foundation
 
         super.init()
         
-        self.failedDescriptors = self.load(withUploaderName: name, migrator: migrator)
+        self.failedDescriptors = self.load(folderName: name, migrator: migrator, merger:  merger)
 
         self.addObservers()
     }
     
     // MARK: Setup
     
-    private static func setupArchiver(name: String, archivePrefix: String?, documentsFolderURL: URL) -> KeyedArchiver?
+    private static func setupArchiver(folderName: String, archivePrefix: String?, documentsFolderURL: URL) -> KeyedArchiver?
     {
-        let typeFolderURL = documentsFolderURL.appendingPathComponent(name)
+        let folderURL = documentsFolderURL.appendingPathComponent(folderName)
         
-        if FileManager.default.fileExists(atPath: typeFolderURL.path) == false
+        if FileManager.default.fileExists(atPath: folderURL.path) == false
         {
             do
             {
-                try FileManager.default.createDirectory(at: typeFolderURL, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
             }
             catch
             {
@@ -102,17 +107,17 @@ import Foundation
             }
         }
         
-        return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
+        return KeyedArchiver(basePath: folderURL.path, archivePrefix: archivePrefix)
     }
     
-    private func load(withUploaderName uploaderName: String, migrator: ArchiveMigrating?) -> [String: Descriptor]
+    private func load(folderName: String, migrator: ArchiveMigrating?, merger: ArchiveMerging?) -> [String: Descriptor]
     {
         guard self.shouldLoadArchive == true else
         {
             return [:]
         }
         
-        guard let failedDescriptors = ArchiveDataLoader.loadData(withUploaderName: uploaderName,
+        guard let failedDescriptors = ArchiveDataLoader.loadData(relativeFolderPath: folderName,
                                                                  archiver: self.archiver,
                                                                  key: VideoDescriptorFailureTracker.ArchiveKey,
                                                                  migrator: migrator) as? [String: Descriptor]
@@ -121,7 +126,12 @@ import Foundation
             return [:]
         }
         
-        return failedDescriptors
+        guard let merger = merger else
+        {
+            return failedDescriptors
+        }
+        
+        return merger.mergeSecondaryFailedDescriptors(relativeFolderPath: folderName, key: VideoDescriptorFailureTracker.ArchiveKey, intoFailedDescriptors: failedDescriptors)
     }
     
     private func save()

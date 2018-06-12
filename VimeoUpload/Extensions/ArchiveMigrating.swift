@@ -35,7 +35,7 @@ public protocol ArchiveMigrating
 
 struct ArchiveDataLoader
 {
-    static func loadData(withUploaderName uploaderName: String, archiver: KeyedArchiver, key: String, migrator: ArchiveMigrating?) -> Any?
+    static func loadData(relativeFolderPath: String, archiver: KeyedArchiver, key: String, migrator: ArchiveMigrating?) -> Any?
     {
         let dataAtNewLocation = archiver.loadObject(for: key)
         
@@ -44,7 +44,7 @@ struct ArchiveDataLoader
             return dataAtNewLocation
         }
         
-        let relativeFilePath = uploaderName + "/" + key + ".archive"
+        let relativeFilePath = relativeFolderPath + "/" + key + ".archive"
         
         guard migrator.archiveFileExists(relativeFilePath: relativeFilePath) == true else
         {

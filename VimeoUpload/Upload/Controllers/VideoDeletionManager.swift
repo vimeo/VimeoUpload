@@ -140,7 +140,7 @@ public class VideoDeletionManager: NSObject
             return [:]
         }
         
-        guard let retries = ArchiveDataLoader.loadData(withUploaderName: VideoDeletionManager.DeletionsArchiveKey,
+        guard let retries = ArchiveDataLoader.loadData(relativeFolderPath: VideoDeletionManager.DeletionsArchiveKey,
                                                        archiver: self.archiver,
                                                        key: VideoDeletionManager.DeletionsArchiveKey,
                                                        migrator: migrator) as? [VideoUri: Int]
