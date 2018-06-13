@@ -149,7 +149,7 @@ open class DescriptorManager: NSObject
         // So we respond by clearing the descriptors set, returning to a blank slate. [AH] 10/28/2015
         
         self.sessionManager.setSessionDidBecomeInvalidBlock { [weak self] (session, error) -> Void in
-            
+
             guard let strongSelf = self else
             {
                 return
@@ -161,14 +161,31 @@ open class DescriptorManager: NSObject
                 {
                     return
                 }
-
-                strongSelf.archiver.removeAll()
                 
                 // TODO: Need to respond to this notification [AH] 2/22/2016 (remove from downloads store, delete active uploads etc.)
 
-                strongSelf.delegate?.sessionDidBecomeInvalid?(error: error as NSError)
+                // Why do we need to check if `error` is `nil` even though the compiler
+                // tells us that this checking will always succeed? Behind the scene, we
+                // are using the `AFURLSessionManager` class -- which is an Objective-C
+                // class -- for managing background upload sessions. For the session
+                // invalid callback, its header file does not mark the `NSError` object
+                // as nullable; in reality, this object will be `nil` if we explicitly
+                // invalidate the underlying session. Because of that, it is necessary
+                // to check for `nil` here, else the runtime will crash if the error
+                // object is `nil`. [VN] (06/13/2018) 
+                let theError: NSError?
+                if error != nil
+                {
+                    theError = error as NSError
+                }
+                else
+                {
+                    theError = nil
+                }
                 
-                NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.SessionDidBecomeInvalid.rawValue), object: error)
+                strongSelf.delegate?.sessionDidBecomeInvalid?(error: theError)
+
+                NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.SessionDidBecomeInvalid.rawValue), object: theError)
             })
         }
         
@@ -335,6 +352,11 @@ open class DescriptorManager: NSObject
     }
     
     // MARK: Public API
+    
+    public func invalidateSessionManager()
+    {
+        self.sessionManager.invalidateSessionCancelingTasks(false)
+    }
     
     /// Determines if the manager can handle events from a background upload
     /// session.
