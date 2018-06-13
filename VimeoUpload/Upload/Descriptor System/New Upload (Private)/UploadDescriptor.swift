@@ -82,7 +82,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             guard let uploadLink = self.video?.upload?.uploadLink else
             {
-                // TODO: delete file here? Same in download?
+                FileManager.default.deleteFile(at: self.url)
                 
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
