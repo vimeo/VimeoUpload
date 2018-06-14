@@ -268,20 +268,8 @@ open class DescriptorManager: NSObject
                 let isConnectionError = ((task.error as? NSError)?.isConnectionError() == true || (error as? NSError)?.isConnectionError() == true)
                 if isConnectionError
                 {
-                    do
-                    {
-                        try descriptor.prepare(sessionManager: strongSelf.sessionManager)
-                        
-                        descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
-                        strongSelf.save()
-                    }
-                    catch
-                    {
-                        strongSelf.archiver.remove(descriptor: descriptor)
-                        
-                        strongSelf.delegate?.descriptorDidFail?(descriptor)
-                        NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
-                    }
+                    descriptor.suspend(sessionManager: strongSelf.sessionManager)
+                    strongSelf.save()
                     
                     return
                 }
