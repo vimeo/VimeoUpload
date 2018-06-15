@@ -190,6 +190,10 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.video = uploadTicket.video
         }
+        else
+        {
+            self.video = aDecoder.decodeObject(forKey: type(of: self).VideoCoderKey) as? VIMVideo
+        }
 
         super.init(coder: aDecoder)
     }

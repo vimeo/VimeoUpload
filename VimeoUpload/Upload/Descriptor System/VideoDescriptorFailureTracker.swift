@@ -70,8 +70,7 @@ import Foundation
                  archivePrefix: String? = nil,
                  shouldLoadArchive: Bool = true,
                  documentsFolderURL: URL,
-                 migrator: ArchiveMigrating? = nil,
-                 merger: ArchiveMerging? = nil)
+                 migrator: ArchiveMigrating? = nil)
     {
         guard let archiver = type(of: self).setupArchiver(folderName: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {
@@ -84,7 +83,7 @@ import Foundation
 
         super.init()
         
-        self.failedDescriptors = self.load(folderName: name, migrator: migrator, merger:  merger)
+        self.failedDescriptors = self.load(folderName: name, migrator: migrator)
 
         self.addObservers()
     }
@@ -110,7 +109,7 @@ import Foundation
         return KeyedArchiver(basePath: folderURL.path, archivePrefix: archivePrefix)
     }
     
-    private func load(folderName: String, migrator: ArchiveMigrating?, merger: ArchiveMerging?) -> [String: Descriptor]
+    private func load(folderName: String, migrator: ArchiveMigrating?) -> [String: Descriptor]
     {
         guard self.shouldLoadArchive == true else
         {
@@ -126,12 +125,7 @@ import Foundation
             return [:]
         }
         
-        guard let merger = merger else
-        {
-            return failedDescriptors
-        }
-        
-        return merger.mergeSecondaryFailedDescriptors(relativeFolderPath: folderName, key: VideoDescriptorFailureTracker.ArchiveKey, intoFailedDescriptors: failedDescriptors)
+        return failedDescriptors
     }
     
     private func save()

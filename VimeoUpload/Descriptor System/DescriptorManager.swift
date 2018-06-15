@@ -34,6 +34,7 @@ public enum DescriptorManagerNotification: String
     case DescriptorDidSucceed = "DescriptorDidSucceedNotification"
     case DescriptorDidCancel = "DescriptorDidCancelNotification"
     case SessionDidBecomeInvalid = "SessionDidBecomeInvalidNotification"
+    case DescriptorFromPrefixedArchiveDidSuspend = "DescriptorFromPrefixedArchiveDidSuspend"
 }
 
 public typealias TestClosure = (Descriptor) -> Bool
@@ -47,6 +48,7 @@ open class DescriptorManager: NSObject
     
     private var sessionManager: AFURLSessionManager
     private let name: String
+    private let archivePrefix: String?
     private weak var delegate: DescriptorManagerDelegate?
     
     // MARK:
@@ -76,15 +78,13 @@ open class DescriptorManager: NSObject
           shouldLoadArchive: Bool,
           documentsFolderURL: URL,
           migrator: ArchiveMigrating? = nil,
-          merger: ArchiveMerging? = nil,
           delegate: DescriptorManagerDelegate? = nil)
     {
         guard let archiver = DescriptorManagerArchiver(name: name,
                                                        archivePrefix: archivePrefix,
                                                        shouldLoadArchive: shouldLoadArchive,
                                                        documentsFolderURL: documentsFolderURL,
-                                                       migrator: migrator,
-                                                       merger: merger)
+                                                       migrator: migrator)
         else
         {
             return nil
@@ -95,6 +95,7 @@ open class DescriptorManager: NSObject
         self.delegate = delegate
         
         self.archiver = archiver
+        self.archivePrefix = archivePrefix
         
         super.init()
 
@@ -268,8 +269,30 @@ open class DescriptorManager: NSObject
                 let isConnectionError = ((task.error as? NSError)?.isConnectionError() == true || (error as? NSError)?.isConnectionError() == true)
                 if isConnectionError
                 {
-                    descriptor.suspend(sessionManager: strongSelf.sessionManager)
-                    strongSelf.save()
+                    if let _ = strongSelf.archivePrefix
+                    {
+                        descriptor.suspend(sessionManager: strongSelf.sessionManager)
+                        strongSelf.save()
+                        
+                        NotificationCenter.default.post(name: Notification.Name(DescriptorManagerNotification.DescriptorFromPrefixedArchiveDidSuspend.rawValue), object: descriptor)
+                    }
+                    else
+                    {
+                        do
+                        {
+                            try descriptor.prepare(sessionManager: strongSelf.sessionManager)
+
+                            descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
+                            strongSelf.save()
+                        }
+                        catch
+                        {
+                            strongSelf.archiver.remove(descriptor: descriptor)
+
+                            strongSelf.delegate?.descriptorDidFail?(descriptor)
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
+                        }
+                    }
                     
                     return
                 }

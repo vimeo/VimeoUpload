@@ -77,7 +77,6 @@ import VimeoNetworking
                  shouldLoadArchive: Bool = true,
                  documentsFolderURL: URL,
                  migrator: ArchiveMigrating? = nil,
-                 merger: ArchiveMerging? = nil,
                  backgroundSessionIdentifier: String,
                  sharedContainerIdentifier: String? = nil,
                  descriptorManagerDelegate: DescriptorManagerDelegate? = nil,
@@ -101,7 +100,6 @@ import VimeoNetworking
                    shouldLoadArchive: shouldLoadArchive,
                    documentsFolderURL: documentsFolderURL,
                    migrator: migrator,
-                   merger: merger,
                    delegate: descriptorManagerDelegate)
         
         self.connectivityManager.delegate = self
