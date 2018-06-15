@@ -364,6 +364,9 @@ open class DescriptorManager: NSObject
     
     // MARK: Public API
     
+    /// Invalidate the underlying session manager object. You should
+    /// call this method whenever you're finished using the descriptor
+    /// manager, else you'll risk leaking memory.
     public func invalidateSessionManager()
     {
         self.sessionManager.invalidateSessionCancelingTasks(false)
