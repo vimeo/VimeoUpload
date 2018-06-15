@@ -24,12 +24,28 @@
 //  THE SOFTWARE.
 //
 
+/// Classes conforming to the `ArchiveMigrating` protocol can move
+/// upload data from one sandbox to another. This protocol is for
+/// internal use only.
 public protocol ArchiveMigrating
 {
+    /// Provides a means for the client to determine if an archive exists
+    /// at a file path relative to a Documents folder.
+    ///
+    /// - Parameter relativeFilePath: The relative path of the archive file.
+    /// - Returns: `true` if the archive file exists.
     func archiveFileExists(relativeFilePath: String) -> Bool
     
+    /// Provides a means for the client to load an archive file into
+    /// memory.
+    ///
+    /// - Parameter relativeFilePath: The relative path of the archive file.
+    /// - Returns: The data from the archive file.
     func loadArchiveFile(relativeFilePath: String) -> Any?
     
+    /// Provides a means for the client to delete an archive file.
+    ///
+    /// - Parameter relativeFilePath: The relative path of the archive file.
     func deleteArchiveFile(relativeFilePath: String)
 }
 

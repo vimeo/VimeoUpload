@@ -65,6 +65,8 @@ import Foundation
     ///   `true`.
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
     ///   is located.
+    ///   - migrator: The object used to migrate upload data from one sandbox
+    ///   to another. Internal use only. By default, this argument is `nil`.
     /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
     public init?(name: String,
                  archivePrefix: String? = nil,

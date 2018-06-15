@@ -77,6 +77,8 @@ public class VideoDeletionManager: NSObject
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
     /// is located.
     ///   - retryCount: The number of retries. The default value is `3`.
+    ///   - migrator: The object used to migrate upload data from one sandbox
+    ///   to another. Internal use only. By default, this argument is `nil`.
     /// - Returns: `nil` if the keyed archiver cannot load deletions' archive.
     public init?(sessionManager: VimeoSessionManager,
                  archivePrefix: String? = nil,

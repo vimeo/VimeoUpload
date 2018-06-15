@@ -61,6 +61,8 @@ import VimeoNetworking
     ///   - documentsFolderURL: The Documents folder's URL of the folder in
     ///   which the upload description will be stored. That folder has the
     ///   same name as the first argument.
+    ///   - migrator: The object used to migrate upload data from one sandbox
+    ///   to another. Internal use only. By default, this argument is `nil`.
     ///   - backgroundSessionIdentifier: An ID of the background upload
     ///   session.
     ///   - sharedContainerIdentifier: An ID of a shared sandbox. By default
