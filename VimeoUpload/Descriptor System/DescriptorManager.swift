@@ -163,6 +163,8 @@ open class DescriptorManager: NSObject
                     return
                 }
                 
+                strongSelf.archiver.removeAll()
+                
                 // TODO: Need to respond to this notification [AH] 2/22/2016 (remove from downloads store, delete active uploads etc.)
 
                 // Why do we need to check if `error` is `nil` even though the compiler
