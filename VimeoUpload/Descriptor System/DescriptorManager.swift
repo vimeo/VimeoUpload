@@ -145,10 +145,22 @@ open class DescriptorManager: NSObject
 
     private func setupSessionBlocks()
     {
-        // Because we're using a background session we never have cause to invalidate the session,
-        // Which means that if this block is called it's likely due to an unrecoverable error,
-        // So we respond by clearing the descriptors set, returning to a blank slate. [AH] 10/28/2015
-        
+        // To restate Alfie's comment on this session invalid callback, in the
+        // past we did not want to invalidate a background session because we
+        // wanted to handle upload events coming back to the app as soon as the
+        // associated upload task is finished, so any invalidation might likely
+        // be caused by a weird error that we could not handle. That assumption
+        // is not true anymore unfortunately with the share extension. When the
+        // app has to handle upload events coming from the share extension, it
+        // must create an instance of `VimeoSessionManager` whose background ID
+        // is the same as the one that made the upload task. Because
+        // `VimeoSessionManager` retains `URLSession` while acting as its
+        // delegate, and `URLSession` retains its delegate object until it is
+        // invalidated, an explicit call to the `invalidate` method is necessary
+        // to avoid leaking memory. If the underlying session is not invalidated,
+        // not only the app will leak memory but the share extension won't be
+        // able to upload due to the main app still binding to that session ID.
+        // [VN] (07/03/2018)
         self.sessionManager.setSessionDidBecomeInvalidBlock { [weak self] (session, error) -> Void in
 
             guard let strongSelf = self else
