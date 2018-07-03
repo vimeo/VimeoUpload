@@ -175,7 +175,14 @@ open class DescriptorManager: NSObject
                 // as nullable; in reality, this object will be `nil` if we explicitly
                 // invalidate the underlying session. Because of that, it is necessary
                 // to check for `nil` here, else the runtime will crash if the error
-                // object is `nil`. [VN] (06/13/2018) 
+                // object is `nil`.
+                //
+                // In short, trying to safely unwrap `error` will result in a crash, so
+                // as weird as it sounds, please do not do that here. [VN] (06/13/2018)
+                
+                // TODO: Either update AFNetworking to the latest version, or redesign
+                // our networking library so that we have a better control over this
+                // error. [VN] (07/03/2018)
                 let theError: NSError?
                 if error != nil
                 {
