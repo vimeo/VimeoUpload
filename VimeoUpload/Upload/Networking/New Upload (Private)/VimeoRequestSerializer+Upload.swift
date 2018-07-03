@@ -31,8 +31,6 @@ extension VimeoRequestSerializer
 {
     private struct Constants
     {
-        static let PreUploadKey = "_pre_upload"
-        static let PreUploadDefaultValue = true
         static let ApproachKey = "approach"
         static let ApproachDefaultValue = "streaming"
         static let UploadKey = "upload"
@@ -48,9 +46,6 @@ extension VimeoRequestSerializer
         
         // Store `uploadParameters` dictionary as the value to "upload" key inside `parameters` dictionary.
         var parameters = [Constants.UploadKey: uploadParameters as Any]
-        
-        // Add on pre-upload key-value pair to `parameters` dictionary.
-        parameters[Constants.PreUploadKey] = Constants.PreUploadDefaultValue
         
         if let videoSettings = videoSettings
         {

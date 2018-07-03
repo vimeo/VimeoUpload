@@ -26,7 +26,7 @@
 
 import Foundation
 
-public class VideoSettings: NSObject, NSCoding
+open class VideoSettings: NSObject, NSCoding
 {
     public var title: String?
     {
@@ -61,7 +61,7 @@ public class VideoSettings: NSObject, NSCoding
     
     // MARK: Public API
     
-    public func parameterDictionary() -> [String: Any]
+    open func parameterDictionary() -> [String: Any]
     {
         var parameters: [String: Any] = [:]
         
