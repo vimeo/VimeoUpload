@@ -27,7 +27,7 @@
 /// Classes conforming to the `ArchiveMigrating` protocol can move
 /// upload data from one sandbox to another. This protocol is for
 /// internal use only.
-public protocol ArchiveMigrating
+protocol ArchiveMigrating
 {
     /// Provides a means for the client to determine if an archive exists
     /// at a file path relative to a Documents folder.

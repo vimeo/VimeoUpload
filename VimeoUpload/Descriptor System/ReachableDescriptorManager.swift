@@ -61,8 +61,6 @@ import VimeoNetworking
     ///   - documentsFolderURL: The Documents folder's URL of the folder in
     ///   which the upload description will be stored. That folder has the
     ///   same name as the first argument.
-    ///   - migrator: The object used to migrate upload data from one sandbox
-    ///   to another. Internal use only. By default, this argument is `nil`.
     ///   - backgroundSessionIdentifier: An ID of the background upload
     ///   session.
     ///   - sharedContainerIdentifier: An ID of a shared sandbox. By default
@@ -78,7 +76,6 @@ import VimeoNetworking
                  archivePrefix: String? = nil,
                  shouldLoadArchive: Bool = true,
                  documentsFolderURL: URL,
-                 migrator: ArchiveMigrating? = nil,
                  backgroundSessionIdentifier: String,
                  sharedContainerIdentifier: String? = nil,
                  descriptorManagerDelegate: DescriptorManagerDelegate? = nil,
@@ -101,7 +98,6 @@ import VimeoNetworking
                    archivePrefix: archivePrefix,
                    shouldLoadArchive: shouldLoadArchive,
                    documentsFolderURL: documentsFolderURL,
-                   migrator: migrator,
                    delegate: descriptorManagerDelegate)
         
         self.connectivityManager.delegate = self
