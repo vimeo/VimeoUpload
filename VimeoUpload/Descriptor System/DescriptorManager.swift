@@ -285,8 +285,13 @@ open class DescriptorManager: NSObject
                     return
                 }
                 
-                // These types of errors can occur when connection drops and before suspend() is called,
-                // Or when connection drop is slow -> timeouts etc. [AH] 2/22/2016
+                // For background upload tasks, keep in mind that if the device cannot
+                // connect to the Internet, they will not give up right away. Instead,
+                // they will be retried by the OS on our behalf. This timeout period is
+                // determined by `URLSessionConfiguration`'s `timeoutIntervalForResource`
+                // property. By default, it has a value of 7 days, meaning the OS will
+                // attempt to retry for a week before returning with a connection error.
+                // [VN] (07/03/2018)
                 let isConnectionError = ((task.error as? NSError)?.isConnectionError() == true || (error as? NSError)?.isConnectionError() == true)
                 if isConnectionError
                 {
