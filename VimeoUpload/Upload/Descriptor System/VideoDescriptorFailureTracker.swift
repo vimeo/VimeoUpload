@@ -84,7 +84,8 @@ import Foundation
         
         let migrator = ArchiveMigrator(fileManager: FileManager.default)
         
-        self.failedDescriptors = self.load(folderName: name, migrator: migrator)
+        let relativeFolderURL = URL(string: name)
+        self.failedDescriptors = self.load(relativeFolderURL: relativeFolderURL, migrator: migrator)
 
         self.addObservers()
     }
@@ -110,14 +111,14 @@ import Foundation
         return KeyedArchiver(basePath: folderURL.path, archivePrefix: archivePrefix)
     }
     
-    private func load(folderName: String, migrator: ArchiveMigrating?) -> [String: Descriptor]
+    private func load(relativeFolderURL: URL?, migrator: ArchiveMigrating?) -> [String: Descriptor]
     {
         guard self.shouldLoadArchive == true else
         {
             return [:]
         }
         
-        guard let failedDescriptors = ArchiveDataLoader.loadData(relativeFolderPath: folderName,
+        guard let failedDescriptors = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
                                                                  archiver: self.archiver,
                                                                  key: VideoDescriptorFailureTracker.ArchiveKey,
                                                                  migrator: migrator) as? [String: Descriptor]

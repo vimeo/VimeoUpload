@@ -40,28 +40,28 @@ class ArchiveMigrator: ArchiveMigrating
         self.fileManager = fileManager
     }
     
-    func archiveFileExists(relativeFilePath: String) -> Bool
+    func archiveFileExists(relativeFileURL: URL) -> Bool
     {
-        let fileURL = self.fileURL(withRelativeFilePath: relativeFilePath)
+        let fileURL = self.fileURL(withRelativeFilePath: relativeFileURL.path)
         
         return self.fileManager.fileExists(atPath: fileURL.path)
     }
     
-    func loadArchiveFile(relativeFilePath: String) -> Any?
+    func loadArchiveFile(relativeFileURL: URL) -> Any?
     {
-        let fileURL = self.fileURL(withRelativeFilePath: relativeFilePath)
+        let fileURL = self.fileURL(withRelativeFilePath: relativeFileURL.path)
         
         return NSKeyedUnarchiver.unarchiveObject(withFile: fileURL.path)
     }
     
-    func deleteArchiveFile(relativeFilePath: String)
+    func deleteArchiveFile(relativeFileURL: URL)
     {
-        guard self.archiveFileExists(relativeFilePath: relativeFilePath) == true else
+        guard self.archiveFileExists(relativeFileURL: relativeFileURL) == true else
         {
             return
         }
         
-        let fileURL = self.fileURL(withRelativeFilePath: relativeFilePath)
+        let fileURL = self.fileURL(withRelativeFilePath: relativeFileURL.path)
         
         try? self.fileManager.removeItem(at: fileURL)
     }

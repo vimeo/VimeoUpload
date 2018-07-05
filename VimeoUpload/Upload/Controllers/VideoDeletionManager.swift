@@ -139,9 +139,8 @@ public class VideoDeletionManager: NSObject
             return [:]
         }
         
-        let relativeFolderPath = VideoDeletionManager.DeletionsArchiveKey + "/" + VideoDeletionManager.DeletionsArchiveKey
-        
-        guard let retries = ArchiveDataLoader.loadData(relativeFolderPath: relativeFolderPath,
+        let relativeFolderURL = URL(string: VideoDeletionManager.DeletionsArchiveKey, relativeTo: URL(string: VideoDeletionManager.DeletionsArchiveKey))
+        guard let retries = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
                                                        archiver: self.archiver,
                                                        key: VideoDeletionManager.DeletionsArchiveKey,
                                                        migrator: migrator) as? [VideoUri: Int]

@@ -32,47 +32,38 @@ protocol ArchiveMigrating
     /// Provides a means for the client to determine if an archive exists
     /// at a file path relative to a Documents folder.
     ///
-    /// - Parameter relativeFilePath: The relative path of the archive file.
+    /// - Parameter relativeFileURL: The relative URL of the archive file.
     /// - Returns: `true` if the archive file exists.
-    func archiveFileExists(relativeFilePath: String) -> Bool
+    func archiveFileExists(relativeFileURL: URL) -> Bool
     
     /// Provides a means for the client to load an archive file into
     /// memory.
     ///
     /// - Parameter relativeFilePath: The relative path of the archive file.
     /// - Returns: The data from the archive file.
-    func loadArchiveFile(relativeFilePath: String) -> Any?
+    func loadArchiveFile(relativeFileURL: URL) -> Any?
     
     /// Provides a means for the client to delete an archive file.
     ///
     /// - Parameter relativeFilePath: The relative path of the archive file.
-    func deleteArchiveFile(relativeFilePath: String)
+    func deleteArchiveFile(relativeFileURL: URL)
 }
 
 struct ArchiveDataLoader
 {
-    static func loadData(relativeFolderPath: String, archiver: KeyedArchiver, key: String, migrator: ArchiveMigrating?) -> Any?
+    static func loadData(relativeFolderURL: URL?, archiver: KeyedArchiver, key: String, migrator: ArchiveMigrating?) -> Any?
     {
         let dataAtNewLocation = archiver.loadObject(for: key)
-        
-        guard let migrator = migrator else
+
+        guard let migrator = migrator,
+            let relativeFileURL = URL(string: key + ".archive", relativeTo: relativeFolderURL),
+            let dataAtOldLocation = migrator.loadArchiveFile(relativeFileURL: relativeFileURL)
+        else
         {
             return dataAtNewLocation
         }
         
-        let relativeFilePath = relativeFolderPath + "/" + key + ".archive"
-        
-        guard migrator.archiveFileExists(relativeFilePath: relativeFilePath) == true else
-        {
-            return dataAtNewLocation
-        }
-        
-        guard let dataAtOldLocation = migrator.loadArchiveFile(relativeFilePath: relativeFilePath) else
-        {
-            return dataAtNewLocation
-        }
-        
-        migrator.deleteArchiveFile(relativeFilePath: relativeFilePath)
+        migrator.deleteArchiveFile(relativeFileURL: relativeFileURL)
         
         return dataAtOldLocation
     }

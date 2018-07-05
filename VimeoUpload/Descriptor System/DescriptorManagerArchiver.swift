@@ -64,8 +64,9 @@ class DescriptorManagerArchiver
 
         self.shouldLoadArchive = shouldLoadArchive
         
-        self.descriptors = self.loadDescriptors(withMigrator: migrator, relativeFolderPath: name)
-        self.suspended = self.loadSuspendedState(withMigrator: migrator, relativeFolderPath: name)
+        let relativeFolderURL = URL(string: name)
+        self.descriptors = self.loadDescriptors(withMigrator: migrator, relativeFolderURL: relativeFolderURL)
+        self.suspended = self.loadSuspendedState(withMigrator: migrator, relativeFolderURL: relativeFolderURL)
     }
     
     // MARK: Setup - Archiving
@@ -89,14 +90,14 @@ class DescriptorManagerArchiver
         return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
     }
     
-    private func loadDescriptors(withMigrator migrator: ArchiveMigrating?, relativeFolderPath: String) -> Set<Descriptor>
+    private func loadDescriptors(withMigrator migrator: ArchiveMigrating?, relativeFolderURL: URL?) -> Set<Descriptor>
     {
         guard self.shouldLoadArchive == true else
         {
             return Set<Descriptor>()
         }
         
-        guard let descriptors = ArchiveDataLoader.loadData(relativeFolderPath: relativeFolderPath,
+        guard let descriptors = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
                                                         archiver: self.archiver,
                                                         key: DescriptorManagerArchiver.DescriptorsArchiveKey,
                                                         migrator: migrator) as? Set<Descriptor>
@@ -113,14 +114,14 @@ class DescriptorManagerArchiver
         self.archiver.save(object: self.descriptors, key: type(of: self).DescriptorsArchiveKey)
     }
     
-    private func loadSuspendedState(withMigrator migrator: ArchiveMigrating?, relativeFolderPath: String) -> Bool
+    private func loadSuspendedState(withMigrator migrator: ArchiveMigrating?, relativeFolderURL: URL?) -> Bool
     {
         guard self.shouldLoadArchive == true else
         {
             return false
         }
         
-        guard let suspendedState = ArchiveDataLoader.loadData(relativeFolderPath: relativeFolderPath,
+        guard let suspendedState = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
                                                               archiver: self.archiver,
                                                               key: DescriptorManagerArchiver.SuspendedArchiveKey,
                                                               migrator: migrator) as? Bool
