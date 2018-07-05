@@ -54,9 +54,9 @@ struct ArchiveDataLoader
     static func loadData(relativeFolderURL: URL?, archiver: KeyedArchiver, key: String, migrator: ArchiveMigrating?) -> Any?
     {
         let dataAtNewLocation = archiver.loadObject(for: key)
-
+        
         guard let migrator = migrator,
-            let relativeFileURL = URL(string: key + ".archive", relativeTo: relativeFolderURL),
+            let relativeFileURL = relativeFolderURL?.appendingPathComponent(key + ".archive"),
             let dataAtOldLocation = migrator.loadArchiveFile(relativeFileURL: relativeFileURL)
         else
         {
