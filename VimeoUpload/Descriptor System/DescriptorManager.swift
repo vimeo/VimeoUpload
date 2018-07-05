@@ -34,7 +34,6 @@ public enum DescriptorManagerNotification: String
     case DescriptorDidSucceed = "DescriptorDidSucceedNotification"
     case DescriptorDidCancel = "DescriptorDidCancelNotification"
     case SessionDidBecomeInvalid = "SessionDidBecomeInvalidNotification"
-    case DescriptorFromPrefixedArchiveDidSuspend = "DescriptorFromPrefixedArchiveDidSuspend"
 }
 
 public typealias TestClosure = (Descriptor) -> Bool
@@ -42,7 +41,12 @@ public typealias VoidClosure = () -> Void
 
 open class DescriptorManager: NSObject
 {
-    private static let QueueName = "descriptor_manager.synchronization_queue"
+    private struct Constants
+    {
+        static let QueueName = "descriptor_manager.synchronization_queue"
+        static let ShareExtensionArchivePrefix = "share_extension"
+        static let ShareExtensionDescriptorDidSuspend = "ShareExtensionDescriptorDidSuspend"
+    }
     
     // MARK:
     
@@ -54,7 +58,7 @@ open class DescriptorManager: NSObject
     // MARK:
     
     private let archiver: DescriptorManagerArchiver // This object handles persistence of descriptors and suspended state to disk
-    private let synchronizationQueue = DispatchQueue(label: DescriptorManager.QueueName, attributes: [])
+    private let synchronizationQueue = DispatchQueue(label: Constants.QueueName, attributes: [])
 
     // MARK:
     
@@ -296,12 +300,12 @@ open class DescriptorManager: NSObject
                 let isConnectionError = ((task.error as? NSError)?.isConnectionError() == true || (error as? NSError)?.isConnectionError() == true)
                 if isConnectionError
                 {
-                    if let _ = strongSelf.archivePrefix
+                    if let prefix = strongSelf.archivePrefix, prefix == Constants.ShareExtensionArchivePrefix
                     {
                         descriptor.suspend(sessionManager: strongSelf.sessionManager)
                         strongSelf.save()
                         
-                        NotificationCenter.default.post(name: Notification.Name(DescriptorManagerNotification.DescriptorFromPrefixedArchiveDidSuspend.rawValue), object: descriptor)
+                        NotificationCenter.default.post(name: Notification.Name(Constants.ShareExtensionDescriptorDidSuspend), object: descriptor)
                     }
                     else
                     {
