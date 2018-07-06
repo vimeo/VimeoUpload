@@ -100,8 +100,7 @@ class DescriptorManagerArchiver
         
         guard let descriptors = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
                                                         archiver: self.archiver,
-                                                        key: DescriptorManagerArchiver.DescriptorsArchiveKey,
-                                                        migrator: migrator) as? Set<Descriptor>
+                                                        key: DescriptorManagerArchiver.DescriptorsArchiveKey) as? Set<Descriptor>
         else
         {
             return Set<Descriptor>()
@@ -124,8 +123,7 @@ class DescriptorManagerArchiver
         
         guard let suspendedState = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
                                                               archiver: self.archiver,
-                                                              key: DescriptorManagerArchiver.SuspendedArchiveKey,
-                                                              migrator: migrator) as? Bool
+                                                              key: DescriptorManagerArchiver.SuspendedArchiveKey) as? Bool
         else
         {
             return false

@@ -51,11 +51,11 @@ protocol ArchiveMigrating
 
 struct ArchiveDataLoader
 {
-    static func loadData(relativeFolderURL: URL?, archiver: KeyedArchiver, key: String, migrator: ArchiveMigrating?) -> Any?
+    static func loadData(relativeFolderURL: URL?, archiver: KeyedArchiver, key: String) -> Any?
     {
         let dataAtNewLocation = archiver.loadObject(for: key)
         
-        guard let migrator = migrator,
+        guard let migrator = ArchiveMigrator(fileManager: FileManager.default),
             let relativeFileURL = relativeFolderURL?.appendingPathComponent(key + ".archive"),
             let dataAtOldLocation = migrator.loadArchiveFile(relativeFileURL: relativeFileURL)
         else

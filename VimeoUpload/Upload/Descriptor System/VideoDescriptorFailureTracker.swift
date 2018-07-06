@@ -120,8 +120,7 @@ import Foundation
         
         guard let failedDescriptors = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
                                                                  archiver: self.archiver,
-                                                                 key: VideoDescriptorFailureTracker.ArchiveKey,
-                                                                 migrator: migrator) as? [String: Descriptor]
+                                                                 key: VideoDescriptorFailureTracker.ArchiveKey) as? [String: Descriptor]
         else
         {
             return [:]
