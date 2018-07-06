@@ -52,8 +52,7 @@ class DescriptorManagerArchiver
     init?(name: String,
           archivePrefix: String?,
           shouldLoadArchive: Bool = true,
-          documentsFolderURL: URL,
-          migrator: ArchiveMigrating?)
+          documentsFolderURL: URL)
     {
         guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {
@@ -63,6 +62,8 @@ class DescriptorManagerArchiver
         self.archiver = archiver
 
         self.shouldLoadArchive = shouldLoadArchive
+        
+        let migrator = ArchiveMigrator(fileManager: FileManager.default)
         
         let relativeFolderURL = URL(string: name)
         self.descriptors = self.loadDescriptors(withMigrator: migrator, relativeFolderURL: relativeFolderURL)

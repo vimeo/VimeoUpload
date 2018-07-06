@@ -83,13 +83,10 @@ open class DescriptorManager: NSObject
           documentsFolderURL: URL,
           delegate: DescriptorManagerDelegate? = nil)
     {
-        let migrator = ArchiveMigrator(fileManager: FileManager.default)
-        
         guard let archiver = DescriptorManagerArchiver(name: name,
                                                        archivePrefix: archivePrefix,
                                                        shouldLoadArchive: shouldLoadArchive,
-                                                       documentsFolderURL: documentsFolderURL,
-                                                       migrator: migrator)
+                                                       documentsFolderURL: documentsFolderURL)
         else
         {
             return nil
