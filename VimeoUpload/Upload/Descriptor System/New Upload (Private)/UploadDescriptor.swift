@@ -82,8 +82,6 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             guard let uploadLink = self.video?.upload?.uploadLink else
             {
-                // TODO: delete file here? Same in download?
-                
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
             
@@ -191,6 +189,10 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         if let uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as? VIMUploadTicket
         {
             self.video = uploadTicket.video
+        }
+        else
+        {
+            self.video = aDecoder.decodeObject(forKey: type(of: self).VideoCoderKey) as? VIMVideo
         }
 
         super.init(coder: aDecoder)

@@ -93,7 +93,12 @@ import VimeoNetworking
             backgroundSessionManager = VimeoSessionManager.backgroundSessionManager(identifier: backgroundSessionIdentifier, baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
         }
         
-        super.init(sessionManager: backgroundSessionManager, name: name, archivePrefix: archivePrefix, shouldLoadArchive: shouldLoadArchive, documentsFolderURL: documentsFolderURL, delegate: descriptorManagerDelegate)
+        super.init(sessionManager: backgroundSessionManager,
+                   name: name,
+                   archivePrefix: archivePrefix,
+                   shouldLoadArchive: shouldLoadArchive,
+                   documentsFolderURL: documentsFolderURL,
+                   delegate: descriptorManagerDelegate)
         
         self.connectivityManager.delegate = self
     }

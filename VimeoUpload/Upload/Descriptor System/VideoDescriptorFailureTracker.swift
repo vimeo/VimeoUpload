@@ -33,7 +33,7 @@ import Foundation
     // MARK: 
     
     private let archiver: KeyedArchiver
-    private var failedDescriptors: [String: Descriptor]?
+    private var failedDescriptors: [String: Descriptor] = [:]
     private let shouldLoadArchive: Bool
 
     // MARK: - Initialization
@@ -55,7 +55,7 @@ import Foundation
     /// ```
     ///
     /// - Parameters:
-    ///   - name: The name of the uploader.
+    ///   - name: The name of the folder that we'll store the archive.
     ///   - archivePrefix: The prefix of the archive file. You pass in the
     ///   prefix if you want to keep track of multiple archive files. By
     ///   default, it has the value of `nil`.
@@ -66,9 +66,12 @@ import Foundation
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
     ///   is located.
     /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
-    public init?(name: String, archivePrefix: String? = nil, shouldLoadArchive: Bool = true, documentsFolderURL: URL)
+    public init?(name: String,
+                 archivePrefix: String? = nil,
+                 shouldLoadArchive: Bool = true,
+                 documentsFolderURL: URL)
     {
-        guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
+        guard let archiver = type(of: self).setupArchiver(folderName: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {
             return nil
         }
@@ -79,22 +82,25 @@ import Foundation
 
         super.init()
         
-        self.failedDescriptors = self.load()
+        let migrator = ArchiveMigrator(fileManager: FileManager.default)
+        
+        let relativeFolderURL = URL(string: name)
+        self.failedDescriptors = self.load(relativeFolderURL: relativeFolderURL, migrator: migrator)
 
         self.addObservers()
     }
     
     // MARK: Setup
     
-    private static func setupArchiver(name: String, archivePrefix: String?, documentsFolderURL: URL) -> KeyedArchiver?
+    private static func setupArchiver(folderName: String, archivePrefix: String?, documentsFolderURL: URL) -> KeyedArchiver?
     {
-        let typeFolderURL = documentsFolderURL.appendingPathComponent(name)
+        let folderURL = documentsFolderURL.appendingPathComponent(folderName)
         
-        if FileManager.default.fileExists(atPath: typeFolderURL.path) == false
+        if FileManager.default.fileExists(atPath: folderURL.path) == false
         {
             do
             {
-                try FileManager.default.createDirectory(at: typeFolderURL, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
             }
             catch
             {
@@ -102,40 +108,43 @@ import Foundation
             }
         }
         
-        return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
+        return KeyedArchiver(basePath: folderURL.path, archivePrefix: archivePrefix)
     }
     
-    private func load() -> [String: Descriptor]?
+    private func load(relativeFolderURL: URL?, migrator: ArchiveMigrating?) -> [String: Descriptor]
     {
         guard self.shouldLoadArchive == true else
         {
-            return nil
+            return [:]
         }
         
-        return self.archiver.loadObject(for: type(of: self).ArchiveKey) as? [String: Descriptor] ?? [:]
+        guard let failedDescriptors = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
+                                                                 archiver: self.archiver,
+                                                                 key: VideoDescriptorFailureTracker.ArchiveKey) as? [String: Descriptor]
+        else
+        {
+            return [:]
+        }
+        
+        return failedDescriptors
     }
     
     private func save()
     {
-        guard let failedDescriptors = self.failedDescriptors else
-        {
-            return
-        }
-        
-        self.archiver.save(object: failedDescriptors, key: type(of: self).ArchiveKey)
+        self.archiver.save(object: self.failedDescriptors, key: type(of: self).ArchiveKey)
     }
     
     // MARK: Public API
     
     public func removeAllFailures()
     {
-        self.failedDescriptors?.removeAll()
+        self.failedDescriptors.removeAll()
         self.save()
     }
     
     public func removeFailedDescriptor(for key: String) -> Descriptor?
     {
-        guard let descriptor = self.failedDescriptors?.removeValue(forKey: key) else
+        guard let descriptor = self.failedDescriptors.removeValue(forKey: key) else
         {
             return nil
         }
@@ -147,7 +156,7 @@ import Foundation
     
     public func failedDescriptor(for key: String) -> Descriptor?
     {
-        return self.failedDescriptors?[key]
+        return self.failedDescriptors[key]
     }
     
     // MARK: Notifications
@@ -171,7 +180,7 @@ import Foundation
             let key = descriptor.identifier, descriptor.error != nil
         {
             DispatchQueue.main.async { () -> Void in
-                self.failedDescriptors?[key] = descriptor
+                self.failedDescriptors[key] = descriptor
                 self.save()
             }
         }

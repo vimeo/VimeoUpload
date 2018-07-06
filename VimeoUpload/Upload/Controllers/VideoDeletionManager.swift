@@ -40,7 +40,7 @@ public class VideoDeletionManager: NSObject
     
     // MARK:
     
-    private var deletions: [VideoUri: Int]?
+    private var deletions: [VideoUri: Int] = [:]
     private let operationQueue: OperationQueue
     private let archiver: KeyedArchiver
     private let shouldLoadArchive: Bool
@@ -103,7 +103,8 @@ public class VideoDeletionManager: NSObject
         self.addObservers()
         self.reachabilityDidChange(nil) // Set suspended state
         
-        self.deletions = self.loadDeletions()
+        let migrator = ArchiveMigrator(fileManager: FileManager.default)
+        self.deletions = self.loadDeletions(withMigrator: migrator)
         self.startDeletions()
     }
     
@@ -131,28 +132,27 @@ public class VideoDeletionManager: NSObject
     
     // MARK: Archiving
     
-    private func loadDeletions() -> [VideoUri: Int]?
+    private func loadDeletions(withMigrator migrator: ArchiveMigrating?) -> [VideoUri: Int]
     {
         guard self.shouldLoadArchive == true else
         {
-            return nil
+            return [:]
         }
         
-        if let deletions = self.archiver.loadObject(for: type(of: self).DeletionsArchiveKey) as? [VideoUri: Int]
+        let relativeFolderURL = URL(string: VideoDeletionManager.DeletionsArchiveKey)?.appendingPathComponent(VideoDeletionManager.DeletionsArchiveKey)
+        guard let retries = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
+                                                       archiver: self.archiver,
+                                                       key: VideoDeletionManager.DeletionsArchiveKey) as? [VideoUri: Int]
+        else
         {
-            return deletions
+            return [:]
         }
         
-        return nil
+        return retries
     }
 
     private func startDeletions()
     {
-        guard let deletions = self.deletions else
-        {
-            return
-        }
-        
         for (key, value) in deletions
         {
             self.deleteVideo(withURI: key, retryCount: value)
@@ -161,11 +161,6 @@ public class VideoDeletionManager: NSObject
     
     private func save()
     {
-        guard let deletions = self.deletions else
-        {
-            return
-        }
-        
         self.archiver.save(object: deletions, key: type(of: self).DeletionsArchiveKey)
     }
     
@@ -180,7 +175,7 @@ public class VideoDeletionManager: NSObject
 
     private func deleteVideo(withURI uri: String, retryCount: Int)
     {
-        self.deletions?[uri] = retryCount
+        self.deletions[uri] = retryCount
         self.save()
         
         let operation = DeleteVideoOperation(sessionManager: self.sessionManager, videoUri: uri)
@@ -202,26 +197,26 @@ public class VideoDeletionManager: NSObject
                 {
                     if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse, response.statusCode == 404
                     {
-                        strongSelf.deletions?.removeValue(forKey: uri) // The video has already been deleted
+                        strongSelf.deletions.removeValue(forKey: uri) // The video has already been deleted
                         strongSelf.save()
 
                         return
                     }
                     
-                    if let retryCount = strongSelf.deletions?[uri], retryCount > 0
+                    if let retryCount = strongSelf.deletions[uri], retryCount > 0
                     {
                         let newRetryCount = retryCount - 1
                         strongSelf.deleteVideo(withURI: uri, retryCount: newRetryCount) // Decrement the retryCount and try again
                     }
                     else
                     {
-                        strongSelf.deletions?.removeValue(forKey: uri) // We retried the required number of times, nothing more to do
+                        strongSelf.deletions.removeValue(forKey: uri) // We retried the required number of times, nothing more to do
                         strongSelf.save()
                     }
                 }
                 else
                 {
-                    strongSelf.deletions?.removeValue(forKey: uri)
+                    strongSelf.deletions.removeValue(forKey: uri)
                     strongSelf.save()
                 }
             })
