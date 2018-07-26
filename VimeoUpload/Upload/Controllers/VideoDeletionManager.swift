@@ -52,7 +52,7 @@ public class VideoDeletionManager: NSObject
         self.removeObservers()
     }
         
-    public init(sessionManager: VimeoSessionManager, retryCount: Int = VideoDeletionManager.DefaultRetryCount)
+    public init(sessionManager: VimeoSessionManager, retryCount: Int)
     {
         self.sessionManager = sessionManager
         self.retryCount = retryCount
@@ -68,6 +68,11 @@ public class VideoDeletionManager: NSObject
         
         self.deletions = self.loadDeletions()
         self.startDeletions()
+    }
+    
+    public convenience init(sessionManager: VimeoSessionManager)
+    {
+        self.init(sessionManager: sessionManager, retryCount: VideoDeletionManager.DefaultRetryCount)
     }
     
     // MARK: Setup
@@ -202,7 +207,7 @@ public class VideoDeletionManager: NSObject
         self.operationQueue.isSuspended = true
     }
 
-    func reachabilityDidChange(_ notification: Notification?)
+    @objc func reachabilityDidChange(_ notification: Notification?)
     {
         let currentlyReachable = AFNetworkReachabilityManager.shared().isReachable
         

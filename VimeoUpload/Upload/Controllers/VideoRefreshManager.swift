@@ -219,7 +219,7 @@ import AFNetworking
         self.operationQueue.isSuspended = true
     }
     
-    func reachabilityDidChange(_ notification: Notification?)
+    @objc func reachabilityDidChange(_ notification: Notification?)
     {
         let currentlyReachable = AFNetworkReachabilityManager.shared().isReachable
         
