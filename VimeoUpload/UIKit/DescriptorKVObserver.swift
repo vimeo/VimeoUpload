@@ -28,8 +28,8 @@ import Foundation
 
 public protocol DescriptorKVObserverDelegate: class
 {
-    func descriptorStateDidChange(descriptorType descriptorType: VideoDescriptorType, descriptorState: DescriptorState, isCancelled: Bool, descriptorError: NSError?)
-    func descriptorProgressDidChange(descriptorType descriptorType: VideoDescriptorType, progress: Double)
+    func descriptorStateDidChange(descriptorType: VideoDescriptorType, descriptorState: DescriptorState, isCancelled: Bool, descriptorError: NSError?)
+    func descriptorProgressDidChange(descriptorType: VideoDescriptorType, progress: Double)
 }
 
 public class DescriptorKVObserver: NSObject

@@ -229,7 +229,7 @@ open class DescriptorManager: NSObject
                 
                 // These types of errors can occur when connection drops and before suspend() is called,
                 // Or when connection drop is slow -> timeouts etc. [AH] 2/22/2016
-                let isConnectionError = ((task.error as? NSError)?.isConnectionError() == true || (error as? NSError)?.isConnectionError() == true)
+                let isConnectionError = ((task.error as NSError?)?.isConnectionError() == true || (error as NSError?)?.isConnectionError() == true)
                 if isConnectionError
                 {
                     do
