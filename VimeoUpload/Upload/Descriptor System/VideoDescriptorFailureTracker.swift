@@ -161,7 +161,7 @@ import Foundation
         NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
-    func descriptorDidFail(_ notification: Notification)
+    @objc func descriptorDidFail(_ notification: Notification)
     {
         if let descriptor = notification.object as? Descriptor,
             let key = descriptor.identifier, descriptor.error != nil
@@ -173,7 +173,7 @@ import Foundation
         }
     }
     
-    func descriptorDidCancel(_ notification: Notification)
+    @objc func descriptorDidCancel(_ notification: Notification)
     {
         if let descriptor = notification.object as? Descriptor,
             let key = descriptor.identifier

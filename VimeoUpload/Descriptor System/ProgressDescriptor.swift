@@ -36,7 +36,7 @@ open class ProgressDescriptor: Descriptor
     
     private static let ProgressKeyPath = "fractionCompleted"
     private var progressKVOContext = UInt8()
-    dynamic private(set) var progressObservable: Double = 0
+    @objc dynamic private(set) var progressObservable: Double = 0
     
     open var progress: Progress?
     {

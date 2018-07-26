@@ -101,6 +101,11 @@ public class VideoDeletionManager: NSObject
         self.startDeletions()
     }
     
+    public convenience init(sessionManager: VimeoSessionManager)
+    {
+        self.init(sessionManager: sessionManager, retryCount: VideoDeletionManager.DefaultRetryCount)
+    }
+    
     // MARK: Setup
     
     private static func setupArchiver(name: String, archivePrefix: String?, documentsFolderURL: URL) -> KeyedArchiver?
@@ -241,7 +246,7 @@ public class VideoDeletionManager: NSObject
         self.operationQueue.isSuspended = true
     }
 
-    func reachabilityDidChange(_ notification: Notification?)
+    @objc func reachabilityDidChange(_ notification: Notification?)
     {
         let currentlyReachable = AFNetworkReachabilityManager.shared().isReachable
         

@@ -44,7 +44,7 @@ open class Descriptor: NSObject, NSCoding, Retriable
 
     // MARK:
     
-    dynamic private(set) var stateObservable: String = DescriptorState.ready.rawValue
+    @objc dynamic private(set) var stateObservable: String = DescriptorState.ready.rawValue
     public var state = DescriptorState.ready
     {
         didSet
