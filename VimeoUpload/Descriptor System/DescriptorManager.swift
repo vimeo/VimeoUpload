@@ -79,13 +79,11 @@ open class DescriptorManager: NSObject
     init?(sessionManager: AFURLSessionManager,
           name: String,
           archivePrefix: String?,
-          shouldLoadArchive: Bool,
           documentsFolderURL: URL,
           delegate: DescriptorManagerDelegate? = nil)
     {
         guard let archiver = DescriptorManagerArchiver(name: name,
                                                        archivePrefix: archivePrefix,
-                                                       shouldLoadArchive: shouldLoadArchive,
                                                        documentsFolderURL: documentsFolderURL)
         else
         {

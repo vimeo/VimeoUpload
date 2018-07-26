@@ -43,7 +43,6 @@ public class VideoDeletionManager: NSObject
     private var deletions: [VideoUri: Int] = [:]
     private let operationQueue: OperationQueue
     private let archiver: KeyedArchiver
-    private let shouldLoadArchive: Bool
     
     // MARK: - Initialization
     
@@ -70,17 +69,12 @@ public class VideoDeletionManager: NSObject
     ///   - archivePrefix: The prefix of the archive file. You pass in the
     ///   prefix if you want to keep track of multiple archive files. By
     ///   default, it has the value of `nil`.
-    ///   - shouldLoadArchive: A Boolean value that determines if the
-    ///   descriptor manager should load descriptors from the archive file
-    ///   upon instantiating. By default, this argument has the value of
-    ///   `true`.
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
     /// is located.
     ///   - retryCount: The number of retries. The default value is `3`.
     /// - Returns: `nil` if the keyed archiver cannot load deletions' archive.
     public init?(sessionManager: VimeoSessionManager,
                  archivePrefix: String? = nil,
-                 shouldLoadArchive: Bool = true,
                  documentsFolderURL: URL,
                  retryCount: Int = VideoDeletionManager.DefaultRetryCount)
     {
@@ -93,7 +87,6 @@ public class VideoDeletionManager: NSObject
         
         self.sessionManager = sessionManager
         self.retryCount = retryCount
-        self.shouldLoadArchive = shouldLoadArchive
      
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
@@ -134,11 +127,6 @@ public class VideoDeletionManager: NSObject
     
     private func loadDeletions(withMigrator migrator: ArchiveMigrating?) -> [VideoUri: Int]
     {
-        guard self.shouldLoadArchive == true else
-        {
-            return [:]
-        }
-        
         let relativeFolderURL = URL(string: VideoDeletionManager.DeletionsArchiveKey)?.appendingPathComponent(VideoDeletionManager.DeletionsArchiveKey)
         guard let retries = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
                                                        archiver: self.archiver,

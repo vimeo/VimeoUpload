@@ -54,10 +54,6 @@ import VimeoNetworking
     ///   - archivePrefix: The prefix of the archive file. You pass in the
     ///   prefix if you want to keep track of multiple archive files. By
     ///   default, it has the value of `nil`.
-    ///   - shouldLoadArchive: A Boolean value that determines if the
-    ///   descriptor manager should load descriptors from the archive file
-    ///   upon instantiating. By default, this argument has the value of
-    ///   `true`.
     ///   - documentsFolderURL: The Documents folder's URL of the folder in
     ///   which the upload description will be stored. That folder has the
     ///   same name as the first argument.
@@ -74,7 +70,6 @@ import VimeoNetworking
     /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
     public init?(name: String,
                  archivePrefix: String? = nil,
-                 shouldLoadArchive: Bool = true,
                  documentsFolderURL: URL,
                  backgroundSessionIdentifier: String,
                  sharedContainerIdentifier: String? = nil,
@@ -96,7 +91,6 @@ import VimeoNetworking
         super.init(sessionManager: backgroundSessionManager,
                    name: name,
                    archivePrefix: archivePrefix,
-                   shouldLoadArchive: shouldLoadArchive,
                    documentsFolderURL: documentsFolderURL,
                    delegate: descriptorManagerDelegate)
         
