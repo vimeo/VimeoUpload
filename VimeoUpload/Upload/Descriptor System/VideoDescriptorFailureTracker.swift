@@ -34,7 +34,6 @@ import Foundation
     
     private let archiver: KeyedArchiver
     private var failedDescriptors: [String: Descriptor] = [:]
-    private let shouldLoadArchive: Bool
 
     // MARK: - Initialization
     
@@ -59,16 +58,11 @@ import Foundation
     ///   - archivePrefix: The prefix of the archive file. You pass in the
     ///   prefix if you want to keep track of multiple archive files. By
     ///   default, it has the value of `nil`.
-    ///   - shouldLoadArchive: A Boolean value that determines if the
-    ///   descriptor manager should load descriptors from the archive file
-    ///   upon instantiating. By default, this argument has the value of
-    ///   `true`.
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
     ///   is located.
     /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
     public init?(name: String,
                  archivePrefix: String? = nil,
-                 shouldLoadArchive: Bool = true,
                  documentsFolderURL: URL)
     {
         guard let archiver = type(of: self).setupArchiver(folderName: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
@@ -78,8 +72,6 @@ import Foundation
         
         self.archiver = archiver
         
-        self.shouldLoadArchive = shouldLoadArchive
-
         super.init()
         
         let migrator = ArchiveMigrator(fileManager: FileManager.default)
@@ -113,11 +105,6 @@ import Foundation
     
     private func load(relativeFolderURL: URL?, migrator: ArchiveMigrating?) -> [String: Descriptor]
     {
-        guard self.shouldLoadArchive == true else
-        {
-            return [:]
-        }
-        
         guard let failedDescriptors = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
                                                                  archiver: self.archiver,
                                                                  key: VideoDescriptorFailureTracker.ArchiveKey) as? [String: Descriptor]

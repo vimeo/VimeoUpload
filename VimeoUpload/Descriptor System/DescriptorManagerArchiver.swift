@@ -44,14 +44,11 @@ class DescriptorManagerArchiver
             self.saveSuspendedState()
         }
     }
-    
-    private let shouldLoadArchive: Bool
 
     // MARK: - Initialization
     
     init?(name: String,
           archivePrefix: String?,
-          shouldLoadArchive: Bool = true,
           documentsFolderURL: URL)
     {
         guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
@@ -60,8 +57,6 @@ class DescriptorManagerArchiver
         }
         
         self.archiver = archiver
-
-        self.shouldLoadArchive = shouldLoadArchive
         
         let migrator = ArchiveMigrator(fileManager: FileManager.default)
         
@@ -93,11 +88,6 @@ class DescriptorManagerArchiver
     
     private func loadDescriptors(withMigrator migrator: ArchiveMigrating?, relativeFolderURL: URL?) -> Set<Descriptor>
     {
-        guard self.shouldLoadArchive == true else
-        {
-            return Set<Descriptor>()
-        }
-        
         guard let descriptors = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
                                                         archiver: self.archiver,
                                                         key: DescriptorManagerArchiver.DescriptorsArchiveKey) as? Set<Descriptor>
@@ -116,11 +106,6 @@ class DescriptorManagerArchiver
     
     private func loadSuspendedState(withMigrator migrator: ArchiveMigrating?, relativeFolderURL: URL?) -> Bool
     {
-        guard self.shouldLoadArchive == true else
-        {
-            return false
-        }
-        
         guard let suspendedState = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
                                                               archiver: self.archiver,
                                                               key: DescriptorManagerArchiver.SuspendedArchiveKey) as? Bool
