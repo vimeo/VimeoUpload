@@ -34,7 +34,7 @@ import Foundation
     @objc optional func didSaveDescriptors(count: Int)
     @objc optional func didFailToLoadDescriptor(error: NSError)
     
-    @objc optional func sessionDidBecomeInvalid(error: NSError)
+    @objc optional func sessionDidBecomeInvalid(error: NSError?)
     @objc optional func willHandleEventsForBackgroundSession()
     @objc optional func didFinishEventsForBackgroundSession()
     

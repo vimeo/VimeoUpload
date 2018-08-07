@@ -43,6 +43,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     // MARK:
     
     private let phAsset: PHAsset
+    private let documentsFolderURL: URL?
 
     open var url: URL?
     open var video: VIMVideo?
@@ -59,7 +60,19 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
-    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    /// Initializes an instance of `ExportSessionExportCreateVideoOperation`.
+    ///
+    /// - Parameters:
+    ///   - phAsset: An instance of `PHAsset` representing a media that the
+    ///   user picks from the Photos app.
+    ///   - sessionManager: An instance of `VimeoSessionManager` that will
+    ///   be used for creating an upload ticket.
+    ///   - videoSettings: An instance of `VideoSettings` representing the
+    ///   title, description, and privacy option that the user has edited.
+    ///   - documentsFolderURL: An URL pointing to a Documents folder;
+    ///   default to `nil`. For third-party use, this argument should not be
+    ///   filled.
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil)
     {
         self.phAsset = phAsset
         
@@ -68,6 +81,8 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
         
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        self.documentsFolderURL = documentsFolderURL
         
         super.init()
     }
@@ -86,7 +101,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
             return
         }
         
-        let operation = ExportSessionExportOperation(phAsset: self.phAsset)
+        let operation = ExportSessionExportOperation(phAsset: self.phAsset, documentsFolderURL: self.documentsFolderURL)
         self.perform(exportSessionExportOperation: operation)
     }
     
