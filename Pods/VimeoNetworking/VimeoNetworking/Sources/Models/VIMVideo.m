@@ -334,6 +334,7 @@ NSString *VIMContentRating_Safe = @"safe";
                                       [NSNumber numberWithInt:VIMVideoProcessingStatusUploadingError], @"uploading_error",
                                       [NSNumber numberWithInt:VIMVideoProcessingStatusTranscodingError], @"transcoding_error",
                                       [NSNumber numberWithInt:VIMVideoProcessingStatusQuotaExceeded], @"quota_exceeded",
+                                      [NSNumber numberWithInt:VIMVideoProcessingStatusTotalCapExceeded], @"total_cap_exceeded",
                                       nil];
     
     NSNumber *number = [statusDictionary objectForKey:self.status];
@@ -552,6 +553,17 @@ NSString *VIMContentRating_Safe = @"safe";
             self.reviewPage.isActive.boolValue == true &&
             self.reviewPage.link != nil &&
             trimmedReviewLink.length > 0;
+}
+
+- (BOOL)canDownloadFromDesktop
+{
+    if ([self.privacy.canDownload respondsToSelector: @selector(boolValue)])
+    {
+        return [self.privacy.canDownload boolValue];
+    }
+    
+    NSAssert(false, @"`video.privacy.canDownload` is an unexpected type.");
+    return false;
 }
 
 @end

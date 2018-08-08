@@ -51,7 +51,7 @@ public extension Request
 
     private static func subscriptionsURI(forNotificationsURI notificationsURI: String, deviceToken: String) -> String
     {
-        return notificationsURI + "/\(deviceToken)" + SubscriptionsPathComponent
+        return "\(notificationsURI)/\(deviceToken)\(SubscriptionsPathComponent)"
     }
     
     public static func markNotificationAsNotNewRequest(forNotification notification: VIMNotification, notificationsURI: String) -> Request
