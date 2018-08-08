@@ -46,7 +46,7 @@ public enum AccountType: String
 
 /// An object representing the `user` field in a `chat` response.
 public class VIMLiveChatUser: VIMModelObject
-{    
+{
     private struct Constants
     {
         static let PictureResponseKey = "pictures"

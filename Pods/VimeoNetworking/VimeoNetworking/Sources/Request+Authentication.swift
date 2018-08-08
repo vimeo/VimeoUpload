@@ -232,7 +232,7 @@ extension Request where ModelType: VIMNullResponse
      */
     public static func resetPasswordRequest(withEmail email: String) -> Request
     {
-        let path = "/users/" + email + "/password/reset"
+        let path = "/users/\(email)/password/reset"
         
         return Request(method: .POST, path: path)
     }
