@@ -46,6 +46,13 @@ open class DescriptorManager: NSObject
         static let QueueName = "descriptor_manager.synchronization_queue"
         static let ShareExtensionArchivePrefix = "share_extension"
         static let ShareExtensionDescriptorDidSuspend = "ShareExtensionDescriptorDidSuspend"
+        
+        struct InvalidationError
+        {
+            static let Domain = "BackgroundSessionInvalidationError"
+            static let Code = 1
+            static let LocalizedDescription = "A session object referring to the same background session has been invalidated and thus disconnected from the session."
+        }
     }
     
     // MARK:
@@ -198,7 +205,8 @@ open class DescriptorManager: NSObject
                 let theError: NSError?
                 if error != nil
                 {
-                    theError = error as NSError
+                    let userInfo = [NSLocalizedDescriptionKey: Constants.InvalidationError.LocalizedDescription]
+                    theError = NSError(domain: Constants.InvalidationError.Domain, code: Constants.InvalidationError.Code, userInfo: userInfo)
                 }
                 else
                 {
