@@ -25,11 +25,18 @@ jobs:
           command: bundle install --path vendor/bundle
 
       - run: 
-          name: Build and run iOS tests
+          name: Build and run VimeoUpload-iOS tests
           command: bundle exec fastlane scan
           environment:
             SCAN_DEVICE: iPhone 8
             SCAN_SCHEME: VimeoUpload-iOS
+
+      - run: 
+          name: Build and run VimeoUpload-iOS-OldUpload tests
+          command: bundle exec fastlane scan
+          environment:
+            SCAN_DEVICE: iPhone 8
+            SCAN_SCHEME: VimeoUpload-iOS-OldUpload
 
       - save_cache:
           paths:
