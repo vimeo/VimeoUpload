@@ -1,9 +1,10 @@
 //
-//  PHAssetCloudExportQuotaCreateOperation.swift
-//  VimeoUpload
+//  VIMSpace.swift
+//  VimeoNetworking
 //
-//  Created by Alfred Hanssen on 11/9/15.
-//  Copyright © 2015 Vimeo. All rights reserved.
+//  Created by Lim, Jennifer on 4/3/18.
+//
+//  Copyright © 2016 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,32 +25,15 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
-import Photos
-import VimeoNetworking
-
-// This flow encapsulates the following steps:
-
-// 1. Perorm a PHAssetCloudExportQuotaOperation
-// 2. Create video record
-
-public class PHAssetCloudExportQuotaCreateOperation: ExportQuotaCreateOperation
+public class VIMSpace: VIMSizeQuota
 {
-    let phAsset: PHAsset
-
-    // MARK: - Initialization
+    /// Whether the values of the upload_quota.space fields are for the lifetime quota or the periodic quota. Values can be `lifetime` or `periodic`.
+    @objc dynamic public private(set) var type: String?
     
-    public init(me: VIMUser, phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
-    {
-        self.phAsset = phAsset
-
-        super.init(me: me, sessionManager: sessionManager, videoSettings: videoSettings)
-    }
+    // MARK: - VIMMappable
     
-    // MARK: Overrides
-
-    override func makeExportQuotaOperation(with me: VIMUser) -> ExportQuotaOperation?
+    public override func getObjectMapping() -> Any
     {
-        return PHAssetCloudExportQuotaOperation(me: me, phAsset: self.phAsset)
+        return ["showing" : "type"]
     }
 }

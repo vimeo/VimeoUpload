@@ -1,9 +1,9 @@
 //
-//  DailyQuotaOperation.swift
-//  VimeoUpload
+//  VIMLiveHeartbeat.swift
+//  VimeoNetworking
 //
-//  Created by Alfred Hanssen on 11/9/15.
-//  Copyright © 2015 Vimeo. All rights reserved.
+//  Created by Van Nguyen on 10/04/2017.
+//  Copyright (c) Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -25,34 +25,20 @@
 //
 
 import Foundation
-import AVFoundation
-import VimeoNetworking
 
-public class DailyQuotaOperation: Operation
-{    
-    private let user: VIMUser
-    
-    private(set) var result: Bool?
-    private(set) var error: NSError?
-    
-    init(user: VIMUser)
+/// An object representing the `live` object in either an `hls` or a `dash` response.
+public class VIMLiveHeartbeat: VIMModelObject
+{
+    private struct Constants
     {
-        self.user = user
-        
-        super.init()
+        static let HeartbeatUrlKey = "heartbeat"
     }
     
-    // MARK: Overrides
-
-    override public func main()
+    /// The heartbeat URL that the client should send requests to.
+    @objc dynamic public private(set) var heartbeatUrl: String?
+    
+    override public func getObjectMapping() -> Any?
     {
-        if let sd = self.user.uploadQuota?.quantityQuota?.canUploadSd, let hd = self.user.uploadQuota?.quantityQuota?.canUploadHd
-        {
-            self.result = (sd == true || hd == true)
-        }
-        else
-        {
-            self.error = NSError.error(withDomain: UploadErrorDomain.DailyQuotaOperation.rawValue, code: UploadLocalErrorCode.cannotEvaluateDailyQuota.rawValue, description: "User object did not contain uploadQuota.quota information")
-        }
+        return [Constants.HeartbeatUrlKey: "heartbeatUrl"]
     }
 }

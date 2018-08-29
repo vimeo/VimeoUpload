@@ -1,5 +1,5 @@
 //
-//  ExportQuotaCreateOperation.swift
+//  RetryUploadOperation.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 12/22/15.
@@ -25,26 +25,26 @@
 //
 
 import Foundation
-import AVFoundation
 import VimeoNetworking
+import AVFoundation
+import Photos
 
-open class ExportQuotaCreateOperation: ConcurrentOperation
+public class RetryUploadOperation: ConcurrentOperation
 {
-    let me: VIMUser
-    let sessionManager: VimeoSessionManager
-    open var videoSettings: VideoSettings?
+    private let sessionManager: VimeoSessionManager
     let operationQueue: OperationQueue
     
     // MARK:
-
-    open var downloadProgressBlock: ProgressBlock?
-    open var exportProgressBlock: ExportProgressBlock?
+    
+    public var downloadProgressBlock: ProgressBlock?
+    public var exportProgressBlock: ProgressBlock?
     
     // MARK:
     
-    open var url: URL?
-    open var uploadTicket: VIMUploadTicket?
-    open var error: NSError?
+    private let phAsset: PHAsset
+
+    private(set) public var url: URL?
+    private(set) public var error: NSError?
     {
         didSet
         {
@@ -55,16 +55,30 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
         }
     }
     
+    private let documentsFolderURL: URL?
+    
     // MARK: - Initialization
     
-    public init(me: VIMUser, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    /// Initializes an instance of `ExportSessionExportOperation`.
+    ///
+    /// - Parameters:
+    ///   - phAsset: An instance of `PHAsset` representing a media that the
+    ///   user picks from the Photos app.
+    ///   - sessionManager: An instance of `VimeoSessionManager`.
+    ///   - documentsFolderURL: An URL pointing to a Documents folder;
+    ///   default to `nil`. For third-party use, this argument should not be
+    ///   filled.
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, documentsFolderURL: URL? = nil)
     {
-        self.me = me
-        self.sessionManager = sessionManager
-        self.videoSettings = videoSettings
+        self.phAsset = phAsset
         
+        self.sessionManager = sessionManager
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        self.documentsFolderURL = documentsFolderURL
+        
+        super.init()
     }
     
     deinit
@@ -74,48 +88,34 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override open func main()
+    override public func main()
     {
         if self.isCancelled
         {
             return
         }
         
-        let operation = self.makeExportQuotaOperation(with: self.me)!
-        self.perform(exportQuotaOperation: operation)
+        let operation = ExportSessionExportOperation(phAsset: self.phAsset, documentsFolderURL: self.documentsFolderURL)
+        self.perform(exportSessionExportOperation: operation)
     }
     
-    override open func cancel()
+    override public func cancel()
     {
         super.cancel()
         
         self.operationQueue.cancelAllOperations()
-        
-        if let url = self.url
-        {
-            FileManager.default.deleteFile(at: url)
-        }
-    }
-    
-    // MARK: Public API
-    
-    func makeExportQuotaOperation(with me: VIMUser) -> ExportQuotaOperation?
-    {
-        assertionFailure("Subclasses must override")
-        
-        return nil
     }
     
     // MARK: Private API
-
-    private func perform(exportQuotaOperation operation: ExportQuotaOperation)
+    
+    private func perform(exportSessionExportOperation operation: ExportSessionExportOperation)
     {
         operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
             self?.downloadProgressBlock?(progress)
         }
         
         operation.exportProgressBlock = { [weak self] (exportSession: AVAssetExportSession, progress: Double) -> Void in
-            self?.exportProgressBlock?(exportSession, progress)
+            self?.exportProgressBlock?(progress)
         }
         
         operation.completionBlock = { [weak self] () -> Void in
@@ -138,50 +138,7 @@ open class ExportQuotaCreateOperation: ConcurrentOperation
                 }
                 else
                 {
-                    let url = operation.result!
-                    strongSelf.createVideo(url: url)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
-    }
-    
-    private func createVideo(url: URL)
-    {
-        let videoSettings = self.videoSettings
-        
-        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            DispatchQueue.main.async(execute: { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if operation.isCancelled == true
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    if let fileSize = try? AVURLAsset(url: url).fileSize(), let availableSpace = strongSelf.me.uploadQuota?.sizeQuota?.free?.doubleValue
-                    {
-                        let userInfo = [UploadErrorKey.FileSize.rawValue: fileSize, UploadErrorKey.AvailableSpace.rawValue: availableSpace]
-                        strongSelf.error = error.error(byAddingUserInfo: userInfo)
-                    }
-                    else
-                    {
-                        strongSelf.error = error
-                    }
-                }
-                else
-                {
-                    strongSelf.url = url
-                    strongSelf.uploadTicket = operation.result!
+                    strongSelf.url = operation.result!
                     strongSelf.state = .finished
                 }
             })

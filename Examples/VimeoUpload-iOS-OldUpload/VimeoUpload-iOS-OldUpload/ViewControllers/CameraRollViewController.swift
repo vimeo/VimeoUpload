@@ -26,6 +26,7 @@
 
 import Foundation
 import UIKit
+import VimeoUpload
 
 class CameraRollViewController: BaseCameraRollViewController
 {
@@ -33,17 +34,16 @@ class CameraRollViewController: BaseCameraRollViewController
     
     override func viewDidLoad()
     {
-        self.sessionManager = OldVimeoUploader.sharedInstance.foregroundSessionManager
+        self.sessionManager = OldVimeoUploader.sharedInstance?.foregroundSessionManager
 
         super.viewDidLoad()
 
         self.title = "Camera Roll"
     }
         
-    override func didFinish(with result: UploadUserAndCameraRollAsset)
+    override func didSelect(_ asset: VIMPHAsset)
     {
-        let viewController = VideoSettingsViewController(nibName: VideoSettingsViewController.NibName, bundle:Bundle.main)
-        viewController.input = result
+        let viewController = VideoSettingsViewController(asset: asset)
      
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.view.backgroundColor = UIColor.white

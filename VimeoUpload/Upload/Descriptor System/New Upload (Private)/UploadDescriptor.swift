@@ -28,16 +28,17 @@ import Foundation
 import VimeoNetworking
 import AFNetworking
 
-public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
+open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
     private static let FileNameCoderKey = "fileName"
     private static let FileExtensionCoderKey = "fileExtension"
     private static let UploadTicketCoderKey = "uploadTicket"
+    private static let VideoCoderKey = "video"
 
     // MARK: 
     
     public var url: URL
-    public var uploadTicket: VIMUploadTicket
+    public var video: VIMVideo?
     
     // MARK: VideoDescriptor
     
@@ -48,7 +49,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     public var videoUri: VideoUri?
     {
-        return self.uploadTicket.video?.uri
+        return self.video?.uri
     }
     
     public var progressDescriptor: ProgressDescriptor
@@ -63,31 +64,29 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         fatalError("init() has not been implemented")
     }
 
-    public init(url: URL, uploadTicket: VIMUploadTicket)
+    public init(url: URL, video: VIMVideo)
     {
         self.url = url
-        self.uploadTicket = uploadTicket
+        self.video = video
         
         super.init()
     }
 
     // MARK: Overrides
     
-    override public func prepare(sessionManager: AFURLSessionManager) throws
+    override open func prepare(sessionManager: AFURLSessionManager) throws
     {
         // TODO: Do we need to set self.state == .Ready here? [AH] 2/22/2016
         
         do
         {
-            guard let uploadLinkSecure = self.uploadTicket.uploadLinkSecure else
+            guard let uploadLink = self.video?.upload?.uploadLink else
             {
-                // TODO: delete file here? Same in download?
-                
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
             
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLinkSecure, completionHandler: nil)
+            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLink, completionHandler: nil)
             
             self.currentTaskIdentifier = task.taskIdentifier
         }
@@ -101,7 +100,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override public func resume(sessionManager: AFURLSessionManager)
+    override open func resume(sessionManager: AFURLSessionManager)
     {
         super.resume(sessionManager: sessionManager)
         
@@ -113,14 +112,14 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override public func cancel(sessionManager: AFURLSessionManager)
+    override open func cancel(sessionManager: AFURLSessionManager)
     {
         super.cancel(sessionManager: sessionManager)
         
         FileManager.default.deleteFile(at: self.url)
     }
 
-    override public func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    override open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
             let task = sessionManager.uploadTask(for: identifier),
@@ -141,7 +140,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.progress = progress
     }
     
-    override public func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
+    override open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
     {
         self.currentTaskIdentifier = nil
 
@@ -185,19 +184,28 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         let path = URL.uploadDirectory().appendingPathComponent(fileName).appendingPathExtension(fileExtension).absoluteString
         
         self.url = URL(fileURLWithPath: path)
-        self.uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as! VIMUploadTicket
+
+        // Support migrating archived uploadTickets to videos for API versions less than v3.4
+        if let uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as? VIMUploadTicket
+        {
+            self.video = uploadTicket.video
+        }
+        else
+        {
+            self.video = aDecoder.decodeObject(forKey: type(of: self).VideoCoderKey) as? VIMVideo
+        }
 
         super.init(coder: aDecoder)
     }
 
-    override public func encode(with aCoder: NSCoder)
+    override open func encode(with aCoder: NSCoder)
     {
         let fileName = self.url.deletingPathExtension().lastPathComponent
         let ext = self.url.pathExtension
 
         aCoder.encode(fileName, forKey: type(of: self).FileNameCoderKey)
         aCoder.encode(ext, forKey: type(of: self).FileExtensionCoderKey)
-        aCoder.encode(self.uploadTicket, forKey: type(of: self).UploadTicketCoderKey)
+        aCoder.encode(self.video, forKey: type(of: self).VideoCoderKey)
         
         super.encode(with: aCoder)
     }

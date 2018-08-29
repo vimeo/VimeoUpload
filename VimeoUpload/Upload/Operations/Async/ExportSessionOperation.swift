@@ -1,5 +1,5 @@
 //
-//  PHAssetExportSessionOperation.swift
+//  ExportSessionOperation.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 11/10/15.
@@ -27,7 +27,7 @@
 import Foundation
 import Photos
 
-class PHAssetExportSessionOperation: ConcurrentOperation
+class ExportSessionOperation: ConcurrentOperation
 {
     private let phAsset: PHAsset
     private let exportPreset: String
@@ -120,7 +120,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             
             if let info = info, let error = info[PHImageErrorKey] as? NSError
             {
-                strongSelf.error = error.error(byAddingDomain: UploadErrorDomain.PHAssetExportSessionOperation.rawValue)
+                strongSelf.error = error.error(byAddingDomain: UploadErrorDomain.ExportSessionOperation.rawValue)
             }
             else if let exportSession = exportSession
             {
@@ -128,7 +128,7 @@ class PHAssetExportSessionOperation: ConcurrentOperation
             }
             else
             {
-                strongSelf.error = NSError.error(withDomain: UploadErrorDomain.PHAssetExportSessionOperation.rawValue, code: nil, description: "Request for export session returned no error and no export session")
+                strongSelf.error = NSError.error(withDomain: UploadErrorDomain.ExportSessionOperation.rawValue, code: nil, description: "Request for export session returned no error and no export session")
             }
             
             strongSelf.state = .finished

@@ -34,8 +34,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
     {
+        NSKeyedUnarchiver.setLegacyClassNameMigrations()
+        
         AFNetworkReachabilityManager.shared().startMonitoring()
-        NewVimeoUploader.sharedInstance.applicationDidFinishLaunching() // Ensure init is called on launch
+        NewVimeoUploader.sharedInstance?.applicationDidFinishLaunching() // Ensure init is called on launch
 
         let settings = UIUserNotificationSettings(types: .alert, categories: nil)
         application.registerUserNotificationSettings(settings)
@@ -53,9 +55,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void)
     {
-        if NewVimeoUploader.sharedInstance.descriptorManager.handleEventsForBackgroundURLSession(identifier: identifier, completionHandler: completionHandler) == false
+        guard let descriptorManager = NewVimeoUploader.sharedInstance?.descriptorManager else
         {
-            assertionFailure("Unhandled background events")
+            return
+        }
+        
+        if descriptorManager.canHandleEventsForBackgroundURLSession(withIdentifier: identifier)
+        {
+            descriptorManager.handleEventsForBackgroundURLSession(completionHandler: completionHandler)
         }
     }
 }

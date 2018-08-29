@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3EA4C85A2094FE57009F3D9B /* NSKeyedUnarchiver+Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA4C8592094FE57009F3D9B /* NSKeyedUnarchiver+Migrations.swift */; };
 		5009CCE91E00604200887FC1 /* VimeoUpload.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5009CCE81E00604200887FC1 /* VimeoUpload.framework */; };
 		5009CCEA1E00604200887FC1 /* VimeoUpload.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5009CCE81E00604200887FC1 /* VimeoUpload.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5073D6EB1CAD66C600D08C5F /* DemoCameraRollCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5073D6E61CAD66C600D08C5F /* DemoCameraRollCell.swift */; };
@@ -54,6 +55,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3EA4C8592094FE57009F3D9B /* NSKeyedUnarchiver+Migrations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSKeyedUnarchiver+Migrations.swift"; sourceTree = "<group>"; };
 		47ED4955B1448D82B035D2BF /* Pods_VimeoUpload_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VimeoUpload_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		49DF265822E7E25ECC46C743 /* Pods_VimeoUpload_iOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VimeoUpload_iOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5009CCE81E00604200887FC1 /* VimeoUpload.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = VimeoUpload.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -113,6 +115,14 @@
 				49DF265822E7E25ECC46C743 /* Pods_VimeoUpload_iOSTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3EA4C85B2094FE60009F3D9B /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				3EA4C8592094FE57009F3D9B /* NSKeyedUnarchiver+Migrations.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		5073D6E41CAD66C600D08C5F /* VimeoUpload+Demos */ = {
@@ -175,6 +185,7 @@
 				AFFA3F201C9CE22500C7B6F3 /* LaunchScreen.storyboard */,
 				AFFA3F231C9CE22500C7B6F3 /* Info.plist */,
 				AFFA3F451C9CE34700C7B6F3 /* Bridge.h */,
+				3EA4C85B2094FE60009F3D9B /* Extensions */,
 			);
 			path = "VimeoUpload-iOS";
 			sourceTree = "<group>";
@@ -232,7 +243,6 @@
 				AFFA3F111C9CE22500C7B6F3 /* Frameworks */,
 				AFFA3F121C9CE22500C7B6F3 /* Resources */,
 				F99B806A68B81482408B6D2F /* [CP] Embed Pods Frameworks */,
-				EB2809E825F1D91F8B3E8D00 /* [CP] Copy Pods Resources */,
 				5009CCEB1E00604200887FC1 /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -252,8 +262,6 @@
 				AFFA3F241C9CE22500C7B6F3 /* Sources */,
 				AFFA3F251C9CE22500C7B6F3 /* Frameworks */,
 				AFFA3F261C9CE22500C7B6F3 /* Resources */,
-				9AE9924AC1194539D3970F62 /* [CP] Embed Pods Frameworks */,
-				F6CB30BFCBEB63E375D9C6F9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -336,13 +344,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-VimeoUpload-iOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7B5C5CEC1A3E28ED8906F076 /* [CP] Check Pods Manifest.lock */ = {
@@ -351,58 +362,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-VimeoUpload-iOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		9AE9924AC1194539D3970F62 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOSTests/Pods-VimeoUpload-iOSTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		EB2809E825F1D91F8B3E8D00 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS/Pods-VimeoUpload-iOS-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F6CB30BFCBEB63E375D9C6F9 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOSTests/Pods-VimeoUpload-iOSTests-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F99B806A68B81482408B6D2F /* [CP] Embed Pods Frameworks */ = {
@@ -411,9 +380,14 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS/Pods-VimeoUpload-iOS-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/VimeoNetworking/VimeoNetworking.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/VimeoNetworking.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -427,6 +401,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3EA4C85A2094FE57009F3D9B /* NSKeyedUnarchiver+Migrations.swift in Sources */,
 				AFFA3F521C9CE34700C7B6F3 /* NewVimeoUploader.swift in Sources */,
 				AFFA3F561C9CE34700C7B6F3 /* VideoSettingsViewController.swift in Sources */,
 				5073D6ED1CAD66C600D08C5F /* BaseCameraRollViewController.swift in Sources */,

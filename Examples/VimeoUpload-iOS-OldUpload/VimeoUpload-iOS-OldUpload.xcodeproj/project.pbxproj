@@ -232,7 +232,6 @@
 				AFFA40081C9CE8E000C7B6F3 /* Frameworks */,
 				AFFA40091C9CE8E000C7B6F3 /* Resources */,
 				BE8817D04A5626F94A584168 /* [CP] Embed Pods Frameworks */,
-				4AA625097181A3EE21E48884 /* [CP] Copy Pods Resources */,
 				5009CCEF1E0060D800887FC1 /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -252,8 +251,6 @@
 				AFFA401B1C9CE8E000C7B6F3 /* Sources */,
 				AFFA401C1C9CE8E000C7B6F3 /* Frameworks */,
 				AFFA401D1C9CE8E000C7B6F3 /* Resources */,
-				576AC1945F6ECF1790D2BE79 /* [CP] Embed Pods Frameworks */,
-				89C1E0AD2EBD4C702D63C690 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -337,58 +334,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-VimeoUpload-iOS-OldUpload-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		4AA625097181A3EE21E48884 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUpload/Pods-VimeoUpload-iOS-OldUpload-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		576AC1945F6ECF1790D2BE79 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUploadTests/Pods-VimeoUpload-iOS-OldUploadTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		89C1E0AD2EBD4C702D63C690 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUploadTests/Pods-VimeoUpload-iOS-OldUploadTests-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BE8817D04A5626F94A584168 /* [CP] Embed Pods Frameworks */ = {
@@ -397,9 +352,14 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/../../Pods/Target Support Files/Pods-VimeoUpload-iOS-OldUpload/Pods-VimeoUpload-iOS-OldUpload-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/VimeoNetworking/VimeoNetworking.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/VimeoNetworking.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -412,13 +372,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-VimeoUpload-iOS-OldUploadTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

@@ -83,18 +83,18 @@ public extension NSString
         {
             if minutes > 0
             {
-                result = minutes < 10 ? "0\(minutes)" + ":\(result)" : "\(minutes)" + ":\(result)"
+                result = minutes < 10 ? "0\(minutes):\(result)" : "\(minutes):\(result)"
             }
             else
             {
                 result = "00:\(result)"
             }
             
-            result = "\(hours)" + ":\(result)"
+            result = "\(hours):\(result)"
         }
         else
         {
-            result = "\(minutes)" + ":\(result)"
+            result = "\(minutes):\(result)"
         }
         
         return result as NSString

@@ -1,5 +1,5 @@
 //
-//  RetryUploadOperation.swift
+//  ExportSessionExportOperation.swift
 //  VimeoUpload
 //
 //  Created by Hanssen, Alfie on 12/22/15.
@@ -25,24 +25,22 @@
 //
 
 import Foundation
-import VimeoNetworking
 import AVFoundation
+import VimeoNetworking
+import Photos
 
-public class RetryUploadOperation: ConcurrentOperation
+public typealias ExportProgressBlock = (AVAssetExportSession, Double) -> Void
+
+open class ExportSessionExportOperation: ConcurrentOperation
 {
-    private let sessionManager: VimeoSessionManager
     let operationQueue: OperationQueue
+
+    open var downloadProgressBlock: ProgressBlock?
+    open var exportProgressBlock: ExportProgressBlock?
     
-    // MARK:
-    
-    public var downloadProgressBlock: ProgressBlock?
-    public var exportProgressBlock: ProgressBlock?
-    
-    // MARK:
-    
-    private(set) public var url: URL?
-    
-    private(set) public var error: NSError?
+    private let phAsset: PHAsset
+
+    open var error: NSError?
     {
         didSet
         {
@@ -52,14 +50,28 @@ public class RetryUploadOperation: ConcurrentOperation
             }
         }
     }
+    open var result: URL?
     
-    // MARK: - Initialization
+    private let documentsFolderURL: URL?
     
-    init(sessionManager: VimeoSessionManager)
+    /// Initializes an instance of `ExportSessionExportOperation`.
+    ///
+    /// - Parameters:
+    ///   - phAsset: An instance of `PHAsset` representing a media that the
+    ///   user picks from the Photos app.
+    ///   - documentsFolderURL: An URL pointing to a Documents folder;
+    ///   default to `nil`. For third-party use, this argument should not be
+    ///   filled.
+    public init(phAsset: PHAsset, documentsFolderURL: URL? = nil)
     {
-        self.sessionManager = sessionManager
+        self.phAsset = phAsset
+        
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        self.documentsFolderURL = documentsFolderURL
+        
+        super.init()
     }
     
     deinit
@@ -69,70 +81,34 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override public func main()
+    override open func main()
     {
         if self.isCancelled
         {
             return
         }
         
-        self.performMeQuotaOperation()
+        self.requestExportSession()
     }
     
-    override public func cancel()
+    override open func cancel()
     {
         super.cancel()
         
         self.operationQueue.cancelAllOperations()
+        
+        if let url = self.result
+        {
+            FileManager.default.deleteFile(at: url)
+        }
     }
     
-    // MARK: Private API
-    
-    private func performMeQuotaOperation()
+    // MARK: Public API
+
+    func requestExportSession()
     {
-        let operation = MeQuotaOperation(sessionManager: self.sessionManager)
-        operation.completionBlock = { [weak self] () -> Void in
-            
-            DispatchQueue.main.async(execute: { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                if strongSelf.isCancelled
-                {
-                    return
-                }
-                
-                if let error = operation.error
-                {
-                    strongSelf.error = error
-                }
-                else
-                {
-                    let user = operation.me!
-                    let exportQuotaOperation = strongSelf.makeExportQuotaOperation(user: user)!
-                    strongSelf.perform(exportQuotaOperation: exportQuotaOperation)
-                }
-            })
-        }
-        
-        self.operationQueue.addOperation(operation)
-        
-        operation.fulfillSelection(avAsset: nil)
-    }
-    
-    private func perform(exportQuotaOperation operation: ExportQuotaOperation)
-    {
-        operation.downloadProgressBlock = { [weak self] (progress: Double) -> Void in
-            self?.downloadProgressBlock?(progress)
-        }
-        
-        operation.exportProgressBlock = { [weak self] (exportSession: AVAssetExportSession, progress: Double) -> Void in
-            self?.exportProgressBlock?(progress)
-        }
-        
+        let operation = ExportSessionOperation(phAsset: self.phAsset)
+        operation.progressBlock = self.downloadProgressBlock
         operation.completionBlock = { [weak self] () -> Void in
             
             DispatchQueue.main.async(execute: { [weak self] () -> Void in
@@ -153,21 +129,55 @@ public class RetryUploadOperation: ConcurrentOperation
                 }
                 else
                 {
-                    strongSelf.url = operation.result!
-                    strongSelf.state = .finished
+                    let exportSession = operation.result!
+                    let exportOperation = ExportOperation(exportSession: exportSession, documentsFolderURL: strongSelf.documentsFolderURL)
+                    strongSelf.performExport(exportOperation: exportOperation)
                 }
             })
         }
         
         self.operationQueue.addOperation(operation)
     }
-
-    // MARK: Public API
     
-    func makeExportQuotaOperation(user: VIMUser) -> ExportQuotaOperation?
+    func performExport(exportOperation: ExportOperation)
     {
-        assertionFailure("Subclasses must override")
+        exportOperation.progressBlock = { [weak self] (progress: Double) -> Void in // This block is called on a background thread
+            
+            if let progressBlock = self?.exportProgressBlock
+            {
+                DispatchQueue.main.async(execute: { () -> Void in
+                    progressBlock(exportOperation.exportSession, progress)
+                })
+            }
+        }
         
-        return nil
+        exportOperation.completionBlock = { [weak self] () -> Void in
+            
+            DispatchQueue.main.async(execute: { [weak self] () -> Void in
+                
+                guard let strongSelf = self else
+                {
+                    return
+                }
+                
+                if exportOperation.isCancelled == true
+                {
+                    return
+                }
+                
+                if let error = exportOperation.error
+                {
+                    strongSelf.error = error
+                }
+                else
+                {
+                    let url = exportOperation.outputURL!
+                    strongSelf.result = url
+                    strongSelf.state = .finished
+                }
+            })
+        }
+        
+        self.operationQueue.addOperation(exportOperation)
     }
 }

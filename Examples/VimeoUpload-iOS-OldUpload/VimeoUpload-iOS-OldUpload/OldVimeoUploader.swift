@@ -29,14 +29,20 @@ import VimeoUpload
 
 class OldVimeoUploader: VimeoUploader<OldUploadDescriptor>
 {
+    /// Latest supported API version for the `VimeoUpload-iOS-OldUpload` target.
+    private static var APIVersionString: String
+    {
+        return "3.3.1"
+    }
+    
     static let sharedInstance = OldVimeoUploader(backgroundSessionIdentifier: "com.vimeo.upload") { () -> String? in
         return "YOUR_OAUTH_TOKEN" // See README for details on how to obtain and OAuth token
     }
     
     // MARK: - Initialization
     
-    init(backgroundSessionIdentifier: String, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider)
+    init?(backgroundSessionIdentifier: String, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider)
     {
-        super.init(backgroundSessionIdentifier: backgroundSessionIdentifier, accessTokenProvider: accessTokenProvider)
+        super.init(backgroundSessionIdentifier: backgroundSessionIdentifier, accessTokenProvider: accessTokenProvider, apiVersion: OldVimeoUploader.APIVersionString)
     }
 }

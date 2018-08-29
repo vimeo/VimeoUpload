@@ -1,9 +1,9 @@
 //
-//  VIMUploadQuota.m
+//  VIMLiveStreams.swift
 //  VimeoNetworking
 //
-//  Created by Hanssen, Alfie on 11/6/15.
-//  Copyright (c) 2015 Vimeo (https://vimeo.com)
+//  Created by Van Nguyen on 09/11/2017.
+//  Copyright (c) Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,33 +24,20 @@
 //  THE SOFTWARE.
 //
 
-#import "VIMUploadQuota.h"
-#import "VIMQuantityQuota.h"
-#import "VIMSizeQuota.h"
+import Foundation
 
-@implementation VIMUploadQuota
-
-#pragma mark - VIMMappable
-
-- (NSDictionary *)getObjectMapping
+/// An object that represents the `streams` field
+/// in a `live_quota` response.
+public class VIMLiveStreams: VIMModelObject
 {
-    return @{@"quota": @"quantityQuota",
-             @"space": @"sizeQuota"};
-}
+    /// The maximum streams a user can make.
+    @objc dynamic public private(set) var maxStreams: NSNumber?
 
-- (Class)getClassForObjectKey:(NSString *)key
-{
-    if ([key isEqualToString:@"quota"])
+    /// The remaining streams a user can make.
+    @objc dynamic public private(set) var remainingStreams: NSNumber?
+    
+    override public func getObjectMapping() -> Any!
     {
-        return [VIMQuantityQuota class];
+        return ["remaining": "remainingStreams", "maximum": "maxStreams"]
     }
-
-    if ([key isEqualToString:@"space"])
-    {
-        return [VIMSizeQuota class];
-    }
-
-    return nil;
 }
-
-@end

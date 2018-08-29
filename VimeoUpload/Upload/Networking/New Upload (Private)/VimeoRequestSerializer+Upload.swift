@@ -1,5 +1,5 @@
 //
-//  VimeoRequestSerializer+SimpleUpload.swift
+//  VimeoRequestSerializer+Upload.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/20/15.
@@ -29,10 +29,23 @@ import VimeoNetworking
 
 extension VimeoRequestSerializer
 {
+    private struct Constants
+    {
+        static let ApproachKey = "approach"
+        static let ApproachDefaultValue = "streaming"
+        static let UploadKey = "upload"
+    }
+    
     func createVideoRequest(with url: URL, videoSettings: VideoSettings?) throws -> NSMutableURLRequest
     {
-        var parameters = try self.createVideoRequestBaseParameters(url: url)
-        parameters["create_clip"] = "true"
+        // Create a dictionary containing the file size parameters
+        var uploadParameters = try self.createFileSizeParameters(url: url)
+        
+        // Add on the key-value pair for approach type
+        uploadParameters[Constants.ApproachKey] = Constants.ApproachDefaultValue
+        
+        // Store `uploadParameters` dictionary as the value to "upload" key inside `parameters` dictionary.
+        var parameters = [Constants.UploadKey: uploadParameters as Any]
         
         if let videoSettings = videoSettings
         {

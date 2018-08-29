@@ -1,151 +1,64 @@
 # VimeoUpload [![](https://circleci.com/gh/vimeo/VimeoUpload.png?style=shield&circle-token=2e7f762969ca311fc851e32d6ef2038f797f7e23)](https://circleci.com/gh/vimeo/VimeoUpload)
-This library is under active development. We're shooting for a v1.0 release soon. All comments, questions, pull requests, and issues are welcome. See below for details.
+This library is under active development. All comments, questions, pull requests, and issues are welcome. See below for details.
 
 ## Contents
-* [Design Considerations](#design-considerations)
-      * [Old Upload, New Upload 👴👶](#old-upload-new-upload)
-      * [Constraints](#constraints)
-      * [Goals](#goals)
-      * [Anatomy](#anatomy)
-          * [NSURLSession](#nsurlsession)
-          * [AFNetworking](#afnetworking)
-          * [VimeoUpload](#vimeoupload)
 * [Getting Started](#getting-started)
-      * [Prerequisites](#prerequisites)
-      * [Example Projects](#example-projects)
-      * [CocoaPods](#cocoapods)
-      * [Submodule](#submodule)
-      * [Initialization](#initialization)
+     * [Prerequisites](#prerequisites)
+     * [Which example project should I use?](#which-example-project-should-i-use)
+     * [Setup your Submodules](#setup-your-submodules)
+     * [Initialization](#initialization)
 * [Uploading Videos](#uploading-videos)
      * [Starting an Upload](#starting-an-upload)
           * [Obtaining a File URL For a PHAsset](#obtaining-a-file-url-for-a-phasset)
-          * [Obtaining a File URL For an ALAsset](#obtaining-a-file-url-for-an-alasset)
           * [Obtaining a File URL For an Asset That You Manage](#obtaining-a-file-url-for-an-asset-that-you-manage)
           * [Start Your Upload](#start-your-upload)
      * [Inspecting Upload State and Progress](#inspecting-upload-state-and-progress)
      * [Canceling an Upload](#canceling-an-upload)
+     * [Locating your uploaded video on Vimeo](#locating-your-uploaded-video-on-vimeo)
+* [Design Considerations](#design-considerations)
+     * [Constraints](#constraints)
+     * [Goals](#goals)
+     * [Anatomy](#anatomy)
+          * [NSURLSession](#nsurlsession)
+          * [AFNetworking](#afnetworking)
+          * [VimeoUpload](#vimeoupload)
 * [Custom Workflows 🍪🎉](#custom-workflows)
 * [Want to Contribute?](#want-to-contribute)
 * [Found an Issue?](#found-an-issue)
+* [Troubleshooting](#troubleshooting)
 * [Questions](#questions)
 * [License](#license)
 
-## Design Considerations
 
-### Old Upload, New Upload
+## Getting Started
 
-The current (public) server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. This is more complex than we'd like it to be, and this complexity is not ideal for native mobile clients. More requests means more failure points. More requests means a process that's challenging to communicate to the developer and in turn to the user. The 4 requests are: 
+### Prerequisites
+
+1. Ensure that you've verified your Vimeo account. When you create an account, you'll receive an email asking that you verify your account. **Until you verify your account you will not be able to upload videos using the API**. 
+2. Ensure you have been granted permission to use the "upload" scope. This permission must explicitly be granted by Vimeo API admins. You can request this permission on your "My Apps" page under "Request upload access". Visit [developer.vimeo.com](https://developer.vimeo.com/).
+3. Ensure that the OAuth token that you're using to make your requests has the "upload" scope included.
+
+### Which example project should I use?
+
+The publicly available server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. The 4 requests are: 
 
 1. Create a video object 
 2. Upload the video file
 3. Activate the video object 
 4. Optionally set the video object's metadata (e.g. title, description, privacy, etc.)
 
-We affectionately refer to this 4-step flow as Old Upload. 
+A simplified server-side flow that eliminates steps 3 and 4 is being used in the current [Vimeo iOS](https://itunes.apple.com/app/id425194759) and [Vimeo Android](https://play.google.com/store/apps/details?id=com.vimeo.android.videoapp) mobile apps. While it's currently for internal use only, we're actively working on making it available to the public before the end of 2017.
 
-A simplified flow that eliminates steps 3 and 4 above is in private beta right now. It's being used in the current [Vimeo iOS](https://itunes.apple.com/app/id425194759) and [Vimeo Android](https://play.google.com/store/apps/details?id=com.vimeo.android.videoapp) apps and it's slated to be made available to the public later this year.
+While VimeoUpload contains support for both of these flows, the public only has access to the 4-step upload process. That means the following: 
 
-We affectionately refer to this 2-step flow as New Upload.
+1. If you would like to get started using an example project, **you must set your build target to be `VimeoUpload-iOS-OldUpload`**. This is the example that uses the publicly accessible 4-step flow.
 
-VimeoUpload is designed to accommodate a variety of [background task workflows](#custom-workflows) including Old Upload and New Upload. The library currently contains support for both. However, New Upoad classes are currently marked as "private" and will not work for the general public until they are released from private beta.
+2. In order to run this project, **you will have to insert a valid OAuth token into the `init` method of the class called `OldVimeoUploader`** where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token. Without a valid OAuth token, you will be presented with a "Request failed: unauthorized (401)" error alert when you try to upload a video.
 
-The VimeoUpload APIs for New and Old Upload are very similar. The Old Upload API is documented below. Old upload will be deprecated as soon as possible and the README will be updated to reflec the New Upload API at that time.
 
-### Constraints
+### Setup your Submodules
 
-* **iOS 7 Support Required** 
-
- Because the Vimeo iOS app supports iOS7, and because a bunch of other apps out there do too, we must support both the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) and [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) APIs.
-
-* **No Direct Access to PHAsset or ALAsset Source Files** 
-
- Because of how the Apple APIs are designed, we cannot upload directly from [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) and [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) source files. So we must export a copy of the asset using an [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) before starting the upload process. Asset export must happen when the app is in the foreground.
-
-* **iCloud Photos** 
-
- If a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) is in iCloud and not resident on device we need to download it to the device before asset export. Download must happen when the app is in the foreground.
-
-* **Background Sessions** 
-
- Because an upload can take a significant amount of time, we must design for the user potentially backgrounding the application at any point in the process. Therefore all requests must be handled by an [NSURLSession](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSURLSession_class/) configured with a background [NSURLSessionConfiguration](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionConfiguration_class/index.html). This means we must rely exclusively on the [NSURLSessionDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionDelegate_protocol/index.html), [NSURLSessionTaskDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionTaskDelegate_protocol/index.html#//apple_ref/occ/intf/NSURLSessionTaskDelegate), and [NSURLSessionDownloadDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionDownloadDelegate_protocol/index.html#//apple_ref/occ/intf/NSURLSessionDownloadDelegate) protocols. We cannot rely on an [NSURLSessionTask](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionTask_class/index.html) subclasses' completion blocks.
- 
-* **Resumable Uploads**
-
- The [NSURLSession](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSURLSession_class/) API does not support resuming an interrupted background upload from an offset. The initial release of this library will use these APIs exclusively and therefore will also not support resuming an upload from an offset. 
-
-* **Fault Tolerance** 
-
- The app process could be backgrounded, terminated, or crash at any time. This means that we need to persist the state of the upload system to disk so that it can be reconstructed as needed. Crashes should not adversely impact uploads or the upload system.
-
-* **Concurrent File Uploads** 
-
- We want to be able to conduct concurrent uploads.
-
-* **State Introspection**
-
- We want to be able to communicate upload progress and state to the user in a variety of locations.  Including communicating state for uploads initiated on other devices and other platforms.
-
-* **Reachability Awareness** 
-
- The app could lose connectivity at any time. We want to be able to pause and resume the upload system when we lose connectivity. And we want to be able to allow the user to restrict uploads to wifi.
-
-* **Upload Quotas** 
-
- We need to be able to communicate information to users about their [upload quota](https://vimeo.com/help/faq/uploading-to-vimeo/uploading-basics). 
-
-* **iOS SDK Quirks** 
-
- NSURLSessionTask's `suspend` method doesn't quite do what we want it to `TODO: Provide details`
- 
- NSURLRequest's and NSURLSessionConfiguration's `allowsCellularAccess` properties don't quite do what we want them to `TODO: provide details`
- 
- AFURLSessionManager's `tasks` property behaves differently on iOS7 vs. iOS8+ `TODO: provide details`
- 
- And more...
-
-### Goals
-
-1. A simplified server-side upload API
-
-1. An upload system that addresses each [constraint](#constraints) listed above
-
-1. Clear and concise upload system initialization, management, and introspection
-
-1. An upload system that accommodates as many UX futures as possible
-
-### Anatomy
-
-#### NSURLSession
-
-TODO
-
-#### AFNetworking
-
-TODO
-
-#### VimeoUpload
-
-TODO
-
-## Getting Started
-
-### Prerequisites
-
-1. Ensure that you've verified your Vimeo account. When you create an account, you'll receive an email asking that you verify your account. Until you verify your account you will not be able to upload videos using the API. 
-2. Ensure you have been granted permission to use the "upload" scope. This permission must explicitly be granted by Vimeo API admins. You can request this permission on your app page under "Request upload access". Visit [developer.vimeo.com](https://developer.vimeo.com/).
-3. Ensure that the OAuth token that you're using to make your requests has the "upload" scope included.
-
-### Example Projects
-
-There's an example project for New Upload and one for Old Upload. In order to run them you'll have to drop a valid OAuth token into the example project's `VimeoUpload` subclass' `init` method where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
-
-### CocoaPods
-
-TODO
-
-### Submodule
-
-TODO
+If you are adding this library to your own project, follow the steps outlined in [Getting Started with Submodules as Development Pods](https://paper.dropbox.com/doc/Getting-Started-with-Submodules-as-Development-Pods-yRpNbPxIOjzGlcEbecuOC). 
 
 ### Initialization
 
@@ -177,9 +90,9 @@ You can obtain an OAuth token by using the authentication methods provided by [V
 
 In order to start an upload, you need a file URL pointing to the video file on disk that you would like to upload.
 
-The steps required to obtain the file URL will vary depending on whether you are uploading a [PHAsset](#obtaining-a-file-url-for-a-phasset), an [ALAsset](#obtaining-a-file-url-for-an-alasset), or an [asset that you manage](#obtaining-a-file-url-for-an-asset-that-you-manage) outside of the device Photos environment. Once you have a valid file URL, you will use it to [start your upload](#start-your-upload).
+The steps required to obtain the file URL will vary depending on whether you are uploading a [PHAsset](#obtaining-a-file-url-for-a-phasset) or an [asset that you manage](#obtaining-a-file-url-for-an-asset-that-you-manage) outside of the device Photos environment. Once you have a valid file URL, you will use it to [start your upload](#start-your-upload).
 
-Unfortunately, because of how Apple's [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) and [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) APIs are designed uploading directly from a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) or [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) resource URL is not possible. In order to upload [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html)s and [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/)s you will need to first create a copy of the asset itself and upload from that copy. See below for instructions on how to do this. 
+Unfortunately, because of how Apple's [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) APIs are designed, uploading directly from a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) resource URL is not possible. In order to upload [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html)s you will need to first create a copy of the asset itself and upload from that copy. See below for instructions on how to do this. 
 
 #### Obtaining a File URL For a PHAsset
 
@@ -222,44 +135,6 @@ Next, use VimeoUpload's `ExportOperation` to export a copy of the [PHAsset](http
 ```Swift
     let exportSession = ... // The export session you just generated (see above)
     let operation = ExportOperation(exportSession: exportSession)
-    
-    // Optionally set a progress block
-    operation.progressBlock = { (progress: Double) -> Void in
-        // Do something with progress
-    }
-    
-    operation.completionBlock = {
-        guard operation.cancelled == false else
-        {
-            return
-        }
-
-        if let error = operation.error
-        {
-            // Do something with the error
-        }
-        else if let url = operation.outputURL
-        {
-            // Use the url to start your upload (see below)
-        }
-        else
-        {
-            assertionFailure("error and outputURL are mutually exclusive, this should never happen.")
-        }
-    }
-    
-    operation.start()
-```
-
-#### Obtaining a File URL For an ALAsset
-
-Use VimeoUpload's `ExportOperation` to export a copy of the [ALAsset](https://developer.apple.com/library/ios/documentation/AssetsLibrary/Reference/ALAssetsLibrary_Class/) you intend to upload. You can then use the resulting `url` to [start your upload](#start-your-upload).
-
-```Swift
-    let alAsset = ... // The ALAsset you intend to upload
-    let url = alAsset.defaultRepresentation().url() // For example
-    let avAsset = AVURLAsset(URL: url)
-    let operation = ExportOperation(asset: avAsset)
     
     // Optionally set a progress block
     operation.progressBlock = { (progress: Double) -> Void in
@@ -430,13 +305,125 @@ Or by using the `identifier` of the `OldUploadDescriptor` in question:
     vimeoUpload.cancelUpload(identifier: identifier)
 ```
 
+### Locating your uploaded video on Vimeo
+
+One can access a video's URL by inspecting the link property on the video that's associated with the upload descriptor: `descriptor.video.link`. 
+ 
+For example, one could use the results of either the `Activation` or `Settings` stage to access the video object. See the following method implementation inside of `OldUploadDescriptor`:
+
+```swift
+override public func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
+{
+    ...
+    do
+    {
+        switch self.currentRequest
+        {
+        case .Create:
+        	...            
+        case .Upload:
+        	...  
+        case .Activate:
+        	// Use the `self.videoURI` to request a video object and inspect its `link`.
+        	self.videoUri = try responseSerializer.process(activateVideoResponse: task.response, url: url, error: error)
+        case .Settings:
+        	// Or, wait for the Settings step to complete and access `self.video.link`.
+            self.video = try responseSerializer.process(videoSettingsResponse: task.response, url: url, error: error) 
+        }
+    }    
+    ...
+}
+```
+
+Note: ellipses indicate code excluded for brevity. 
+
+## Design Considerations
+
+The following sections provide more insight into the motivation behind VimeoUpload's design, given some identified constraints and goals.
+
+### Constraints
+
+* **No Direct Access to PHAsset Source Files** 
+
+ Because of how the Apple APIs are designed, we cannot upload directly from [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) source files. So we must export a copy of the asset using an [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) before starting the upload process. Asset export must happen when the app is in the foreground.
+
+* **iCloud Photos** 
+
+ If a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) is in iCloud and not resident on device we need to download it to the device before asset export. Download must happen when the app is in the foreground.
+
+* **Background Sessions** 
+
+ Because an upload can take a significant amount of time, we must design for the user potentially backgrounding the application at any point in the process. Therefore all requests must be handled by an [NSURLSession](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSURLSession_class/) configured with a background [NSURLSessionConfiguration](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionConfiguration_class/index.html). This means we must rely exclusively on the [NSURLSessionDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionDelegate_protocol/index.html), [NSURLSessionTaskDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionTaskDelegate_protocol/index.html#//apple_ref/occ/intf/NSURLSessionTaskDelegate), and [NSURLSessionDownloadDelegate](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionDownloadDelegate_protocol/index.html#//apple_ref/occ/intf/NSURLSessionDownloadDelegate) protocols. We cannot rely on an [NSURLSessionTask](https://developer.apple.com/library/prerelease/ios/documentation/Foundation/Reference/NSURLSessionTask_class/index.html) subclasses' completion blocks.
+ 
+* **Resumable Uploads**
+
+ The [NSURLSession](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSURLSession_class/) API does not support resuming an interrupted background upload from an offset. The initial release of this library will use these APIs exclusively and therefore will also not support resuming an upload from an offset. 
+
+* **Fault Tolerance** 
+
+ The app process could be backgrounded, terminated, or crash at any time. This means that we need to persist the state of the upload system to disk so that it can be reconstructed as needed. Crashes should not adversely impact uploads or the upload system.
+
+* **Concurrent File Uploads** 
+
+ We want to be able to conduct concurrent uploads.
+
+* **State Introspection**
+
+ We want to be able to communicate upload progress and state to the user in a variety of locations.  Including communicating state for uploads initiated on other devices and other platforms.
+
+* **Reachability Awareness** 
+
+ The app could lose connectivity at any time. We want to be able to pause and resume the upload system when we lose connectivity. And we want to be able to allow the user to restrict uploads to wifi.
+
+* **Upload Quotas** 
+
+ We need to be able to communicate information to users about their [upload quota](https://vimeo.com/help/faq/uploading-to-vimeo/uploading-basics). 
+
+* **iOS SDK Quirks** 
+
+ NSURLSessionTask's `suspend` method doesn't quite do what we want it to `TODO: Provide details`
+ 
+ NSURLRequest's and NSURLSessionConfiguration's `allowsCellularAccess` properties don't quite do what we want them to `TODO: provide details`
+ 
+ AFURLSessionManager's `tasks` property behaves differently on iOS7 vs. iOS8+ `TODO: provide details`
+ 
+ And more...
+
+### Goals
+
+1. A simplified server-side upload API
+
+1. An upload system that addresses each [constraint](#constraints) listed above
+
+1. Clear and concise upload system initialization, management, and introspection
+
+1. An upload system that accommodates as many UX futures as possible
+
+### Anatomy
+
+#### NSURLSession
+
+TODO
+
+#### AFNetworking
+
+TODO
+
+#### VimeoUpload
+
+TODO
+
 ## Custom Workflows
 
 TODO
 
 ## Found an Issue?
 
-Please file it in the git [issue tracker](https://github.com/vimeo/VimeoUpload/issues).
+If you find any bugs or technical issues with this library, please [create an issue](https://github.com/vimeo/VimeoUpload/issues) and provide relevant code snippets, specific details about the issue, and steps to replicate behavior.
+
+## Troubleshooting
+
+If you have any questions about using this library, please [contact us directly](https://help.vimeo.com), post in the [Vimeo API Forum](https://vimeo.com/forums/api), or check out [StackOverflow](https://stackoverflow.com/tags/vimeo).
 
 ## Want to Contribute?
 

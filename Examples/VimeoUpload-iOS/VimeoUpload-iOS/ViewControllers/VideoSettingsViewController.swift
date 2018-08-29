@@ -55,7 +55,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     static let UploadInitiatedNotification = "VideoSettingsViewControllerUploadInitiatedNotification"
     static let NibName = "VideoSettingsViewController"
     private static let PreUploadViewPrivacy = "pre_upload"
-    
+
     // MARK: 
     
     @IBOutlet weak var titleTextField: UITextField!
@@ -64,17 +64,17 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK:
     
-    var input: UploadUserAndCameraRollAsset?
+    private var asset: VIMPHAsset
     
     // MARK:
     
-    private var operation: ConcurrentOperation?
+    private var operation: ExportSessionExportCreateVideoOperation?
     private var task: URLSessionDataTask?
     
     // MARK:
     
     private var url: URL?
-    private var uploadTicket: VIMUploadTicket?
+    private var video: VIMVideo?
     private var videoSettings: VideoSettings?
 
     // MARK:
@@ -89,6 +89,18 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     // MARK: Lifecycle
     
+    init(asset: VIMPHAsset)
+    {
+        self.asset = asset
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder)
+    {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     deinit
     {
         // Do not cancel operation, it will delete the source file
@@ -98,9 +110,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
-        assert(self.input != nil, "self.input cannot be nil")
-        
+                
         self.edgesForExtendedLayout = []
         
         self.setupNavigationBar()
@@ -120,13 +130,15 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     private func setupAndStartOperation()
     {
-        let me = self.input!.user
-        let cameraRollAsset = self.input!.cameraRollAsset
-        let sessionManager = NewVimeoUploader.sharedInstance.foregroundSessionManager
+        guard let sessionManager = NewVimeoUploader.sharedInstance?.foregroundSessionManager else
+        {
+            return
+        }
+        
         let videoSettings = self.videoSettings
         
-        let phAsset = cameraRollAsset.phAsset
-        let operation = PHAssetCloudExportQuotaCreateOperation(me: me, phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
+        let phAsset = self.asset.phAsset
+        let operation = ExportSessionExportCreateVideoOperation(phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
             print(String(format: "Download progress: %.2f", progress)) // TODO: Dispatch to main thread
@@ -153,7 +165,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                 if operation.error == nil
                 {
                     strongSelf.url = operation.url!
-                    strongSelf.uploadTicket = operation.uploadTicket!
+                    strongSelf.video = operation.video!
                     strongSelf.startUpload()
                 }
                 
@@ -166,9 +178,9 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
                     }
                     else
                     {
-                        if let video = strongSelf.uploadTicket?.video, let viewPrivacy = video.privacy?.view, viewPrivacy != type(of: strongSelf).PreUploadViewPrivacy
+                        if let video = strongSelf.video, let viewPrivacy = video.privacy?.view, viewPrivacy != type(of: strongSelf).PreUploadViewPrivacy
                         {
-                            NotificationCenter.default.post(name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: video)
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: strongSelf.video)
                             
                             strongSelf.activityIndicatorView.stopAnimating()
                             strongSelf.dismiss(animated: true, completion: nil)
@@ -189,13 +201,13 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func startUpload()
     {
         let url = self.url!
-        let uploadTicket = self.uploadTicket!
-        let assetIdentifier = self.input!.cameraRollAsset.identifier
+        let video = self.video!
+        let assetIdentifier = self.asset.identifier
         
-        let descriptor = UploadDescriptor(url: url, uploadTicket: uploadTicket)
+        let descriptor = UploadDescriptor(url: url, video: video)
         descriptor.identifier = assetIdentifier
         
-        NewVimeoUploader.sharedInstance.uploadVideo(descriptor: descriptor)
+        NewVimeoUploader.sharedInstance?.uploadVideo(descriptor: descriptor)
     }
 
     // MARK: Actions
@@ -206,9 +218,9 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         self.activityIndicatorView.stopAnimating()
         _ = self.navigationController?.popViewController(animated: true)
         
-        if let videoUri = self.uploadTicket?.video?.uri
+        if let videoUri = self.video?.uri
         {
-            NewVimeoUploader.sharedInstance.cancelUpload(videoUri: videoUri)
+            NewVimeoUploader.sharedInstance?.cancelUpload(videoUri: videoUri)
         }
     }
 
@@ -217,22 +229,20 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
         self.videoSettings = VideoSettings(title: title, description: description, privacy: "nobody", users: nil, password: nil)
-     
-        let operation = self.operation as! ExportQuotaCreateOperation
         
-        if operation.state == .executing
+        if self.operation?.state == .executing
         {
-            operation.videoSettings = self.videoSettings
+            self.operation?.videoSettings = self.videoSettings
 
             self.activityIndicatorView.startAnimating() // Listen for operation completion, dismiss
         }
-        else if let error = operation.error
+        else if let error = self.operation?.error
         {
             self.presentOperationErrorAlert(with: error)
         }
         else
         {
-            if let video = self.uploadTicket?.video, let viewPrivacy = video.privacy?.view, viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
+            if let video = self.video, let viewPrivacy = video.privacy?.view, viewPrivacy != VideoSettingsViewController.PreUploadViewPrivacy
             {
                 NotificationCenter.default.post(name: Notification.Name(rawValue: type(of: self).UploadInitiatedNotification), object: video)
                 
@@ -295,7 +305,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     private func applyVideoSettings()
     {
-        guard let videoURI = self.uploadTicket?.video?.uri, let videoSettings = self.videoSettings else
+        guard let videoURI = self.video?.uri, let videoSettings = self.videoSettings else
         {
             let alertController = UIAlertController(
                 title: Constants.TwoStepUploadPermissionAlert.Title,
@@ -312,7 +322,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         do
         {
-            self.task = try NewVimeoUploader.sharedInstance.foregroundSessionManager.videoSettingsDataTask(videoUri: videoURI, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+            self.task = try NewVimeoUploader.sharedInstance?.foregroundSessionManager.videoSettingsDataTask(videoUri: videoURI, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 self?.task = nil
                 

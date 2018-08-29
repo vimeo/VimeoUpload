@@ -1,9 +1,10 @@
 //
-//  VIMSizeQuota.h
+//  VIMPeriodic.swift
 //  VimeoNetworking
 //
-//  Created by Hanssen, Alfie on 11/6/15.
-//  Copyright (c) 2015 Vimeo (https://vimeo.com)
+//  Created by Lim, Jennifer on 4/3/18.
+//
+//  Copyright © 2016 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +25,15 @@
 //  THE SOFTWARE.
 //
 
-#import "VIMModelObject.h"
-
-@interface VIMSizeQuota : VIMModelObject
-
-@property (nonatomic, strong, nullable) NSNumber *free;
-@property (nonatomic, strong, nullable) NSNumber *max;
-@property (nonatomic, strong, nullable) NSNumber *used;
-
-@end
+public class VIMPeriodic: VIMSizeQuota
+{
+    /// The time in ISO 8601 format when your upload quota resets.
+    @objc dynamic public private(set) var resetDate: NSDate?
+    
+    // MARK: - VIMMappable
+    
+    public override func getObjectMapping() -> Any
+    {
+        return ["reset_date" : "resetDate"]
+    }
+}

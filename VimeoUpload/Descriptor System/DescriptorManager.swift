@@ -41,18 +41,31 @@ public typealias VoidClosure = () -> Void
 
 open class DescriptorManager: NSObject
 {
-    private static let QueueName = "descriptor_manager.synchronization_queue"
+    private struct Constants
+    {
+        static let QueueName = "descriptor_manager.synchronization_queue"
+        static let ShareExtensionArchivePrefix = "share_extension"
+        static let ShareExtensionDescriptorDidSuspend = "ShareExtensionDescriptorDidSuspend"
+        
+        struct InvalidationError
+        {
+            static let Domain = "BackgroundSessionInvalidationError"
+            static let Code = 1
+            static let LocalizedDescription = "A session object referring to the same background session has been invalidated and thus disconnected from the session."
+        }
+    }
     
     // MARK:
     
     private var sessionManager: AFURLSessionManager
     private let name: String
+    private let archivePrefix: String?
     private weak var delegate: DescriptorManagerDelegate?
     
     // MARK:
     
     private let archiver: DescriptorManagerArchiver // This object handles persistence of descriptors and suspended state to disk
-    private let synchronizationQueue = DispatchQueue(label: DescriptorManager.QueueName, attributes: [])
+    private let synchronizationQueue = DispatchQueue(label: Constants.QueueName, attributes: [])
 
     // MARK:
     
@@ -70,12 +83,26 @@ open class DescriptorManager: NSObject
     // By passing the delegate into the constructor (as opposed to using a public property)
     // We ensure that early events like "load" can be reported [AH] 11/25/2015
     
-    init(sessionManager: AFURLSessionManager, name: String, delegate: DescriptorManagerDelegate? = nil)
+    init?(sessionManager: AFURLSessionManager,
+          name: String,
+          archivePrefix: String?,
+          documentsFolderURL: URL,
+          delegate: DescriptorManagerDelegate? = nil)
     {
+        guard let archiver = DescriptorManagerArchiver(name: name,
+                                                       archivePrefix: archivePrefix,
+                                                       documentsFolderURL: documentsFolderURL)
+        else
+        {
+            return nil
+        }
+        
         self.sessionManager = sessionManager
         self.name = name
         self.delegate = delegate
-        self.archiver = DescriptorManagerArchiver(name: name)
+        
+        self.archiver = archiver
+        self.archivePrefix = archivePrefix
         
         super.init()
 
@@ -125,12 +152,24 @@ open class DescriptorManager: NSObject
 
     private func setupSessionBlocks()
     {
-        // Because we're using a background session we never have cause to invalidate the session,
-        // Which means that if this block is called it's likely due to an unrecoverable error,
-        // So we respond by clearing the descriptors set, returning to a blank slate. [AH] 10/28/2015
-        
+        // To restate Alfie's comment on this session invalid callback, in the
+        // past we did not want to invalidate a background session because we
+        // wanted to handle upload events coming back to the app as soon as the
+        // associated upload task is finished, so any invalidation might likely
+        // be caused by a weird error that we could not handle. That assumption
+        // is not true anymore unfortunately with the share extension. When the
+        // app has to handle upload events coming from the share extension, it
+        // must create an instance of `VimeoSessionManager` whose background ID
+        // is the same as the one that made the upload task. Because
+        // `VimeoSessionManager` retains `URLSession` while acting as its
+        // delegate, and `URLSession` retains its delegate object until it is
+        // invalidated, an explicit call to the `invalidate` method is necessary
+        // to avoid leaking memory. If the underlying session is not invalidated,
+        // not only the app will leak memory but the share extension won't be
+        // able to upload due to the main app still binding to that session ID.
+        // [VN] (07/03/2018)
         self.sessionManager.setSessionDidBecomeInvalidBlock { [weak self] (session, error) -> Void in
-            
+
             guard let strongSelf = self else
             {
                 return
@@ -142,14 +181,41 @@ open class DescriptorManager: NSObject
                 {
                     return
                 }
-
+                
                 strongSelf.archiver.removeAll()
                 
                 // TODO: Need to respond to this notification [AH] 2/22/2016 (remove from downloads store, delete active uploads etc.)
 
-                strongSelf.delegate?.sessionDidBecomeInvalid?(error: error as NSError)
+                // Why do we need to check if `error` is `nil` even though the compiler
+                // tells us that this checking will always succeed? Behind the scene, we
+                // are using the `AFURLSessionManager` class -- which is an Objective-C
+                // class -- for managing background upload sessions. For the session
+                // invalid callback, its header file does not mark the `NSError` object
+                // as nullable; in reality, this object will be `nil` if we explicitly
+                // invalidate the underlying session. Because of that, it is necessary
+                // to check for `nil` here, else the runtime will crash if the error
+                // object is `nil`.
+                //
+                // In short, trying to safely unwrap `error` will result in a crash, so
+                // as weird as it sounds, please do not do that here. [VN] (06/13/2018)
                 
-                NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.SessionDidBecomeInvalid.rawValue), object: error)
+                // TODO: Either update AFNetworking to the latest version, or redesign
+                // our networking library so that we have a better control over this
+                // error. [VN] (07/03/2018)
+                let theError: NSError?
+                if error != nil
+                {
+                    let userInfo = [NSLocalizedDescriptionKey: Constants.InvalidationError.LocalizedDescription]
+                    theError = NSError(domain: Constants.InvalidationError.Domain, code: Constants.InvalidationError.Code, userInfo: userInfo)
+                }
+                else
+                {
+                    theError = nil
+                }
+                
+                strongSelf.delegate?.sessionDidBecomeInvalid?(error: theError)
+
+                NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.SessionDidBecomeInvalid.rawValue), object: theError)
             })
         }
         
@@ -227,24 +293,39 @@ open class DescriptorManager: NSObject
                     return
                 }
                 
-                // These types of errors can occur when connection drops and before suspend() is called,
-                // Or when connection drop is slow -> timeouts etc. [AH] 2/22/2016
+                // For background upload tasks, keep in mind that if the device cannot
+                // connect to the Internet, they will not give up right away. Instead,
+                // they will be retried by the OS on our behalf. This timeout period is
+                // determined by `URLSessionConfiguration`'s `timeoutIntervalForResource`
+                // property. By default, it has a value of 7 days, meaning the OS will
+                // attempt to retry for a week before returning with a connection error.
+                // [VN] (07/03/2018)
                 let isConnectionError = ((task.error as? NSError)?.isConnectionError() == true || (error as? NSError)?.isConnectionError() == true)
                 if isConnectionError
                 {
-                    do
+                    if let prefix = strongSelf.archivePrefix, prefix == Constants.ShareExtensionArchivePrefix
                     {
-                        try descriptor.prepare(sessionManager: strongSelf.sessionManager)
-                        
-                        descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
+                        descriptor.suspend(sessionManager: strongSelf.sessionManager)
                         strongSelf.save()
-                    }
-                    catch
-                    {
-                        strongSelf.archiver.remove(descriptor: descriptor)
                         
-                        strongSelf.delegate?.descriptorDidFail?(descriptor)
-                        NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
+                        NotificationCenter.default.post(name: Notification.Name(Constants.ShareExtensionDescriptorDidSuspend), object: descriptor)
+                    }
+                    else
+                    {
+                        do
+                        {
+                            try descriptor.prepare(sessionManager: strongSelf.sessionManager)
+
+                            descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
+                            strongSelf.save()
+                        }
+                        catch
+                        {
+                            strongSelf.archiver.remove(descriptor: descriptor)
+
+                            strongSelf.delegate?.descriptorDidFail?(descriptor)
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
+                        }
                     }
                     
                     return
@@ -295,7 +376,7 @@ open class DescriptorManager: NSObject
                 {
                     return
                 }
-
+ 
                 if let backgroundEventsCompletionHandler = strongSelf.backgroundEventsCompletionHandler
                 {
                     // The completionHandler must be called on the main thread
@@ -317,18 +398,39 @@ open class DescriptorManager: NSObject
     
     // MARK: Public API
     
-    open func handleEventsForBackgroundURLSession(identifier: String, completionHandler: @escaping VoidClosure) -> Bool
+    /// Invalidate the underlying session manager object. You should
+    /// call this method whenever you're finished using the descriptor
+    /// manager, else you'll risk leaking memory.
+    public func invalidateSessionManager()
     {
-        guard identifier == self.sessionManager.session.configuration.identifier else
-        {
-            return false
-        }
-        
+        self.sessionManager.invalidateSessionCancelingTasks(false)
+    }
+    
+    /// Determines if the manager can handle events from a background upload
+    /// session.
+    ///
+    /// Each descriptor manager is backed with a background upload session.
+    /// If the upload is in progress, and your app enters background mode,
+    /// this upload session still continues its progress. Once the upload
+    /// task either completes or fails, it will ping your app delegate so
+    /// that your app has an opportunity to handle the session's events.
+    /// Use or override this method to check if the descriptor manager
+    /// should handle events from the background session.
+    ///
+    /// - Parameter identifier: The identifier of a background session.
+    /// - Returns: `true` if the identifier is the same as the underlying
+    /// background upload session and thus the descriptor manager should
+    /// handle the events. `false` otherwise.
+    open func canHandleEventsForBackgroundURLSession(withIdentifier identifier: String) -> Bool
+    {
+        return identifier == self.sessionManager.session.configuration.identifier
+    }
+    
+    open func handleEventsForBackgroundURLSession(completionHandler: @escaping VoidClosure)
+    {
         self.delegate?.willHandleEventsForBackgroundSession?()
 
         self.backgroundEventsCompletionHandler = completionHandler
-        
-        return true
     }
     
     open func suspend()

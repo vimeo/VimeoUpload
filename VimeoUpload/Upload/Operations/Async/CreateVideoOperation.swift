@@ -1,5 +1,5 @@
 //
-//  MeOperation.swift
+//  CreateVideoOperation.swift
 //  VimeoUpload
 //
 //  Created by Alfred Hanssen on 11/9/15.
@@ -27,28 +27,31 @@
 import Foundation
 import VimeoNetworking
 
-public class MeOperation: ConcurrentOperation
+public class CreateVideoOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
+    private let url: URL
+    private let videoSettings: VideoSettings?
     
     private var task: URLSessionDataTask?
 
-    public var result: VIMUser?
+    public var result: VIMVideo?
     public var error: NSError?
     
     // MARK: - Initialization
 
-    public init(sessionManager: VimeoSessionManager)
+    public required init(sessionManager: VimeoSessionManager, url: URL, videoSettings: VideoSettings?)
     {
         self.sessionManager = sessionManager
-    
+        self.url = url
+        self.videoSettings = videoSettings
+        
         super.init()
     }
     
     deinit
     {
         self.task?.cancel()
-        self.task = nil
     }
     
     // MARK: Overrides
@@ -62,7 +65,7 @@ public class MeOperation: ConcurrentOperation
         
         do
         {
-            self.task = try self.sessionManager.meDataTask(completionHandler: { [weak self] (user, error) -> Void in
+            self.task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
                 
                 guard let strongSelf = self else
                 {
@@ -78,11 +81,11 @@ public class MeOperation: ConcurrentOperation
                 
                 if let error = error
                 {
-                    strongSelf.error = error.error(byAddingDomain: UploadErrorDomain.MeOperation.rawValue)
+                    strongSelf.error = error.error(byAddingDomain: UploadErrorDomain.CreateVideoOperation.rawValue)
                 }
-                else if let user = user
+                else if let video = video
                 {
-                    strongSelf.result = user
+                    strongSelf.result = video
                 }
                 else
                 {
@@ -96,7 +99,7 @@ public class MeOperation: ConcurrentOperation
         }
         catch let error as NSError
         {
-            self.error = error.error(byAddingDomain: UploadErrorDomain.MeOperation.rawValue)
+            self.error = error.error(byAddingDomain: UploadErrorDomain.CreateVideoOperation.rawValue)
             self.state = .finished
         }
     }

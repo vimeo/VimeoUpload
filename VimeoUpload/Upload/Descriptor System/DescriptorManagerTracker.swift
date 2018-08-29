@@ -55,8 +55,13 @@ open class DescriptorManagerTracker: DescriptorManagerDelegate
         self.printMessageAndPostLocalNotification("Load failed: \(error.localizedDescription)")
     }
     
-    @objc open func sessionDidBecomeInvalid(error: NSError)
+    @objc open func sessionDidBecomeInvalid(error: NSError?)
     {
+        guard let error = error else
+        {
+            return
+        }
+        
         self.printMessageAndPostLocalNotification("Session invalidated: \(error.localizedDescription)")
     }
     
