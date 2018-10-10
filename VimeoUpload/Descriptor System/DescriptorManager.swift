@@ -57,7 +57,7 @@ open class DescriptorManager: NSObject
     
     // MARK:
     
-    private var sessionManager: AFURLSessionManager
+    public private(set) var sessionManager: AFURLSessionManager
     private let name: String
     private let archivePrefix: String?
     private weak var delegate: DescriptorManagerDelegate?
