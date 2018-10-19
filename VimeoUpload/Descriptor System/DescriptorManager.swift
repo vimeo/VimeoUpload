@@ -317,6 +317,9 @@ open class DescriptorManager: NSObject
                             try descriptor.prepare(sessionManager: strongSelf.sessionManager)
 
                             descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
+                            
+                            strongSelf.delegate?.descriptorDidResume?(descriptor)
+                            
                             strongSelf.save()
                         }
                         catch
@@ -598,6 +601,8 @@ open class DescriptorManager: NSObject
             for descriptor in strongSelf.archiver.descriptors
             {
                 descriptor.resume(sessionManager: strongSelf.sessionManager)
+                
+                strongSelf.delegate?.descriptorDidResume?(descriptor)
             }
             
             // Doing this after the loop rather than within, incrementally greater margin for error but faster

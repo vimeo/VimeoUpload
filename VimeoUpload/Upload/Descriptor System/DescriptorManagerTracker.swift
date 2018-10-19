@@ -134,6 +134,14 @@ open class DescriptorManagerTracker: DescriptorManagerDelegate
     {
         self.printMessageAndPostLocalNotification("Descriptor for task not found")
     }
+
+    @objc open func descriptorDidResume(_ descriptor: Descriptor)
+    {
+        if let descriptorIdentifier = descriptor.identifier
+        {
+            self.printMessageAndPostLocalNotification("Resume \(descriptorIdentifier)")
+        }
+    }
     
     // Private API
     
