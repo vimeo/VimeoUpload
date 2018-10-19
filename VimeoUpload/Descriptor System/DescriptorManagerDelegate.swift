@@ -45,6 +45,8 @@ import Foundation
     @objc optional func descriptorDidSucceed(_ descriptor: Descriptor)
     @objc optional func descriptorDidCancel(_ descriptor: Descriptor)
     @objc optional func descriptorDidFail(_ descriptor: Descriptor)
-    
+
+    @objc optional func descriptorDidResume(_ descriptor: Descriptor)
+
     @objc optional func descriptorForTaskNotFound(_ task: URLSessionTask)
 }
