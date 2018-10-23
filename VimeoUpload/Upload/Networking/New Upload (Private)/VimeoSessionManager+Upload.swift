@@ -29,9 +29,17 @@ import VimeoNetworking
 
 extension VimeoSessionManager
 {
-    func createVideoDataTask(url: URL, videoSettings: VideoSettings?, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
+    func createVideoDataTask(url: URL, videoSettings: VideoSettings?, uploadApproach: VIMUpload.UploadApproach?, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings)
+        let request: NSMutableURLRequest
+        if let uploadApproach = uploadApproach
+        {
+            request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings, uploadType: uploadApproach)
+        }
+        else
+        {
+            request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings)
+        }
         
         let task = self.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             

@@ -32,6 +32,7 @@ public class CreateVideoOperation: ConcurrentOperation
     private let sessionManager: VimeoSessionManager
     private let url: URL
     private let videoSettings: VideoSettings?
+    private let uploadApproach: VIMUpload.UploadApproach?
     
     private var task: URLSessionDataTask?
 
@@ -40,11 +41,12 @@ public class CreateVideoOperation: ConcurrentOperation
     
     // MARK: - Initialization
 
-    public required init(sessionManager: VimeoSessionManager, url: URL, videoSettings: VideoSettings?)
+    public required init(sessionManager: VimeoSessionManager, url: URL, videoSettings: VideoSettings?, uploadApproach: VIMUpload.UploadApproach? = nil)
     {
         self.sessionManager = sessionManager
         self.url = url
         self.videoSettings = videoSettings
+        self.uploadApproach = uploadApproach
         
         super.init()
     }
@@ -65,7 +67,7 @@ public class CreateVideoOperation: ConcurrentOperation
         
         do
         {
-            self.task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, completionHandler: { [weak self] (video, error) -> Void in
+            self.task = try self.sessionManager.createVideoDataTask(url: url, videoSettings: videoSettings, uploadApproach: self.uploadApproach, completionHandler: { [weak self] (video, error) -> Void in
                 
                 guard let strongSelf = self else
                 {
