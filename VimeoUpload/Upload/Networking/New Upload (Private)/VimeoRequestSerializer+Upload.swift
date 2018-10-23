@@ -36,7 +36,7 @@ extension VimeoRequestSerializer
         static let UploadKey = "upload"
     }
     
-    func createVideoRequest(with url: URL, videoSettings: VideoSettings?, uploadType: VIMUpload.UploadApproach = .streaming) throws -> NSMutableURLRequest
+    func createVideoRequest(with url: URL, videoSettings: VideoSettings?, uploadType: VIMUpload.UploadApproach = VIMUpload.UploadApproach.Streaming) throws -> NSMutableURLRequest
     {
         // Create a dictionary containing the file size parameters
         var uploadParameters = try self.createFileSizeParameters(url: url)
