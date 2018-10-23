@@ -14,11 +14,11 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - VimeoNetworking (3.2.0):
+  - VimeoNetworking (3.3.1):
     - AFNetworking (= 3.1.0)
 
 DEPENDENCIES:
-  - "VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, branch `develop`)"
+  - "VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, branch `feature/VIM-6599-Inject-Upload-Type`)"
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -26,18 +26,18 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   VimeoNetworking:
-    :branch: develop
+    :branch: feature/VIM-6599-Inject-Upload-Type
     :git: "git@github.com:vimeo/VimeoNetworking.git"
 
 CHECKOUT OPTIONS:
   VimeoNetworking:
-    :commit: 395710a68cb5c81a2089de94fb3b7fe28bf4c210
+    :commit: d9885941eb5fb4d15e232549e5b5dfed14fd4b31
     :git: "git@github.com:vimeo/VimeoNetworking.git"
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  VimeoNetworking: cef00b867495a61e9b5e10f5a6b309d82a200c02
+  VimeoNetworking: d9e16bc5b659694854c3e1177f03d00f0a2b8ea2
 
-PODFILE CHECKSUM: dd1c01077873d3593d24f554a22b00f665c04b49
+PODFILE CHECKSUM: 6a331cfbede8d40160ef3962abe33b01d2cb558f
 
 COCOAPODS: 1.5.2

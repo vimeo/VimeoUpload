@@ -62,19 +62,21 @@ public extension VimeoSessionManager
         return VimeoSessionManager(baseUrl: baseUrl, sessionConfiguration: sessionConfiguration, requestSerializer: requestSerializer)
     }
     
-    /**
-     Creates an unauthenticated session manager with a static application configuration
-     
-     - parameter appConfiguration: configuration used to generate the basic authentication header
-     
-     - returns: an initialized `VimeoSessionManager`
-     */
-    static func defaultSessionManager(appConfiguration: AppConfiguration) -> VimeoSessionManager
+    /// Creates an unauthenticated session manager with a static application configuration
+    ///
+    /// - Parameters:
+    ///   - appConfiguration: configuration used to generate the basic authentication header
+    ///   - configureSessionManagerBlock: a block to configure the session manager
+    /// - Returns: an initialized `VimeoSessionManager`
+    static func defaultSessionManager(appConfiguration: AppConfiguration, configureSessionManagerBlock: ConfigureSessionManagerBlock?) -> VimeoSessionManager
     {
         let sessionConfiguration = URLSessionConfiguration.defaultSessionConfigurationNoCache()
         let requestSerializer = VimeoRequestSerializer(appConfiguration: appConfiguration)
         
-        return VimeoSessionManager(baseUrl: appConfiguration.baseUrl, sessionConfiguration: sessionConfiguration, requestSerializer: requestSerializer)
+        let vimeoSessionManager = VimeoSessionManager(baseUrl: appConfiguration.baseUrl, sessionConfiguration: sessionConfiguration, requestSerializer: requestSerializer)
+        
+        let configuredVimeoSessionManager = configureSessionManagerBlock?(vimeoSessionManager) ?? vimeoSessionManager
+        return configuredVimeoSessionManager
     }
     
     // MARK: - Background Session Initialization

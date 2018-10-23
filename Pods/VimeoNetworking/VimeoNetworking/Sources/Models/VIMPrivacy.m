@@ -42,7 +42,8 @@ NSString *VIMPrivacy_Disabled = @"disable";
 - (NSDictionary *)getObjectMapping
 {
     return @{@"add": @"canAdd",
-             @"download" : @"canDownload"};
+             @"download" : @"canDownload",
+             @"_bypass_token" : @"bypassToken"};
 }
 
 @end

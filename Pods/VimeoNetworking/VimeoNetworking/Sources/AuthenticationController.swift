@@ -75,20 +75,19 @@ final public class AuthenticationController
         /// Set to false to stop the refresh cycle for pin code auth
     private var continuePinCodeAuthorizationRefreshCycle = true
     
-    /**
-     Create a new `AuthenticationController`
-     
-     - parameter client: a client to authenticate
-     
-     - returns: a new `AuthenticationController`
-     */
-    public init(client: VimeoClient, appConfiguration: AppConfiguration)
+    /// Create a new `AuthenticationController`
+    ///
+    /// - Parameters:
+    ///   - client: a client to authenticate
+    ///   - appConfiguration: a configuration
+    ///   - configureSessionManagerBlock: a block to configure the session manager
+    public init(client: VimeoClient, appConfiguration: AppConfiguration, configureSessionManagerBlock: ConfigureSessionManagerBlock?)
     {
         self.configuration = appConfiguration
         self.client = client
-        self.accountStore = AccountStore(configuration: configuration)
+        self.accountStore = AccountStore(configuration: appConfiguration)
         
-        self.authenticatorClient = VimeoClient(appConfiguration: configuration)
+        self.authenticatorClient = VimeoClient(appConfiguration: appConfiguration, configureSessionManagerBlock: configureSessionManagerBlock)
     }
     
     // MARK: - Public Saved Accounts
