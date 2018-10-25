@@ -30,7 +30,7 @@ import VimeoNetworking
 public typealias ProgressBlock = (Double) -> Void
 public typealias ErrorBlock = (NSError?) -> Void
 public typealias StringErrorBlock = (String?, NSError?) -> Void
-public typealias FloatBlock = (Float64) -> Void
+public typealias DoubleBlock = (Double) -> Void
 
 public typealias UserCompletionHandler = (VIMUser?, NSError?) -> Void
 public typealias VideoCompletionHandler = (VIMVideo?, NSError?) -> Void
