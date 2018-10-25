@@ -25,13 +25,89 @@
 //
 
 import XCTest
-import VimeoUpload
-import VimeoNetworking
+@testable import VimeoUpload
+@testable import VimeoNetworking
 
 class VimeoRequestSerializerTests: XCTestCase
 {
-    func test_createVideoRequest_returnsUploadApproachStreaming_whenUploadApproachIsNotSpecified()
+    private var serializer: VimeoRequestSerializer?
+    private var url: URL
     {
-        let requestSerializer = VimeoRequestSerializer()
+        guard let url = Bundle(for: type(of: self)).url(forResource: "wide_worlds", withExtension: "mp4") else
+        {
+            fatalError("Error: Cannot get file's URL.")
+        }
+        
+        return url
+    }
+    
+    override func setUp()
+    {
+        super.setUp()
+        
+        guard self.serializer == nil else
+        {
+            return
+        }
+        
+        self.serializer = VimeoRequestSerializer(accessTokenProvider: { () -> String? in
+            return "asdf"
+        }, apiVersion: "3.3")
+    }
+    
+    func test_createVideoRequest_returnsRequestWithUploadApproachStreaming_whenUploadApproachIsNotSpecified()
+    {
+        let parameters = self.parameters(fromRequestWithUploadApproach: nil)
+        
+        XCTAssertEqual(parameters["upload"]?["approach"] as? String, "streaming", "The upload approach should have been \"streaming.\"")
+    }
+    
+    func test_createVideoRequest_returnsRequestWithUploadApproachTus_whenUploadApproachIsTus()
+    {
+        let parameters = self.parameters(fromRequestWithUploadApproach: .Tus)
+        
+        XCTAssertEqual(parameters["upload"]?["approach"] as? String, "tus", "The upload approach should have been \"tus.\"")
+    }
+    
+    func test_createVideoRequest_returnsRequestWithUploadApproachPull_whenUploadApproachIsPull()
+    {
+        let parameters = self.parameters(fromRequestWithUploadApproach: .Pull)
+        
+        XCTAssertEqual(parameters["upload"]?["approach"] as? String, "pull", "The upload approach should have been \"pull.\"")
+    }
+    
+    func test_createVideoRequest_returnsRequestWithUploadApproachPost_whenUploadApproachIsPost()
+    {
+        let parameters = self.parameters(fromRequestWithUploadApproach: .Post)
+        
+        XCTAssertEqual(parameters["upload"]?["approach"] as? String, "post", "The upload approach should have been \"post.\"")
+    }
+    
+    private func parameters(fromRequestWithUploadApproach approach: VIMUpload.UploadApproach?) -> [String: [String: Any]]
+    {
+        do
+        {
+            let request: NSURLRequest?
+            
+            if let approach = approach
+            {
+                request = try serializer?.createVideoRequest(with: self.url, videoSettings: nil, uploadType: approach)
+            }
+            else
+            {
+                request = try serializer?.createVideoRequest(with: self.url, videoSettings: nil)
+            }
+            
+            guard let data = request?.httpBody, let parameters = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String: [String: Any]] else
+            {
+                fatalError("Error: Cannot read request's body.")
+            }
+            
+            return parameters
+        }
+        catch
+        {
+            fatalError("Error: Cannot create video request.")
+        }
     }
 }
