@@ -1,5 +1,5 @@
 //
-//  UploadApproachTests.swift
+//  VimeoRequestSerializerTests.swift
 //  VimeoUpload-iOSTests
 //
 //  Created by Nguyen, Van on 10/25/18.
@@ -25,8 +25,13 @@
 //
 
 import XCTest
+import VimeoUpload
+import VimeoNetworking
 
-class UploadApproachTests: XCTestCase
+class VimeoRequestSerializerTests: XCTestCase
 {
-    
+    func test_createVideoRequest_returnsUploadApproachStreaming_whenUploadApproachIsNotSpecified()
+    {
+        let requestSerializer = VimeoRequestSerializer()
+    }
 }
