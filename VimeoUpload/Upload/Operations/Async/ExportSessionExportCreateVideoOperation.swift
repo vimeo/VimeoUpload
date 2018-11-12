@@ -44,6 +44,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     
     private let phAsset: PHAsset
     private let documentsFolderURL: URL?
+    private let uploadApproach: VIMUpload.UploadApproach
 
     open var url: URL?
     open var video: VIMVideo?
@@ -72,7 +73,9 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     ///   - documentsFolderURL: An URL pointing to a Documents folder;
     ///   default to `nil`. For third-party use, this argument should not be
     ///   filled.
-    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil)
+    ///   - uploadApproach: A method to upload the asset; default to
+    ///   `Streaming`.
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil, uploadApproach: VIMUpload.UploadApproach = .Streaming)
     {
         self.phAsset = phAsset
         
@@ -83,6 +86,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
         self.operationQueue.maxConcurrentOperationCount = 1
         
         self.documentsFolderURL = documentsFolderURL
+        self.uploadApproach = uploadApproach
         
         super.init()
     }
@@ -162,7 +166,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     {
         let videoSettings = self.videoSettings
         
-        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
+        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings, uploadApproach: self.uploadApproach)
         operation.completionBlock = { [weak self] () -> Void in
             
             DispatchQueue.main.async(execute: { [weak self] () -> Void in
