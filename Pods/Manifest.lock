@@ -18,7 +18,7 @@ PODS:
     - AFNetworking (= 3.1.0)
 
 DEPENDENCIES:
-  - "VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, branch `feature/VIM-6596-GCS-Integration`)"
+  - "VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, branch `feature/VIM-6597-Add-Model-Support`)"
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -26,18 +26,18 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   VimeoNetworking:
-    :branch: feature/VIM-6596-GCS-Integration
+    :branch: feature/VIM-6597-Add-Model-Support
     :git: "git@github.com:vimeo/VimeoNetworking.git"
 
 CHECKOUT OPTIONS:
   VimeoNetworking:
-    :commit: 68769511cd532c5dd6a2cd46cdc4d42f15ae495e
+    :commit: b88f2ff68c7021fc57498bb2ef77a8916c430778
     :git: "git@github.com:vimeo/VimeoNetworking.git"
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   VimeoNetworking: d9e16bc5b659694854c3e1177f03d00f0a2b8ea2
 
-PODFILE CHECKSUM: 40d4ea1c191d3e3e8a6c0965be463d9bfcbc7043
+PODFILE CHECKSUM: 622d70e54c9edaa59649217f80413351412adf08
 
 COCOAPODS: 1.5.2
