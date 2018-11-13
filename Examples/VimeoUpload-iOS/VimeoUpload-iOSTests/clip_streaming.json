@@ -97,22 +97,16 @@
     "status": "available",
     "resource_key": "mock_video_resource_key",
     "upload": {
-        "approach": "gcs",
-        "size": 355856561,
-        "gcs": [{
-            "upload_link": "https://www.google.com",
-            "start_byte": 0,
-            "end_byte": 377296827,
-            "metadata": {
-                "connections": {
-                    "upload_attempt": {
-                        "uri": "/fake/upload/attempt",
-                        "options": ["GET"]
-                    }
-                }
-            }
-        }]
-    }
+        "status": "in_progress",
+        "upload_link": "https://www.google.com",
+        "form": null,
+        "complete_uri": null,
+        "approach": "streaming",
+        "size": 25975563,
+        "redirect_url": null,
+        "link": null,
+        "gcs": null
+    },
 }
 
 
