@@ -39,6 +39,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     private static let FileExtensionCoderKey = "fileExtension"
     private static let UploadTicketCoderKey = "uploadTicket"
     private static let VideoCoderKey = "video"
+    private static let UploadTaskBuilder = "uploadTaskBuilder"
 
     // MARK: 
     
@@ -62,6 +63,8 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         return self
     }
     
+    private let uploadTaskBuilder: UploadTaskBuilder
+    
     // MARK: - Initialization
     
     required public init()
@@ -69,10 +72,11 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         fatalError("init() has not been implemented")
     }
 
-    public init(url: URL, video: VIMVideo)
+    public init(url: URL, video: VIMVideo, uploadTaskBuilder: UploadTaskBuilder = StreamingUploadTaskBuilder())
     {
         self.url = url
         self.video = video
+        self.uploadTaskBuilder = uploadTaskBuilder
         
         super.init()
     }
@@ -91,7 +95,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             }
             
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLink, completionHandler: nil)
+            let task = try self.uploadTaskBuilder.makeUploadTask(sessionManager: sessionManager, fileUrl: self.url, uploadLink: uploadLink)
             
             self.currentTaskIdentifier = task.taskIdentifier
         }
@@ -189,6 +193,8 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         let path = URL.uploadDirectory().appendingPathComponent(fileName).appendingPathExtension(fileExtension).absoluteString
         
         self.url = URL(fileURLWithPath: path)
+        
+        self.uploadTaskBuilder = aDecoder.decodeObject(forKey: type(of: self).UploadTaskBuilder) as! UploadTaskBuilder
 
         // Support migrating archived uploadTickets to videos for API versions less than v3.4
         if let uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as? VIMUploadTicket
@@ -211,6 +217,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         aCoder.encode(fileName, forKey: type(of: self).FileNameCoderKey)
         aCoder.encode(ext, forKey: type(of: self).FileExtensionCoderKey)
         aCoder.encode(self.video, forKey: type(of: self).VideoCoderKey)
+        aCoder.encode(self.uploadTaskBuilder, forKey: type(of: self).UploadTaskBuilder)
         
         super.encode(with: aCoder)
     }
