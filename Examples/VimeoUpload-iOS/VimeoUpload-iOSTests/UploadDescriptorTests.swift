@@ -43,9 +43,11 @@ class UploadDescriptorTests: XCTestCase
         XCTAssertEqual(descriptor.uploadLink(from: video), "https://www.google.com")
     }
     
-    func test_uploadLink_throwsError_whenNeitherStreamLinkNorGCSLinkIsAvailable()
+    func test_uploadLink_returnsNil_whenNeitherStreamLinkNorGCSLinkIsAvailable()
     {
+        let (descriptor, video) = self.descriptor(fromResponseWithFile: "clip.json")
         
+        XCTAssertNil(descriptor.uploadLink(from: video))
     }
     
     private func descriptor(fromResponseWithFile fileName: String) -> (UploadDescriptor, VIMVideo)

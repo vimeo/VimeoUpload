@@ -18,6 +18,7 @@
 		8EB2E470219B227C0083C2AA /* UploadDescriptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB2E46F219B227C0083C2AA /* UploadDescriptorTests.swift */; };
 		8EB2E472219B2D350083C2AA /* clip_gcs.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EB2E471219B2D350083C2AA /* clip_gcs.json */; };
 		8EB2E474219B39F30083C2AA /* clip_streaming.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EB2E473219B39F30083C2AA /* clip_streaming.json */; };
+		8EB2E476219B52F40083C2AA /* clip.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EB2E475219B52F40083C2AA /* clip.json */; };
 		8EBE8EA8218263C60041553F /* wide_worlds.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8EBE8EA7218263C60041553F /* wide_worlds.mp4 */; };
 		AFFA3F181C9CE22500C7B6F3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFA3F171C9CE22500C7B6F3 /* AppDelegate.swift */; };
 		AFFA3F1F1C9CE22500C7B6F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AFFA3F1E1C9CE22500C7B6F3 /* Assets.xcassets */; };
@@ -74,6 +75,7 @@
 		8EB2E46F219B227C0083C2AA /* UploadDescriptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadDescriptorTests.swift; sourceTree = "<group>"; };
 		8EB2E471219B2D350083C2AA /* clip_gcs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = clip_gcs.json; sourceTree = "<group>"; };
 		8EB2E473219B39F30083C2AA /* clip_streaming.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = clip_streaming.json; sourceTree = "<group>"; };
+		8EB2E475219B52F40083C2AA /* clip.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = clip.json; sourceTree = "<group>"; };
 		8EBE8EA7218263C60041553F /* wide_worlds.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = wide_worlds.mp4; sourceTree = "<group>"; };
 		AFFA3F141C9CE22500C7B6F3 /* VimeoUpload-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VimeoUpload-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFFA3F171C9CE22500C7B6F3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				8EB2E46F219B227C0083C2AA /* UploadDescriptorTests.swift */,
 				8EB2E471219B2D350083C2AA /* clip_gcs.json */,
 				8EB2E473219B39F30083C2AA /* clip_streaming.json */,
+				8EB2E475219B52F40083C2AA /* clip.json */,
 			);
 			path = "VimeoUpload-iOSTests";
 			sourceTree = "<group>";
@@ -346,6 +349,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EBE8EA8218263C60041553F /* wide_worlds.mp4 in Resources */,
+				8EB2E476219B52F40083C2AA /* clip.json in Resources */,
 				8EB2E472219B2D350083C2AA /* clip_gcs.json in Resources */,
 				8EB2E474219B39F30083C2AA /* clip_streaming.json in Resources */,
 			);
