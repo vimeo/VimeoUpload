@@ -212,7 +212,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: - Helper Methods
     
-    private func uploadLink(from video: VIMVideo) -> String?
+    internal func uploadLink(from video: VIMVideo) -> String?
     {
         guard let uploadLink = video.upload?.uploadLink else
         {
