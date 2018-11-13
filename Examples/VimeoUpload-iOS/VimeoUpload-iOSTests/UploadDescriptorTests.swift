@@ -31,7 +31,9 @@ class UploadDescriptorTests: XCTestCase
     
     func test_uploadLink_returnsStreamingLink_whenStreamingLinkIsAvailable()
     {
+        let (descriptor, video) = self.descriptor(fromResponseWithFile: "clip_streaming.json")
         
+        XCTAssertEqual(descriptor.uploadLink(from: video), "https://www.google.com")
     }
     
     func test_uploadLink_returnsGCSLink_whenGCSLinkIsAvailable()
