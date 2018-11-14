@@ -11,15 +11,19 @@ import VimeoNetworking
 
 open class UploadTaskBuilder
 {
-    func makeUploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
+    public init() {
+        
+    }
+    
+    open func makeUploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
     {
         fatalError("Error: Must override this method.")
     }
 }
 
-final class StreamingUploadTaskBuilder: UploadTaskBuilder
+public class StreamingUploadTaskBuilder: UploadTaskBuilder
 {
-    override func makeUploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
+    override public func makeUploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
     {
         let task = try sessionManager.uploadVideoTask(source: fileUrl, destination: uploadLink, completionHandler: nil)
         
