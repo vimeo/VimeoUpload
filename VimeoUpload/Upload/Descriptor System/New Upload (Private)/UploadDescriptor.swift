@@ -63,7 +63,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         return self
     }
     
-    private let uploadTaskBuilder: UploadTaskBuilder
+    private let uploadTaskBuilder: UploadTaskBuilder?
     
     // MARK: - Initialization
     
@@ -95,9 +95,9 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             }
             
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try self.uploadTaskBuilder.makeUploadTask(sessionManager: sessionManager, fileUrl: self.url, uploadLink: uploadLink)
+            let task = try self.uploadTaskBuilder?.makeUploadTask(sessionManager: sessionManager, fileUrl: self.url, uploadLink: uploadLink)
             
-            self.currentTaskIdentifier = task.taskIdentifier
+            self.currentTaskIdentifier = task?.taskIdentifier
         }
         catch let error as NSError
         {
@@ -194,7 +194,14 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         self.url = URL(fileURLWithPath: path)
         
-        self.uploadTaskBuilder = aDecoder.decodeObject(forKey: type(of: self).UploadTaskBuilder) as! UploadTaskBuilder
+        if let uploadTaskBuilder = aDecoder.decodeObject(forKey: type(of: self).UploadTaskBuilder) as? UploadTaskBuilder
+        {
+            self.uploadTaskBuilder = uploadTaskBuilder
+        }
+        else
+        {
+            self.uploadTaskBuilder = nil
+        }
 
         // Support migrating archived uploadTickets to videos for API versions less than v3.4
         if let uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as? VIMUploadTicket
