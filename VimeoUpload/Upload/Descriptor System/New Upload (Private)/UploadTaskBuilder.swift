@@ -9,9 +9,20 @@
 import Foundation
 import VimeoNetworking
 
-open class UploadTaskBuilder
+open class UploadTaskBuilder: NSObject, NSCoding
 {
-    public init() {
+    public override init()
+    {
+        
+    }
+    
+    public func encode(with aCoder: NSCoder)
+    {
+        
+    }
+    
+    public required init?(coder aDecoder: NSCoder)
+    {
         
     }
     
