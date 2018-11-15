@@ -9,8 +9,10 @@
 import Foundation
 import VimeoNetworking
 
-open class UploadTaskBuilder: NSObject, NSCoding
+open class UploadTaskBuilder: NSObject, NSSecureCoding
 {
+    public static var supportsSecureCoding: Bool = true
+    
     public override init()
     {
         

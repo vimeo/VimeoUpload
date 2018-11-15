@@ -39,7 +39,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     private static let FileExtensionCoderKey = "fileExtension"
     private static let UploadTicketCoderKey = "uploadTicket"
     private static let VideoCoderKey = "video"
-    private static let UploadTaskBuilder = "uploadTaskBuilder"
+    private static let UploadTaskBuilderKey = "uploadTaskBuilder"
 
     // MARK: 
     
@@ -194,14 +194,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         self.url = URL(fileURLWithPath: path)
         
-        if let uploadTaskBuilder = aDecoder.decodeObject(forKey: type(of: self).UploadTaskBuilder) as? UploadTaskBuilder
-        {
-            self.uploadTaskBuilder = uploadTaskBuilder
-        }
-        else
-        {
-            self.uploadTaskBuilder = nil
-        }
+        self.uploadTaskBuilder = aDecoder.decodeObject(of: UploadTaskBuilder.self, forKey: type(of: self).UploadTaskBuilderKey)
 
         // Support migrating archived uploadTickets to videos for API versions less than v3.4
         if let uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as? VIMUploadTicket
@@ -224,7 +217,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         aCoder.encode(fileName, forKey: type(of: self).FileNameCoderKey)
         aCoder.encode(ext, forKey: type(of: self).FileExtensionCoderKey)
         aCoder.encode(self.video, forKey: type(of: self).VideoCoderKey)
-        aCoder.encode(self.uploadTaskBuilder, forKey: type(of: self).UploadTaskBuilder)
+        aCoder.encode(self.uploadTaskBuilder, forKey: type(of: self).UploadTaskBuilderKey)
         
         super.encode(with: aCoder)
     }
