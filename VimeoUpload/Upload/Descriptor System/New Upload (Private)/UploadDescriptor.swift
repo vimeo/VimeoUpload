@@ -89,7 +89,8 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         do
         {
-            guard let video = self.video, let uploadLink = try self.uploadLink(from: video) else
+            //guard let video = self.video, let uploadLink = try self.uploadLink(from: video) else
+            guard let video = self.video, let uploadLink = self.uploadStrategy?.uploadLink(from: video) else
             {
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
@@ -221,7 +222,8 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         super.encode(with: aCoder)
     }
-
+    
+    /*
     // MARK: - Helper Methods
     
     internal func uploadLink(from video: VIMVideo) throws -> String?
@@ -253,4 +255,5 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             return nil
         }
     }
+    */
 }

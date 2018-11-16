@@ -32,6 +32,11 @@ open class UploadStrategy: NSObject, NSSecureCoding
     {
         fatalError("Error: Must override this method.")
     }
+    
+    internal func uploadLink(from video: VIMVideo) -> String?
+    {
+        fatalError("Error: Must override this method.")
+    }
 }
 
 public class StreamingUploadStrategy: UploadStrategy
@@ -41,5 +46,10 @@ public class StreamingUploadStrategy: UploadStrategy
         let task = try sessionManager.uploadVideoTask(source: fileUrl, destination: uploadLink, completionHandler: nil)
         
         return task
+    }
+    
+    override public func uploadLink(from video: VIMVideo) -> String?
+    {
+        return video.upload?.uploadLink
     }
 }
