@@ -1,5 +1,5 @@
 //
-//  UploadDescriptorTests.swift
+//  StreamingUploadStrategyTests.swift
 //  VimeoUpload-iOSTests
 //
 //  Created by Nguyen, Van on 11/13/18.
@@ -28,36 +28,31 @@ import XCTest
 @testable import VimeoNetworking
 @testable import VimeoUpload
 
-class UploadDescriptorTests: XCTestCase
+class StreamingUploadStrategyTests: XCTestCase
 {
     func test_uploadLink_returnsStreamingLink_whenStreamingLinkIsAvailable()
     {
-        let (descriptor, video) = self.descriptor(fromResponseWithFile: "clip_streaming.json")
+        let video = self.videoObject(fromResponseWithFile: "clip_streaming.json")
+        let uploadStrategy = StreamingUploadStrategy()
         
-        XCTAssertEqual(try descriptor.uploadLink(from: video), "https://www.google.com", "`uploadLink` should have returned a streaming link.")
+        XCTAssertEqual(uploadStrategy.uploadLink(from: video), "https://www.google.com", "`uploadLink` should have returned a streaming link.")
     }
     
-    func test_uploadLink_returnsGCSLink_whenGCSLinkIsAvailable()
+    func test_uploadLink_returnsNil_whenStreamingLinkIsNotAvailable()
     {
-        let (descriptor, video) = self.descriptor(fromResponseWithFile: "clip_gcs.json")
+        let video = self.videoObject(fromResponseWithFile: "clip.json")
+        let uploadStrategy = StreamingUploadStrategy()
         
-        XCTAssertEqual(try descriptor.uploadLink(from: video), "https://www.google.com", "`uploadLink` should have returned an GCS link.")
+        XCTAssertNil(uploadStrategy.uploadLink(from: video), "`uploadLink` should have returned nil.")
     }
     
-    func test_uploadLink_throwsError_whenNeitherStreamLinkNorGCSLinkIsAvailable()
-    {
-        let (descriptor, video) = self.descriptor(fromResponseWithFile: "clip.json")
-        
-        XCTAssertThrowsError(try descriptor.uploadLink(from: video), "`uploadLink` should have thrown error.")
-    }
-    
-    private func descriptor(fromResponseWithFile fileName: String) -> (UploadDescriptor, VIMVideo)
+    private func videoObject(fromResponseWithFile fileName: String) -> VIMVideo
     {
         do
         {
             let bundle = Bundle(for: type(of: self))
             
-            guard let jsonUrl = bundle.url(forResource: fileName, withExtension: nil), let fileUrl = bundle.url(forResource: "wide_worlds", withExtension: "mp4") else
+            guard let jsonUrl = bundle.url(forResource: fileName, withExtension: nil) else
             {
                 fatalError("Error: File not found.")
             }
@@ -69,11 +64,7 @@ class UploadDescriptorTests: XCTestCase
                 fatalError("Error: Dictionary object cannot be created.")
             }
             
-            let video = try VIMObjectMapper.mapObject(responseDictionary: dictionary) as VIMVideo
-            
-            let descriptor = UploadDescriptor(url: fileUrl, video: video)
-            
-            return (descriptor, video)
+            return try VIMObjectMapper.mapObject(responseDictionary: dictionary) as VIMVideo
         }
         catch let error
         {
