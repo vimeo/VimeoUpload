@@ -33,7 +33,7 @@ open class UploadStrategy: NSObject, NSSecureCoding
         fatalError("Error: Must override this method.")
     }
     
-    internal func uploadLink(from video: VIMVideo) -> String?
+    open func uploadLink(from video: VIMVideo) -> String?
     {
         fatalError("Error: Must override this method.")
     }
