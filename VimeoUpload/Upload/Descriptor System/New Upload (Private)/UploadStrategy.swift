@@ -1,5 +1,5 @@
 //
-//  UploadTaskBuilder.swift
+//  UploadStrategy.swift
 //  VimeoUpload
 //
 //  Created by Nguyen, Van on 11/13/18.
@@ -9,7 +9,7 @@
 import Foundation
 import VimeoNetworking
 
-open class UploadTaskBuilder: NSObject, NSSecureCoding
+open class UploadStrategy: NSObject, NSSecureCoding
 {
     public static var supportsSecureCoding: Bool = true
     
@@ -34,7 +34,7 @@ open class UploadTaskBuilder: NSObject, NSSecureCoding
     }
 }
 
-public class StreamingUploadTaskBuilder: UploadTaskBuilder
+public class StreamingUploadStrategy: UploadStrategy
 {
     override public func makeUploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
     {
