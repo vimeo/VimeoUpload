@@ -15,8 +15,7 @@
 		5073D6ED1CAD66C600D08C5F /* BaseCameraRollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5073D6E91CAD66C600D08C5F /* BaseCameraRollViewController.swift */; };
 		5073D6EE1CAD66C600D08C5F /* BaseCameraRollViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5073D6EA1CAD66C600D08C5F /* BaseCameraRollViewController.xib */; };
 		8E8246D821826057006EF68C /* VimeoRequestSerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E8246D721826056006EF68C /* VimeoRequestSerializerTests.swift */; };
-		8EB2E470219B227C0083C2AA /* UploadDescriptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB2E46F219B227C0083C2AA /* UploadDescriptorTests.swift */; };
-		8EB2E472219B2D350083C2AA /* clip_gcs.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EB2E471219B2D350083C2AA /* clip_gcs.json */; };
+		8EB2E470219B227C0083C2AA /* StreamingUploadStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB2E46F219B227C0083C2AA /* StreamingUploadStrategyTests.swift */; };
 		8EB2E474219B39F30083C2AA /* clip_streaming.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EB2E473219B39F30083C2AA /* clip_streaming.json */; };
 		8EB2E476219B52F40083C2AA /* clip.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EB2E475219B52F40083C2AA /* clip.json */; };
 		8EBE8EA8218263C60041553F /* wide_worlds.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8EBE8EA7218263C60041553F /* wide_worlds.mp4 */; };
@@ -72,8 +71,7 @@
 		6449B9C8E7825FACDC56569C /* Pods-VimeoUpload-iOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOSTests.release.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOSTests/Pods-VimeoUpload-iOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		8D408A747D8113745C4A1D77 /* Pods-VimeoUpload-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VimeoUpload-iOS.debug.xcconfig"; path = "../../Pods/Target Support Files/Pods-VimeoUpload-iOS/Pods-VimeoUpload-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		8E8246D721826056006EF68C /* VimeoRequestSerializerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VimeoRequestSerializerTests.swift; sourceTree = "<group>"; };
-		8EB2E46F219B227C0083C2AA /* UploadDescriptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadDescriptorTests.swift; sourceTree = "<group>"; };
-		8EB2E471219B2D350083C2AA /* clip_gcs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = clip_gcs.json; sourceTree = "<group>"; };
+		8EB2E46F219B227C0083C2AA /* StreamingUploadStrategyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingUploadStrategyTests.swift; sourceTree = "<group>"; };
 		8EB2E473219B39F30083C2AA /* clip_streaming.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = clip_streaming.json; sourceTree = "<group>"; };
 		8EB2E475219B52F40083C2AA /* clip.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = clip.json; sourceTree = "<group>"; };
 		8EBE8EA7218263C60041553F /* wide_worlds.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = wide_worlds.mp4; sourceTree = "<group>"; };
@@ -206,8 +204,7 @@
 				8EBE8EA7218263C60041553F /* wide_worlds.mp4 */,
 				8E8246D721826056006EF68C /* VimeoRequestSerializerTests.swift */,
 				AFFA3F2E1C9CE22500C7B6F3 /* Info.plist */,
-				8EB2E46F219B227C0083C2AA /* UploadDescriptorTests.swift */,
-				8EB2E471219B2D350083C2AA /* clip_gcs.json */,
+				8EB2E46F219B227C0083C2AA /* StreamingUploadStrategyTests.swift */,
 				8EB2E473219B39F30083C2AA /* clip_streaming.json */,
 				8EB2E475219B52F40083C2AA /* clip.json */,
 			);
@@ -350,7 +347,6 @@
 			files = (
 				8EBE8EA8218263C60041553F /* wide_worlds.mp4 in Resources */,
 				8EB2E476219B52F40083C2AA /* clip.json in Resources */,
-				8EB2E472219B2D350083C2AA /* clip_gcs.json in Resources */,
 				8EB2E474219B39F30083C2AA /* clip_streaming.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -438,7 +434,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E8246D821826057006EF68C /* VimeoRequestSerializerTests.swift in Sources */,
-				8EB2E470219B227C0083C2AA /* UploadDescriptorTests.swift in Sources */,
+				8EB2E470219B227C0083C2AA /* StreamingUploadStrategyTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
