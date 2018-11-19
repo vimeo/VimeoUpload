@@ -38,7 +38,7 @@ class StreamingUploadStrategyTests: XCTestCase
         XCTAssertEqual(try uploadStrategy.uploadLink(from: video), "https://www.google.com", "`uploadLink` should have returned a streaming link.")
     }
     
-    func test_uploadLink_returnsNil_whenStreamingLinkIsNotAvailable()
+    func test_uploadLink_throwsError_whenStreamingLinkIsNotAvailable()
     {
         let video = self.videoObject(fromResponseWithFile: "clip.json")
         let uploadStrategy = StreamingUploadStrategy()
