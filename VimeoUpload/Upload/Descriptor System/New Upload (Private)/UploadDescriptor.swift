@@ -214,25 +214,36 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     internal func uploadLink(from video: VIMVideo) -> String?
     {
-        guard let uploadApproach = video.upload?.uploadApproach else
+        guard let upload = video.upload, let uploadApproach = upload.uploadApproach else
         {
             assertionFailure("Error: Upload approach does not exist.")
             
             return nil
         }
         
-        if uploadApproach == .Streaming
+        switch uploadApproach
         {
-            return video.upload?.uploadLink
-        }
-        else if uploadApproach == VIMUpload.UploadApproach(rawValue: "gcs")
-        {
-            return video.upload?.gcs?.first?.uploadLink
-        }
-        else
-        {
-            assertionFailure("Error: An upload link does not exist.")
+        case .Streaming:
+            guard let uploadLink = upload.uploadLink else
+            {
+                assertionFailure("Error: No upload link for Streaming approach.")
+                
+                return nil
+            }
             
+            return uploadLink
+            
+        case VIMUpload.UploadApproach(rawValue: "gcs"):
+            guard let uploadLink = upload.gcs?.first?.uploadLink else
+            {
+                assertionFailure("Error: No upload link for GCS approach.")
+                
+                return nil
+            }
+            
+            return uploadLink
+            
+        default:
             return nil
         }
     }
