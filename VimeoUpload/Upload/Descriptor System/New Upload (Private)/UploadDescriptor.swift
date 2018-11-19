@@ -30,11 +30,6 @@ import AFNetworking
 
 open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
-    internal enum UploadLinkError: Error
-    {
-        case noUploadLink
-    }
-    
     private static let FileNameCoderKey = "fileName"
     private static let FileExtensionCoderKey = "fileExtension"
     private static let UploadTicketCoderKey = "uploadTicket"
@@ -90,7 +85,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         do
         {
             //guard let video = self.video, let uploadLink = try self.uploadLink(from: video) else
-            guard let video = self.video, let uploadLink = self.uploadStrategy?.uploadLink(from: video) else
+            guard let video = self.video, let uploadLink = try self.uploadStrategy?.uploadLink(from: video) else
             {
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
@@ -222,38 +217,4 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         super.encode(with: aCoder)
     }
-    
-    /*
-    // MARK: - Helper Methods
-    
-    internal func uploadLink(from video: VIMVideo) throws -> String?
-    {
-        guard let upload = video.upload, let uploadApproach = upload.uploadApproach else
-        {
-            throw UploadLinkError.noUploadLink
-        }
-        
-        switch uploadApproach
-        {
-        case .Streaming:
-            guard let uploadLink = upload.uploadLink else
-            {
-                throw UploadLinkError.noUploadLink
-            }
-            
-            return uploadLink
-            
-        case VIMUpload.UploadApproach(rawValue: "gcs"):
-            guard let uploadLink = upload.gcs?.first?.uploadLink else
-            {
-                throw UploadLinkError.noUploadLink
-            }
-            
-            return uploadLink
-            
-        default:
-            return nil
-        }
-    }
-    */
 }

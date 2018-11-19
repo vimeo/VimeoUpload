@@ -35,7 +35,7 @@ class StreamingUploadStrategyTests: XCTestCase
         let video = self.videoObject(fromResponseWithFile: "clip_streaming.json")
         let uploadStrategy = StreamingUploadStrategy()
         
-        XCTAssertEqual(uploadStrategy.uploadLink(from: video), "https://www.google.com", "`uploadLink` should have returned a streaming link.")
+        XCTAssertEqual(try uploadStrategy.uploadLink(from: video), "https://www.google.com", "`uploadLink` should have returned a streaming link.")
     }
     
     func test_uploadLink_returnsNil_whenStreamingLinkIsNotAvailable()
@@ -43,7 +43,7 @@ class StreamingUploadStrategyTests: XCTestCase
         let video = self.videoObject(fromResponseWithFile: "clip.json")
         let uploadStrategy = StreamingUploadStrategy()
         
-        XCTAssertNil(uploadStrategy.uploadLink(from: video), "`uploadLink` should have returned nil.")
+        XCTAssertThrowsError(try uploadStrategy.uploadLink(from: video), "`uploadLink` should have thrown.")
     }
     
     private func videoObject(fromResponseWithFile fileName: String) -> VIMVideo

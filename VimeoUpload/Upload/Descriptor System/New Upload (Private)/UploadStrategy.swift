@@ -31,6 +31,14 @@ import VimeoNetworking
 /// `UploadDescriptor` in getting an upload task and an upload link.
 open class UploadStrategy: NSObject, NSSecureCoding
 {
+    /// An error enum related any problem with an upload link.
+    ///
+    /// - noUploadLink: Thrown when an upload link is not found.
+    public enum UploadLinkError: Error
+    {
+        case noUploadLink
+    }
+    
     public static var supportsSecureCoding: Bool = true
     
     public override init()
@@ -65,9 +73,10 @@ open class UploadStrategy: NSObject, NSSecureCoding
     /// Returns an appropriate upload link.
     ///
     /// - Parameter video: A video object returned by `CreateVideoOperation`.
-    /// - Returns: An upload link if it exists in the video object; `nil`
-    /// otherwise.
-    open func uploadLink(from video: VIMVideo) -> String?
+    /// - Returns: An upload link if it exists in the video object.
+    /// - Throws: One of the values of `UploadLinkError` if there is a problem
+    /// with the upload link.
+    open func uploadLink(from video: VIMVideo) throws -> String
     {
         fatalError("Error: Must override this method.")
     }
@@ -83,8 +92,13 @@ public class StreamingUploadStrategy: UploadStrategy
         return task
     }
     
-    override public func uploadLink(from video: VIMVideo) -> String?
+    override public func uploadLink(from video: VIMVideo) throws -> String
     {
-        return video.upload?.uploadLink
+        guard let uploadLink = video.upload?.uploadLink else
+        {
+            throw UploadLinkError.noUploadLink
+        }
+        
+        return uploadLink
     }
 }
