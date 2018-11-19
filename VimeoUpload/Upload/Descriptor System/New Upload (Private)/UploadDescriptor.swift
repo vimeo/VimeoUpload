@@ -80,7 +80,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         do
         {
-            guard let video = self.video, let uploadLink = self.uploadLink(from: video) else
+            guard let video = self.video, let uploadLink = try self.uploadLink(from: video) else
             {
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
@@ -212,13 +212,16 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: - Helper Methods
     
-    internal func uploadLink(from video: VIMVideo) -> String?
+    enum UploadLinkError: Error
+    {
+        case uploadLinkNotExist
+    }
+    
+    internal func uploadLink(from video: VIMVideo) throws -> String?
     {
         guard let upload = video.upload, let uploadApproach = upload.uploadApproach else
         {
-            assertionFailure("Error: Upload approach does not exist.")
-            
-            return nil
+            throw UploadLinkError.uploadLinkNotExist
         }
         
         switch uploadApproach
@@ -226,9 +229,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         case .Streaming:
             guard let uploadLink = upload.uploadLink else
             {
-                assertionFailure("Error: No upload link for Streaming approach.")
-                
-                return nil
+                throw UploadLinkError.uploadLinkNotExist
             }
             
             return uploadLink
@@ -236,9 +237,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         case VIMUpload.UploadApproach(rawValue: "gcs"):
             guard let uploadLink = upload.gcs?.first?.uploadLink else
             {
-                assertionFailure("Error: No upload link for GCS approach.")
-                
-                return nil
+                throw UploadLinkError.uploadLinkNotExist
             }
             
             return uploadLink
