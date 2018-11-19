@@ -34,21 +34,21 @@ class UploadDescriptorTests: XCTestCase
     {
         let (descriptor, video) = self.descriptor(fromResponseWithFile: "clip_streaming.json")
         
-        XCTAssertEqual(descriptor.uploadLink(from: video), "https://www.google.com", "`uploadLink` should have returned a streaming link.")
+        XCTAssertEqual(try descriptor.uploadLink(from: video), "https://www.google.com", "`uploadLink` should have returned a streaming link.")
     }
     
     func test_uploadLink_returnsGCSLink_whenGCSLinkIsAvailable()
     {
         let (descriptor, video) = self.descriptor(fromResponseWithFile: "clip_gcs.json")
         
-        XCTAssertEqual(descriptor.uploadLink(from: video), "https://www.google.com", "`uploadLink` should have returned an GCS link.")
+        XCTAssertEqual(try descriptor.uploadLink(from: video), "https://www.google.com", "`uploadLink` should have returned an GCS link.")
     }
     
-    func test_uploadLink_returnsNil_whenNeitherStreamLinkNorGCSLinkIsAvailable()
+    func test_uploadLink_throwsError_whenNeitherStreamLinkNorGCSLinkIsAvailable()
     {
         let (descriptor, video) = self.descriptor(fromResponseWithFile: "clip.json")
         
-        XCTAssertNil(descriptor.uploadLink(from: video), "`uploadLink` should have returned nil.")
+        XCTAssertThrowsError(try descriptor.uploadLink(from: video))
     }
     
     private func descriptor(fromResponseWithFile fileName: String) -> (UploadDescriptor, VIMVideo)
