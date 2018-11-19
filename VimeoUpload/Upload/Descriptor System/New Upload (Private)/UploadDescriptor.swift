@@ -30,6 +30,11 @@ import AFNetworking
 
 open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
+    internal enum UploadLinkError: Error
+    {
+        case noUploadLink
+    }
+    
     private static let FileNameCoderKey = "fileName"
     private static let FileExtensionCoderKey = "fileExtension"
     private static let UploadTicketCoderKey = "uploadTicket"
@@ -212,16 +217,11 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: - Helper Methods
     
-    enum UploadLinkError: Error
-    {
-        case uploadLinkNotExist
-    }
-    
     internal func uploadLink(from video: VIMVideo) throws -> String?
     {
         guard let upload = video.upload, let uploadApproach = upload.uploadApproach else
         {
-            throw UploadLinkError.uploadLinkNotExist
+            throw UploadLinkError.noUploadLink
         }
         
         switch uploadApproach
@@ -229,7 +229,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         case .Streaming:
             guard let uploadLink = upload.uploadLink else
             {
-                throw UploadLinkError.uploadLinkNotExist
+                throw UploadLinkError.noUploadLink
             }
             
             return uploadLink
@@ -237,7 +237,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         case VIMUpload.UploadApproach(rawValue: "gcs"):
             guard let uploadLink = upload.gcs?.first?.uploadLink else
             {
-                throw UploadLinkError.uploadLinkNotExist
+                throw UploadLinkError.noUploadLink
             }
             
             return uploadLink
