@@ -48,7 +48,7 @@ class UploadDescriptorTests: XCTestCase
     {
         let (descriptor, video) = self.descriptor(fromResponseWithFile: "clip.json")
         
-        XCTAssertThrowsError(try descriptor.uploadLink(from: video))
+        XCTAssertThrowsError(try descriptor.uploadLink(from: video), "`uploadLink` should have thrown error.")
     }
     
     private func descriptor(fromResponseWithFile fileName: String) -> (UploadDescriptor, VIMVideo)
