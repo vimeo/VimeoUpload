@@ -34,7 +34,6 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     private static let FileExtensionCoderKey = "fileExtension"
     private static let UploadTicketCoderKey = "uploadTicket"
     private static let VideoCoderKey = "video"
-    private static let UploadStrategyKey = "uploadStrategy"
 
     // MARK: 
     
@@ -189,8 +188,6 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         let path = URL.uploadDirectory().appendingPathComponent(fileName).appendingPathExtension(fileExtension).absoluteString
         
         self.url = URL(fileURLWithPath: path)
-        
-        self.uploadStrategy = aDecoder.decodeObject(of: UploadStrategy.self, forKey: type(of: self).UploadStrategyKey)
 
         // Support migrating archived uploadTickets to videos for API versions less than v3.4
         if let uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as? VIMUploadTicket
@@ -201,6 +198,8 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.video = aDecoder.decodeObject(forKey: type(of: self).VideoCoderKey) as? VIMVideo
         }
+        
+        self.uploadStrategy = StreamingUploadStrategy()
 
         super.init(coder: aDecoder)
     }
@@ -213,7 +212,6 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         aCoder.encode(fileName, forKey: type(of: self).FileNameCoderKey)
         aCoder.encode(ext, forKey: type(of: self).FileExtensionCoderKey)
         aCoder.encode(self.video, forKey: type(of: self).VideoCoderKey)
-        aCoder.encode(self.uploadStrategy, forKey: type(of: self).UploadStrategyKey)
         
         super.encode(with: aCoder)
     }

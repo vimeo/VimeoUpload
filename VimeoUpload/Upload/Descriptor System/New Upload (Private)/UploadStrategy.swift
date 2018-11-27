@@ -27,35 +27,15 @@
 import Foundation
 import VimeoNetworking
 
+public enum UploadLinkError: Error
+{
+    case noUploadLink
+}
+
 /// An abstract class that declares an interface to assist
 /// `UploadDescriptor` in getting an upload task and an upload link.
-open class UploadStrategy: NSObject, NSSecureCoding
+public protocol UploadStrategy
 {
-    /// An error enum related any problem with an upload link.
-    ///
-    /// - noUploadLink: Thrown when an upload link is not found.
-    public enum UploadLinkError: Error
-    {
-        case noUploadLink
-    }
-    
-    public static var supportsSecureCoding: Bool = true
-    
-    public override init()
-    {
-        
-    }
-    
-    public func encode(with aCoder: NSCoder)
-    {
-        
-    }
-    
-    public required init?(coder aDecoder: NSCoder)
-    {
-        
-    }
-    
     /// Creates an appropriate upload task for the upload descriptor.
     ///
     /// - Parameters:
@@ -65,10 +45,7 @@ open class UploadStrategy: NSObject, NSSecureCoding
     /// - Returns: An upload task.
     /// - Throws: An `NSError` that describes why an upload task cannot be
     /// created.
-    open func makeUploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
-    {
-        fatalError("Error: Must override this method.")
-    }
+    func makeUploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
     
     /// Returns an appropriate upload link.
     ///
@@ -76,23 +53,20 @@ open class UploadStrategy: NSObject, NSSecureCoding
     /// - Returns: An upload link if it exists in the video object.
     /// - Throws: One of the values of `UploadLinkError` if there is a problem
     /// with the upload link.
-    open func uploadLink(from video: VIMVideo) throws -> String
-    {
-        fatalError("Error: Must override this method.")
-    }
+    func uploadLink(from video: VIMVideo) throws -> String
 }
 
 /// An upload strategy that supports the streaming upload approach.
-public class StreamingUploadStrategy: UploadStrategy
+public struct StreamingUploadStrategy: UploadStrategy
 {
-    override public func makeUploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
+    public func makeUploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
     {
         let task = try sessionManager.uploadVideoTask(source: fileUrl, destination: uploadLink, completionHandler: nil)
         
         return task
     }
     
-    override public func uploadLink(from video: VIMVideo) throws -> String
+    public func uploadLink(from video: VIMVideo) throws -> String
     {
         guard let uploadLink = video.upload?.uploadLink else
         {
