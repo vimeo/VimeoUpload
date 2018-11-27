@@ -57,7 +57,10 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         return self
     }
     
-    private let uploadStrategy: UploadStrategy?
+    open var uploadStrategy: UploadStrategy
+    {
+        return StreamingUploadStrategy()
+    }
     
     // MARK: - Initialization
     
@@ -66,11 +69,10 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         fatalError("init() has not been implemented")
     }
 
-    public init(url: URL, video: VIMVideo, uploadStrategy: UploadStrategy = StreamingUploadStrategy())
+    public init(url: URL, video: VIMVideo)
     {
         self.url = url
         self.video = video
-        self.uploadStrategy = uploadStrategy
         
         super.init()
     }
@@ -83,16 +85,16 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         do
         {
-            //guard let video = self.video, let uploadLink = try self.uploadLink(from: video) else
-            guard let video = self.video, let uploadLink = try self.uploadStrategy?.uploadLink(from: video) else
+            guard let video = self.video else
             {
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
             
+            let uploadLink = try self.uploadStrategy.uploadLink(from: video)
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try self.uploadStrategy?.makeUploadTask(sessionManager: sessionManager, fileUrl: self.url, uploadLink: uploadLink)
+            let task = try self.uploadStrategy.makeUploadTask(sessionManager: sessionManager, fileUrl: self.url, uploadLink: uploadLink)
             
-            self.currentTaskIdentifier = task?.taskIdentifier
+            self.currentTaskIdentifier = task.taskIdentifier
         }
         catch let error as NSError
         {
@@ -198,8 +200,6 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         {
             self.video = aDecoder.decodeObject(forKey: type(of: self).VideoCoderKey) as? VIMVideo
         }
-        
-        self.uploadStrategy = StreamingUploadStrategy()
 
         super.init(coder: aDecoder)
     }
