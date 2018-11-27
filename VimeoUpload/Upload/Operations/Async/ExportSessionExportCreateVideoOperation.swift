@@ -166,7 +166,8 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     {
         let videoSettings = self.videoSettings
         
-        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings, uploadApproach: self.uploadApproach)
+        let uploadParameters = ["approach" : "streaming"]
+        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings, uploadParameters: uploadParameters)
         operation.completionBlock = { [weak self] () -> Void in
             
             DispatchQueue.main.async(execute: { [weak self] () -> Void in

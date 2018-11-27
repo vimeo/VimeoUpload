@@ -29,17 +29,9 @@ import VimeoNetworking
 
 extension VimeoSessionManager
 {
-    func createVideoDataTask(url: URL, videoSettings: VideoSettings?, uploadApproach: VIMUpload.UploadApproach?, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
+    func createVideoDataTask(url: URL, videoSettings: VideoSettings?, uploadParameters: [String : Any], completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
     {
-        let request: NSMutableURLRequest
-        if let uploadApproach = uploadApproach
-        {
-            request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings, uploadType: uploadApproach)
-        }
-        else
-        {
-            request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings)
-        }
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings, uploadParameters: uploadParameters)
         
         let task = self.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
@@ -67,9 +59,9 @@ extension VimeoSessionManager
         return task
     }
     
-    func createVideoDownloadTask(url: URL, videoSettings: VideoSettings?) throws -> URLSessionDownloadTask
+    func createVideoDownloadTask(url: URL, videoSettings: VideoSettings?, uploadParameters: [String : Any]) throws -> URLSessionDownloadTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings, uploadParameters: uploadParameters)
         
         let task = self.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         

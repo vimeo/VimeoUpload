@@ -248,7 +248,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         switch request
         {
         case .CreateVideo:
-            return try sessionManager.createVideoDownloadTask(url: self.videoUrl, videoSettings: self.videoSettings)
+            return try sessionManager.createVideoDownloadTask(url: self.videoUrl, videoSettings: self.videoSettings, uploadParameters: ["approach" : "streaming"])
         case .UploadVideo:
             guard let uploadUri = self.uploadTicket?.uploadLinkSecure else
             {
