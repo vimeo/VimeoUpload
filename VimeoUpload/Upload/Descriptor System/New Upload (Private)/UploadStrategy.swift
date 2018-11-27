@@ -32,8 +32,8 @@ public enum UploadLinkError: Error
     case noUploadLink
 }
 
-/// An abstract class that declares an interface to assist
-/// `UploadDescriptor` in getting an upload task and an upload link.
+/// An interface to assist `UploadDescriptor` in getting an upload task
+/// and an upload link.
 public protocol UploadStrategy
 {
     /// Creates an appropriate upload task for the upload descriptor.
