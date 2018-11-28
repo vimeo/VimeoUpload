@@ -32,7 +32,7 @@ public class CreateVideoOperation: ConcurrentOperation
     private let sessionManager: VimeoSessionManager
     private let url: URL
     private let videoSettings: VideoSettings?
-    private let uploadParameters: [String : Any]
+    private let uploadParameters: UploadParameters
     
     private var task: URLSessionDataTask?
 
@@ -41,7 +41,7 @@ public class CreateVideoOperation: ConcurrentOperation
     
     // MARK: - Initialization
 
-    public required init(sessionManager: VimeoSessionManager, url: URL, videoSettings: VideoSettings?, uploadParameters: [String : Any])
+    public required init(sessionManager: VimeoSessionManager, url: URL, videoSettings: VideoSettings?, uploadParameters: UploadParameters)
     {
         self.sessionManager = sessionManager
         self.url = url

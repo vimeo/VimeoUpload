@@ -27,9 +27,16 @@
 import Foundation
 import VimeoNetworking
 
+public typealias UploadParameters = [String: Any]
+
 extension VimeoSessionManager
 {
-    func createVideoDataTask(url: URL, videoSettings: VideoSettings?, uploadParameters: [String : Any], completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
+    struct Constants
+    {
+        static let DefaultUploadParameters: UploadParameters = ["approach" : "streaming"]
+    }
+    
+    func createVideoDataTask(url: URL, videoSettings: VideoSettings?, uploadParameters: UploadParameters, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings, uploadParameters: uploadParameters)
         
@@ -59,7 +66,7 @@ extension VimeoSessionManager
         return task
     }
     
-    func createVideoDownloadTask(url: URL, videoSettings: VideoSettings?, uploadParameters: [String : Any]) throws -> URLSessionDownloadTask
+    func createVideoDownloadTask(url: URL, videoSettings: VideoSettings?, uploadParameters: UploadParameters) throws -> URLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings, uploadParameters: uploadParameters)
         

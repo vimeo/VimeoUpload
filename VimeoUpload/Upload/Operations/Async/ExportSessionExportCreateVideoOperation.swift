@@ -31,8 +31,6 @@ import Photos
 
 open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
 {
-    public typealias UploadParameters = [String: Any]
-
     let sessionManager: VimeoSessionManager
     let operationQueue: OperationQueue
     
@@ -47,10 +45,6 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     private let documentsFolderURL: URL?
     
     private let uploadParameters: UploadParameters
-    struct Constants
-    {
-        static let DefaultUploadParameters: UploadParameters = ["approach" : "streaming"]
-    }
 
     open var url: URL?
     open var video: VIMVideo?
@@ -82,7 +76,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     ///   filled.
     ///   - uploadApproach: A method to upload the asset; default to
     ///   `Streaming`.
-    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil, uploadParameters: UploadParameters = Constants.DefaultUploadParameters)
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil, uploadParameters: UploadParameters = VimeoSessionManager.Constants.DefaultUploadParameters)
     {
         self.phAsset = phAsset
         

@@ -31,17 +31,16 @@ extension VimeoRequestSerializer
 {
     private struct Constants
     {
-//        static let ApproachKey = "approach"
-//        static let ApproachDefaultValue = "streaming"
         static let UploadKey = "upload"
     }
 
-    func createVideoRequest(with url: URL, videoSettings: VideoSettings?, uploadParameters: [String : Any]) throws -> NSMutableURLRequest
+    func createVideoRequest(with url: URL, videoSettings: VideoSettings?, uploadParameters: UploadParameters) throws -> NSMutableURLRequest
     {
         // Create a dictionary containing the file size parameters
         let baseUploadParameters = try self.createFileSizeParameters(url: url)
         
         // Merge in the new key-value pairs passed in
+        // TODO: Unit test
         let allUploadParameters = baseUploadParameters.merging(uploadParameters) { (_, new) in new }
         
         // Store `uploadParameters` dictionary as the value to "upload" key inside `parameters` dictionary.
