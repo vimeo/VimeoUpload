@@ -31,7 +31,7 @@ import VimeoNetworking
 ///
 /// - unavailable: Thrown when an upload link is not available.
 /// - wrongType: Thrown when attempting to get an upload link with a
-/// wrong upload approach i.e using `StreamingUploadStrategy` to get an
+/// wrong upload approach i.e using `StreamingUploadStrategy` to get a
 /// tus upload link.
 public enum UploadLinkError: Error
 {
@@ -49,7 +49,7 @@ public protocol UploadStrategy
     ///   - requestSerializer: A request serializer.
     ///   - fileUrl: A URL to a video file.
     ///   - uploadLink: A destination URL to send the video file to.
-    /// - Returns: An upload task.
+    /// - Returns: An upload request.
     /// - Throws: An `NSError` that describes why an upload request cannot be
     /// created.
     static func uploadRequest(requestSerializer: VimeoRequestSerializer?, fileUrl: URL, uploadLink: String) throws -> URLRequest
