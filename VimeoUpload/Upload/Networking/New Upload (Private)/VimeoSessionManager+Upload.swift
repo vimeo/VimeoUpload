@@ -31,9 +31,11 @@ public typealias UploadParameters = [String: Any]
 
 extension VimeoSessionManager
 {
-    struct Constants
+    public struct Constants
     {
-        static let DefaultUploadParameters: UploadParameters = ["approach" : "streaming"]
+        public static let ApproachKey = "approach"
+        public static let StreamingApproachValue = "streaming"
+        public static let DefaultUploadParameters: UploadParameters = [ApproachKey : StreamingApproachValue]
     }
     
     func createVideoDataTask(url: URL, videoSettings: VideoSettings?, uploadParameters: UploadParameters, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
