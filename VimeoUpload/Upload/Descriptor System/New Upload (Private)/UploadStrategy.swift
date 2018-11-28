@@ -46,7 +46,7 @@ public protocol UploadStrategy
     /// - Returns: An upload task.
     /// - Throws: An `NSError` that describes why an upload task cannot be
     /// created.
-    func makeUploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
+    func uploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
     
     /// Returns an appropriate upload link.
     ///
@@ -60,7 +60,7 @@ public protocol UploadStrategy
 /// An upload strategy that supports the streaming upload approach.
 public struct StreamingUploadStrategy: UploadStrategy
 {
-    public func makeUploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
+    public func uploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
     {
         let task = try sessionManager.uploadVideoTask(source: fileUrl, destination: uploadLink, completionHandler: nil)
         
