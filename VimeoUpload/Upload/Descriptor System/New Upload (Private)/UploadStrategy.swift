@@ -30,7 +30,7 @@ import VimeoNetworking
 /// An error enum related to any problem with an upload link.
 public enum UploadLinkError: Error
 {
-    case noUploadLink
+    case unavailable
 }
 
 /// An interface to assist `UploadDescriptor` in getting an upload task
@@ -71,7 +71,7 @@ public struct StreamingUploadStrategy: UploadStrategy
     {
         guard let uploadLink = video.upload?.uploadLink else
         {
-            throw UploadLinkError.noUploadLink
+            throw UploadLinkError.unavailable
         }
         
         return uploadLink
