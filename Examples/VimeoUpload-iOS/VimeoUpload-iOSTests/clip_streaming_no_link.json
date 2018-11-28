@@ -101,7 +101,7 @@
         "upload_link": null,
         "form": null,
         "complete_uri": null,
-        "approach": null,
+        "approach": "streaming",
         "size": 25975563,
         "redirect_url": null,
         "link": null
