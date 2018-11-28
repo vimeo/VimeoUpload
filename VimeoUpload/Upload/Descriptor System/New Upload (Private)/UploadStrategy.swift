@@ -27,6 +27,7 @@
 import Foundation
 import VimeoNetworking
 
+/// An error enum related to any problem with an upload link.
 public enum UploadLinkError: Error
 {
     case noUploadLink
@@ -40,7 +41,7 @@ public protocol UploadStrategy
     ///
     /// - Parameters:
     ///   - sessionManager: An upload session manager.
-    ///   - fileUrl: An URL to a video file.
+    ///   - fileUrl: A URL to a video file.
     ///   - uploadLink: A destination URL to send the video file to.
     /// - Returns: An upload task.
     /// - Throws: An `NSError` that describes why an upload task cannot be
