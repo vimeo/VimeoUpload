@@ -112,6 +112,32 @@ extension VimeoSessionManager
         return task
     }
     
+    func uploadVideoTask(source: URL, request: URLRequest, completionHandler: ErrorBlock?) -> URLSessionUploadTask
+    {
+        let task = self.uploadTask(with: request, fromFile: source, progress: nil, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+            
+            guard let strongSelf = self, let completionHandler = completionHandler else
+            {
+                return
+            }
+            
+            do
+            {
+                try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(uploadVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                completionHandler(nil)
+            }
+            catch let error as NSError
+            {
+                completionHandler(error)
+            }
+            
+        })
+        
+        task.taskDescription = UploadTaskDescription.UploadVideo.rawValue
+        
+        return task
+    }
+    
     // For use with background sessions, use session delegate methods for destination and completion
     func activateVideoDownloadTask(uri activationUri: String) throws -> URLSessionDownloadTask
     {

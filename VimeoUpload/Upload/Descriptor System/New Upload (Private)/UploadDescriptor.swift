@@ -92,7 +92,9 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
             
             let uploadLink = try self.uploadStrategy.uploadLink(from: video)
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try self.uploadStrategy.uploadTask(sessionManager: sessionManager, fileUrl: self.url, uploadLink: uploadLink)
+            
+            let uploadRequest = try self.uploadStrategy.uploadRequest(requestSerializer: sessionManager.requestSerializer as? VimeoRequestSerializer, fileUrl: self.url, uploadLink: uploadLink)
+            let task = sessionManager.uploadVideoTask(source: self.url, request: uploadRequest, completionHandler: nil)
             
             self.currentTaskIdentifier = task.taskIdentifier
         }

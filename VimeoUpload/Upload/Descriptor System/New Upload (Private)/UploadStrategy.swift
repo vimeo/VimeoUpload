@@ -43,16 +43,16 @@ public enum UploadLinkError: Error
 /// and an upload link.
 public protocol UploadStrategy
 {
-    /// Creates an appropriate upload task for the upload descriptor.
+    /// Creates an upload request for the upload descriptor.
     ///
     /// - Parameters:
-    ///   - sessionManager: An upload session manager.
+    ///   - requestSerializer: A request serializer.
     ///   - fileUrl: A URL to a video file.
     ///   - uploadLink: A destination URL to send the video file to.
     /// - Returns: An upload task.
-    /// - Throws: An `NSError` that describes why an upload task cannot be
+    /// - Throws: An `NSError` that describes why an upload request cannot be
     /// created.
-    static func uploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
+    static func uploadRequest(requestSerializer: VimeoRequestSerializer?, fileUrl: URL, uploadLink: String) throws -> URLRequest
     
     /// Returns an appropriate upload link.
     ///
@@ -66,11 +66,19 @@ public protocol UploadStrategy
 /// An upload strategy that supports the streaming upload approach.
 public struct StreamingUploadStrategy: UploadStrategy
 {
-    public static func uploadTask(sessionManager: VimeoSessionManager, fileUrl: URL, uploadLink: String) throws -> URLSessionUploadTask
+    public enum ErrorCode: Error
     {
-        let task = try sessionManager.uploadVideoTask(source: fileUrl, destination: uploadLink, completionHandler: nil)
+        case requestSerializerUnavailable
+    }
+    
+    public static func uploadRequest(requestSerializer: VimeoRequestSerializer?, fileUrl: URL, uploadLink: String) throws -> URLRequest
+    {
+        guard let requestSerializer = requestSerializer else
+        {
+            throw ErrorCode.requestSerializerUnavailable
+        }
         
-        return task
+        return try requestSerializer.uploadVideoRequest(with: fileUrl, destination: uploadLink) as URLRequest
     }
     
     public static func uploadLink(from video: VIMVideo) throws -> String

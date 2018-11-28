@@ -55,6 +55,23 @@ class StreamingUploadStrategyTests: XCTestCase
         }
     }
     
+    func test_uploadRequest_throwsError_whenRequestSerializerIsNotAvailable()
+    {
+        guard let fileUrl = Bundle(for: type(of: self)).url(forResource: "wide_worlds", withExtension: "mp4") else
+        {
+            fatalError("Error: Cannot get file's URL.")
+        }
+        
+        let video = self.videoObject(fromResponseWithFile: "clip_streaming.json")
+        
+        guard let uploadLink = video.upload?.uploadLink else
+        {
+            fatalError("Error: Cannot get an upload link.")
+        }
+        
+        XCTAssertThrowsError(try StreamingUploadStrategy.uploadRequest(requestSerializer: nil, fileUrl: fileUrl, uploadLink: uploadLink), "`uploadRequest` should have thrown.")
+    }
+    
     private func videoObject(fromResponseWithFile fileName: String) -> VIMVideo
     {
         do
