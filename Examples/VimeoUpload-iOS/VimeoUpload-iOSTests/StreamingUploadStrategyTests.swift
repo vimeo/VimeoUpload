@@ -33,17 +33,15 @@ class StreamingUploadStrategyTests: XCTestCase
     func test_uploadLink_returnsStreamingLink_whenStreamingLinkIsAvailable()
     {
         let video = self.videoObject(fromResponseWithFile: "clip_streaming.json")
-        let uploadStrategy = StreamingUploadStrategy()
         
-        XCTAssertEqual(try uploadStrategy.uploadLink(from: video), "https://www.google.com", "`uploadLink` should have returned a streaming link.")
+        XCTAssertEqual(try StreamingUploadStrategy.uploadLink(from: video), "https://www.google.com", "`uploadLink` should have returned a streaming link.")
     }
     
     func test_uploadLink_throwsWrongTypeError_whenUploadApproachIsDifferentFromStreaming()
     {
         let video = self.videoObject(fromResponseWithFile: "clip_tus.json")
-        let uploadStrategy = StreamingUploadStrategy()
         
-        XCTAssertThrowsError(try uploadStrategy.uploadLink(from: video), "`uploadLink` should have thrown.") { error in
+        XCTAssertThrowsError(try StreamingUploadStrategy.uploadLink(from: video), "`uploadLink` should have thrown.") { error in
             XCTAssertEqual(error as? UploadLinkError, .wrongType, "The error should have been `wrongType`.")
         }
     }
@@ -51,9 +49,8 @@ class StreamingUploadStrategyTests: XCTestCase
     func test_uploadLink_throwsUnavailableError_whenStreamingLinkIsNotAvailable()
     {
         let video = self.videoObject(fromResponseWithFile: "clip_streaming_no_link.json")
-        let uploadStrategy = StreamingUploadStrategy()
         
-        XCTAssertThrowsError(try uploadStrategy.uploadLink(from: video), "`uploadLink` should have thrown.") { error in
+        XCTAssertThrowsError(try StreamingUploadStrategy.uploadLink(from: video), "`uploadLink` should have thrown.") { error in
             XCTAssertEqual(error as? UploadLinkError, .unavailable, "The error should have been `unavailable`.")
         }
     }
