@@ -50,10 +50,12 @@ class StreamingUploadStrategyTests: XCTestCase
     
     func test_uploadLink_throwsUnavailableError_whenStreamingLinkIsNotAvailable()
     {
-        let video = self.videoObject(fromResponseWithFile: "clip.json")
+        let video = self.videoObject(fromResponseWithFile: "clip_streaming_no_link.json")
         let uploadStrategy = StreamingUploadStrategy()
         
-        XCTAssertThrowsError(try uploadStrategy.uploadLink(from: video), "`uploadLink` should have thrown.")
+        XCTAssertThrowsError(try uploadStrategy.uploadLink(from: video), "`uploadLink` should have thrown.") { error in
+            XCTAssertEqual(error as? UploadLinkError, .unavailable, "The error should have been `unavailable`.")
+        }
     }
     
     private func videoObject(fromResponseWithFile fileName: String) -> VIMVideo
