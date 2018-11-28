@@ -138,6 +138,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         let videoSettings = self.videoSettings
         
         let phAsset = self.asset.phAsset
+        
         let operation = ExportSessionExportCreateVideoOperation(phAsset: phAsset, sessionManager: sessionManager, videoSettings: videoSettings)
         
         operation.downloadProgressBlock = { (progress: Double) -> Void in
