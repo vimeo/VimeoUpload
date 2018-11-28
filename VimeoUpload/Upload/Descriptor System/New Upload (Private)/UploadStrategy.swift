@@ -28,9 +28,15 @@ import Foundation
 import VimeoNetworking
 
 /// An error enum related to any problem with an upload link.
+///
+/// - unavailable: Thrown when an upload link is not available.
+/// - wrongType: Thrown when attempting to get an upload link with a
+/// wrong upload approach i.e using `StreamingUploadStrategy` to get an
+/// tus upload link.
 public enum UploadLinkError: Error
 {
     case unavailable
+    case wrongType
 }
 
 /// An interface to assist `UploadDescriptor` in getting an upload task
@@ -69,6 +75,11 @@ public struct StreamingUploadStrategy: UploadStrategy
     
     public func uploadLink(from video: VIMVideo) throws -> String
     {
+        guard let approach = video.upload?.uploadApproach, approach == .Streaming else
+        {
+            throw UploadLinkError.wrongType
+        }
+        
         guard let uploadLink = video.upload?.uploadLink else
         {
             throw UploadLinkError.unavailable
