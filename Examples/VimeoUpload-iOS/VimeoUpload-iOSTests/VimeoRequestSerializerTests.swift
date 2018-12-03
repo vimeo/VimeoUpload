@@ -89,6 +89,7 @@ class VimeoRequestSerializerTests: XCTestCase
         {
             let request: NSURLRequest?
             
+<<<<<<< HEAD
             if let approach = approach?.rawValue
             {
                 let uploadParameters = ["approach" : approach]
@@ -97,6 +98,15 @@ class VimeoRequestSerializerTests: XCTestCase
             else
             {
                 request = try serializer?.createVideoRequest(with: self.url, videoSettings: nil, uploadParameters: VimeoSessionManager.Constants.DefaultUploadParameters)
+=======
+            if let approach = approach
+            {
+                request = try serializer?.createVideoRequest(with: self.url, videoSettings: nil, uploadType: approach)
+            }
+            else
+            {
+                request = try serializer?.createVideoRequest(with: self.url, videoSettings: nil)
+>>>>>>> feature/VIM-6596-GCS-Integration
             }
             
             guard let data = request?.httpBody, let parameters = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String: [String: Any]] else

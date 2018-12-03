@@ -62,6 +62,11 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         return self
     }
     
+    open var uploadStrategy: UploadStrategy.Type
+    {
+        return StreamingUploadStrategy.self
+    }
+    
     // MARK: - Initialization
     
     required public init()
@@ -85,13 +90,16 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         do
         {
-            guard let video = self.video, let uploadLink = try self.uploadLink(from: video) else
+            guard let video = self.video else
             {
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
             
+            let uploadLink = try self.uploadStrategy.uploadLink(from: video)
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLink, completionHandler: nil)
+            
+            let uploadRequest = try self.uploadStrategy.uploadRequest(requestSerializer: sessionManager.requestSerializer as? VimeoRequestSerializer, fileUrl: self.url, uploadLink: uploadLink)
+            let task = sessionManager.uploadVideoTask(source: self.url, request: uploadRequest, completionHandler: nil)
             
             self.currentTaskIdentifier = task.taskIdentifier
         }

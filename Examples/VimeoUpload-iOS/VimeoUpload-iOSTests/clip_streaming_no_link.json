@@ -98,20 +98,14 @@
     "resource_key": "mock_video_resource_key",
     "upload": {
         "status": "in_progress",
-        "upload_link": "https://www.google.com",
+        "upload_link": null,
         "form": null,
         "complete_uri": null,
         "approach": "streaming",
         "size": 25975563,
         "redirect_url": null,
-<<<<<<< HEAD
-        "link": null,
-        "gcs": null
-    },
-=======
         "link": null
     }
->>>>>>> feature/VIM-6596-GCS-Integration
 }
 
 
