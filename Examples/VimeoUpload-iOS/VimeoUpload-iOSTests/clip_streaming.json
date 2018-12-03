@@ -104,14 +104,8 @@
         "approach": "streaming",
         "size": 25975563,
         "redirect_url": null,
-<<<<<<< HEAD
-        "link": null,
-        "gcs": null
-    },
-=======
         "link": null
     }
->>>>>>> feature/VIM-6596-GCS-Integration
 }
 
 
