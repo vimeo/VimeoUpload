@@ -73,7 +73,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     ///   - documentsFolderURL: An URL pointing to a Documents folder;
     ///   default to `nil`. For third-party use, this argument should not be
     ///   filled.
-    ///   - uploadParameters: A dictionary of headers used for the create
+    ///   - uploadParameters: A dictionary of parameters used for the create
     ///   video request.
     public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil, uploadParameters: UploadParameters = VimeoSessionManager.Constants.DefaultUploadParameters)
     {
