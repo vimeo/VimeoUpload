@@ -34,7 +34,7 @@ extension VimeoSessionManager
     public struct Constants
     {
         public static let ApproachKey = "approach"
-        public static let StreamingApproachValue = "streaming"
+        public static let StreamingApproachValue = VIMUpload.UploadApproach.Streaming.rawValue
         public static let DefaultUploadParameters: UploadParameters = [ApproachKey : StreamingApproachValue]
     }
     
