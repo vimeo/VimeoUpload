@@ -32,7 +32,6 @@ import Photos
 open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
 {
     let sessionManager: VimeoSessionManager
-    open var videoSettings: VideoSettings?
     let operationQueue: OperationQueue
     
     // MARK:
@@ -44,10 +43,11 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     
     private let phAsset: PHAsset
     private let documentsFolderURL: URL?
-    private let uploadApproach: VIMUpload.UploadApproach
+    private let uploadParameters: UploadParameters
 
     open var url: URL?
     open var video: VIMVideo?
+    open var videoSettings: VideoSettings?
     open var error: NSError?
     {
         didSet
@@ -73,9 +73,9 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     ///   - documentsFolderURL: An URL pointing to a Documents folder;
     ///   default to `nil`. For third-party use, this argument should not be
     ///   filled.
-    ///   - uploadApproach: A method to upload the asset; default to
-    ///   `Streaming`.
-    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil, uploadApproach: VIMUpload.UploadApproach = .Streaming)
+    ///   - uploadParameters: A dictionary of parameters used for the create
+    ///   video request.
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil, uploadParameters: UploadParameters = VimeoSessionManager.Constants.DefaultUploadParameters)
     {
         self.phAsset = phAsset
         
@@ -86,7 +86,8 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
         self.operationQueue.maxConcurrentOperationCount = 1
         
         self.documentsFolderURL = documentsFolderURL
-        self.uploadApproach = uploadApproach
+
+        self.uploadParameters = uploadParameters
         
         super.init()
     }
@@ -166,7 +167,8 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     {
         let videoSettings = self.videoSettings
         
-        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings, uploadApproach: self.uploadApproach)
+        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings, uploadParameters: self.uploadParameters)
+
         operation.completionBlock = { [weak self] () -> Void in
             
             DispatchQueue.main.async(execute: { [weak self] () -> Void in

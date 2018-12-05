@@ -27,20 +27,21 @@
 import Foundation
 import VimeoNetworking
 
+public typealias UploadParameters = [String: Any]
+
 extension VimeoSessionManager
 {
-    func createVideoDataTask(url: URL, videoSettings: VideoSettings?, uploadApproach: VIMUpload.UploadApproach?, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
+    public struct Constants
     {
-        let request: NSMutableURLRequest
-        if let uploadApproach = uploadApproach
-        {
-            request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings, uploadType: uploadApproach)
-        }
-        else
-        {
-            request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings)
-        }
-        
+        public static let ApproachKey = "approach"
+        public static let StreamingApproachValue = VIMUpload.UploadApproach.Streaming.rawValue
+        public static let DefaultUploadParameters: UploadParameters = [ApproachKey : StreamingApproachValue]
+    }
+    
+    func createVideoDataTask(url: URL, videoSettings: VideoSettings?, uploadParameters: UploadParameters, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
+    {
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings, uploadParameters: uploadParameters)
+
         let task = self.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
             // Do model parsing on a background thread
@@ -67,9 +68,9 @@ extension VimeoSessionManager
         return task
     }
     
-    func createVideoDownloadTask(url: URL, videoSettings: VideoSettings?) throws -> URLSessionDownloadTask
+    func createVideoDownloadTask(url: URL, videoSettings: VideoSettings?, uploadParameters: UploadParameters) throws -> URLSessionDownloadTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings)
+        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings, uploadParameters: uploadParameters)
         
         let task = self.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         
