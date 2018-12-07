@@ -61,6 +61,8 @@ public protocol UploadStrategy
     /// - Throws: One of the values of `UploadLinkError` if there is a problem
     /// with the upload link.
     static func uploadLink(from video: VIMVideo) throws -> String
+    
+    static func shouldRetry(urlResponse: URLResponse?) -> Bool
 }
 
 /// An upload strategy that supports the streaming upload approach.
@@ -94,5 +96,10 @@ public struct StreamingUploadStrategy: UploadStrategy
         }
         
         return uploadLink
+    }
+    
+    public static func shouldRetry(urlResponse: URLResponse?) -> Bool
+    {
+        return false
     }
 }
