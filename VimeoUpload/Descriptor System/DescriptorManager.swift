@@ -338,6 +338,13 @@ open class DescriptorManager: NSObject
                     return
                 }
                 
+                if descriptor.shouldRetry(urlResponse: task.response)
+                {
+                    strongSelf.retry(descriptor)
+                    
+                    return
+                }
+                
                 strongSelf.delegate?.taskDidComplete?(task: task, descriptor: descriptor, error: error as NSError?)
                 descriptor.taskDidComplete(sessionManager: strongSelf.sessionManager, task: task, error: error as NSError?)
                 
@@ -358,10 +365,6 @@ open class DescriptorManager: NSObject
                         
                         strongSelf.delegate?.descriptorDidFail?(descriptor)
                         NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
-                    }
-                    else if descriptor.shouldRetry(urlResponse: task.response)
-                    {
-                        strongSelf.retry(descriptor)
                     }
                     else
                     {
