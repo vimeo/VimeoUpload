@@ -361,7 +361,7 @@ open class DescriptorManager: NSObject
                     }
                     else if descriptor.shouldRetry(urlResponse: task.response)
                     {
-                        
+                        strongSelf.retry(descriptor)
                     }
                     else
                     {
