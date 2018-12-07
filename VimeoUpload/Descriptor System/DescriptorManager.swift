@@ -150,6 +150,26 @@ open class DescriptorManager: NSObject
     
     // MARK: Setup - Session
 
+    private func retry(_ descriptor: Descriptor) {
+        do
+        {
+            try descriptor.prepare(sessionManager: self.sessionManager)
+            
+            descriptor.resume(sessionManager: self.sessionManager) // TODO: for a specific number of retries? [AH]
+            
+            self.delegate?.descriptorDidResume?(descriptor)
+            
+            self.save()
+        }
+        catch
+        {
+            self.archiver.remove(descriptor: descriptor)
+            
+            self.delegate?.descriptorDidFail?(descriptor)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
+        }
+    }
+    
     private func setupSessionBlocks()
     {
         // To restate Alfie's comment on this session invalid callback, in the
@@ -312,23 +332,7 @@ open class DescriptorManager: NSObject
                     }
                     else
                     {
-                        do
-                        {
-                            try descriptor.prepare(sessionManager: strongSelf.sessionManager)
-
-                            descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
-                            
-                            strongSelf.delegate?.descriptorDidResume?(descriptor)
-                            
-                            strongSelf.save()
-                        }
-                        catch
-                        {
-                            strongSelf.archiver.remove(descriptor: descriptor)
-
-                            strongSelf.delegate?.descriptorDidFail?(descriptor)
-                            NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
-                        }
+                        strongSelf.retry(descriptor)
                     }
                     
                     return
@@ -354,6 +358,10 @@ open class DescriptorManager: NSObject
                         
                         strongSelf.delegate?.descriptorDidFail?(descriptor)
                         NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
+                    }
+                    else if descriptor.shouldRetry(urlResponse: task.response)
+                    {
+                        
                     }
                     else
                     {
