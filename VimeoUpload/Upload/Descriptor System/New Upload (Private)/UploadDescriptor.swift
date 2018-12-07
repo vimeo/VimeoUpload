@@ -217,4 +217,11 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         
         super.encode(with: aCoder)
     }
+    
+    // MARK: - Retriable
+    
+    func shouldRetry(urlResponse: URLResponse?) -> Bool
+    {
+        return self.uploadStrategy.shouldRetry(urlResponse: urlResponse)
+    }
 }

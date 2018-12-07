@@ -17,6 +17,6 @@ public extension Retriable where Self: Descriptor
 {
     func shouldRetry(urlResponse: URLResponse?) -> Bool
     {
-        return true
+        return false
     }
 }
