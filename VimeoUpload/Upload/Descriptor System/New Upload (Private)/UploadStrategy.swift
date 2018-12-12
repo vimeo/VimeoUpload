@@ -62,6 +62,10 @@ public protocol UploadStrategy
     /// with the upload link.
     static func uploadLink(from video: VIMVideo) throws -> String
     
+    /// Determines if an upload task should retry.
+    ///
+    /// - Parameter urlResponse: A HTTP server response.
+    /// - Returns: `true` if the task should retry; `false` otherwise.
     static func shouldRetry(urlResponse: URLResponse?) -> Bool
 }
 
