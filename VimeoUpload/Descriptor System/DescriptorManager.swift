@@ -321,7 +321,8 @@ open class DescriptorManager: NSObject
                 // attempt to retry for a week before returning with a connection error.
                 // [VN] (07/03/2018)
                 let isConnectionError = ((task.error as? NSError)?.isConnectionError() == true || (error as? NSError)?.isConnectionError() == true)
-                if isConnectionError
+                
+                guard isConnectionError == false else
                 {
                     if let prefix = strongSelf.archivePrefix, prefix == Constants.ShareExtensionArchivePrefix
                     {
