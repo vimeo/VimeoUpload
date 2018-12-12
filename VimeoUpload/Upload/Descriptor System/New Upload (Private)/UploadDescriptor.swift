@@ -220,7 +220,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: - Retriable
     
-    func shouldRetry(urlResponse: URLResponse?) -> Bool
+    override public func shouldRetry(urlResponse: URLResponse?) -> Bool
     {
         return self.uploadStrategy.shouldRetry(urlResponse: urlResponse)
     }

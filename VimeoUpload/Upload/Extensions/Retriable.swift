@@ -38,11 +38,3 @@ public protocol Retriable
     /// otherwise.
     func shouldRetry(urlResponse: URLResponse?) -> Bool
 }
-
-public extension Retriable where Self: Descriptor
-{
-    func shouldRetry(urlResponse: URLResponse?) -> Bool
-    {
-        return false
-    }
-}

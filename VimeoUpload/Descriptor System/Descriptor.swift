@@ -163,4 +163,11 @@ open class Descriptor: NSObject, NSCoding, Retriable
             aCoder.encode(currentTaskIdentifier, forKey: type(of: self).CurrentTaskIdentifierCoderKey)
         }
     }
+    
+    // MARK: - Retriable
+    
+    public func shouldRetry(urlResponse: URLResponse?) -> Bool
+    {
+        return false
+    }
 }
