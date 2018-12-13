@@ -339,7 +339,7 @@ open class DescriptorManager: NSObject
                     return
                 }
                 
-                if descriptor.shouldRetry(urlResponse: task.response)
+                guard descriptor.shouldRetry(urlResponse: task.response) == false else
                 {
                     strongSelf.retry(descriptor)
                     
