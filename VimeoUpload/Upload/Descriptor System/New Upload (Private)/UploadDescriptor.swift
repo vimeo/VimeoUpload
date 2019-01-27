@@ -57,10 +57,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         return self
     }
     
-    open var uploadStrategy: UploadStrategy.Type
-    {
-        return StreamingUploadStrategy.self
-    }
+    open var uploadStrategy: UploadStrategy.Type = StreamingUploadStrategy.self
     
     // MARK: - Initialization
     
