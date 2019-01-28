@@ -35,7 +35,7 @@ extension VimeoSessionManager
     {
         public static let ApproachKey = "approach"
         public static let StreamingApproachValue = VIMUpload.UploadApproach.Streaming.rawValue
-        public static let DefaultUploadParameters: UploadParameters = [ApproachKey : StreamingApproachValue]
+        public static let DefaultUploadParameters: UploadParameters = VimeoUploader<VideoDescriptor>.DefaultUploadStrategy.createVideoUploadParameters()
     }
     
     func createVideoDataTask(url: URL, videoSettings: VideoSettings?, uploadParameters: UploadParameters, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
