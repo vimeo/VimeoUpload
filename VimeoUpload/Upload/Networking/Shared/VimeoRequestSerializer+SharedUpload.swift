@@ -35,6 +35,7 @@ extension VimeoRequestSerializer
         static let CreateVideoURI = "/me/videos"
         static let TypeKey = "type"
         static let SizeKey = "size"
+        static let MIMETypeKey = "mime_type"
     }
     
     func myVideosRequest() throws -> NSMutableURLRequest
@@ -93,7 +94,50 @@ extension VimeoRequestSerializer
         
         return [Constants.SizeKey: fileSizeString]
     }
+    
+    private func createMIMETypeParameters(url: URL) throws -> [String: Any]
+    {
+        let type: String
+        do
+        {
+            type = try url.MIMEType()
+        }
+        catch let error as NSError
+        {
+            throw error.error(byAddingDomain: UploadErrorDomain.Create.rawValue)
+        }
+        return [Constants.MIMETypeKey: type]
+    }
 
+    func createFileParameters(url: URL) -> [String: Any]
+    {
+        let fileSizeParameters: [String: Any]
+        do
+        {
+            fileSizeParameters = try self.createFileSizeParameters(url: url)
+        }
+        catch let error
+        {
+            assertionFailure("\(error.localizedDescription)")
+            fileSizeParameters = [:]
+        }
+        
+        let fileMIMETypeParameters: [String: Any]
+        do
+        {
+            fileMIMETypeParameters = try self.createMIMETypeParameters(url: url)
+        }
+        catch let error
+        {
+            assertionFailure("\(error.localizedDescription)")
+            fileMIMETypeParameters = [:]
+        }
+        
+        // Merge in the new key-value pairs passed in, favoring new values for any duplicate keys
+        let allFileParameters = fileSizeParameters.merging(fileMIMETypeParameters) { (current, new) in new }
+        return allFileParameters
+    }
+    
     func uploadVideoRequest(with source: URL, destination: String) throws -> NSMutableURLRequest
     {
         guard FileManager.default.fileExists(atPath: source.path) else
