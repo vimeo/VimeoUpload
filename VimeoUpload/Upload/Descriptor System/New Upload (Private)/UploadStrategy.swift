@@ -43,6 +43,11 @@ public enum UploadLinkError: Error
 /// and an upload link.
 public protocol UploadStrategy
 {
+    /// Returns the appropriate upload request parameters for creating a video on Vimeo's server
+    ///
+    /// - Returns: A dictionary of upload parameters
+    static func createVideoUploadParameters() -> UploadParameters
+    
     /// Creates an upload request for the upload descriptor.
     ///
     /// - Parameters:
@@ -75,6 +80,11 @@ public struct StreamingUploadStrategy: UploadStrategy
     public enum ErrorCode: Error
     {
         case requestSerializerUnavailable
+    }
+    
+    public static func createVideoUploadParameters() -> UploadParameters
+    {
+        return [VimeoSessionManager.Constants.ApproachKey : VimeoSessionManager.Constants.StreamingApproachValue]
     }
     
     public static func uploadRequest(requestSerializer: VimeoRequestSerializer?, fileUrl: URL, uploadLink: String) throws -> URLRequest
