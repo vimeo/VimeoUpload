@@ -9,9 +9,7 @@ import MobileCoreServices
 
 extension URL
 {
-    /// A helper for determining a file's MIMEType, adapted from:
-    /// - https://stackoverflow.com/questions/31243371/path-extension-and-mime-type-of-file-in-swift
-    /// - https://stackoverflow.com/questions/1363813/how-can-you-read-a-files-mime-type-in-objective-c
+    /// A helper for determining a file's MIMEType
     ///
     /// - Returns: MIMEType as String
     /// - Throws: throws an error if the MIMEType cannot be determined
