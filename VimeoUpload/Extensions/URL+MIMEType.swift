@@ -7,13 +7,13 @@
 
 import MobileCoreServices
 
-extension URL
+public extension URL
 {
     /// A helper for determining a file's MIMEType
     ///
     /// - Returns: MIMEType as String
     /// - Throws: throws an error if the MIMEType cannot be determined
-    func MIMEType() throws -> String {
+    public func MIMEType() throws -> String {
         
         let userInfo = [NSLocalizedDescriptionKey: "No detectable MIMEType"]
         let error = NSError(domain: "URLExtension.VimeoUpload", code: 0, userInfo: userInfo)
