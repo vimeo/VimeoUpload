@@ -60,6 +60,7 @@ open class Descriptor: NSObject, NSCoding, Retriable
     public var error: NSError?
     
     private(set) open var isCancelled = false
+    private(set) open var attemptNumber: Int = 0
     
     // MARK: - Initialization
 
@@ -114,6 +115,12 @@ open class Descriptor: NSObject, NSCoding, Retriable
 
         self.doCancel(sessionManager: sessionManager)
     }
+
+    open func retry(sessionManager: AFURLSessionManager) throws {
+        self.attemptNumber += 1
+        try self.prepare(sessionManager: sessionManager)
+        self.resume(sessionManager: sessionManager)
+    }
     
     open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
@@ -151,6 +158,9 @@ open class Descriptor: NSObject, NSCoding, Retriable
         self.identifier = aDecoder.decodeObject(forKey: type(of: self).IdentifierCoderKey) as? String
         self.error = aDecoder.decodeObject(forKey: type(of: self).ErrorCoderKey) as? NSError
         self.currentTaskIdentifier = aDecoder.decodeInteger(forKey: type(of: self).CurrentTaskIdentifierCoderKey)
+
+        // Because attempt number does not need to be robust, we don't bother persisting [FK 2/7/19]
+        self.attemptNumber = 0
     }
     
     open func encode(with aCoder: NSCoder)
