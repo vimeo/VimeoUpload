@@ -109,17 +109,16 @@ extension VimeoRequestSerializer
         return [Constants.MIMETypeKey: type]
     }
 
-    func createFileParameters(url: URL) -> [String: Any]
+    func createFileParameters(url: URL) throws -> [String: Any]
     {
         let fileSizeParameters: [String: Any]
         do
         {
             fileSizeParameters = try self.createFileSizeParameters(url: url)
         }
-        catch let error
+        catch let error as NSError
         {
-            assertionFailure("\(error.localizedDescription)")
-            fileSizeParameters = [:]
+            throw error.error(byAddingDomain: UploadErrorDomain.Create.rawValue)
         }
         
         let fileMIMETypeParameters: [String: Any]
@@ -127,10 +126,9 @@ extension VimeoRequestSerializer
         {
             fileMIMETypeParameters = try self.createMIMETypeParameters(url: url)
         }
-        catch let error
+        catch let error as NSError
         {
-            assertionFailure("\(error.localizedDescription)")
-            fileMIMETypeParameters = [:]
+            throw error.error(byAddingDomain: UploadErrorDomain.Create.rawValue)
         }
         
         // Merge in the new key-value pairs passed in, favoring new values for any duplicate keys

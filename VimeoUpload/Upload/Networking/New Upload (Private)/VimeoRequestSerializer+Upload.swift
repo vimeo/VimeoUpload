@@ -37,7 +37,7 @@ extension VimeoRequestSerializer
     func createVideoRequest(with url: URL, videoSettings: VideoSettings?, uploadParameters: UploadParameters) throws -> NSMutableURLRequest
     {
         // Create a dictionary containing the file size and MIMEType parameters
-        let baseUploadParameters = self.createFileParameters(url: url)
+        let baseUploadParameters = try self.createFileParameters(url: url)
         
         // Merge in the new key-value pairs passed in, favoring new values for any duplicate keys
         let allUploadParameters = baseUploadParameters.merging(uploadParameters) { (current, new) in new }
