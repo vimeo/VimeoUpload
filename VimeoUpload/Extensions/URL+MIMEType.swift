@@ -13,7 +13,7 @@ public extension URL
     ///
     /// - Returns: MIMEType as String
     /// - Throws: throws an error if the MIMEType cannot be determined
-    public func MIMEType() throws -> String {
+    public func mimeType() throws -> String {
         
         let userInfo = [NSLocalizedDescriptionKey: "No detectable MIMEType"]
         let error = NSError(domain: "URLExtension.VimeoUpload", code: 0, userInfo: userInfo)
@@ -28,15 +28,12 @@ public extension URL
             throw error
         }
         
-        let retainedUniformTypeID = uniformTypeID.takeRetainedValue()
-        
         // From Apple Docs:  Returns the identified type's preferred tag with the specified tag class as a CFString.
         // This is the primary function to use for going from uniform type identifier to tag.
-        guard let mimetype = UTTypeCopyPreferredTagWithClass(retainedUniformTypeID, kUTTagClassMIMEType) else {
+        guard let mimeType = UTTypeCopyPreferredTagWithClass(uniformTypeID.takeRetainedValue(), kUTTagClassMIMEType) else {
             throw error
         }
         
-        let retainedMimeType = mimetype.takeRetainedValue()
-        return retainedMimeType as String
+        return mimeType.takeRetainedValue() as String
     }
 }

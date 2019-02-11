@@ -15,14 +15,14 @@ class URL_MIMETypeTests: XCTestCase {
     let urlAVI = URL(string: "testFile.avi")
 
     func test_MIMEType_returnsVideoMP4() {
-        XCTAssertTrue(try urlMP4?.MIMEType() == "video/mp4")
+        XCTAssertTrue(try urlMP4?.mimeType() == "video/mp4")
     }
     
     func test_MIMEType_returnsVideoQuicktime(){
-        XCTAssertTrue(try urlQuickTime?.MIMEType() == "video/quicktime")
+        XCTAssertTrue(try urlQuickTime?.mimeType() == "video/quicktime")
     }
     
     func test_MIMEType_returnsVideoAVI(){
-        XCTAssertTrue(try urlAVI?.MIMEType() == "video/avi")
+        XCTAssertTrue(try urlAVI?.mimeType() == "video/avi")
     }
 }

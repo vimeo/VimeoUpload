@@ -100,12 +100,13 @@ extension VimeoRequestSerializer
         let type: String
         do
         {
-            type = try url.MIMEType()
+            type = try url.mimeType()
         }
         catch let error as NSError
         {
             throw error.error(byAddingDomain: UploadErrorDomain.Create.rawValue)
         }
+        
         return [Constants.MIMETypeKey: type]
     }
 
@@ -132,8 +133,7 @@ extension VimeoRequestSerializer
         }
         
         // Merge in the new key-value pairs passed in, favoring new values for any duplicate keys
-        let allFileParameters = fileSizeParameters.merging(fileMIMETypeParameters) { (current, new) in new }
-        return allFileParameters
+        return fileSizeParameters.merging(fileMIMETypeParameters) { (current, new) in new }
     }
     
     func uploadVideoRequest(with source: URL, destination: String) throws -> NSMutableURLRequest
