@@ -153,12 +153,8 @@ open class DescriptorManager: NSObject
     private func retry(_ descriptor: Descriptor) {
         do
         {
-            try descriptor.prepare(sessionManager: self.sessionManager)
-            
-            descriptor.resume(sessionManager: self.sessionManager) // TODO: for a specific number of retries? [AH]
-            
+            try descriptor.retry(sessionManager: self.sessionManager)
             self.delegate?.descriptorDidResume?(descriptor)
-            
             self.save()
         }
         catch

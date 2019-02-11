@@ -30,10 +30,14 @@ import AFNetworking
 
 open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
-    private static let FileNameCoderKey = "fileName"
-    private static let FileExtensionCoderKey = "fileExtension"
-    private static let UploadTicketCoderKey = "uploadTicket"
-    private static let VideoCoderKey = "video"
+    private struct Constants {
+        static let FileNameCoderKey = "fileName"
+        static let FileExtensionCoderKey = "fileExtension"
+        static let UploadTicketCoderKey = "uploadTicket"
+        static let VideoCoderKey = "video"
+
+        static let MaxAttempts = 10
+    }
 
     // MARK: 
     
@@ -184,20 +188,20 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     required public init(coder aDecoder: NSCoder)
     {
-        let fileName = aDecoder.decodeObject(forKey: type(of: self).FileNameCoderKey) as! String 
-        let fileExtension = aDecoder.decodeObject(forKey: type(of: self).FileExtensionCoderKey) as! String
+        let fileName = aDecoder.decodeObject(forKey: type(of: self).Constants.FileNameCoderKey) as! String
+        let fileExtension = aDecoder.decodeObject(forKey: type(of: self).Constants.FileExtensionCoderKey) as! String
         let path = URL.uploadDirectory().appendingPathComponent(fileName).appendingPathExtension(fileExtension).absoluteString
         
         self.url = URL(fileURLWithPath: path)
 
         // Support migrating archived uploadTickets to videos for API versions less than v3.4
-        if let uploadTicket = aDecoder.decodeObject(forKey: type(of: self).UploadTicketCoderKey) as? VIMUploadTicket
+        if let uploadTicket = aDecoder.decodeObject(forKey: type(of: self).Constants.UploadTicketCoderKey) as? VIMUploadTicket
         {
             self.video = uploadTicket.video
         }
         else
         {
-            self.video = aDecoder.decodeObject(forKey: type(of: self).VideoCoderKey) as? VIMVideo
+            self.video = aDecoder.decodeObject(forKey: type(of: self).Constants.VideoCoderKey) as? VIMVideo
         }
 
         super.init(coder: aDecoder)
@@ -208,9 +212,9 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         let fileName = self.url.deletingPathExtension().lastPathComponent
         let ext = self.url.pathExtension
 
-        aCoder.encode(fileName, forKey: type(of: self).FileNameCoderKey)
-        aCoder.encode(ext, forKey: type(of: self).FileExtensionCoderKey)
-        aCoder.encode(self.video, forKey: type(of: self).VideoCoderKey)
+        aCoder.encode(fileName, forKey: type(of: self).Constants.FileNameCoderKey)
+        aCoder.encode(ext, forKey: type(of: self).Constants.FileExtensionCoderKey)
+        aCoder.encode(self.video, forKey: type(of: self).Constants.VideoCoderKey)
         
         super.encode(with: aCoder)
     }
@@ -219,6 +223,6 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     override public func shouldRetry(urlResponse: URLResponse?) -> Bool
     {
-        return self.uploadStrategy.shouldRetry(urlResponse: urlResponse)
+        return self.uploadStrategy.shouldRetry(urlResponse: urlResponse) && self.retryAttemptCount < Constants.MaxAttempts - 1
     }
 }

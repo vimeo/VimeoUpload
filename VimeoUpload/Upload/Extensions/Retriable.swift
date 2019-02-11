@@ -37,4 +37,9 @@ public protocol Retriable
     /// - Returns: `true` if an upload/download should retry, and `false`
     /// otherwise.
     func shouldRetry(urlResponse: URLResponse?) -> Bool
+
+    /// This gives the (0-based) number of times that a retriable upload/download
+    /// has been retried. On the first try, `attemptNumber` is 0, and incremented
+    /// by 1 on each retry.
+    var retryAttemptCount: Int { get }
 }
