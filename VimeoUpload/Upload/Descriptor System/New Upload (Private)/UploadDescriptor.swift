@@ -223,6 +223,6 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     override public func shouldRetry(urlResponse: URLResponse?) -> Bool
     {
-        return self.uploadStrategy.shouldRetry(urlResponse: urlResponse) && self.attemptNumber < Constants.MaxAttempts - 1
+        return self.uploadStrategy.shouldRetry(urlResponse: urlResponse) && self.retryAttemptCount < Constants.MaxAttempts - 1
     }
 }
