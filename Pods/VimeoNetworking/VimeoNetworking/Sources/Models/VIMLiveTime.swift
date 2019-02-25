@@ -28,8 +28,7 @@ import Foundation
 
 /// An object that represents the `time` field in
 /// a `live_quota` response.
-public class VIMLiveTime: VIMModelObject
-{
+public class VIMLiveTime: VIMModelObject {
     /// The maximum time (in seconds) per event a user can stream.
     @objc dynamic public private(set) var maxTimePerEvent: NSNumber?
     
@@ -39,8 +38,7 @@ public class VIMLiveTime: VIMModelObject
     /// The remaining time (in seconds) this month a user can stream.
     @objc dynamic public private(set) var remainingTimeThisMonth: NSNumber?
     
-    override public func getObjectMapping() -> Any!
-    {
+    override public func getObjectMapping() -> Any! {
         return ["monthly_remaining": "remainingTimeThisMonth", "monthly_maximum": "maxTimePerMonth", "event_maximum": "maxTimePerEvent"]
     }
 }

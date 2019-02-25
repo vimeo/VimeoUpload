@@ -1,9 +1,9 @@
 //
-//  Result.swift
-//  VimeoNetworkingExample-iOS
+//  UserSubscription.swift
+//  VimeoNetworking
 //
-//  Created by Huebner, Rob on 3/23/16.
-//  Copyright © 2016 Vimeo. All rights reserved.
+//  Created by Westendorf, Michael on 11/30/18.
+//  Copyright (c) 2014-2018 Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,23 +24,23 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
-
-/**
- `Result` describes a general final output of a process that can be either successful or unsuccessful
- 
- - Success: action successful, returns a result of type `ResultType`
- - Failure: action failed, returns an `NSError`
- */
-public enum Result<ResultType> {
-        /// action successful, returns a result of type `ResultType`
-    case success(result: ResultType)
+/// This class contains information about the logged in user's subscription status, including information about any free trials the user may be in and information
+/// about the user's renewal date.
+public class UserSubscription: VIMModelObject {
+    /// Object containing information about the logged in user's renewal date
+    @objc dynamic public private(set) var renewal: UserSubscriptionRenewal?
     
-        /// action failed, returns an `NSError`
-    case failure(error: NSError)
-}
-
-/// `ResultCompletion` creates a generic typealias to generally define completion blocks that return a `Result`
-public enum ResultCompletion<ResultType> {
-    public typealias T = (Result<ResultType>) -> Void
+    /// Object containing information about the logged in user's free trial status
+    @objc dynamic public private(set) var trial: UserSubscriptionTrial?
+    
+    public override func getClassForObjectKey(_ key: String!) -> AnyClass? {
+        if key == "renewal" {
+            return UserSubscriptionRenewal.self
+        }
+        if key == "trial" {
+            return UserSubscriptionTrial.self
+        }
+        
+        return nil
+    }
 }

@@ -24,10 +24,8 @@
 //  THE SOFTWARE.
 //
 
-public class GCS: VIMModelObject
-{
-    public enum Connection: String
-    {
+public class GCS: VIMModelObject {
+    public enum Connection: String {
         case uploadAttempt = "upload_attempt"
     }
     
@@ -38,10 +36,8 @@ public class GCS: VIMModelObject
     
     public private(set) var connections = [Connection: VIMConnection]()
     
-    override public func didFinishMapping()
-    {
-        guard let metadata = self.metadata, let connections = metadata["connections"] as? [String: Any] else
-        {
+    override public func didFinishMapping() {
+        guard let metadata = self.metadata, let connections = metadata["connections"] as? [String: Any] else {
             return
         }
         

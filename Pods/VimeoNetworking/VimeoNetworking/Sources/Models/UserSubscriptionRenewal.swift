@@ -1,9 +1,9 @@
 //
-//  VIMLiveChat.swift
+//  UserSubscriptionRenewal.swift
 //  VimeoNetworking
 //
-//  Created by Van Nguyen on 10/10/2017.
-//  Copyright (c) Vimeo (https://vimeo.com)
+//  Created by Westendorf, Michael on 11/30/18.
+//  Copyright (c) 2014-2018 Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,27 +24,26 @@
 //  THE SOFTWARE.
 //
 
-/// An object representing the `chat` field in a `live` response. This
-/// `live` response is part of the `clip` representation.
-public class VIMLiveChat: VIMModelObject {
-    private struct Constants {
-        static let UserKey = "user"
+/// This class contains information about the renewal dates for the logged in user, including when their subscription will auto-renew (if auto-renewal is enabled)
+public class UserSubscriptionRenewal: VIMModelObject {
+    /// A string representation of the subscription renewal date to use for UI display purposes.
+    /// - remark: The date is displayed in *YYYY-MM-DD* format
+    @objc dynamic public private(set) var displayDate: String?
+    
+    /// A **Date** object representing the subscription renewal date.
+    @objc dynamic public private(set) var formattedRenewalDate: Date?
+    
+    @objc dynamic private var renewalDate: String?
+    
+    override public func didFinishMapping() {
+        self.formatRenewalDate()
     }
     
-    /// The ID of the live event chat room.
-    @objc public private(set) var roomId: NSNumber?
-    
-    /// JWT for the user to access the live event chat room.
-    @objc public private(set) var token: String?
-    
-    /// The current user.
-    @objc public private(set) var user: VIMLiveChatUser?
-    
-    @objc public override func getClassForObjectKey(_ key: String!) -> AnyClass? {
-        if key == Constants.UserKey {
-            return VIMLiveChatUser.self
+    private func formatRenewalDate() {
+        guard let renewalDate = self.renewalDate, let dateFormatter = VIMModelObject.dateFormatter() else {
+            return
         }
         
-        return nil
+        self.formattedRenewalDate = dateFormatter.date(from: renewalDate)
     }
 }
