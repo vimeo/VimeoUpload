@@ -9,14 +9,20 @@ import MobileCoreServices
 
 public extension URL
 {
+    public struct MIMETypeError
+    {
+        public static let UserInfo = [NSLocalizedDescriptionKey: "No detectable MIMEType"]
+        public static let Domain = "URLExtension.VimeoUpload"
+        public static let Code = 0
+    }
+    
     /// A helper for determining a file's MIMEType
     ///
     /// - Returns: MIMEType as String
     /// - Throws: throws an error if the MIMEType cannot be determined
     public func mimeType() throws -> String {
         
-        let userInfo = [NSLocalizedDescriptionKey: "No detectable MIMEType"]
-        let error = NSError(domain: "URLExtension.VimeoUpload", code: 0, userInfo: userInfo)
+        let error = NSError(domain: MIMETypeError.Domain, code: MIMETypeError.Code, userInfo: MIMETypeError.UserInfo)
         
         guard self.pathExtension.isEmpty == false else {
             throw error
