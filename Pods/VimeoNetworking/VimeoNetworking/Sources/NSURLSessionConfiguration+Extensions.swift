@@ -25,8 +25,7 @@
 
 import Foundation
 
-extension URLSessionConfiguration
-{
+extension URLSessionConfiguration {
     /**
      Convenience method for creating a defaultSessionConfiguration() with the supplied request cache policy
      

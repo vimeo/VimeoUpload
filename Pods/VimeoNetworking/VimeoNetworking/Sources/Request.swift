@@ -28,8 +28,7 @@ import Foundation
 import AFNetworking
 
 /// Describes how a request should handle retrying after failure
-public enum RetryPolicy
-{
+public enum RetryPolicy {
         /// Only one attempt is made, no retry behavior
     case singleAttempt
     
@@ -48,18 +47,15 @@ public enum RetryPolicy
      
      - returns: the default retry policy for the given `Method`
      */
-    static func defaultPolicyForMethod(for method: VimeoClient.Method) -> RetryPolicy
-    {
-        switch method
-        {
+    static func defaultPolicyForMethod(for method: VimeoClient.Method) -> RetryPolicy {
+        switch method {
         case .GET, .DELETE, .PATCH, .POST, .PUT:
             return .singleAttempt
         }
     }
 }
 
-extension RetryPolicy
-{
+extension RetryPolicy {
     /// Convenience `RetryPolicy` constructor that provides a standard multiple attempt policy
     static let TryThreeTimes: RetryPolicy = .multipleAttempts(attemptCount: 3, initialDelay: 2.0)
 }
@@ -69,8 +65,7 @@ extension RetryPolicy
  *
  *  `<ModelType>` is the type of the expected response model object
  */
-public struct Request<ModelType: MappableResponse>
-{
+public struct Request<ModelType: MappableResponse> {
     // TODO: Make these static when Swift supports it [RH] (5/24/16)
     private let PageKey = "page"
     private let PerPageKey = "per_page"
@@ -119,8 +114,7 @@ public struct Request<ModelType: MappableResponse>
                 modelKeyPath: String? = nil,
                 useCache: Bool = false,
                 cacheResponse: Bool = false,
-                retryPolicy: RetryPolicy? = nil)
-    {
+                retryPolicy: RetryPolicy? = nil) {
         self.method = method
         self.path = path
         self.parameters = parameters
@@ -131,18 +125,15 @@ public struct Request<ModelType: MappableResponse>
     }
     
         /// Returns a fully-formed URI comprised of the path plus a query string of any parameters
-    public var URI: String
-    {
+    public var URI: String {
         let URI = self.path
         
         var components = URLComponents(string: URI)
 
-        if let parameters = self.parameters as? VimeoClient.RequestParametersDictionary
-        {
+        if let parameters = self.parameters as? VimeoClient.RequestParametersDictionary {
             let queryString = AFQueryStringFromParameters(parameters)
             
-            if queryString.count > 0
-            {
+            if queryString.count > 0 {
                 components?.query = queryString
             }
         }
@@ -152,8 +143,7 @@ public struct Request<ModelType: MappableResponse>
     
     // MARK: Copying requests
     
-    internal func associatedPageRequest(withNewPath newPath: String) -> Request<ModelType>
-    {
+    internal func associatedPageRequest(withNewPath newPath: String) -> Request<ModelType> {
         // Since page response paging paths bake the paging parameters into the path,
         // strip them out and upsert them back into the body parameters.
         
@@ -161,8 +151,7 @@ public struct Request<ModelType: MappableResponse>
         
         var updatedParameters = (self.parameters as? VimeoClient.RequestParametersDictionary) ?? [:]
         
-        if let queryParametersDictionary = query?.parametersDictionaryFromQueryString()
-        {
+        if let queryParametersDictionary = query?.parametersDictionaryFromQueryString() {
             queryParametersDictionary.forEach { (key, value) in
                 
                 updatedParameters[key] = value

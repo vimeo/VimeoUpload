@@ -32,8 +32,7 @@ public typealias UserRequest = Request<VIMUser>
 /// `Request` that returns an array of `VIMUser`
 public typealias UserListRequest = Request<[VIMUser]>
 
-public extension Request
-{
+public extension Request {
     private static var MeUserURI: String { return "/me" }
     private static var FollowingPathFormat: String { return "%@/following" }
     private static var FollowersPathFormat: String { return "%@/followers" }
@@ -46,8 +45,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func getMeRequest() -> Request
-    {
+    public static func getMeRequest() -> Request {
         return self.getUserRequest(userURI: self.MeUserURI)
     }
     
@@ -56,8 +54,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func getMeFollowingRequest() -> Request
-    {
+    public static func getMeFollowingRequest() -> Request {
         return self.getUserFollowingRequest(forUserURI: self.MeUserURI)
     }
     
@@ -66,8 +63,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func getMeFollowersRequest() -> Request
-    {
+    public static func getMeFollowersRequest() -> Request {
         return self.getUserFollowersRequest(forUserURI: self.MeUserURI)
     }
     
@@ -78,8 +74,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func getUserRequest(userURI: String) -> Request
-    {
+    public static func getUserRequest(userURI: String) -> Request {
         return Request(path: userURI)
     }
     
@@ -90,8 +85,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func getUserFollowingRequest(forUserURI userURI: String) -> Request
-    {
+    public static func getUserFollowingRequest(forUserURI userURI: String) -> Request {
         return Request(path: String(format: self.FollowingPathFormat, userURI))
     }
     
@@ -102,8 +96,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func getUserFollowersRequest(forUserURI userURI: String) -> Request
-    {
+    public static func getUserFollowersRequest(forUserURI userURI: String) -> Request {
         return Request(path: String(format: self.FollowersPathFormat, userURI))
     }
     
@@ -117,8 +110,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func queryUsers(withQuery query: String, refinements: VimeoClient.RequestParametersDictionary? = nil) -> Request
-    {
+    public static func queryUsers(withQuery query: String, refinements: VimeoClient.RequestParametersDictionary? = nil) -> Request {
         var parameters = refinements ?? [:]
         
         parameters[self.QueryKey] = query
@@ -136,8 +128,7 @@ public extension Request
      
      - returns: the new `Request`
      */
-    public static func patchUser(withUserURI userURI: String, parameters: VimeoClient.RequestParametersDictionary) -> Request
-    {
+    public static func patchUser(withUserURI userURI: String, parameters: VimeoClient.RequestParametersDictionary) -> Request {
         return Request(method: .PATCH, path: userURI, parameters: parameters)
     }
 }
