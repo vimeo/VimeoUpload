@@ -188,7 +188,7 @@ import AFNetworking
     {
         let status = video.videoStatus
         
-        return status == .available || status == .uploadingError || status == .transcodingError || status == .quotaExceeded
+        return status == .available || status == .uploadingError || status == .transcodingError || status == .quotaExceeded || status == .totalCapExceeded
     }
     
     // MARK: Notifications

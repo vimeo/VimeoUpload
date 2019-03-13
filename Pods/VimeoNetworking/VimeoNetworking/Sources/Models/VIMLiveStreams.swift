@@ -28,16 +28,14 @@ import Foundation
 
 /// An object that represents the `streams` field
 /// in a `live_quota` response.
-public class VIMLiveStreams: VIMModelObject
-{
+public class VIMLiveStreams: VIMModelObject {
     /// The maximum streams a user can make.
     @objc dynamic public private(set) var maxStreams: NSNumber?
 
     /// The remaining streams a user can make.
     @objc dynamic public private(set) var remainingStreams: NSNumber?
     
-    override public func getObjectMapping() -> Any!
-    {
+    override public func getObjectMapping() -> Any! {
         return ["remaining": "remainingStreams", "maximum": "maxStreams"]
     }
 }

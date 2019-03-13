@@ -32,8 +32,7 @@ import Foundation
  - Success: action successful, returns a result of type `ResultType`
  - Failure: action failed, returns an `NSError`
  */
-public enum Result<ResultType>
-{
+public enum Result<ResultType> {
         /// action successful, returns a result of type `ResultType`
     case success(result: ResultType)
     
@@ -41,8 +40,7 @@ public enum Result<ResultType>
     case failure(error: NSError)
 }
 
-/// `ResultCompletion` creates a generic typealias to generally define completion blocks that return a `Result` 
-public enum ResultCompletion<ResultType>
-{
+/// `ResultCompletion` creates a generic typealias to generally define completion blocks that return a `Result`
+public enum ResultCompletion<ResultType> {
     public typealias T = (Result<ResultType>) -> Void
 }

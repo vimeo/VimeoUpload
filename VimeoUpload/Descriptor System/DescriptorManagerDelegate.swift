@@ -34,7 +34,7 @@ import Foundation
     @objc optional func didSaveDescriptors(count: Int)
     @objc optional func didFailToLoadDescriptor(error: NSError)
     
-    @objc optional func sessionDidBecomeInvalid(error: NSError)
+    @objc optional func sessionDidBecomeInvalid(error: NSError?)
     @objc optional func willHandleEventsForBackgroundSession()
     @objc optional func didFinishEventsForBackgroundSession()
     
@@ -45,6 +45,8 @@ import Foundation
     @objc optional func descriptorDidSucceed(_ descriptor: Descriptor)
     @objc optional func descriptorDidCancel(_ descriptor: Descriptor)
     @objc optional func descriptorDidFail(_ descriptor: Descriptor)
-    
+
+    @objc optional func descriptorDidResume(_ descriptor: Descriptor)
+
     @objc optional func descriptorForTaskNotFound(_ task: URLSessionTask)
 }

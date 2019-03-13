@@ -32,7 +32,7 @@ class CameraRollViewController: BaseCameraRollViewController
 {
     override func viewDidLoad()
     {
-        self.sessionManager = NewVimeoUploader.sharedInstance.foregroundSessionManager
+        self.sessionManager = NewVimeoUploader.sharedInstance?.foregroundSessionManager
 
         super.viewDidLoad()
     }

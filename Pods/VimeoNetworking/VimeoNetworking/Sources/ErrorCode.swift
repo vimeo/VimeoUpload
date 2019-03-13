@@ -27,8 +27,7 @@
 import Foundation
 
 /// `VimeoErrorCode` contains all api error codes that are currently recognized by our client applications
-public enum VimeoErrorCode: Int
-{
+public enum VimeoErrorCode: Int {
     // Upload
     case uploadStorageQuotaExceeded = 4101
     case uploadDailyQuotaExceeded = 4102
@@ -110,8 +109,7 @@ public enum VimeoErrorCode: Int
 }
 
 /// `HTTPStatusCode` contains HTTP status code constants used to inspect response status
-public enum HTTPStatusCode: Int
-{
+public enum HTTPStatusCode: Int {
     case serviceUnavailable = 503
     case badRequest = 400
     case unauthorized = 401
@@ -120,8 +118,7 @@ public enum HTTPStatusCode: Int
 }
 
 /// `LocalErrorCode` contains codes for all error conditions that can be generated from within the library
-public enum LocalErrorCode: Int
-{
+public enum LocalErrorCode: Int {
     // MARK: VimeoClient
     
     /// A response failed but returned no error object

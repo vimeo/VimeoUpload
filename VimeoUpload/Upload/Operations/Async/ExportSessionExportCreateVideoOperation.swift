@@ -32,7 +32,6 @@ import Photos
 open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
 {
     let sessionManager: VimeoSessionManager
-    open var videoSettings: VideoSettings?
     let operationQueue: OperationQueue
     
     // MARK:
@@ -43,9 +42,12 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     // MARK:
     
     private let phAsset: PHAsset
+    private let documentsFolderURL: URL?
+    private let uploadParameters: UploadParameters
 
     open var url: URL?
     open var video: VIMVideo?
+    open var videoSettings: VideoSettings?
     open var error: NSError?
     {
         didSet
@@ -59,7 +61,21 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     
     // MARK: - Initialization
     
-    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil)
+    /// Initializes an instance of `ExportSessionExportCreateVideoOperation`.
+    ///
+    /// - Parameters:
+    ///   - phAsset: An instance of `PHAsset` representing a media that the
+    ///   user picks from the Photos app.
+    ///   - sessionManager: An instance of `VimeoSessionManager` that will
+    ///   be used for creating an upload ticket.
+    ///   - videoSettings: An instance of `VideoSettings` representing the
+    ///   title, description, and privacy option that the user has edited.
+    ///   - documentsFolderURL: An URL pointing to a Documents folder;
+    ///   default to `nil`. For third-party use, this argument should not be
+    ///   filled.
+    ///   - uploadParameters: A dictionary of parameters used for the create
+    ///   video request.
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil, uploadParameters: UploadParameters = VimeoSessionManager.Constants.DefaultUploadParameters)
     {
         self.phAsset = phAsset
         
@@ -68,6 +84,10 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
         
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        self.documentsFolderURL = documentsFolderURL
+
+        self.uploadParameters = uploadParameters
         
         super.init()
     }
@@ -86,7 +106,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
             return
         }
         
-        let operation = ExportSessionExportOperation(phAsset: self.phAsset)
+        let operation = ExportSessionExportOperation(phAsset: self.phAsset, documentsFolderURL: self.documentsFolderURL)
         self.perform(exportSessionExportOperation: operation)
     }
     
@@ -147,7 +167,8 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     {
         let videoSettings = self.videoSettings
         
-        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings)
+        let operation = CreateVideoOperation(sessionManager: self.sessionManager, url: url, videoSettings: videoSettings, uploadParameters: self.uploadParameters)
+
         operation.completionBlock = { [weak self] () -> Void in
             
             DispatchQueue.main.async(execute: { [weak self] () -> Void in

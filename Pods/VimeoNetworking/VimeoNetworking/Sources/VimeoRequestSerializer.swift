@@ -30,11 +30,9 @@ import AFNetworking
 
 /** `VimeoRequestSerializer` is an `AFHTTPRequestSerializer` that primarily handles adding Vimeo-specific authorization headers to outbound requests.  It can be initialized with either a dynamic `AccessTokenProvider` or a static `AppConfiguration`.
  */
-final public class VimeoRequestSerializer: AFJSONRequestSerializer
-{
+final public class VimeoRequestSerializer: AFJSONRequestSerializer {
     
-    private struct Constants
-    {
+    private struct Constants {
         static let AcceptHeaderKey = "Accept"
         static let AuthorizationHeaderKey = "Authorization"
         static let UserAgentKey = "User-Agent"
@@ -42,9 +40,9 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
     
     public typealias AccessTokenProvider = () -> String?
     
-    // MARK: 
+    // MARK:
     
-    // for authenticated requests
+    // for authenticated requests (Applicable to logged in/out VIMAccount)
     var accessTokenProvider: AccessTokenProvider?
     
     // for unauthenticated requests
@@ -60,8 +58,7 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
      
      - returns: an initialized `VimeoRequestSerializer`
      */
-    init(accessTokenProvider: @escaping AccessTokenProvider, apiVersion: String)
-    {
+    init(accessTokenProvider: @escaping AccessTokenProvider, apiVersion: String) {
         self.accessTokenProvider = accessTokenProvider
         self.appConfiguration = nil
         
@@ -77,8 +74,7 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
      
      - returns: an initialized `VimeoRequestSerializer`
      */
-    init(appConfiguration: AppConfiguration)
-    {
+    init(appConfiguration: AppConfiguration) {
         self.accessTokenProvider = nil
         self.appConfiguration = appConfiguration
         
@@ -90,15 +86,13 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
     /**
      **NOT SUPPORTED**
      */
-    required public init?(coder aDecoder: NSCoder)
-    {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: Overrides
     
-    public override func request(withMethod method: String, urlString URLString: String, parameters: Any?, error: NSErrorPointer) -> NSMutableURLRequest
-    {
+    public override func request(withMethod method: String, urlString URLString: String, parameters: Any?, error: NSErrorPointer) -> NSMutableURLRequest {
         var request = super.request(withMethod: method, urlString: URLString, parameters: parameters, error: error) as URLRequest
         
         request = self.requestConfiguringHeaders(fromRequest: request)
@@ -106,8 +100,7 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
         return (request as NSURLRequest).mutableCopy() as! NSMutableURLRequest
     }
     
-    public override func multipartFormRequest(withMethod method: String, urlString URLString: String, parameters: [String : Any]?, constructingBodyWith block: ((AFMultipartFormData) -> Void)?, error: NSErrorPointer) -> NSMutableURLRequest
-    {
+    public override func multipartFormRequest(withMethod method: String, urlString URLString: String, parameters: [String : Any]?, constructingBodyWith block: ((AFMultipartFormData) -> Void)?, error: NSErrorPointer) -> NSMutableURLRequest {
         var request = super.multipartFormRequest(withMethod: method, urlString: URLString, parameters: parameters, constructingBodyWith: block, error: error) as URLRequest
         
         request = self.requestConfiguringHeaders(fromRequest: request)
@@ -115,8 +108,7 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
         return (request as NSURLRequest).mutableCopy() as! NSMutableURLRequest
     }
     
-    public override func request(withMultipartForm request: URLRequest, writingStreamContentsToFile fileURL: URL, completionHandler handler: ((Error?) -> Void)? = nil) -> NSMutableURLRequest
-    {
+    public override func request(withMultipartForm request: URLRequest, writingStreamContentsToFile fileURL: URL, completionHandler handler: ((Error?) -> Void)? = nil) -> NSMutableURLRequest {
         var request = super.request(withMultipartForm: request, writingStreamContentsToFile: fileURL, completionHandler: handler) as URLRequest
         
         request = self.requestConfiguringHeaders(fromRequest: request)
@@ -124,10 +116,8 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
         return (request as NSURLRequest).mutableCopy() as! NSMutableURLRequest
     }
     
-    public override func request(bySerializingRequest request: URLRequest, withParameters parameters: Any?, error: NSErrorPointer) -> URLRequest?
-    {
-        if var request = super.request(bySerializingRequest: request, withParameters: parameters, error: error)
-        {
+    public override func request(bySerializingRequest request: URLRequest, withParameters parameters: Any?, error: NSErrorPointer) -> URLRequest? {
+        if var request = super.request(bySerializingRequest: request, withParameters: parameters, error: error) {
             request = self.requestConfiguringHeaders(fromRequest: request)
             
             return request
@@ -138,13 +128,11 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
     
     // MARK: Header Helpers
     
-    private func configureDefaultHeaders(withAPIVersion apiVersion: String)
-    {
+    private func configureDefaultHeaders(withAPIVersion apiVersion: String) {
         self.setValue("application/vnd.vimeo.*+json; version=\(apiVersion)", forHTTPHeaderField: Constants.AcceptHeaderKey)
     }
 
-    private func requestConfiguringHeaders(fromRequest request: URLRequest) -> URLRequest
-    {
+    private func requestConfiguringHeaders(fromRequest request: URLRequest) -> URLRequest {
         var request = request
         
         request = self.requestAddingAuthorizationHeader(fromRequest: request)
@@ -153,17 +141,14 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
         return request
     }
     
-    private func requestAddingAuthorizationHeader(fromRequest request: URLRequest) -> URLRequest
-    {
+    private func requestAddingAuthorizationHeader(fromRequest request: URLRequest) -> URLRequest {
         var request = request
         
-        if let token = self.accessTokenProvider?()
-        {
+        if let token = self.accessTokenProvider?() {
             let value = "Bearer \(token)"
             request.setValue(value, forHTTPHeaderField: Constants.AuthorizationHeaderKey)
         }
-        else if let appConfiguration = self.appConfiguration
-        {
+        else if let appConfiguration = self.appConfiguration {
             let clientID = appConfiguration.clientIdentifier
             let clientSecret = appConfiguration.clientSecret
             
@@ -171,8 +156,7 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
             let authData = authString.data(using: String.Encoding.utf8)
             let base64String = authData?.base64EncodedString(options: [])
             
-            if let base64String = base64String
-            {
+            if let base64String = base64String {
                 let headerValue = "Basic \(base64String)"
                 request.setValue(headerValue, forHTTPHeaderField: Constants.AuthorizationHeaderKey)
             }
@@ -181,10 +165,8 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
         return request
     }
     
-    private func requestModifyingUserAgentHeader(fromRequest request: URLRequest) -> URLRequest
-    {
-        guard let frameworkVersion = Bundle(for: type(of: self)).infoDictionary?["CFBundleShortVersionString"] as? String else
-        {
+    private func requestModifyingUserAgentHeader(fromRequest request: URLRequest) -> URLRequest {
+        guard let frameworkVersion = Bundle(for: type(of: self)).infoDictionary?["CFBundleShortVersionString"] as? String else {
             assertionFailure("Unable to get the framework version")
             
             return request
@@ -194,10 +176,9 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
         
         let frameworkString = "VimeoNetworking/\(frameworkVersion)"
         
-        guard let existingUserAgent = request.value(forHTTPHeaderField: Constants.UserAgentKey) else
-        {
+        guard let existingUserAgent = request.value(forHTTPHeaderField: Constants.UserAgentKey) else {
             // DISCUSSION: AFNetworking doesn't set a User Agent for tvOS (look at the init method in AFHTTPRequestSerializer.m).
-            // So, on tvOS the User Agent will only specify the framework. System information might be something we want to add 
+            // So, on tvOS the User Agent will only specify the framework. System information might be something we want to add
             // in the future if AFNetworking isn't providing it. [ghking] 6/19/17
             
             #if !os(tvOS)
@@ -209,7 +190,7 @@ final public class VimeoRequestSerializer: AFJSONRequestSerializer
             return request
         }
         
-        let modifiedUserAgent = existingUserAgent + " " + frameworkString
+        let modifiedUserAgent = "\(existingUserAgent) \(frameworkString)"
         
         request.setValue(modifiedUserAgent, forHTTPHeaderField: Constants.UserAgentKey)
         

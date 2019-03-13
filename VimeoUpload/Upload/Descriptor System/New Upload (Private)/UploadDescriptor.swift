@@ -28,12 +28,16 @@ import Foundation
 import VimeoNetworking
 import AFNetworking
 
-public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
+open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
-    private static let FileNameCoderKey = "fileName"
-    private static let FileExtensionCoderKey = "fileExtension"
-    private static let UploadTicketCoderKey = "uploadTicket"
-    private static let VideoCoderKey = "video"
+    private struct Constants {
+        static let FileNameCoderKey = "fileName"
+        static let FileExtensionCoderKey = "fileExtension"
+        static let UploadTicketCoderKey = "uploadTicket"
+        static let VideoCoderKey = "video"
+
+        static let MaxAttempts = 10
+    }
 
     // MARK: 
     
@@ -57,6 +61,8 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         return self
     }
     
+    open var uploadStrategy: UploadStrategy.Type = StreamingUploadStrategy.self
+    
     // MARK: - Initialization
     
     required public init()
@@ -74,21 +80,22 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: Overrides
     
-    override public func prepare(sessionManager: AFURLSessionManager) throws
+    override open func prepare(sessionManager: AFURLSessionManager) throws
     {
         // TODO: Do we need to set self.state == .Ready here? [AH] 2/22/2016
         
         do
         {
-            guard let uploadLink = self.video?.upload?.uploadLink else
+            guard let video = self.video else
             {
-                // TODO: delete file here? Same in download?
-                
                 throw NSError(domain: UploadErrorDomain.Upload.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "Attempt to initiate upload but the uploadUri is nil."])
             }
             
+            let uploadLink = try self.uploadStrategy.uploadLink(from: video)
             let sessionManager = sessionManager as! VimeoSessionManager
-            let task = try sessionManager.uploadVideoTask(source: self.url, destination: uploadLink, completionHandler: nil)
+            
+            let uploadRequest = try self.uploadStrategy.uploadRequest(requestSerializer: sessionManager.requestSerializer as? VimeoRequestSerializer, fileUrl: self.url, uploadLink: uploadLink)
+            let task = sessionManager.uploadVideoTask(source: self.url, request: uploadRequest, completionHandler: nil)
             
             self.currentTaskIdentifier = task.taskIdentifier
         }
@@ -102,7 +109,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override public func resume(sessionManager: AFURLSessionManager)
+    override open func resume(sessionManager: AFURLSessionManager)
     {
         super.resume(sessionManager: sessionManager)
         
@@ -114,14 +121,14 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override public func cancel(sessionManager: AFURLSessionManager)
+    override open func cancel(sessionManager: AFURLSessionManager)
     {
         super.cancel(sessionManager: sessionManager)
         
         FileManager.default.deleteFile(at: self.url)
     }
 
-    override public func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    override open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
             let task = sessionManager.uploadTask(for: identifier),
@@ -142,7 +149,7 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.progress = progress
     }
     
-    override public func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
+    override open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
     {
         self.currentTaskIdentifier = nil
 
@@ -181,30 +188,41 @@ public class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     required public init(coder aDecoder: NSCoder)
     {
-        let fileName = aDecoder.decodeObject(forKey: UploadDescriptor.FileNameCoderKey) as! String
-        let fileExtension = aDecoder.decodeObject(forKey: UploadDescriptor.FileExtensionCoderKey) as! String
+        let fileName = aDecoder.decodeObject(forKey: type(of: self).Constants.FileNameCoderKey) as! String
+        let fileExtension = aDecoder.decodeObject(forKey: type(of: self).Constants.FileExtensionCoderKey) as! String
         let path = URL.uploadDirectory().appendingPathComponent(fileName).appendingPathExtension(fileExtension).absoluteString
         
         self.url = URL(fileURLWithPath: path)
 
         // Support migrating archived uploadTickets to videos for API versions less than v3.4
-        if let uploadTicket = aDecoder.decodeObject(forKey: UploadDescriptor.UploadTicketCoderKey) as? VIMUploadTicket
+        if let uploadTicket = aDecoder.decodeObject(forKey: type(of: self).Constants.UploadTicketCoderKey) as? VIMUploadTicket
         {
             self.video = uploadTicket.video
+        }
+        else
+        {
+            self.video = aDecoder.decodeObject(forKey: type(of: self).Constants.VideoCoderKey) as? VIMVideo
         }
 
         super.init(coder: aDecoder)
     }
 
-    override public func encode(with aCoder: NSCoder)
+    override open func encode(with aCoder: NSCoder)
     {
         let fileName = self.url.deletingPathExtension().lastPathComponent
         let ext = self.url.pathExtension
 
-        aCoder.encode(fileName, forKey: UploadDescriptor.FileNameCoderKey)
-        aCoder.encode(ext, forKey: UploadDescriptor.FileExtensionCoderKey)
-        aCoder.encode(self.video, forKey: UploadDescriptor.VideoCoderKey)
+        aCoder.encode(fileName, forKey: type(of: self).Constants.FileNameCoderKey)
+        aCoder.encode(ext, forKey: type(of: self).Constants.FileExtensionCoderKey)
+        aCoder.encode(self.video, forKey: type(of: self).Constants.VideoCoderKey)
         
         super.encode(with: aCoder)
+    }
+    
+    // MARK: - Retriable
+    
+    override public func shouldRetry(urlResponse: URLResponse?) -> Bool
+    {
+        return self.uploadStrategy.shouldRetry(urlResponse: urlResponse) && self.retryAttemptCount < Constants.MaxAttempts - 1
     }
 }

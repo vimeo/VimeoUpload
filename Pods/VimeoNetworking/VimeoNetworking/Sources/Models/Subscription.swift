@@ -3,12 +3,29 @@
 //  Pods
 //
 //  Created by Lim, Jennifer on 2/8/17.
+//  Copyright (c) 2014-2018 Vimeo (https://vimeo.com)
 //
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
 /// Represents all the notifications that the user is Subscribed to.
-public class Subscription: VIMModelObject
-{
+public class Subscription: VIMModelObject {
     // MARK: - Properties
     
     /// Represents wether the user is subscribed to the `comment` notification.
@@ -48,8 +65,7 @@ public class Subscription: VIMModelObject
     @objc dynamic public private(set) var followedUserVideoAvailable: NSNumber?
     
     /// Represents the Subscription object as a Dictionary
-    @objc public var toDictionary: [String: Any]
-    {
+    @objc public var toDictionary: [String: Any] {
         let dictionary: [String: Any] = ["comment": self.comment ?? false,
                                               "credit": self.credit ?? false,
                                               "like": self.like ?? false,
@@ -66,8 +82,7 @@ public class Subscription: VIMModelObject
     
     // MARK: - VIMMappable
     
-    override public func getObjectMapping() -> Any
-    {
+    override public func getObjectMapping() -> Any {
         return [
             "video_available": "videoAvailable",
             "vod_preorder_available": "vodPreorderAvailable",
@@ -81,8 +96,7 @@ public class Subscription: VIMModelObject
     /// Helper method that determine whether a user has all the subscription settings turned off.
     ///
     /// - Returns: A boolean that indicates whether the user has all the settings for push notifications disabled.
-    @objc public func areSubscriptionsDisabled() -> Bool
-    {
+    @objc public func areSubscriptionsDisabled() -> Bool {
         return (self.comment == false &&
                 self.credit == false &&
                 self.like == false &&

@@ -55,7 +55,8 @@ typedef NS_ENUM(NSUInteger, VIMVideoProcessingStatus) {
     VIMVideoProcessingStatusTranscoding,
     VIMVideoProcessingStatusUploadingError,
     VIMVideoProcessingStatusTranscodingError,
-    VIMVideoProcessingStatusQuotaExceeded
+    VIMVideoProcessingStatusQuotaExceeded,
+    VIMVideoProcessingStatusTotalCapExceeded
 };
 
 @interface VIMVideo : VIMModelObject
@@ -168,5 +169,6 @@ typedef NS_ENUM(NSUInteger, VIMVideoProcessingStatus) {
 - (void)setIsLiked:(BOOL)isLiked;
 - (void)setIsWatchLater:(BOOL)isWatchLater;
 - (BOOL)hasReviewPage;
+- (BOOL)canDownloadFromDesktop;
 
 @end

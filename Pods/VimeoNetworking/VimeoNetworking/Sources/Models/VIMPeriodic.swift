@@ -25,15 +25,13 @@
 //  THE SOFTWARE.
 //
 
-public class VIMPeriodic: VIMSizeQuota
-{
+public class VIMPeriodic: VIMSizeQuota {
     /// The time in ISO 8601 format when your upload quota resets.
     @objc dynamic public private(set) var resetDate: NSDate?
     
     // MARK: - VIMMappable
     
-    public override func getObjectMapping() -> Any
-    {
+    public override func getObjectMapping() -> Any {
         return ["reset_date" : "resetDate"]
     }
 }

@@ -34,6 +34,11 @@ open class VimeoUploader<T: VideoDescriptor>
         return "vimeo_upload" // Generic types don't yet support static properties [AH] 3/19/2016
     }
     
+    public static var DefaultUploadStrategy: UploadStrategy.Type
+    {
+        return StreamingUploadStrategy.self
+    }
+    
     // MARK:
     
     public let descriptorManager: ReachableDescriptorManager
@@ -45,21 +50,34 @@ open class VimeoUploader<T: VideoDescriptor>
 
     // MARK: - Initialization
 
-    public convenience init(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessToken: String, apiVersion: String)
+    public convenience init?(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessToken: String, apiVersion: String)
     {
         self.init(backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: descriptorManagerDelegate, accessTokenProvider: { () -> String? in
             return accessToken
         }, apiVersion: apiVersion)
     }
     
-    public init(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
+    public init?(backgroundSessionIdentifier: String, descriptorManagerDelegate: DescriptorManagerDelegate? = nil, accessTokenProvider: @escaping VimeoRequestSerializer.AccessTokenProvider, apiVersion: String)
     {
         self.foregroundSessionManager = VimeoSessionManager.defaultSessionManager(baseUrl: VimeoBaseURL, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
         
-        self.deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager)
+        do
+        {
+            let documentsFolderURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
         
-        self.descriptorManager = ReachableDescriptorManager(name: type(of: self).Name, backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: descriptorManagerDelegate,
-                                                            accessTokenProvider: accessTokenProvider, apiVersion: apiVersion)
+            guard let descriptorManager = ReachableDescriptorManager(name: type(of: self).Name, documentsFolderURL: documentsFolderURL, backgroundSessionIdentifier: backgroundSessionIdentifier, descriptorManagerDelegate: descriptorManagerDelegate, accessTokenProvider: accessTokenProvider, apiVersion: apiVersion),
+                let deletionManager = VideoDeletionManager(sessionManager: self.foregroundSessionManager, documentsFolderURL: documentsFolderURL) else
+            {
+                return nil
+            }
+            
+            self.descriptorManager = descriptorManager
+            self.deletionManager = deletionManager
+        }
+        catch
+        {
+            return nil
+        }
     }
     
     // MARK: Public API - Starting

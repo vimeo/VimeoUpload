@@ -55,8 +55,13 @@ open class DescriptorManagerTracker: DescriptorManagerDelegate
         self.printMessageAndPostLocalNotification("Load failed: \(error.localizedDescription)")
     }
     
-    @objc open func sessionDidBecomeInvalid(error: NSError)
+    @objc open func sessionDidBecomeInvalid(error: NSError?)
     {
+        guard let error = error else
+        {
+            return
+        }
+        
         self.printMessageAndPostLocalNotification("Session invalidated: \(error.localizedDescription)")
     }
     
@@ -128,6 +133,14 @@ open class DescriptorManagerTracker: DescriptorManagerDelegate
     @objc open func descriptorForTaskNotFound(_ task: URLSessionTask)
     {
         self.printMessageAndPostLocalNotification("Descriptor for task not found")
+    }
+
+    @objc open func descriptorDidResume(_ descriptor: Descriptor)
+    {
+        if let descriptorIdentifier = descriptor.identifier
+        {
+            self.printMessageAndPostLocalNotification("Resume \(descriptorIdentifier)")
+        }
     }
     
     // Private API

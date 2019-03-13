@@ -8,8 +8,7 @@
 
 import UIKit
 
-extension Request
-{
+extension Request {
     /**
      Create a `Request` to get the app configs
      
@@ -17,17 +16,14 @@ extension Request
      
      - returns: a new `Request`
      */
-    public static func configsRequest(fromCache cache: Bool) -> Request
-    {
+    public static func configsRequest(fromCache cache: Bool) -> Request {
         let path = "/configs"
         
-        if cache
-        {
-            return Request(method: .GET, path: path, cacheFetchPolicy: .cacheOnly)
+        if cache {
+            return Request(method: .GET, path: path, useCache: true)
         }
-        else
-        {
-            return Request(method: .GET, path: path, cacheFetchPolicy: .networkOnly, shouldCacheResponse: true)
+        else {
+            return Request(method: .GET, path: path, cacheResponse: true)
         }
     }
 }

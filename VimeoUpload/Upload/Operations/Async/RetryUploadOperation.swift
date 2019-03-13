@@ -55,15 +55,28 @@ public class RetryUploadOperation: ConcurrentOperation
         }
     }
     
+    private let documentsFolderURL: URL?
+    
     // MARK: - Initialization
     
-    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager)
+    /// Initializes an instance of `ExportSessionExportOperation`.
+    ///
+    /// - Parameters:
+    ///   - phAsset: An instance of `PHAsset` representing a media that the
+    ///   user picks from the Photos app.
+    ///   - sessionManager: An instance of `VimeoSessionManager`.
+    ///   - documentsFolderURL: An URL pointing to a Documents folder;
+    ///   default to `nil`. For third-party use, this argument should not be
+    ///   filled.
+    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, documentsFolderURL: URL? = nil)
     {
         self.phAsset = phAsset
         
         self.sessionManager = sessionManager
         self.operationQueue = OperationQueue()
         self.operationQueue.maxConcurrentOperationCount = 1
+        
+        self.documentsFolderURL = documentsFolderURL
         
         super.init()
     }
@@ -82,7 +95,7 @@ public class RetryUploadOperation: ConcurrentOperation
             return
         }
         
-        let operation = ExportSessionExportOperation(phAsset: self.phAsset)
+        let operation = ExportSessionExportOperation(phAsset: self.phAsset, documentsFolderURL: self.documentsFolderURL)
         self.perform(exportSessionExportOperation: operation)
     }
     

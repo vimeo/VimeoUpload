@@ -34,25 +34,41 @@ import Foundation
 
 public extension URL
 {
-    static func uploadURL(withFileName filename: String, fileType: String) throws -> URL
+    static func uploadURL(documentsFolderURL: URL? = nil, withFileName filename: String, fileType: String) throws -> URL
     {
-        let url = URL.uploadDirectory()
+        let url = URL.uploadDirectory(documentsFolderURL: documentsFolderURL)
         
-        if FileManager.default.fileExists(atPath: url.absoluteString) == false
+        if FileManager.default.fileExists(atPath: url.path) == false
         {
-            try FileManager.default.createDirectory(atPath: url.absoluteString, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(atPath: url.path, withIntermediateDirectories: true, attributes: nil)
         }
         
         let unmanagedTag = UTTypeCopyPreferredTagWithClass(fileType as CFString, kUTTagClassFilenameExtension)!
         let ext = unmanagedTag.takeRetainedValue() as String
-        let path = url.appendingPathComponent(filename).appendingPathExtension(ext).absoluteString
+        let path = url.appendingPathComponent(filename).appendingPathExtension(ext)
         
-        return URL(fileURLWithPath: path)
+        return path
     }
     
-    static func uploadDirectory() -> URL
+    static func uploadDirectory(documentsFolderURL: URL? = nil) -> URL
     {
-        let documentsURL = URL(string: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])!
+        let documentsURL: URL
+        
+        if let documentsFolderURL = documentsFolderURL
+        {
+            documentsURL = documentsFolderURL
+        }
+        else
+        {
+            do
+            {
+                documentsURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            }
+            catch
+            {
+                fatalError("Failure: Documents folder does not exist.")
+            }
+        }
         
         return documentsURL.appendingPathComponent("uploader").appendingPathComponent("videos")
     }

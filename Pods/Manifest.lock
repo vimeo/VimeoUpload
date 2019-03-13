@@ -14,7 +14,7 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - VimeoNetworking (3.1.0):
+  - VimeoNetworking (3.3.1):
     - AFNetworking (= 3.1.0)
 
 DEPENDENCIES:
@@ -31,12 +31,12 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   VimeoNetworking:
-    :commit: e96d42c69784ee9d45e1c3f70e0b9e5e0f22a28f
+    :commit: 6c83eeea88441715add0e71e68eb8ee8174e276f
     :git: "git@github.com:vimeo/VimeoNetworking.git"
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  VimeoNetworking: 64fe0a9f12d106c2fe1c54f4114b25a80931bf37
+  VimeoNetworking: d9e16bc5b659694854c3e1177f03d00f0a2b8ea2
 
 PODFILE CHECKSUM: dd1c01077873d3593d24f554a22b00f665c04b49
 

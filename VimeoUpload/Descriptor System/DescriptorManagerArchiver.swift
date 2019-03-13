@@ -47,34 +47,56 @@ class DescriptorManagerArchiver
 
     // MARK: - Initialization
     
-    init(name: String)
+    init?(name: String,
+          archivePrefix: String?,
+          documentsFolderURL: URL)
     {
-        self.archiver = type(of: self).setupArchiver(name: name)
+        guard let archiver = type(of: self).setupArchiver(name: name, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
+        {
+            return nil
+        }
         
-        self.descriptors = self.loadDescriptors()
-        self.suspended = self.loadSuspendedState()
+        self.archiver = archiver
+        
+        let migrator = ArchiveMigrator(fileManager: FileManager.default)
+        
+        let relativeFolderURL = URL(string: name)
+        self.descriptors = self.loadDescriptors(withMigrator: migrator, relativeFolderURL: relativeFolderURL)
+        self.suspended = self.loadSuspendedState(withMigrator: migrator, relativeFolderURL: relativeFolderURL)
     }
     
     // MARK: Setup - Archiving
     
-    private static func setupArchiver(name: String) -> KeyedArchiver
+    private static func setupArchiver(name: String, archivePrefix: String?, documentsFolderURL: URL) -> KeyedArchiver?
     {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        var documentsURL = URL(string: documentsPath)!
-        
-        documentsURL = documentsURL.appendingPathComponent(name)
+        let typeFolderURL = documentsFolderURL.appendingPathComponent(name)
 
-        if FileManager.default.fileExists(atPath: documentsURL.path) == false
+        if FileManager.default.fileExists(atPath: typeFolderURL.path) == false
         {
-            try! FileManager.default.createDirectory(atPath: documentsURL.path, withIntermediateDirectories: true, attributes: nil)
+            do
+            {
+                try FileManager.default.createDirectory(at: typeFolderURL, withIntermediateDirectories: true, attributes: nil)
+            }
+            catch
+            {
+                return nil
+            }
         }
         
-        return KeyedArchiver(basePath: documentsURL.path)
+        return KeyedArchiver(basePath: typeFolderURL.path, archivePrefix: archivePrefix)
     }
     
-    private func loadDescriptors() -> Set<Descriptor>
+    private func loadDescriptors(withMigrator migrator: ArchiveMigrating?, relativeFolderURL: URL?) -> Set<Descriptor>
     {
-        return self.archiver.loadObject(for: type(of: self).DescriptorsArchiveKey) as? Set<Descriptor> ?? Set<Descriptor>()
+        guard let descriptors = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
+                                                        archiver: self.archiver,
+                                                        key: DescriptorManagerArchiver.DescriptorsArchiveKey) as? Set<Descriptor>
+        else
+        {
+            return Set<Descriptor>()
+        }
+        
+        return descriptors
     }
     
     private func saveDescriptors()
@@ -82,9 +104,17 @@ class DescriptorManagerArchiver
         self.archiver.save(object: self.descriptors, key: type(of: self).DescriptorsArchiveKey)
     }
     
-    private func loadSuspendedState() -> Bool
+    private func loadSuspendedState(withMigrator migrator: ArchiveMigrating?, relativeFolderURL: URL?) -> Bool
     {
-        return self.archiver.loadObject(for: type(of: self).SuspendedArchiveKey) as? Bool ?? false
+        guard let suspendedState = ArchiveDataLoader.loadData(relativeFolderURL: relativeFolderURL,
+                                                              archiver: self.archiver,
+                                                              key: DescriptorManagerArchiver.SuspendedArchiveKey) as? Bool
+        else
+        {
+            return false
+        }
+        
+        return suspendedState
     }
     
     private func saveSuspendedState()

@@ -6,8 +6,7 @@
 //
 //
 
-public extension Request
-{
+public extension Request {
     /// `Request` that returns a single `VIMPicture`
     public typealias PictureRequest = Request<VIMPicture>
     
@@ -18,9 +17,8 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func createPictureRequest(forUserURI userURI: String) -> Request
-    {
-        let uri = userURI + "/pictures"
+    public static func createPictureRequest(forUserURI userURI: String) -> Request {
+        let uri = "\(userURI)/pictures"
         
         return Request(method: .POST, path: uri)
     }
@@ -32,8 +30,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func deletePictureRequest(forPictureURI pictureURI: String) -> Request
-    {
+    public static func deletePictureRequest(forPictureURI pictureURI: String) -> Request {
         return Request(method: .DELETE, path: pictureURI)
     }
     
@@ -44,8 +41,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func activatePictureRequest(forPictureURI pictureURI: String) -> Request
-    {
+    public static func activatePictureRequest(forPictureURI pictureURI: String) -> Request {
         let parameters = ["active": "true"]
         
         return Request(method: .PATCH, path: pictureURI, parameters: parameters)

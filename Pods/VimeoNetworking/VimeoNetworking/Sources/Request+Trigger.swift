@@ -6,8 +6,7 @@
 //
 //
 
-extension Request
-{
+extension Request {
     private static var TriggersURI: String { return "/triggers" }
 
     /// `Request` that returns a single `VIMTrigger`
@@ -22,8 +21,7 @@ extension Request
      
      - returns: a new `Request`
      */
-    public static func registerDeviceForPushNotifications(withDeviceToken deviceToken: String, parameters: VimeoClient.RequestParametersDictionary) -> Request
-    {
+    public static func registerDeviceForPushNotifications(withDeviceToken deviceToken: String, parameters: VimeoClient.RequestParametersDictionary) -> Request {
         let uri = self.uri(forDeviceToken: deviceToken)
         
         return Request(method: .PUT, path: uri, parameters: parameters)
@@ -38,8 +36,7 @@ extension Request
      
      - returns: a new `Request`
      */
-    public static func unregisterDeviceForPushNotifications(withDeviceToken deviceToken: String, parameters: VimeoClient.RequestParametersDictionary) -> Request
-    {
+    public static func unregisterDeviceForPushNotifications(withDeviceToken deviceToken: String, parameters: VimeoClient.RequestParametersDictionary) -> Request {
         let uri = self.uri(forDeviceToken: deviceToken)
 
         return Request(method: .DELETE, path: uri, parameters: parameters)
@@ -53,8 +50,7 @@ extension Request
      
      - returns: a new `Request`
      */
-    public static func addPushNotificationTrigger(withParameters parameters: VimeoClient.RequestParametersDictionary) -> Request
-    {
+    public static func addPushNotificationTrigger(withParameters parameters: VimeoClient.RequestParametersDictionary) -> Request {
         return Request(method: .POST, path: self.TriggersURI, parameters: parameters)
     }
     
@@ -66,8 +62,7 @@ extension Request
      
      - returns: a new `Request`
      */
-    public static func removePushNotificationTrigger(forTriggerURI triggerURI: String) -> Request
-    {
+    public static func removePushNotificationTrigger(forTriggerURI triggerURI: String) -> Request {
         return Request(method: .DELETE, path: triggerURI)
     }
     
@@ -79,8 +74,7 @@ extension Request
      
      - returns: a new `Request`
      */
-    public static func pushNotificationTriggers(forDeviceToken deviceToken: String, parameters: VimeoClient.RequestParametersArray) -> Request
-    {
+    public static func pushNotificationTriggers(forDeviceToken deviceToken: String, parameters: VimeoClient.RequestParametersArray) -> Request {
         let uri = self.uri(forDeviceToken: deviceToken) + self.TriggersURI
 
         return Request(method: .PUT, path: uri, parameters: parameters, modelKeyPath: "data")
@@ -88,10 +82,9 @@ extension Request
     
     // MARK: Helpers
     
-    private static func uri(forDeviceToken deviceToken: String) -> String
-    {
+    private static func uri(forDeviceToken deviceToken: String) -> String {
         let deviceTypeIdentifier = UIDevice.current.userInterfaceIdiom == .phone ? "iphone" : "ipad"
         
-        return "me/devices/" + deviceTypeIdentifier + "/" + deviceToken
+        return "me/devices/\(deviceTypeIdentifier)/\(deviceToken)"
     }
 }

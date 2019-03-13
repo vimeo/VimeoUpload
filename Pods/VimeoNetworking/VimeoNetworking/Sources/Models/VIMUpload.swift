@@ -26,20 +26,26 @@
 import Foundation
 
 /// Encapsulates the upload-related information on a video object.
-public class VIMUpload: VIMModelObject
-{
+public class VIMUpload: VIMModelObject {
     /// The approach for uploading the video, expressed as a Swift-only enum
     ///
     /// - streaming: Two-step upload without using tus; this will be deprecated
     /// - post: Upload with an HTML form or POST
     /// - pull: Upload from a video file that already exists on the internet
     /// - tus: Upload using the open-source tus protocol
-    public enum UploadApproach: String
-    {
-        case streaming
-        case post
-        case pull
-        case tus
+    public struct UploadApproach: RawRepresentable, Equatable {
+        public typealias RawValue = String
+        
+        public init?(rawValue: String) {
+            self.rawValue = rawValue
+        }
+        
+        public var rawValue: String
+        
+        public static let Streaming = UploadApproach(rawValue: "streaming")!
+        public static let Post = UploadApproach(rawValue: "post")!
+        public static let Pull = UploadApproach(rawValue: "pull")!
+        public static let Tus = UploadApproach(rawValue: "tus")!
     }
     
     /// The status code for the availability of the uploaded video, expressed as a Swift-only enum
@@ -47,8 +53,7 @@ public class VIMUpload: VIMModelObject
     /// - complete: The upload is complete
     /// - error: The upload ended with an error
     /// - underway: The upload is in progress
-    public enum UploadStatus: String
-    {
+    public enum UploadStatus: String {
         case complete
         case error
         case inProgress = "in_progress"
@@ -84,28 +89,38 @@ public class VIMUpload: VIMModelObject
     /// The status code for the availability of the uploaded video, mapped to a Swift-only enum
     public private(set) var uploadStatus: UploadStatus?
     
+    public private(set) var gcs: [GCS]?
+    
+    @objc internal private(set) var gcsStorage: NSArray?
+    
     // MARK: - VIMMappable Protocol Conformance
     
     /// Called when automatic object mapping completes
-    public override func didFinishMapping()
-    {
-        if let approachString = self.approach
-        {
+    public override func didFinishMapping() {
+        if let approachString = self.approach {
             self.uploadApproach = UploadApproach(rawValue: approachString)
         }
         
-        if let statusString = self.status
-        {
+        if let statusString = self.status {
             self.uploadStatus = UploadStatus(rawValue: statusString)
         }
+        
+        self.gcs = [GCS]()
+        
+        self.gcsStorage?.forEach({ (object) in
+            guard let dictionary = object as? [String: Any], let gcsObject = try? VIMObjectMapper.mapObject(responseDictionary: dictionary) as GCS else {
+                return
+            }
+            
+            self.gcs?.append(gcsObject)
+        })
     }
     
     /// Maps the property name that mirrors the literal JSON response to another property name.
     /// Typically used to rename a property to one that follows this project's naming conventions.
     ///
     /// - Returns: A dictionary where the keys are the JSON response names and the values are the new property names.
-    public override func getObjectMapping() -> Any
-    {
-        return ["complete_uri": "completeURI", "redirect_url": "redirectURL"]
+    public override func getObjectMapping() -> Any {
+        return ["complete_uri": "completeURI", "redirect_url": "redirectURL", "gcs": "gcsStorage"]
     }
 }

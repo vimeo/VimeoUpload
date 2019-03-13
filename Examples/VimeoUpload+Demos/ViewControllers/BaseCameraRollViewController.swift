@@ -36,7 +36,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     static let NibName = "BaseCameraRollViewController"
     private static let CollectionViewSpacing: CGFloat = 2
     
-    var sessionManager: VimeoSessionManager!
+    var sessionManager: VimeoSessionManager?
     
     // MARK: 
     
