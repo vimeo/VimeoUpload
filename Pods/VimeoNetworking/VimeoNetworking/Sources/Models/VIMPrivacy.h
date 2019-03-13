@@ -43,5 +43,6 @@ extern NSString * __nonnull VIMPrivacy_Disabled;
 @property (nonatomic, copy, nullable) NSString *comments;
 @property (nonatomic, copy, nullable) NSString *embed;
 @property (nonatomic, copy, nullable) NSString *view;
+@property (nonatomic, copy, nullable) NSString *bypassToken;
 
 @end

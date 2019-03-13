@@ -27,8 +27,7 @@
 import Foundation
 
 /// `Scope` describes a permission that your application requests from the API
-public enum Scope: String
-{
+public enum Scope: String {
     /// View public videos
     case Public = "public"
     
@@ -63,8 +62,7 @@ public enum Scope: String
      
      - returns: a string of space-separated scope strings
      */
-    public static func combine(_ scopes: [Scope]) -> String
-    {
+    public static func combine(_ scopes: [Scope]) -> String {
         return scopes.map({ $0.rawValue }).joined(separator: " ")
     }
 }

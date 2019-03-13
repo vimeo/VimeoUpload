@@ -26,10 +26,8 @@
 
 /// An object representing the `chat` field in a `live` response. This
 /// `live` response is part of the `clip` representation.
-public class VIMLiveChat: VIMModelObject
-{
-    private struct Constants
-    {
+public class VIMLiveChat: VIMModelObject {
+    private struct Constants {
         static let UserKey = "user"
     }
     
@@ -42,10 +40,8 @@ public class VIMLiveChat: VIMModelObject
     /// The current user.
     @objc public private(set) var user: VIMLiveChatUser?
     
-    @objc public override func getClassForObjectKey(_ key: String!) -> AnyClass?
-    {
-        if key == Constants.UserKey
-        {
+    @objc public override func getClassForObjectKey(_ key: String!) -> AnyClass? {
+        if key == Constants.UserKey {
             return VIMLiveChatUser.self
         }
         
