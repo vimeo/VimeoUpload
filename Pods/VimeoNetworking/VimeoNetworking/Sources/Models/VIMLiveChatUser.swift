@@ -33,8 +33,7 @@
 /// - plus: "Vimeo Plus" tier.
 /// - pro: "Vimeo PRO" tier.
 /// - proUnlimited: "Custom Live" tier.
-public enum AccountType: String
-{
+public enum AccountType: String {
     case basic = "basic"
     case business = "business"
     case liveBusiness = "live_business"
@@ -45,10 +44,8 @@ public enum AccountType: String
 }
 
 /// An object representing the `user` field in a `chat` response.
-public class VIMLiveChatUser: VIMModelObject
-{
-    private struct Constants
-    {
+public class VIMLiveChatUser: VIMModelObject {
+    private struct Constants {
         static let PictureResponseKey = "pictures"
     }
     
@@ -58,10 +55,8 @@ public class VIMLiveChatUser: VIMModelObject
     @objc public private(set) var account: String?
     
     /// The user's account type in `AccountType`.
-    public var accountType: AccountType?
-    {
-        guard let accountValue = self.account else
-        {
+    public var accountType: AccountType? {
+        guard let accountValue = self.account else {
             return nil
         }
         
@@ -89,10 +84,8 @@ public class VIMLiveChatUser: VIMModelObject
     /// Absolute URL of the current user.
     @objc public private(set) var link: String?
     
-    public override func getClassForObjectKey(_ key: String!) -> AnyClass?
-    {
-        if key == Constants.PictureResponseKey
-        {
+    public override func getClassForObjectKey(_ key: String!) -> AnyClass? {
+        if key == Constants.PictureResponseKey {
             return VIMPictureCollection.self
         }
         

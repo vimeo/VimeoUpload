@@ -29,8 +29,7 @@ import Foundation
 /// `Request` returning an array of `VIMVideo`
 public typealias CinemaContentRequest = Request<[VIMProgrammedContent]>
 
-public extension Request
-{
+public extension Request {
     private static var CinemaPath: String { return "/programmed/cinema" }
     
     // MARK: -
@@ -40,8 +39,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func getCinemaContentRequest() -> Request
-    {
+    public static func getCinemaContentRequest() -> Request {
         return Request(path: self.CinemaPath)
     }
 }

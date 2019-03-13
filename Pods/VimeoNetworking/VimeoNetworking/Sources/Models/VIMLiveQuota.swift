@@ -28,10 +28,8 @@ import Foundation
 
 /// An object that represents the `live_quota`
 /// field in a `user` response.
-public class VIMLiveQuota: VIMModelObject
-{
-    private struct Constants
-    {
+public class VIMLiveQuota: VIMModelObject {
+    private struct Constants {
         static let StreamsKey = "streams"
         static let TimeKey = "time"
     }
@@ -42,15 +40,12 @@ public class VIMLiveQuota: VIMModelObject
     /// The `time` field in a `live_quota` response.
     @objc dynamic public private(set) var time: VIMLiveTime?
     
-    override public func getClassForObjectKey(_ key: String!) -> AnyClass!
-    {
-        if key == Constants.StreamsKey
-        {
+    override public func getClassForObjectKey(_ key: String!) -> AnyClass? {
+        if key == Constants.StreamsKey {
             return VIMLiveStreams.self
         }
         
-        if key == Constants.TimeKey
-        {
+        if key == Constants.TimeKey {
             return VIMLiveTime.self
         }
         

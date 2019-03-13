@@ -28,28 +28,22 @@ import Foundation
 import AFNetworking
 
 /// Stores string constants used to look up Vimeo-api-specific error information
-public enum VimeoErrorKey: String
-{
+public enum VimeoErrorKey: String {
     case VimeoErrorCode = "VimeoLocalErrorCode" // Wish this could just be VimeoErrorCode but it conflicts with server-side key [AH] 2/5/2016
     case VimeoErrorDomain = "VimeoErrorDomain"
 }
 
 /// Convenience methods used to parse `NSError`s returned by Vimeo api responses
-@objc public extension NSError
-{
+@objc public extension NSError {
         /// Returns true if the error is a 503 Service Unavailable error
-    public var isServiceUnavailableError: Bool
-    {
+    public var isServiceUnavailableError: Bool {
         return self.statusCode == HTTPStatusCode.serviceUnavailable.rawValue
     }
     
         /// Returns true if the error is due to an invalid access token
-    public var isInvalidTokenError: Bool
-    {
-        if let urlResponse = self.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse, urlResponse.statusCode == HTTPStatusCode.unauthorized.rawValue
-        {
-            if let header = urlResponse.allHeaderFields["Www-Authenticate"] as? String, header == "Bearer error=\"invalid_token\""
-            {
+    public var isInvalidTokenError: Bool {
+        if let urlResponse = self.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse, urlResponse.statusCode == HTTPStatusCode.unauthorized.rawValue {
+            if let header = urlResponse.allHeaderFields["Www-Authenticate"] as? String, header == "Bearer error=\"invalid_token\"" {
                 return true
             }
         }
@@ -58,14 +52,12 @@ public enum VimeoErrorKey: String
     }
     
         /// Returns true if the error is due to the cancellation of a network task
-    func isNetworkTaskCancellationError() -> Bool
-    {
+    func isNetworkTaskCancellationError() -> Bool {
         return self.domain == NSURLErrorDomain && self.code == NSURLErrorCancelled
     }
     
         /// Returns true if the error is a url connection error
-    func isConnectionError() -> Bool
-    {
+    func isConnectionError() -> Bool {
         return [NSURLErrorTimedOut,
             NSURLErrorCannotFindHost,
             NSURLErrorCannotConnectToHost,
@@ -83,17 +75,14 @@ public enum VimeoErrorKey: String
      
      - returns: a new `NSError`
      */
-    @nonobjc class func error(withDomain domain: String?, code: Int?, description: String?) -> NSError
-    {
+    @nonobjc class func error(withDomain domain: String?, code: Int?, description: String?) -> NSError {
         var error = NSError(domain: VimeoErrorKey.VimeoErrorDomain.rawValue, code: 0, userInfo: nil)
         
-        if let description = description
-        {
+        if let description = description {
             let userInfo = [NSLocalizedDescriptionKey: description]
             error = error.error(byAddingDomain: domain, code: code, userInfo: userInfo)
         }
-        else
-        {
+        else {
             error = error.error(byAddingDomain: domain, code: code, userInfo: nil)
         }
         
@@ -107,8 +96,7 @@ public enum VimeoErrorKey: String
      
      - returns: An error with additional information in the user info dictionary
      */
-    func error(byAddingDomain domain: String) -> NSError
-    {
+    func error(byAddingDomain domain: String) -> NSError {
         return self.error(byAddingDomain: domain, code: nil, userInfo: nil)
     }
     
@@ -119,8 +107,7 @@ public enum VimeoErrorKey: String
     
      - returns: An error with additional user info
      */
-    func error(byAddingUserInfo userInfo: [String: Any]) -> NSError
-    {
+    func error(byAddingUserInfo userInfo: [String: Any]) -> NSError {
         return self.error(byAddingDomain: nil, code: nil, userInfo: userInfo)
     }
     
@@ -131,8 +118,7 @@ public enum VimeoErrorKey: String
      
      - returns: An error with additional information in the user info dictionary
      */
-    func error(byAddingCode code: Int) -> NSError
-    {
+    func error(byAddingCode code: Int) -> NSError {
         return self.error(byAddingDomain: nil, code: code, userInfo: nil)
     }
     
@@ -145,22 +131,18 @@ public enum VimeoErrorKey: String
      
      - returns: An error with additional information in the user info dictionary
      */
-    @nonobjc func error(byAddingDomain domain: String?, code: Int?, userInfo: [String: Any]?) -> NSError
-    {
+    @nonobjc func error(byAddingDomain domain: String?, code: Int?, userInfo: [String: Any]?) -> NSError {
         var augmentedInfo = self.userInfo
         
-        if let domain = domain
-        {
+        if let domain = domain {
             augmentedInfo[VimeoErrorKey.VimeoErrorDomain.rawValue] = domain
         }
         
-        if let code = code
-        {
+        if let code = code {
             augmentedInfo[VimeoErrorKey.VimeoErrorCode.rawValue] = code
         }
         
-        if let userInfo = userInfo
-        {
+        if let userInfo = userInfo {
             augmentedInfo.append(userInfo)
         }
         
@@ -169,8 +151,7 @@ public enum VimeoErrorKey: String
     
     // MARK: -
     
-    private struct Constants
-    {
+    private struct Constants {
         static let VimeoErrorCodeHeaderKey = "Vimeo-Error-Code"
         static let VimeoErrorCodeKeyLegacy = "VimeoErrorCode"
         static let VimeoErrorCodeKey = "error_code"
@@ -180,10 +161,8 @@ public enum VimeoErrorKey: String
     }
     
         /// Returns the status code of the failing response, if available
-    @nonobjc public var statusCode: Int?
-    {
-        if let response = self.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse
-        {
+    @nonobjc public var statusCode: Int? {
+        if let response = self.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse {
             return response.statusCode
         }
         
@@ -191,22 +170,18 @@ public enum VimeoErrorKey: String
     }
     
         /// Returns the api error code of the failing response, if available
-    @nonobjc public var vimeoServerErrorCode: Int?
-    {
-        if let errorCode = (self.userInfo[Constants.VimeoErrorCodeKeyLegacy] as? Int)
-        {
+    @nonobjc public var vimeoServerErrorCode: Int? {
+        if let errorCode = (self.userInfo[Constants.VimeoErrorCodeKeyLegacy] as? Int) {
             return errorCode
         }
         
         if let response = self.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
-            let vimeoErrorCode = response.allHeaderFields[Constants.VimeoErrorCodeHeaderKey] as? String
-        {
+            let vimeoErrorCode = response.allHeaderFields[Constants.VimeoErrorCodeHeaderKey] as? String {
             return Int(vimeoErrorCode)
         }
         
         if let json = self.errorResponseBodyJSON,
-            let errorCode = json[Constants.VimeoErrorCodeKey] as? Int
-        {
+            let errorCode = json[Constants.VimeoErrorCodeKey] as? Int {
             return errorCode
         }
         
@@ -214,16 +189,12 @@ public enum VimeoErrorKey: String
     }
     
         /// Returns the invalid parameters of the failing response, if available
-    public var vimeoInvalidParametersErrorCodes: [Int]
-    {
+    public var vimeoInvalidParametersErrorCodes: [Int] {
         var errorCodes: [Int] = []
         
-        if let json = self.errorResponseBodyJSON, let invalidParameters = json[Constants.VimeoInvalidParametersKey] as? [[String: Any]]
-        {
-            for invalidParameter in invalidParameters
-            {
-                if let code = invalidParameter[Constants.VimeoErrorCodeKey] as? Int
-                {
+        if let json = self.errorResponseBodyJSON, let invalidParameters = json[Constants.VimeoInvalidParametersKey] as? [[String: Any]] {
+            for invalidParameter in invalidParameters {
+                if let code = invalidParameter[Constants.VimeoErrorCodeKey] as? Int {
                     errorCodes.append(code)
                 }
             }
@@ -233,18 +204,14 @@ public enum VimeoErrorKey: String
     }
     
         /// Returns the api error JSON dictionary, if available
-    public var errorResponseBodyJSON: [String: Any]?
-    {
-        if let data = self.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] as? Data
-        {
-            do
-            {
+    public var errorResponseBodyJSON: [String: Any]? {
+        if let data = self.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] as? Data {
+            do {
                 let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
                 
                 return json
             }
-            catch
-            {
+            catch {
                 return nil
             }
         }
@@ -253,16 +220,13 @@ public enum VimeoErrorKey: String
     }
     
         /// Returns the first error code from the api error JSON dictionary if it exists, otherwise returns NSNotFound
-    public var vimeoInvalidParametersFirstErrorCode: Int
-    {
+    public var vimeoInvalidParametersFirstErrorCode: Int {
         return self.vimeoInvalidParametersErrorCodes.first ?? NSNotFound
     }
     
         /// Returns the user message from the api error JSON dictionary if it exists
-    public var vimeoInvalidParametersFirstVimeoUserMessage: String?
-    {
-        guard let json = self.errorResponseBodyJSON, let invalidParameters = json[Constants.VimeoInvalidParametersKey] as? [AnyObject] else
-        {
+    public var vimeoInvalidParametersFirstVimeoUserMessage: String? {
+        guard let json = self.errorResponseBodyJSON, let invalidParameters = json[Constants.VimeoInvalidParametersKey] as? [AnyObject] else {
             return nil
         }
         
@@ -270,19 +234,16 @@ public enum VimeoErrorKey: String
     }
     
         /// Returns an underscore separated string of all the error codes in the the api error JSON dictionary if any exist, otherwise returns nil
-    public var vimeoInvalidParametersErrorCodesString: String?
-    {
+    public var vimeoInvalidParametersErrorCodesString: String? {
         let errorCodes = self.vimeoInvalidParametersErrorCodes
         
-        guard errorCodes.count > 0 else
-        {
+        guard errorCodes.count > 0 else {
             return nil
         }
         
         var result = ""
         
-        for code in errorCodes
-        {
+        for code in errorCodes {
             result += "\(code)_"
         }
         
@@ -290,10 +251,8 @@ public enum VimeoErrorKey: String
     }
     
         /// Returns the "error" key from the api error JSON dictionary if it exists, otherwise returns nil
-    public var vimeoUserMessage: String?
-    {
-        guard let json = self.errorResponseBodyJSON else
-        {
+    public var vimeoUserMessage: String? {
+        guard let json = self.errorResponseBodyJSON else {
             return nil
         }
         
@@ -301,10 +260,8 @@ public enum VimeoErrorKey: String
     }
     
         /// Returns the "developer_message" key from the api error JSON dictionary if it exists, otherwise returns nil
-    public var vimeoDeveloperMessage: String?
-    {
-        guard let json = self.errorResponseBodyJSON else
-        {
+    public var vimeoDeveloperMessage: String? {
+        guard let json = self.errorResponseBodyJSON else {
             return nil
         }
         

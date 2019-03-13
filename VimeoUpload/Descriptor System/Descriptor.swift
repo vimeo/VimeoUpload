@@ -35,7 +35,7 @@ public enum DescriptorState: String
     case finished = "Finished"
 }
 
-open class Descriptor: NSObject, NSCoding
+open class Descriptor: NSObject, NSCoding, Retriable
 {
     private static let StateCoderKey = "state"
     private static let IdentifierCoderKey = "identifier"
@@ -60,6 +60,9 @@ open class Descriptor: NSObject, NSCoding
     public var error: NSError?
     
     private(set) open var isCancelled = false
+
+    // MARK: - Retriable conformance
+    private(set) open var retryAttemptCount: Int = 0
     
     // MARK: - Initialization
 
@@ -114,6 +117,12 @@ open class Descriptor: NSObject, NSCoding
 
         self.doCancel(sessionManager: sessionManager)
     }
+
+    open func retry(sessionManager: AFURLSessionManager) throws {
+        self.retryAttemptCount += 1
+        try self.prepare(sessionManager: sessionManager)
+        self.resume(sessionManager: sessionManager)
+    }
     
     open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
@@ -162,5 +171,12 @@ open class Descriptor: NSObject, NSCoding
         {
             aCoder.encode(currentTaskIdentifier, forKey: type(of: self).CurrentTaskIdentifierCoderKey)
         }
+    }
+    
+    // MARK: - Retriable
+    
+    public func shouldRetry(urlResponse: URLResponse?) -> Bool
+    {
+        return false
     }
 }

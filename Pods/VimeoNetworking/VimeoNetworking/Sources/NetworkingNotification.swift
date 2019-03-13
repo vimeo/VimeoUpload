@@ -27,37 +27,31 @@
 import Foundation
 
 /// `ObservationToken` manages the lifecycle of a block observer.  Note: on deinit, the token cancels its own observation, so it must be stored strongly if the associated block observation is to continue.
-public class ObservationToken
-{
+public class ObservationToken {
     private let observer: NSObjectProtocol
     
-    fileprivate init(observer: NSObjectProtocol)
-    {
+    fileprivate init(observer: NSObjectProtocol) {
         self.observer = observer
     }
     
     /**
      Ends the block observation associated with this token
      */
-    public func stopObserving()
-    {
+    public func stopObserving() {
         NetworkingNotification.removeObserver(target: self.observer)
     }
     
-    deinit
-    {
+    deinit {
         self.stopObserving()
     }
 }
 
-public enum UserInfoKey: NSString
-{
+public enum UserInfoKey: NSString {
     case previousAccount
 }
 
 /// `NetworkingNotification` declares a number of global events that can be broadcast by the networking library and observed by clients.
-public enum NetworkingNotification: String
-{
+public enum NetworkingNotification: String {
         /// Sent when any response returns a 503 Service Unavailable error
     case clientDidReceiveServiceUnavailableError
     
@@ -83,10 +77,8 @@ public enum NetworkingNotification: String
      
      - parameter object: an optional object to pass to observers of this `NetworkingNotification`
      */
-    public func post(object: Any?, userInfo: [String: Any]? = nil)
-    {
-        DispatchQueue.main.async
-        {
+    public func post(object: Any?, userInfo: [String: Any]? = nil) {
+        DispatchQueue.main.async {
             NotificationCenter.default.post(name: Notification.Name(rawValue: self.rawValue), object: object, userInfo: userInfo)
         }
     }
@@ -97,8 +89,7 @@ public enum NetworkingNotification: String
      - parameter target:   the object on which to call the `selector` method
      - parameter selector: method to call when the notification is broadcast
      */
-    public func observe(target: Any, selector: Selector)
-    {
+    public func observe(target: Any, selector: Selector) {
         NotificationCenter.default.addObserver(target, selector: selector, name: Notification.Name(rawValue: self.rawValue), object: nil)
     }
     
@@ -108,8 +99,7 @@ public enum NetworkingNotification: String
      - returns: an ObservationToken, which must be strongly stored in an appropriate context for as long as observation is relevant.
      */
     
-    public func observe(observationHandler: @escaping (Notification) -> Void) -> ObservationToken
-    {
+    public func observe(observationHandler: @escaping (Notification) -> Void) -> ObservationToken {
         let observer = NotificationCenter.default.addObserver(forName: Notification.Name(rawValue: self.rawValue), object: nil, queue: OperationQueue.main, using: observationHandler)
         
         return ObservationToken(observer: observer)
@@ -120,8 +110,7 @@ public enum NetworkingNotification: String
      
      - parameter target: the target to remove
      */
-    public func removeObserver(target: Any)
-    {
+    public func removeObserver(target: Any) {
         NotificationCenter.default.removeObserver(target, name: Notification.Name(rawValue: self.rawValue), object: nil)
     }
     
@@ -130,8 +119,7 @@ public enum NetworkingNotification: String
      
      - parameter target: the target to remove
      */
-    public static func removeObserver(target: Any)
-    {
+    public static func removeObserver(target: Any) {
         NotificationCenter.default.removeObserver(target)
     }
 }
