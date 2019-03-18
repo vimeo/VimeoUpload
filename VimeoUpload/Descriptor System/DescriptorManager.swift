@@ -316,7 +316,7 @@ open class DescriptorManager: NSObject
                 // property. By default, it has a value of 7 days, meaning the OS will
                 // attempt to retry for a week before returning with a connection error.
                 // [VN] (07/03/2018)
-                let isConnectionError = ((task.error as? NSError)?.isConnectionError() == true || (error as? NSError)?.isConnectionError() == true)
+                let isConnectionError = ((task.error as NSError?)?.isConnectionError() == true || (error as NSError?)?.isConnectionError() == true)
                 
                 guard isConnectionError == false else
                 {

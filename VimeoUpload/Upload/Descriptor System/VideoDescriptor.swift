@@ -34,7 +34,7 @@ import Foundation
 
 @objc public protocol VideoDescriptor
 {
-    var type: VideoDescriptorType { get }
+    var descriptorType: VideoDescriptorType { get }
     
     var videoUri: VideoUri? { get }
     

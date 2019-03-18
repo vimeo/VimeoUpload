@@ -24,7 +24,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         didSet
         {
-            print("\(self.currentRequest.rawValue) \(self.identifier)")
+            print("\(self.currentRequest.rawValue) \(String(describing: self.identifier))")
         }
     }
  
@@ -38,7 +38,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     //MARK: VideoDescriptor Protocol
     
-    public var type: VideoDescriptorType
+    public var descriptorType: VideoDescriptorType
     {
         return .upload
     }

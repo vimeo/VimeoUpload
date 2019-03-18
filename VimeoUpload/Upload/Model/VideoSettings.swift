@@ -65,17 +65,17 @@ open class VideoSettings: NSObject, NSCoding
     {
         var parameters: [String: Any] = [:]
         
-        if let title = self.title, title.characters.count > 0
+        if let title = self.title, title.count > 0
         {
             parameters["name"] = title
         }
         
-        if let description = self.desc, description.characters.count > 0
+        if let description = self.desc, description.count > 0
         {
             parameters["description"] = description
         }
         
-        if let privacy = self.privacy, privacy.characters.count > 0
+        if let privacy = self.privacy, privacy.count > 0
         {
             parameters["privacy"] = (["view": privacy])
         }

@@ -28,8 +28,8 @@ import Foundation
 
 public protocol DescriptorKVObserverDelegate: class
 {
-    func descriptorStateDidChange(descriptorType descriptorType: VideoDescriptorType, descriptorState: DescriptorState, isCancelled: Bool, descriptorError: NSError?)
-    func descriptorProgressDidChange(descriptorType descriptorType: VideoDescriptorType, progress: Double)
+    func descriptorStateDidChange(descriptorType: VideoDescriptorType, descriptorState: DescriptorState, isCancelled: Bool, descriptorError: NSError?)
+    func descriptorProgressDidChange(descriptorType: VideoDescriptorType, progress: Double)
 }
 
 public class DescriptorKVObserver: NSObject
@@ -64,7 +64,7 @@ public class DescriptorKVObserver: NSObject
         {
             if let descriptor = self.descriptor
             {
-                let type = descriptor.type
+                let type = descriptor.descriptorType
                 let state = descriptor.progressDescriptor.state
                 let isCancelled = descriptor.progressDescriptor.isCancelled
                 let error = descriptor.progressDescriptor.error
@@ -124,7 +124,7 @@ public class DescriptorKVObserver: NSObject
                         return
                     }
                     
-                    let type = descriptor.type
+                    let type = descriptor.descriptorType
                     strongSelf.delegate?.descriptorProgressDidChange(descriptorType: type, progress: progress)
                 }
                 
@@ -141,7 +141,7 @@ public class DescriptorKVObserver: NSObject
                         return
                     }
                     
-                    let type = descriptor.type
+                    let type = descriptor.descriptorType
                     let isCancelled = descriptor.progressDescriptor.isCancelled
                     let error = descriptor.progressDescriptor.error
                     strongSelf.delegate?.descriptorStateDidChange(descriptorType: type, descriptorState: state, isCancelled: isCancelled, descriptorError: error)

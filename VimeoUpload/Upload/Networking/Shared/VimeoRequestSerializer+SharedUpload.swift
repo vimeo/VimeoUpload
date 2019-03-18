@@ -187,7 +187,7 @@ extension VimeoRequestSerializer
 
     func videoSettingsRequest(with videoUri: String, videoSettings: VideoSettings) throws -> NSMutableURLRequest
     {
-        guard videoUri.characters.count > 0 else 
+        guard videoUri.count > 0 else
         {
             throw NSError(domain: UploadErrorDomain.VideoSettings.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "videoUri has length of 0."])
         }
@@ -212,7 +212,7 @@ extension VimeoRequestSerializer
     
     func deleteVideoRequest(with videoUri: String) throws -> NSMutableURLRequest
     {
-        guard videoUri.characters.count > 0 else
+        guard videoUri.count > 0 else
         {
             throw NSError(domain: UploadErrorDomain.Delete.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "videoUri has length of 0."])
         }
@@ -231,7 +231,7 @@ extension VimeoRequestSerializer
 
     func videoRequest(with videoUri: String) throws -> NSMutableURLRequest
     {
-        guard videoUri.characters.count > 0 else
+        guard videoUri.count > 0 else
         {
             throw NSError(domain: UploadErrorDomain.Video.rawValue, code: 0, userInfo: [NSLocalizedDescriptionKey: "videoUri has length of 0."])
         }
