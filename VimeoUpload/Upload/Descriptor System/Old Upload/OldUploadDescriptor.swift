@@ -47,13 +47,13 @@ public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor
     {
         didSet
         {
-            print("\(self.currentRequest.rawValue) \(self.identifier)")
+            print("\(self.currentRequest.rawValue) \(String(describing: self.identifier))")
         }
     }
     
     // MARK: VideoDescriptor
     
-    public var type: VideoDescriptorType
+    public var descriptorType: VideoDescriptorType
     {
         return .upload
     }

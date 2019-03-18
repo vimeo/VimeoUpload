@@ -1,9 +1,9 @@
 //
-//  VideoDescriptor.swift
-//  VimeoUpload
+//  FileTransfer.swift
+//  Vimeo
 //
-//  Created by Alfred Hanssen on 2/5/16.
-//  Copyright © 2016 Vimeo. All rights reserved.
+//  Created by Nguyen, Van on 2/12/19.
+//  Copyright © 2019 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,20 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
-
-@objc public enum VideoDescriptorType: Int
-{
-    case upload
-    case download
-}
-
-@objc public protocol VideoDescriptor
-{
-    var descriptorType: VideoDescriptorType { get }
+/// `FileTransfer` represents a `file_transfer` response in a `video`
+/// response.
+@objc public class FileTransfer: VIMModelObject {
     
-    var videoUri: VideoUri? { get }
+    /// A URL for getting the video file.
+    @objc public private(set) var url: URL?
     
-    var progressDescriptor: ProgressDescriptor { get }
+    @objc private(set) var link: String?
+    
+    override public func didFinishMapping() {
+        guard let link = self.link else {
+            return
+        }
+        
+        self.url = URL(string: link)
+    }
 }

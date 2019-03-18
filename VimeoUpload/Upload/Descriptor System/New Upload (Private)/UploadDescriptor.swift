@@ -46,7 +46,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: VideoDescriptor
     
-    public var type: VideoDescriptorType
+    public var descriptorType: VideoDescriptorType
     {
         return .upload
     }
@@ -187,7 +187,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     // MARK: NSCoding
     
     required public init(coder aDecoder: NSCoder)
-    {
+    {        
         let fileName = aDecoder.decodeObject(forKey: type(of: self).Constants.FileNameCoderKey) as! String
         let fileExtension = aDecoder.decodeObject(forKey: type(of: self).Constants.FileExtensionCoderKey) as! String
         let path = URL.uploadDirectory().appendingPathComponent(fileName).appendingPathExtension(fileExtension).absoluteString

@@ -165,8 +165,8 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
 
     private func presentAssetErrorAlert(at indexPath: IndexPath, error: NSError)
     {
-        let alert = UIAlertController(title: "Asset Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+        let alert = UIAlertController(title: "Asset Error", message: error.localizedDescription, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
             self?.collectionView.reloadItems(at: [indexPath]) // Let the user manually reselect the cell since reload is async
         }))
         
@@ -175,8 +175,8 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
     
     private func presentErrorAlert(at indexPath: IndexPath, error: NSError)
     {
-        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
             
             guard let strongSelf = self else
             {
@@ -186,7 +186,7 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
             strongSelf.collectionView.indexPathsForSelectedItems?.forEach({ strongSelf.collectionView.deselectItem(at: $0, animated: true) })
         }))
 
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
         
             guard let strongSelf = self else
             {
