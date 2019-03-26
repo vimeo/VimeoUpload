@@ -231,12 +231,12 @@ public class VideoDeletionManager: NSObject
         NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    func applicationWillEnterForeground(_ notification: Notification)
+    @objc func applicationWillEnterForeground(_ notification: Notification)
     {
         self.operationQueue.isSuspended = false
     }
 
-    func applicationDidEnterBackground(_ notification: Notification)
+    @objc func applicationDidEnterBackground(_ notification: Notification)
     {
         self.operationQueue.isSuspended = true
     }
