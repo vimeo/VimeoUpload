@@ -28,9 +28,9 @@ import Foundation
 import AFNetworking
 import VimeoNetworking
 
-public class VideoDeletionManager: NSObject
+@objc public class VideoDeletionManager: NSObject
 {
-    public static let DeletionDefaultRetryCount = 3
+    @objc public static let DeletionDefaultRetryCount = 3
     private static let DeletionsArchiveKey = "deletions"
     
     // MARK:
@@ -73,7 +73,7 @@ public class VideoDeletionManager: NSObject
     /// is located.
     ///   - retryCount: The number of retries. The default value is `3`.
     /// - Returns: `nil` if the keyed archiver cannot load deletions' archive.
-    public init?(sessionManager: VimeoSessionManager,
+    @objc public init?(sessionManager: VimeoSessionManager,
                  archivePrefix: String? = nil,
                  documentsFolderURL: URL,
                  retryCount: Int = VideoDeletionManager.DeletionDefaultRetryCount)
@@ -154,7 +154,7 @@ public class VideoDeletionManager: NSObject
     
     // MARK: Public API
     
-    public func deleteVideo(withURI uri: String)
+    @objc public func deleteVideo(withURI uri: String)
     {
         self.deleteVideo(withURI: uri, retryCount: self.retryCount)
     }

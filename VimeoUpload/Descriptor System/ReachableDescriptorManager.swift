@@ -33,7 +33,7 @@ import VimeoNetworking
     
     // MARK:
     
-    public var allowsCellularUsage: Bool
+    @objc public var allowsCellularUsage: Bool
     {
         get
         {
@@ -68,7 +68,7 @@ import VimeoNetworking
     ///   token. Any upload needs this token in order to work properly.
     ///   - apiVersion: The API version to use.
     /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
-    public init?(name: String,
+    @objc public init?(name: String,
                  archivePrefix: String? = nil,
                  documentsFolderURL: URL,
                  backgroundSessionIdentifier: String,
@@ -99,7 +99,7 @@ import VimeoNetworking
     
     // MARK: Public API - Background Session
     
-    public func applicationDidFinishLaunching()
+    @objc public func applicationDidFinishLaunching()
     {
         // No-op
     }

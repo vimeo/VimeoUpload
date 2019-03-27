@@ -29,7 +29,7 @@ import VimeoNetworking
 
 public typealias UploadParameters = [String: Any]
 
-extension VimeoSessionManager
+@objc extension VimeoSessionManager
 {
     public struct Constants
     {

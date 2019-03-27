@@ -28,7 +28,7 @@ import Foundation
 
 // This class is a minimally modified version of this gist: https://gist.github.com/calebd/93fa347397cec5f88233
 
-open class ConcurrentOperation: Operation
+@objc open class ConcurrentOperation: Operation
 {
     // MARK: Types
     
@@ -70,29 +70,29 @@ open class ConcurrentOperation: Operation
     
     // MARK: NSOperation Property Overrides
     
-    override open var isReady: Bool
+    @objc override open var isReady: Bool
     {
         return super.isReady && self.state == .ready
     }
     
-    override open var isExecuting: Bool
+    @objc override open var isExecuting: Bool
     {
         return self.state == .executing
     }
     
-    override open var isFinished: Bool
+    @objc override open var isFinished: Bool
     {
         return self.state == .finished
     }
     
-    override open var isAsynchronous: Bool
+    @objc override open var isAsynchronous: Bool
     {
         return true
     }
     
     // MARK: NSOperation Method Overrides
     
-    override open func start()
+    @objc override open func start()
     {
         if self.isCancelled
         {            
@@ -110,12 +110,12 @@ open class ConcurrentOperation: Operation
         self.main()
     }
     
-    override open func main()
+    @objc override open func main()
     {
         fatalError("Subclasses must override main()")
     }
     
-    override open func cancel()
+    @objc override open func cancel()
     {
         super.cancel()
         

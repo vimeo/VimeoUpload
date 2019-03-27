@@ -54,7 +54,7 @@ public enum UploadErrorDomain: String
     case ActivateThumbnail = "ActivateVideoThumbnailErrorDomain"
 }
 
-public enum UploadLocalErrorCode: Int
+@objc public enum UploadLocalErrorCode: Int
 {
     case cannotCalculateDiskSpace // "File system information did not contain NSFileSystemFreeSize key:value pair"
     case diskSpaceException

@@ -26,9 +26,9 @@
 
 import Foundation
 
-open class VideoSettings: NSObject, NSCoding
+@objc open class VideoSettings: NSObject, NSCoding
 {
-    public var title: String?
+    @objc public var title: String?
     {
         didSet
         {
@@ -36,7 +36,7 @@ open class VideoSettings: NSObject, NSCoding
         }
     }
     
-    public var desc: String?
+    @objc public var desc: String?
     {
         didSet
         {
@@ -44,11 +44,11 @@ open class VideoSettings: NSObject, NSCoding
         }
     }
     
-    public var privacy: String?
-    public var users: [String]? // List of uris of users who can view this video
-    public var password: String?
+    @objc public var privacy: String?
+    @objc public var users: [String]? // List of uris of users who can view this video
+    @objc public var password: String?
 
-    public init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
+    @objc public init(title: String?, description: String?, privacy: String?, users: [String]?, password: String?)
     {
         super.init()
         
@@ -61,7 +61,7 @@ open class VideoSettings: NSObject, NSCoding
     
     // MARK: Public API
     
-    open func parameterDictionary() -> [String: Any]
+    @objc open func parameterDictionary() -> [String: Any]
     {
         var parameters: [String: Any] = [:]
         
@@ -95,7 +95,7 @@ open class VideoSettings: NSObject, NSCoding
     
     // MARK: NSCoding
     
-    required public init(coder aDecoder: NSCoder)
+    @objc required public init(coder aDecoder: NSCoder)
     {
         self.title = aDecoder.decodeObject(forKey: "title") as? String
         self.desc = aDecoder.decodeObject(forKey: "desc") as? String
@@ -104,7 +104,7 @@ open class VideoSettings: NSObject, NSCoding
         self.password = aDecoder.decodeObject(forKey: "password") as? String
     }
     
-    public func encode(with aCoder: NSCoder)
+    @objc public func encode(with aCoder: NSCoder)
     {
         aCoder.encode(self.title, forKey: "title")
         aCoder.encode(self.desc, forKey: "desc")

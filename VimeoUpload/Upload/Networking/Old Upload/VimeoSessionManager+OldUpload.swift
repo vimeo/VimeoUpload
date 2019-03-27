@@ -41,9 +41,9 @@ enum UploadTaskDescription: String
     case ActivateThumbnail = "ActivateThumbnail"
 }
 
-extension VimeoSessionManager
+@objc extension VimeoSessionManager
 {
-    public func myVideosDataTask(completionHandler: @escaping VideosCompletionHandler) throws -> URLSessionDataTask
+    @objc public func myVideosDataTask(completionHandler: @escaping VideosCompletionHandler) throws -> URLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).myVideosRequest()
         
@@ -73,7 +73,7 @@ extension VimeoSessionManager
         return task
     }
 
-    public func createVideoDownloadTask(url: URL) throws -> URLSessionDownloadTask
+    @objc public func createVideoDownloadTask(url: URL) throws -> URLSessionDownloadTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url)
 
@@ -136,7 +136,7 @@ extension VimeoSessionManager
         return task
     }
 
-    public func videoSettingsDataTask(videoUri: String, videoSettings: VideoSettings, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
+    @objc public func videoSettingsDataTask(videoUri: String, videoSettings: VideoSettings, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequest(with: videoUri, videoSettings: videoSettings)
         

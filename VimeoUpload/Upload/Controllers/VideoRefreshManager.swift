@@ -55,7 +55,7 @@ import AFNetworking
         self.removeObservers()
     }
     
-    public init(sessionManager: VimeoSessionManager, delegate: VideoRefreshManagerDelegate)
+    @objc public init(sessionManager: VimeoSessionManager, delegate: VideoRefreshManagerDelegate)
     {
         self.sessionManager = sessionManager
         self.delegate = delegate
@@ -71,18 +71,18 @@ import AFNetworking
     
     // MARK: Public API
     
-    public func cancelAll()
+    @objc public func cancelAll()
     {
         self.videos.removeAll()
         self.operationQueue.cancelAllOperations()
     }
     
-    public func cancelRefreshForVideo(withURI uri: VideoUri)
+    @objc public func cancelRefreshForVideo(withURI uri: VideoUri)
     {
         self.videos.removeValue(forKey: uri)
     }
 
-    public func refresh(video: VIMVideo)
+    @objc public func refresh(video: VIMVideo)
     {
         guard let uri = video.uri else
         {

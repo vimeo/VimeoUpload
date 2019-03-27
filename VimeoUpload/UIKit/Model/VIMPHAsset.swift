@@ -29,14 +29,14 @@ import AVFoundation
 
 @objc public class VIMPHAsset: NSObject
 {
-    public let phAsset: PHAsset
+    @objc public let phAsset: PHAsset
     
-    public init(phAsset: PHAsset)
+    @objc public init(phAsset: PHAsset)
     {
         self.phAsset = phAsset
     }
 
-    public var identifier: String
+    @objc public var identifier: String
     {
         get
         {
@@ -44,7 +44,7 @@ import AVFoundation
         }
     }
     
-    public var inCloud: Bool = false
-    public var avAsset: AVAsset?
-    public var error: NSError?
+    @objc public var inCloud: Bool = false
+    @objc public var avAsset: AVAsset?
+    @objc public var error: NSError?
 }

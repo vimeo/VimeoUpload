@@ -32,7 +32,7 @@ public protocol DescriptorKVObserverDelegate: class
     func descriptorProgressDidChange(descriptorType: VideoDescriptorType, progress: Double)
 }
 
-public class DescriptorKVObserver: NSObject
+@objc public class DescriptorKVObserver: NSObject
 {
     // MARK:
     
@@ -53,8 +53,8 @@ public class DescriptorKVObserver: NSObject
     // But this is not (yet?) possible, so the VideoDescriptor has a var { get } property to access the progressDescriptor,
     // See http://stackoverflow.com/questions/30495828/swift-property-that-conforms-to-a-protocol-and-class for details [AH] 2/6/2016
     
-    public var descriptor: VideoDescriptor?
-        {
+    @objc public var descriptor: VideoDescriptor?
+    {
         willSet
         {
             self.removeObserversIfNecessary()
@@ -106,7 +106,7 @@ public class DescriptorKVObserver: NSObject
         }
     }
     
-    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?)
+    @objc public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?)
     {
         if let keyPath = keyPath
         {
