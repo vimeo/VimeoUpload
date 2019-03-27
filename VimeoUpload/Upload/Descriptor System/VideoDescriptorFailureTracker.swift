@@ -61,7 +61,7 @@ import Foundation
     ///   - documentsFolderURL: The Documents folder's URL in which the folder
     ///   is located.
     /// - Returns: `nil` if the keyed archiver cannot load descriptors' archive.
-    public init?(name: String,
+    @objc public init?(name: String,
                  archivePrefix: String? = nil,
                  documentsFolderURL: URL)
     {
@@ -123,13 +123,13 @@ import Foundation
     
     // MARK: Public API
     
-    public func removeAllFailures()
+    @objc public func removeAllFailures()
     {
         self.failedDescriptors.removeAll()
         self.save()
     }
     
-    public func removeFailedDescriptor(for key: String) -> Descriptor?
+    @objc public func removeFailedDescriptor(for key: String) -> Descriptor?
     {
         guard let descriptor = self.failedDescriptors.removeValue(forKey: key) else
         {
@@ -141,7 +141,7 @@ import Foundation
         return descriptor
     }
     
-    public func failedDescriptor(for key: String) -> Descriptor?
+    @objc public func failedDescriptor(for key: String) -> Descriptor?
     {
         return self.failedDescriptors[key]
     }
