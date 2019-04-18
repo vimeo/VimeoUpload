@@ -18,7 +18,7 @@ PODS:
     - AFNetworking (= 3.1.0)
 
 DEPENDENCIES:
-  - "VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, branch `develop`)"
+  - "VimeoNetworking (from `git@github.com:vimeo/VimeoNetworking.git`, branch `feature/VIM-6917_Swift42Migration`)"
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -26,18 +26,18 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   VimeoNetworking:
-    :branch: develop
+    :branch: feature/VIM-6917_Swift42Migration
     :git: "git@github.com:vimeo/VimeoNetworking.git"
 
 CHECKOUT OPTIONS:
   VimeoNetworking:
-    :commit: 52e5db51cd3a4f1f0229bb100f9c09ab7a550998
+    :commit: 40c66c09c0eb402aa83a70290b826a7636eef8f7
     :git: "git@github.com:vimeo/VimeoNetworking.git"
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   VimeoNetworking: d9e16bc5b659694854c3e1177f03d00f0a2b8ea2
 
-PODFILE CHECKSUM: ecf02fcc75ccd5ec40f9e74e45e3bb3939d07f66
+PODFILE CHECKSUM: fa25c725efe18a2aac86e8d054c113ccf1c0ae95
 
 COCOAPODS: 1.5.2
