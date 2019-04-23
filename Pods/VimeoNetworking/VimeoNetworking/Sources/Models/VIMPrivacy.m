@@ -34,6 +34,7 @@ NSString *VIMPrivacy_Following = @"contacts";
 NSString *VIMPrivacy_Password = @"password";
 NSString *VIMPrivacy_Unlisted = @"unlisted";
 NSString *VIMPrivacy_Disabled = @"disable";
+NSString *VIMPrivacy_Stock = @"stock";
 
 @implementation VIMPrivacy
 

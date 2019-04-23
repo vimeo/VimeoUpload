@@ -79,6 +79,7 @@ NSString *VIMContentRating_Safe = @"safe";
              @"pictures": @"pictureCollection",
              @"play": @"playRepresentation",
              @"review_page": @"reviewPage",
+             @"file_transfer": @"fileTransfer"
              };
 }
 
@@ -151,6 +152,11 @@ NSString *VIMContentRating_Safe = @"safe";
     if ([key isEqualToString:@"upload"])
     {
         return [VIMUpload class];
+    }
+    
+    if ([key isEqualToString:@"file_transfer"])
+    {
+        return [FileTransfer class];
     }
     
     return nil;
@@ -380,7 +386,7 @@ NSString *VIMContentRating_Safe = @"safe";
 - (BOOL)isPrivate
 {
     NSString *privacy = self.privacy.view;
-    return ![privacy isEqualToString:VIMPrivacy_Public] && ![privacy isEqualToString:VIMPrivacy_VOD];
+    return ![privacy isEqualToString:VIMPrivacy_Public] && ![privacy isEqualToString:VIMPrivacy_VOD] && ![privacy isEqualToString:VIMPrivacy_Stock];
 }
 
 - (BOOL)isAvailable
@@ -396,6 +402,12 @@ NSString *VIMContentRating_Safe = @"safe";
 - (BOOL)isUploading
 {
     return self.videoStatus == VIMVideoProcessingStatusUploading;
+}
+
+- (BOOL)isStock
+{
+    NSString *privacy = self.privacy.view;
+    return [privacy isEqualToString:VIMPrivacy_Stock];
 }
 
 // New
@@ -564,6 +576,11 @@ NSString *VIMContentRating_Safe = @"safe";
     
     NSAssert(false, @"`video.privacy.canDownload` is an unexpected type.");
     return false;
+}
+
+- (BOOL)allowsFileTransfer
+{
+    return self.fileTransfer != nil && self.fileTransfer.url != nil && [self canDownloadFromDesktop] == YES;
 }
 
 @end

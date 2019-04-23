@@ -1,9 +1,9 @@
 //
-//  VIMPrivacy.h
-//  VimeoNetworking
+//  FileTransfer.swift
+//  Vimeo
 //
-//  Created by Kashif Muhammad on 9/24/14.
-//  Copyright (c) 2014-2015 Vimeo (https://vimeo.com)
+//  Created by Nguyen, Van on 2/12/19.
+//  Copyright © 2019 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,26 +24,20 @@
 //  THE SOFTWARE.
 //
 
-#import "VIMModelObject.h"
-
-extern NSString * __nonnull VIMPrivacy_Private;
-extern NSString * __nonnull VIMPrivacy_Select;
-extern NSString * __nonnull VIMPrivacy_Public;
-extern NSString * __nonnull VIMPrivacy_VOD;
-extern NSString * __nonnull VIMPrivacy_Following;
-extern NSString * __nonnull VIMPrivacy_Password;
-extern NSString * __nonnull VIMPrivacy_Unlisted;
-extern NSString * __nonnull VIMPrivacy_Disabled;
-extern NSString * __nonnull VIMPrivacy_Stock;
-
-@interface VIMPrivacy : VIMModelObject
-
-@property (nonatomic, copy, nullable) NSNumber *canAdd;
-@property (nonatomic, copy, nullable) NSNumber *canDownload;
-
-@property (nonatomic, copy, nullable) NSString *comments;
-@property (nonatomic, copy, nullable) NSString *embed;
-@property (nonatomic, copy, nullable) NSString *view;
-@property (nonatomic, copy, nullable) NSString *bypassToken;
-
-@end
+/// `FileTransfer` represents a `file_transfer` response in a `video`
+/// response.
+@objc public class FileTransfer: VIMModelObject {
+    
+    /// A URL for getting the video file.
+    @objc public private(set) var url: URL?
+    
+    @objc private(set) var link: String?
+    
+    override public func didFinishMapping() {
+        guard let link = self.link else {
+            return
+        }
+        
+        self.url = URL(string: link)
+    }
+}

@@ -24,44 +24,43 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
-
-/// `Scope` describes a permission that your application requests from the API
-public enum Scope: String {
-    /// View public videos
+/// An access token has one or more scopes, or general domains. The scopes determine the types of access that token
+/// does and doesn't permit. During the authentication process, you can specify exactly which scopes your app needs
+/// based on the cases below. If you try to make an API request with an access token that doesn't have the right scope,
+/// the API will deny the request.
+///
+/// - Public: Access public member data.
+/// - Private: Access private member data. Required for any scope other than public.
+/// - Purchased: Access a member's Vimeo On Demand purchase history.
+/// - Create: Create new Vimeo resources like albums, groups, channels, and portfolios. To create new videos, you need the upload scope.
+/// - Edit: Edit existing Vimeo resources, including videos.
+/// - Delete: Delete existing Vimeo resources, including videos.
+/// - Interact: Interact with Vimeo resources, such as liking a video or following a member.
+/// - Upload: Upload videos.
+/// - Stats: Receive live-related statistics.
+/// - PromoCodes: Add, remove, and review Vimeo On Demand promotions.
+/// - VideoFiles: Access video files belonging to members with Vimeo PRO membership or higher.
+///
+/// - Note: An authenticated access token with the `public` scope is identical to an unauthenticated access token,
+///         except that you can use the `/me` endpoint to refer to the currently logged-in user. Accessing `/me` with
+///         an unauthenticated access token generates an error.
+public enum Scope: String, CaseIterable {
     case Public = "public"
-    
-    /// View private videos
     case Private = "private"
-    
-    /// View Vimeo On Demand purchase history
     case Purchased = "purchased"
-    
-    /// Create new videos, groups, albums, etc.
     case Create = "create"
-    
-    /// Edit videos, groups, albums, etc.
     case Edit = "edit"
-    
-    /// Delete videos, groups, albums, etc.
     case Delete = "delete"
-    
-    /// Interact with a video on behalf of a user, such as liking a video or adding it to your watch later queue
     case Interact = "interact"
-    
-    /// Upload a video
     case Upload = "upload"
-    
-    /// Receive live-related statistics.
     case Stats = "stats"
+    case PromoCodes = "promo_codes"
+    case VideoFiles = "video_files"
     
-    /**
-     Combines an array of scopes into a scope string as expected by the api
-     
-     - parameter scopes: an array of `Scope` values
-     
-     - returns: a string of space-separated scope strings
-     */
+    /// Combines an array of scopes into a scope string as expected by the API.
+    ///
+    /// - Parameter scopes: An array of `Scope` values
+    /// - Returns: A string of space-separated scope strings
     public static func combine(_ scopes: [Scope]) -> String {
         return scopes.map({ $0.rawValue }).joined(separator: " ")
     }

@@ -209,4 +209,4 @@ With *all that* said, you now have a pretty solid understanding of what **VimeoN
 
 ## Questions?
 
-Tweet at us here: [@vimeoapi](https://twitter.com/vimeoapi).  Post on [Stackoverflow](http://stackoverflow.com/questions/tagged/vimeo-ios) with the tag `vimeo-ios`.  Get in touch [here](https://vimeo.com/help/contact).  Interested in working at Vimeo? We're [hiring](https://vimeo.com/jobs)!
+Tweet at us here: [@vimeoeng](https://twitter.com/vimeoeng).  Post on [Stackoverflow](http://stackoverflow.com/questions/tagged/vimeo-ios) with the tag `vimeo-ios`.  Get in touch [here](https://vimeo.com/help/contact).  Interested in working at Vimeo? We're [hiring](https://vimeo.com/jobs)!
