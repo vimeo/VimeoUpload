@@ -87,6 +87,27 @@ platform :ios do
     
   end
 
+  desc "bumps the project and podspec version"
+  lane :version_bump do |options|    
+
+    bump_type = options[:bump_type]
+    version_number = options[:version_number]
+    if bump_type.nil? && version_number.nil?
+      UI.user_error!("version_bump requires you to provide a bump_type [patch|minor|major] or specific version_number. Please try again.") 
+    end
+
+    increment_version_number(
+      bump_type: bump_type,
+      version_number: version_number,
+      xcodeproj: "Framework/VimeoUpload/VimeoUpload.xcodeproj"
+    )
+
+    version_bump_podspec(
+      bump_type: bump_type,
+      version_number: version_number
+    )
+  end
+
   after_all do |lane|
     
   end
