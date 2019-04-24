@@ -34,6 +34,7 @@ NSString *VIMPrivacy_Following = @"contacts";
 NSString *VIMPrivacy_Password = @"password";
 NSString *VIMPrivacy_Unlisted = @"unlisted";
 NSString *VIMPrivacy_Disabled = @"disable";
+NSString *VIMPrivacy_Stock = @"stock";
 
 @implementation VIMPrivacy
 
@@ -42,7 +43,8 @@ NSString *VIMPrivacy_Disabled = @"disable";
 - (NSDictionary *)getObjectMapping
 {
     return @{@"add": @"canAdd",
-             @"download" : @"canDownload"};
+             @"download" : @"canDownload",
+             @"_bypass_token" : @"bypassToken"};
 }
 
 @end

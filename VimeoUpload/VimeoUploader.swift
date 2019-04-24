@@ -34,6 +34,11 @@ open class VimeoUploader<T: VideoDescriptor>
         return "vimeo_upload" // Generic types don't yet support static properties [AH] 3/19/2016
     }
     
+    public static var DefaultUploadStrategy: UploadStrategy.Type
+    {
+        return StreamingUploadStrategy.self
+    }
+    
     // MARK:
     
     public let descriptorManager: ReachableDescriptorManager

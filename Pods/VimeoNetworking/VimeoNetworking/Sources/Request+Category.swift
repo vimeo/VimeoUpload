@@ -32,8 +32,7 @@ public typealias CategoryRequest = Request<VIMCategory>
 /// `Request` that returns an array of `VIMCategory`
 public typealias CategoryListRequest = Request<[VIMCategory]>
 
-public extension Request
-{
+public extension Request {
     private static var CategoriesPath: String { return "/categories" }
     
     /**
@@ -43,8 +42,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func getCategoryRequest(forCategoryURI categoryURI: String) -> Request
-    {
+    public static func getCategoryRequest(forCategoryURI categoryURI: String) -> Request {
         return Request(path: categoryURI)
     }
     
@@ -53,8 +51,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func getCategoriesRequest() -> Request
-    {
+    public static func getCategoriesRequest() -> Request {
         return Request(path: self.CategoriesPath)
     }
 }

@@ -29,8 +29,7 @@ import Foundation
 /// `Request` returning a single `VIMPolicyDocument`
 public typealias PolicyDocumentRequest = Request<VIMPolicyDocument>
 
-public extension Request
-{
+public extension Request {
     private static var TermsOfServiceURI: String { return "/documents/termsofservice" }
     private static var PrivacyURI: String { return "/documents/privacy" }
     
@@ -39,8 +38,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func getTermsOfServiceRequest() -> Request
-    {
+    public static func getTermsOfServiceRequest() -> Request {
         return Request(path: TermsOfServiceURI)
     }
 
@@ -49,8 +47,7 @@ public extension Request
      
      - returns: a new `Request`
      */
-    public static func getPrivacyRequest() -> Request
-    {
+    public static func getPrivacyRequest() -> Request {
         return Request(path: PrivacyURI)
     }
 }
