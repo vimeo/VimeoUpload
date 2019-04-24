@@ -150,6 +150,22 @@ open class DescriptorManager: NSObject
     
     // MARK: Setup - Session
 
+    private func retry(_ descriptor: Descriptor) {
+        do
+        {
+            try descriptor.retry(sessionManager: self.sessionManager)
+            self.delegate?.descriptorDidResume?(descriptor)
+            self.save()
+        }
+        catch
+        {
+            self.archiver.remove(descriptor: descriptor)
+            
+            self.delegate?.descriptorDidFail?(descriptor)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
+        }
+    }
+    
     private func setupSessionBlocks()
     {
         // To restate Alfie's comment on this session invalid callback, in the
@@ -301,7 +317,8 @@ open class DescriptorManager: NSObject
                 // attempt to retry for a week before returning with a connection error.
                 // [VN] (07/03/2018)
                 let isConnectionError = ((task.error as? NSError)?.isConnectionError() == true || (error as? NSError)?.isConnectionError() == true)
-                if isConnectionError
+                
+                guard isConnectionError == false else
                 {
                     if let prefix = strongSelf.archivePrefix, prefix == Constants.ShareExtensionArchivePrefix
                     {
@@ -312,21 +329,15 @@ open class DescriptorManager: NSObject
                     }
                     else
                     {
-                        do
-                        {
-                            try descriptor.prepare(sessionManager: strongSelf.sessionManager)
-
-                            descriptor.resume(sessionManager: strongSelf.sessionManager) // TODO: for a specific number of retries? [AH]
-                            strongSelf.save()
-                        }
-                        catch
-                        {
-                            strongSelf.archiver.remove(descriptor: descriptor)
-
-                            strongSelf.delegate?.descriptorDidFail?(descriptor)
-                            NotificationCenter.default.post(name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidFail.rawValue), object: descriptor)
-                        }
+                        strongSelf.retry(descriptor)
                     }
+                    
+                    return
+                }
+                
+                guard descriptor.shouldRetry(urlResponse: task.response) == false else
+                {
+                    strongSelf.retry(descriptor)
                     
                     return
                 }
@@ -598,6 +609,8 @@ open class DescriptorManager: NSObject
             for descriptor in strongSelf.archiver.descriptors
             {
                 descriptor.resume(sessionManager: strongSelf.sessionManager)
+                
+                strongSelf.delegate?.descriptorDidResume?(descriptor)
             }
             
             // Doing this after the loop rather than within, incrementally greater margin for error but faster

@@ -25,8 +25,7 @@
 //
 
 /// Stores all static information relevant to a client application
-public struct AppConfiguration
-{
+public struct AppConfiguration {
     public let clientIdentifier: String
     public let clientSecret: String
     public let scopes: [Scope]
@@ -51,8 +50,7 @@ public struct AppConfiguration
                 keychainService: String,
                 keychainAccessGroup: String? = nil,
                 apiVersion: String? = nil,
-                baseUrl: URL? = nil)
-    {
+                baseUrl: URL? = nil) {
         self.clientIdentifier = clientIdentifier
         self.clientSecret = clientSecret
         self.scopes = scopes

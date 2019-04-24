@@ -29,8 +29,7 @@ import Foundation
 /// Request that returns an array of `VIMSoundtrack` objects
 public typealias SoundtrackListRequest = Request<[VIMSoundtrack]>
 
-public extension Request
-{
+public extension Request {
     private static var SoundtracksURI: String { return "/songs" }
     
     /**
@@ -38,8 +37,7 @@ public extension Request
      
      - returns: a constructed `Request`
      */
-    public static func getSoundtrackListRequest() -> Request
-    {
+    public static func getSoundtrackListRequest() -> Request {
         return self.getSoundtrackListRequest(forSoundtracksURI: self.SoundtracksURI)
     }
     
@@ -50,8 +48,7 @@ public extension Request
      
      - returns: a constructed `Request`
      */
-    public static func getSoundtrackListRequest(forSoundtracksURI soundtracksURI: String) -> Request
-    {
+    public static func getSoundtrackListRequest(forSoundtracksURI soundtracksURI: String) -> Request {
         return Request(path: soundtracksURI)
     }
 }

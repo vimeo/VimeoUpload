@@ -26,20 +26,17 @@
 
 import Foundation
 
-public extension String
-{
+public extension String {
     /**
      Construct a dictionary of parameters from the current string
      
      - returns: a dictionary of parameters if parsing succeeded
      */
-    func parametersDictionaryFromQueryString() -> [String: String]?
-    {
+    func parametersDictionaryFromQueryString() -> [String: String]? {
         var parametersDictionary: [String: String] = [:]
         
         let scanner = Scanner(string: self)
-        while !scanner.isAtEnd
-        {
+        while !scanner.isAtEnd {
             var name: NSString?
             let equals = "="
             scanner.scanUpTo(equals, into: &name)
@@ -51,8 +48,7 @@ public extension String
             scanner.scanString(ampersand, into: nil)
             
             if let name = name?.removingPercentEncoding,
-                let value = value?.removingPercentEncoding
-            {
+                let value = value?.removingPercentEncoding {
                 parametersDictionary[name] = value
             }
         }
@@ -65,16 +61,13 @@ public extension String
      
      - returns: a tuple containing: the path with any query string removed, and the query string if found
      */
-    func splitLinkString() -> (path: String, query: String?)
-    {
+    func splitLinkString() -> (path: String, query: String?) {
         let components = self.components(separatedBy: "?")
         
-        if components.count == 2
-        {
+        if components.count == 2 {
             return (path: components[0], query: components[1])
         }
-        else
-        {
+        else {
             return (path: self, query: nil)
         }
     }

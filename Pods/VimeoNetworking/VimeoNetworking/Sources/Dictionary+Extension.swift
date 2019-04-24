@@ -25,12 +25,9 @@
 
 import Foundation
 
-extension Dictionary
-{
-    public mutating func append(_ dictionary: Dictionary<Key, Value>)
-    {
-        for (key, value) in dictionary
-        {
+extension Dictionary {
+    public mutating func append(_ dictionary: Dictionary<Key, Value>) {
+        for (key, value) in dictionary {
             self[key] = value
         }
     }
