@@ -167,7 +167,7 @@ import AVFoundation
         // So I'm using this while loop to update a dynamic property instead, and KVO'ing on that [AH] 10/22/2015
         
         DispatchQueue.global(qos: .utility).async { [weak self] () -> Void in
-            while self?.exportSession.status == AVAssetExportSession.Status.waiting || self?.exportSession.status == AVAssetExportSession.Status.exporting
+            while self?.exportSession.status == .waiting || self?.exportSession.status == .exporting
             {
                 self?.progress = self?.exportSession.progress ?? 0
             }

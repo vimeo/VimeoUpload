@@ -94,7 +94,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(VideoSettingsViewController.didTapCancel(_:)))
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItem.Style.done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: .done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
     }
 
     private func setupAndStartOperation()
