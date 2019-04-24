@@ -1,9 +1,8 @@
 //
-//  VIMPrivacy.h
+//  Request+Album.swift
 //  VimeoNetworking
 //
-//  Created by Kashif Muhammad on 9/24/14.
-//  Copyright (c) 2014-2015 Vimeo (https://vimeo.com)
+//  Copyright © 2018 Vimeo. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,26 +23,19 @@
 //  THE SOFTWARE.
 //
 
-#import "VIMModelObject.h"
+/// `Request` that returns a single `Album`.
+public typealias AlbumRequest = Request<Album>
 
-extern NSString * __nonnull VIMPrivacy_Private;
-extern NSString * __nonnull VIMPrivacy_Select;
-extern NSString * __nonnull VIMPrivacy_Public;
-extern NSString * __nonnull VIMPrivacy_VOD;
-extern NSString * __nonnull VIMPrivacy_Following;
-extern NSString * __nonnull VIMPrivacy_Password;
-extern NSString * __nonnull VIMPrivacy_Unlisted;
-extern NSString * __nonnull VIMPrivacy_Disabled;
-extern NSString * __nonnull VIMPrivacy_Stock;
+/// `Request` that returns an array of `Album` objects.
+public typealias AlbumListRequest = Request<[Album]>
 
-@interface VIMPrivacy : VIMModelObject
-
-@property (nonatomic, copy, nullable) NSNumber *canAdd;
-@property (nonatomic, copy, nullable) NSNumber *canDownload;
-
-@property (nonatomic, copy, nullable) NSString *comments;
-@property (nonatomic, copy, nullable) NSString *embed;
-@property (nonatomic, copy, nullable) NSString *view;
-@property (nonatomic, copy, nullable) NSString *bypassToken;
-
-@end
+public extension Request {
+    
+    /// Returns a new request to fetch a specific album.
+    ///
+    /// - Parameter uri: The album's URI.
+    /// - Returns: Returns a new `Request` for an individual album.
+    public static func albumRequest(for uri: String) -> Request {
+        return Request(path: uri)
+    }
+}

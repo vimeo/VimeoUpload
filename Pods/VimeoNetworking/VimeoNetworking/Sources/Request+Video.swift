@@ -53,20 +53,6 @@ public extension Request {
     }
     
     /**
-     Create a `Request` to get a password protected video
-     
-     - parameter videoURI: the URI of the video
-     - parameter password: the password for the video
-     
-     - returns: a new `Request`
-     */
-    static func passwordProtectedVideoRequest(forVideoURI videoURI: String, password: String) -> Request {
-        let parameters = ["password": password]
-        
-        return Request(path: videoURI, parameters: parameters)
-    }
-    
-    /**
      Create a `Request` to get a specific VOD video
      
      - parameter vodVideoURI: the VOD video's URI

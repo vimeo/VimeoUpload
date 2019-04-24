@@ -1,9 +1,8 @@
 //
-//  VIMPrivacy.h
+//  Request+PasswordProtected.swift
 //  VimeoNetworking
 //
-//  Created by Kashif Muhammad on 9/24/14.
-//  Copyright (c) 2014-2015 Vimeo (https://vimeo.com)
+//  Copyright (c) 2019 Vimeo (https://vimeo.com)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -24,26 +23,20 @@
 //  THE SOFTWARE.
 //
 
-#import "VIMModelObject.h"
+fileprivate struct Constants {
+    static let PasswordKey = "password"
+}
 
-extern NSString * __nonnull VIMPrivacy_Private;
-extern NSString * __nonnull VIMPrivacy_Select;
-extern NSString * __nonnull VIMPrivacy_Public;
-extern NSString * __nonnull VIMPrivacy_VOD;
-extern NSString * __nonnull VIMPrivacy_Following;
-extern NSString * __nonnull VIMPrivacy_Password;
-extern NSString * __nonnull VIMPrivacy_Unlisted;
-extern NSString * __nonnull VIMPrivacy_Disabled;
-extern NSString * __nonnull VIMPrivacy_Stock;
-
-@interface VIMPrivacy : VIMModelObject
-
-@property (nonatomic, copy, nullable) NSNumber *canAdd;
-@property (nonatomic, copy, nullable) NSNumber *canDownload;
-
-@property (nonatomic, copy, nullable) NSString *comments;
-@property (nonatomic, copy, nullable) NSString *embed;
-@property (nonatomic, copy, nullable) NSString *view;
-@property (nonatomic, copy, nullable) NSString *bypassToken;
-
-@end
+extension Request {
+    
+    /// Returns a new request for a password-protected item, such as a video or an album.
+    ///
+    /// - Parameters:
+    ///   - uri: The URI for the item.
+    ///   - password: The password for the item that will be sent to the server.
+    /// - Returns: Returns a `Request` for a password-protected item.
+    public static func passwordProtectedRequest(for uri: String, password: String) -> Request {
+        let parameters = [Constants.PasswordKey: password]
+        return Request(path: uri, parameters: parameters)
+    }
+}
