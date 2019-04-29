@@ -94,7 +94,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(VideoSettingsViewController.didTapCancel(_:)))
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItemStyle.done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: .done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
     }
 
     private func setupAndStartOperation()
@@ -164,14 +164,14 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     // MARK: Actions
     
-    func didTapCancel(_ sender: UIBarButtonItem)
+    @objc func didTapCancel(_ sender: UIBarButtonItem)
     {
         self.operation?.cancel()
         
         self.navigationController?.dismiss(animated: true, completion: nil)
     }
 
-    func didTapUpload(_ sender: UIBarButtonItem)
+    @objc func didTapUpload(_ sender: UIBarButtonItem)
     {
         let title = self.titleTextField.text
         let description = self.descriptionTextView.text
@@ -206,12 +206,12 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     private func presentOperationErrorAlert(with error: NSError)
     {
-        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
             self?.navigationController?.dismiss(animated: true, completion: nil)
         }))
         
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
             self?.setupAndStartOperation()
         }))
         
@@ -220,12 +220,12 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
 
     private func presentDescriptorErrorAlert(with error: NSError)
     {
-        let alert = UIAlertController(title: "Descriptor Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+        let alert = UIAlertController(title: "Descriptor Error", message: error.localizedDescription, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
             self?.navigationController?.dismiss(animated: true, completion: nil)
         }))
         
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
             // We start from the beginning (with the operation instead of the descriptor), 
             // Because the exported file was deleted when the upload descriptor failed,
             // We delete it because leaving it up to the API consumer to delete seems a little risky

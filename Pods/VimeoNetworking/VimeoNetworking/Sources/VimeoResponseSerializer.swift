@@ -194,6 +194,7 @@ final public class VimeoResponseSerializer: AFJSONResponseSerializer {
             "application/vnd.vimeo.notification+json",
             "application/vnd.vimeo.notification.subscriptions+json",
             "application/vnd.vimeo.product+json",
+            "application/vnd.vimeo.stats+json",
             "application/vnd.vimeo.album+json"]
         )
     }

@@ -1,6 +1,6 @@
 {
   "name": "VimeoNetworking",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "summary": "A library for interacting with the Vimeo API.",
   "description": "An iOS/tvOS library for interacting with the Vimeo API.",
   "homepage": "https://github.com/vimeo/VimeoNetworking",
@@ -22,10 +22,11 @@
     "ios": "8.0",
     "tvos": "9.0"
   },
+  "swift_version": "4.2",
   "requires_arc": true,
   "source": {
     "git": "https://github.com/vimeo/VimeoNetworking.git",
-    "tag": "3.3.1"
+    "tag": "3.4.0"
   },
   "source_files": "VimeoNetworking/Sources/**/*.{h,m,swift}",
   "resources": "VimeoNetworking/Resources/**/*.*",

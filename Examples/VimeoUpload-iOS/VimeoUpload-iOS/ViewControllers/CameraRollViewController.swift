@@ -55,7 +55,7 @@ class CameraRollViewController: BaseCameraRollViewController
     
     // MARK: Actions
     
-    func didTapCancel(_ sender: UIBarButtonItem)
+    @objc func didTapCancel(_ sender: UIBarButtonItem)
     {
         self.navigationController?.dismiss(animated: true, completion: nil)
     }

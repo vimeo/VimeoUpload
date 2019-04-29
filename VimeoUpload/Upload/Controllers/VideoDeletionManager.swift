@@ -28,10 +28,10 @@ import Foundation
 import AFNetworking
 import VimeoNetworking
 
-public class VideoDeletionManager: NSObject
+@objc public class VideoDeletionManager: NSObject
 {
+    @objc public static let DeletionDefaultRetryCount = 3
     private static let DeletionsArchiveKey = "deletions"
-    private static let DefaultRetryCount = 3
     
     // MARK:
     
@@ -73,10 +73,10 @@ public class VideoDeletionManager: NSObject
     /// is located.
     ///   - retryCount: The number of retries. The default value is `3`.
     /// - Returns: `nil` if the keyed archiver cannot load deletions' archive.
-    public init?(sessionManager: VimeoSessionManager,
+    @objc public init?(sessionManager: VimeoSessionManager,
                  archivePrefix: String? = nil,
                  documentsFolderURL: URL,
-                 retryCount: Int = VideoDeletionManager.DefaultRetryCount)
+                 retryCount: Int = VideoDeletionManager.DeletionDefaultRetryCount)
     {
         guard let archiver = VideoDeletionManager.setupArchiver(name: VideoDeletionManager.DeletionsArchiveKey, archivePrefix: archivePrefix, documentsFolderURL: documentsFolderURL) else
         {
@@ -154,7 +154,7 @@ public class VideoDeletionManager: NSObject
     
     // MARK: Public API
     
-    public func deleteVideo(withURI uri: String)
+    @objc public func deleteVideo(withURI uri: String)
     {
         self.deleteVideo(withURI: uri, retryCount: self.retryCount)
     }
@@ -217,31 +217,31 @@ public class VideoDeletionManager: NSObject
     
     private func addObservers()
     {
-        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(VideoDeletionManager.reachabilityDidChange(_:)), name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
     private func removeObservers()
     {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    func applicationWillEnterForeground(_ notification: Notification)
+    @objc func applicationWillEnterForeground(_ notification: Notification)
     {
         self.operationQueue.isSuspended = false
     }
 
-    func applicationDidEnterBackground(_ notification: Notification)
+    @objc func applicationDidEnterBackground(_ notification: Notification)
     {
         self.operationQueue.isSuspended = true
     }
 
-    func reachabilityDidChange(_ notification: Notification?)
+    @objc func reachabilityDidChange(_ notification: Notification?)
     {
         let currentlyReachable = AFNetworkReachabilityManager.shared().isReachable
         

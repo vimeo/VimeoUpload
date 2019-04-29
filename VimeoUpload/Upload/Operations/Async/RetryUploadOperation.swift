@@ -29,22 +29,22 @@ import VimeoNetworking
 import AVFoundation
 import Photos
 
-public class RetryUploadOperation: ConcurrentOperation
+@objc public class RetryUploadOperation: ConcurrentOperation
 {
     private let sessionManager: VimeoSessionManager
     let operationQueue: OperationQueue
     
     // MARK:
     
-    public var downloadProgressBlock: ProgressBlock?
-    public var exportProgressBlock: ProgressBlock?
+    @objc public var downloadProgressBlock: ProgressBlock?
+    @objc public var exportProgressBlock: ProgressBlock?
     
     // MARK:
     
     private let phAsset: PHAsset
 
-    private(set) public var url: URL?
-    private(set) public var error: NSError?
+    @objc private(set) public var url: URL?
+    @objc private(set) public var error: NSError?
     {
         didSet
         {
@@ -68,7 +68,7 @@ public class RetryUploadOperation: ConcurrentOperation
     ///   - documentsFolderURL: An URL pointing to a Documents folder;
     ///   default to `nil`. For third-party use, this argument should not be
     ///   filled.
-    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, documentsFolderURL: URL? = nil)
+    @objc public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, documentsFolderURL: URL? = nil)
     {
         self.phAsset = phAsset
         
@@ -88,7 +88,7 @@ public class RetryUploadOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override public func main()
+    @objc override public func main()
     {
         if self.isCancelled
         {
@@ -99,7 +99,7 @@ public class RetryUploadOperation: ConcurrentOperation
         self.perform(exportSessionExportOperation: operation)
     }
     
-    override public func cancel()
+    @objc override public func cancel()
     {
         super.cancel()
         

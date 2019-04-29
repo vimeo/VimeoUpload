@@ -35,7 +35,7 @@ public enum DescriptorState: String
     case finished = "Finished"
 }
 
-open class Descriptor: NSObject, NSCoding, Retriable
+@objc open class Descriptor: NSObject, NSCoding, Retriable
 {
     private static let StateCoderKey = "state"
     private static let IdentifierCoderKey = "identifier"
@@ -44,7 +44,7 @@ open class Descriptor: NSObject, NSCoding, Retriable
 
     // MARK:
     
-    dynamic private(set) var stateObservable: String = DescriptorState.ready.rawValue
+    @objc dynamic private(set) var stateObservable: String = DescriptorState.ready.rawValue
     public var state = DescriptorState.ready
     {
         didSet
@@ -55,30 +55,30 @@ open class Descriptor: NSObject, NSCoding, Retriable
     
     // MARK:
     
-    public var identifier: String?
+    @objc public var identifier: String?
     public var currentTaskIdentifier: Int?
-    public var error: NSError?
+    @objc public var error: NSError?
     
-    private(set) open var isCancelled = false
+    @objc private(set) open var isCancelled = false
 
     // MARK: - Retriable conformance
-    private(set) open var retryAttemptCount: Int = 0
+    @objc private(set) open var retryAttemptCount: Int = 0
     
     // MARK: - Initialization
 
-    required override public init()
+    @objc required override public init()
     {
         super.init()
     }
     
     // MARK: Subclass Overrides
 
-    open func prepare(sessionManager: AFURLSessionManager) throws
+    @objc open func prepare(sessionManager: AFURLSessionManager) throws
     {
         fatalError("prepare(sessionManager:) has not been implemented")
     }
 
-    open func resume(sessionManager: AFURLSessionManager)
+    @objc open func resume(sessionManager: AFURLSessionManager)
     {
         self.state = .executing
         
@@ -89,7 +89,7 @@ open class Descriptor: NSObject, NSCoding, Retriable
         }
     }
     
-    open func suspend(sessionManager: AFURLSessionManager)
+    @objc open func suspend(sessionManager: AFURLSessionManager)
     {
         let originalState = self.state
         
@@ -110,7 +110,7 @@ open class Descriptor: NSObject, NSCoding, Retriable
         self.doCancel(sessionManager: sessionManager)
     }
 
-    open func cancel(sessionManager: AFURLSessionManager)
+    @objc open func cancel(sessionManager: AFURLSessionManager)
     {
         self.isCancelled = true
         self.state = .finished
@@ -118,23 +118,23 @@ open class Descriptor: NSObject, NSCoding, Retriable
         self.doCancel(sessionManager: sessionManager)
     }
 
-    open func retry(sessionManager: AFURLSessionManager) throws {
+    @objc open func retry(sessionManager: AFURLSessionManager) throws {
         self.retryAttemptCount += 1
         try self.prepare(sessionManager: sessionManager)
         self.resume(sessionManager: sessionManager)
     }
     
-    open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    @objc open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
         fatalError("didLoadFromCache(sessionManager:) has not been implemented")
     }
     
-    open func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
+    @objc open func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
     {
         return nil
     }
 
-    open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
+    @objc open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
     {
         fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
     }
@@ -154,7 +154,7 @@ open class Descriptor: NSObject, NSCoding, Retriable
     
     // MARK: NSCoding
     
-    required public init(coder aDecoder: NSCoder)
+    @objc required public init(coder aDecoder: NSCoder)
     {
         self.state = DescriptorState(rawValue: aDecoder.decodeObject(forKey: type(of: self).StateCoderKey) as! String)!
         self.identifier = aDecoder.decodeObject(forKey: type(of: self).IdentifierCoderKey) as? String
@@ -162,7 +162,7 @@ open class Descriptor: NSObject, NSCoding, Retriable
         self.currentTaskIdentifier = aDecoder.decodeInteger(forKey: type(of: self).CurrentTaskIdentifierCoderKey)
     }
     
-    open func encode(with aCoder: NSCoder)
+    @objc open func encode(with aCoder: NSCoder)
     {
         aCoder.encode(self.state.rawValue, forKey: type(of: self).StateCoderKey)
         aCoder.encode(self.identifier, forKey: type(of: self).IdentifierCoderKey)
@@ -175,7 +175,7 @@ open class Descriptor: NSObject, NSCoding, Retriable
     
     // MARK: - Retriable
     
-    public func shouldRetry(urlResponse: URLResponse?) -> Bool
+    @objc public func shouldRetry(urlResponse: URLResponse?) -> Bool
     {
         return false
     }

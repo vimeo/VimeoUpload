@@ -31,16 +31,16 @@ import Photos
 
 public typealias ExportProgressBlock = (AVAssetExportSession, Double) -> Void
 
-open class ExportSessionExportOperation: ConcurrentOperation
+@objc open class ExportSessionExportOperation: ConcurrentOperation
 {
     let operationQueue: OperationQueue
 
-    open var downloadProgressBlock: ProgressBlock?
-    open var exportProgressBlock: ExportProgressBlock?
+    @objc open var downloadProgressBlock: ProgressBlock?
+    @objc open var exportProgressBlock: ExportProgressBlock?
     
     private let phAsset: PHAsset
 
-    open var error: NSError?
+    @objc open var error: NSError?
     {
         didSet
         {
@@ -50,7 +50,7 @@ open class ExportSessionExportOperation: ConcurrentOperation
             }
         }
     }
-    open var result: URL?
+    @objc open var result: URL?
     
     private let documentsFolderURL: URL?
     
@@ -62,7 +62,7 @@ open class ExportSessionExportOperation: ConcurrentOperation
     ///   - documentsFolderURL: An URL pointing to a Documents folder;
     ///   default to `nil`. For third-party use, this argument should not be
     ///   filled.
-    public init(phAsset: PHAsset, documentsFolderURL: URL? = nil)
+    @objc public init(phAsset: PHAsset, documentsFolderURL: URL? = nil)
     {
         self.phAsset = phAsset
         
@@ -81,7 +81,7 @@ open class ExportSessionExportOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override open func main()
+    @objc override open func main()
     {
         if self.isCancelled
         {
@@ -91,7 +91,7 @@ open class ExportSessionExportOperation: ConcurrentOperation
         self.requestExportSession()
     }
     
-    override open func cancel()
+    @objc override open func cancel()
     {
         super.cancel()
         
