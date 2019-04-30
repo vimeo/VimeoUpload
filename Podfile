@@ -3,13 +3,17 @@ workspace 'VimeoUpload'
 use_frameworks!
 platform :ios, '8.0'
 
+def shared_pods
+    pod 'VimeoNetworking', '4.0.0'
+end
+
 target 'VimeoUpload' do
-    pod 'VimeoNetworking', :git => 'git@github.com:vimeo/VimeoNetworking.git', :branch => 'develop'
+    shared_pods    
     project 'Framework/VimeoUpload/VimeoUpload.xcodeproj'
 end
 
 target 'VimeoUpload-iOS' do
-    pod 'VimeoNetworking', :git => 'git@github.com:vimeo/VimeoNetworking.git', :branch => 'develop'
+    shared_pods
     project 'Examples/VimeoUpload-iOS/VimeoUpload-iOS.xcodeproj'
 
     target "VimeoUpload-iOSTests" do
@@ -18,7 +22,7 @@ target 'VimeoUpload-iOS' do
 end
 
 target 'VimeoUpload-iOS-OldUpload' do
-    pod 'VimeoNetworking', :git => 'git@github.com:vimeo/VimeoNetworking.git', :branch => 'develop'
+    shared_pods
     project 'Examples/VimeoUpload-iOS-OldUpload/VimeoUpload-iOS-OldUpload.xcodeproj'
 
     target "VimeoUpload-iOS-OldUploadTests" do
