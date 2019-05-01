@@ -125,7 +125,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(VideoSettingsViewController.didTapCancel(_:)))
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: UIBarButtonItem.Style.done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Upload", style: .done, target: self, action: #selector(VideoSettingsViewController.didTapUpload(_:)))
     }
 
     private func setupAndStartOperation()
@@ -273,12 +273,12 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
         // TODO: check error.code == AVError.DiskFull.rawValue and message appropriately
         // TODO: check error.code == AVError.OperationInterrupted.rawValue (app backgrounded during export)
         
-        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
+        let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [weak self] (action) -> Void in
             _ = self?.navigationController?.popViewController(animated: true)
         }))
         
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: .default, handler: { [weak self] (action) -> Void in
             self?.activityIndicatorView.startAnimating()
             self?.setupAndStartOperation()
         }))
@@ -288,12 +288,12 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     
     private func presentVideoSettingsErrorAlert(with error: NSError)
     {
-        let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
+        let alert = UIAlertController(title: "Video Settings Error", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [weak self] (action) -> Void in
             _ = self?.navigationController?.popViewController(animated: true)
         }))
         
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: .default, handler: { [weak self] (action) -> Void in
             self?.activityIndicatorView.startAnimating()
             self?.applyVideoSettings()
         }))
