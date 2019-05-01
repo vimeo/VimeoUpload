@@ -16,7 +16,10 @@ Pod::Spec.new do |s|
                 "Gavin King" => "gavin@vimeo.com",
                 "Nicole Lehrer" => "nicole@vimeo.com",
                 "Chris Larsen" => "chrisl@vimeo.com",
-                "Rogerio de Paula Assis" => "rogerio@vimeo.com" 
+                "Rogerio de Paula Assis" => "rogerio@vimeo.com",
+                "Van Le Nguyen" => "van@vimeo.com",
+                "Freddy Kellison-Linn" => "freddy.kellisonlinn@vimeo.com",
+                "Jason Hawkins" => "jasonh@vimeo.com"
               }
 
   s.social_media_url = "http://twitter.com/vimeo"
