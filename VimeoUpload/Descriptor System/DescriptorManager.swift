@@ -39,7 +39,7 @@ public enum DescriptorManagerNotification: String
 public typealias TestClosure = (Descriptor) -> Bool
 public typealias VoidClosure = () -> Void
 
-open class DescriptorManager: NSObject
+@objc open class DescriptorManager: NSObject
 {
     private struct Constants
     {
@@ -69,21 +69,21 @@ open class DescriptorManager: NSObject
 
     // MARK:
     
-    open var suspended: Bool
+    @objc open var suspended: Bool
     {
         return self.archiver.suspended
     }
     
     // MARK:
     
-    open var backgroundEventsCompletionHandler: VoidClosure?
+    @objc open var backgroundEventsCompletionHandler: VoidClosure?
 
     // MARK: - Initialization
     
     // By passing the delegate into the constructor (as opposed to using a public property)
     // We ensure that early events like "load" can be reported [AH] 11/25/2015
     
-    init?(sessionManager: AFURLSessionManager,
+    @objc init?(sessionManager: AFURLSessionManager,
           name: String,
           archivePrefix: String?,
           documentsFolderURL: URL,
@@ -316,7 +316,7 @@ open class DescriptorManager: NSObject
                 // property. By default, it has a value of 7 days, meaning the OS will
                 // attempt to retry for a week before returning with a connection error.
                 // [VN] (07/03/2018)
-                let isConnectionError = ((task.error as? NSError)?.isConnectionError() == true || (error as? NSError)?.isConnectionError() == true)
+                let isConnectionError = ((task.error as NSError?)?.isConnectionError() == true || (error as NSError?)?.isConnectionError() == true)
                 
                 guard isConnectionError == false else
                 {
@@ -412,7 +412,7 @@ open class DescriptorManager: NSObject
     /// Invalidate the underlying session manager object. You should
     /// call this method whenever you're finished using the descriptor
     /// manager, else you'll risk leaking memory.
-    public func invalidateSessionManager()
+    @objc public func invalidateSessionManager()
     {
         self.sessionManager.invalidateSessionCancelingTasks(false)
     }
@@ -432,19 +432,19 @@ open class DescriptorManager: NSObject
     /// - Returns: `true` if the identifier is the same as the underlying
     /// background upload session and thus the descriptor manager should
     /// handle the events. `false` otherwise.
-    open func canHandleEventsForBackgroundURLSession(withIdentifier identifier: String) -> Bool
+    @objc open func canHandleEventsForBackgroundURLSession(withIdentifier identifier: String) -> Bool
     {
         return identifier == self.sessionManager.session.configuration.identifier
     }
     
-    open func handleEventsForBackgroundURLSession(completionHandler: @escaping VoidClosure)
+    @objc open func handleEventsForBackgroundURLSession(completionHandler: @escaping VoidClosure)
     {
         self.delegate?.willHandleEventsForBackgroundSession?()
 
         self.backgroundEventsCompletionHandler = completionHandler
     }
     
-    open func suspend()
+    @objc open func suspend()
     {
         if self.archiver.suspended == true
         {
@@ -454,7 +454,7 @@ open class DescriptorManager: NSObject
         self.doSuspend()
     }
     
-    open func resume()
+    @objc open func resume()
     {
         if self.archiver.suspended == false
         {
@@ -464,7 +464,7 @@ open class DescriptorManager: NSObject
         self.doResume()
     }
     
-    open func add(descriptor: Descriptor)
+    @objc open func add(descriptor: Descriptor)
     {
         self.synchronizationQueue.async(execute: { [weak self] () -> Void in
             
@@ -505,7 +505,7 @@ open class DescriptorManager: NSObject
         })
     }
     
-    open func cancel(descriptor: Descriptor)
+    @objc open func cancel(descriptor: Descriptor)
     {
         self.synchronizationQueue.async(execute: { [weak self] () -> Void in
 
@@ -524,7 +524,7 @@ open class DescriptorManager: NSObject
         })
     }
     
-    open func killAllDescriptors(completion: @escaping VoidClosure)
+    @objc open func killAllDescriptors(completion: @escaping VoidClosure)
     {
         self.synchronizationQueue.async(execute: { [weak self] () -> Void in
             
@@ -555,7 +555,7 @@ open class DescriptorManager: NSObject
         })
     }
     
-    open func descriptor(passing test: @escaping TestClosure) -> Descriptor?
+    @objc open func descriptor(passing test: @escaping TestClosure) -> Descriptor?
     {
         var descriptor: Descriptor?
         

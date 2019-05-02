@@ -14,11 +14,11 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - VimeoNetworking (3.4.0):
+  - VimeoNetworking (4.0.0):
     - AFNetworking (= 3.1.0)
 
 DEPENDENCIES:
-  - VimeoNetworking (= 3.4.0)
+  - VimeoNetworking (= 4.0.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -27,8 +27,8 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  VimeoNetworking: 4a3acbb97a0ab2f00256082486f458ac0a399479
+  VimeoNetworking: 62238fe49b7f4982a1bb3e930adc0468ea88cc1c
 
-PODFILE CHECKSUM: b3b71953ddd709d8079dd0028917722fdd64fa0a
+PODFILE CHECKSUM: 4b1e1a53daf5f4fecdc1e9f6696df38ca4c41660
 
 COCOAPODS: 1.5.2

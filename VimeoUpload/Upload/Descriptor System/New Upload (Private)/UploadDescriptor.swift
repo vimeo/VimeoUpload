@@ -28,7 +28,7 @@ import Foundation
 import VimeoNetworking
 import AFNetworking
 
-open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
+@objc open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
     private struct Constants {
         static let FileNameCoderKey = "fileName"
@@ -41,22 +41,22 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: 
     
-    public var url: URL
-    public var video: VIMVideo?
+    @objc public var url: URL
+    @objc public var video: VIMVideo?
     
     // MARK: VideoDescriptor
     
-    public var type: VideoDescriptorType
+    @objc public var descriptorType: VideoDescriptorType
     {
         return .upload
     }
     
-    public var videoUri: VideoUri?
+    @objc public var videoUri: VideoUri?
     {
         return self.video?.uri
     }
     
-    public var progressDescriptor: ProgressDescriptor
+    @objc public var progressDescriptor: ProgressDescriptor
     {
         return self
     }
@@ -65,12 +65,12 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: - Initialization
     
-    required public init()
+    @objc required public init()
     {
         fatalError("init() has not been implemented")
     }
 
-    public init(url: URL, video: VIMVideo)
+    @objc public init(url: URL, video: VIMVideo)
     {
         self.url = url
         self.video = video
@@ -80,7 +80,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 
     // MARK: Overrides
     
-    override open func prepare(sessionManager: AFURLSessionManager) throws
+    @objc override open func prepare(sessionManager: AFURLSessionManager) throws
     {
         // TODO: Do we need to set self.state == .Ready here? [AH] 2/22/2016
         
@@ -109,7 +109,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override open func resume(sessionManager: AFURLSessionManager)
+    @objc override open func resume(sessionManager: AFURLSessionManager)
     {
         super.resume(sessionManager: sessionManager)
         
@@ -121,14 +121,14 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override open func cancel(sessionManager: AFURLSessionManager)
+    @objc override open func cancel(sessionManager: AFURLSessionManager)
     {
         super.cancel(sessionManager: sessionManager)
         
         FileManager.default.deleteFile(at: self.url)
     }
 
-    override open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    @objc override open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
             let task = sessionManager.uploadTask(for: identifier),
@@ -149,7 +149,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.progress = progress
     }
     
-    override open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
+    @objc override open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
     {
         self.currentTaskIdentifier = nil
 
@@ -186,8 +186,8 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: NSCoding
     
-    required public init(coder aDecoder: NSCoder)
-    {
+    @objc required public init(coder aDecoder: NSCoder)
+    {        
         let fileName = aDecoder.decodeObject(forKey: type(of: self).Constants.FileNameCoderKey) as! String
         let fileExtension = aDecoder.decodeObject(forKey: type(of: self).Constants.FileExtensionCoderKey) as! String
         let path = URL.uploadDirectory().appendingPathComponent(fileName).appendingPathExtension(fileExtension).absoluteString
@@ -207,7 +207,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
         super.init(coder: aDecoder)
     }
 
-    override open func encode(with aCoder: NSCoder)
+    @objc override open func encode(with aCoder: NSCoder)
     {
         let fileName = self.url.deletingPathExtension().lastPathComponent
         let ext = self.url.pathExtension
@@ -221,7 +221,7 @@ open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     // MARK: - Retriable
     
-    override public func shouldRetry(urlResponse: URLResponse?) -> Bool
+    @objc override public func shouldRetry(urlResponse: URLResponse?) -> Bool
     {
         return self.uploadStrategy.shouldRetry(urlResponse: urlResponse) && self.retryAttemptCount < Constants.MaxAttempts - 1
     }

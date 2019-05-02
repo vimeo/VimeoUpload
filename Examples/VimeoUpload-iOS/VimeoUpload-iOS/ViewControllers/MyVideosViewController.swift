@@ -101,7 +101,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
         NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: VideoSettingsViewController.UploadInitiatedNotification), object: nil)
     }
     
-    func uploadInitiated(_ notification: Notification)
+    @objc func uploadInitiated(_ notification: Notification)
     {
         if let video = notification.object as? VIMVideo
         {
@@ -191,7 +191,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: Actions
     
-    func refresh()
+    @objc func refresh()
     {
         self.refreshControl?.beginRefreshing()
 
@@ -276,9 +276,9 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func presentRefreshErrorAlert(with error: NSError)
     {
-        let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertActionStyle.default, handler: { [weak self] (action) -> Void in
+        let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Try Again", style: .default, handler: { [weak self] (action) -> Void in
             self?.refresh()
         }))
         
@@ -287,8 +287,8 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func presentUploadRetryErrorAlert(with error: NSError)
     {
-        let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+        let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         
         self.present(alert, animated: true, completion: nil)
     }

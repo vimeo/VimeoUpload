@@ -51,7 +51,7 @@ import Photos
         self.activeAssetRequests.removeAll()
     }
     
-    public func requestImage(cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset)
+    @objc public func requestImage(cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset)
     {
         let phAsset = cameraRollAsset.phAsset
         let size = cell.bounds.size
@@ -103,7 +103,7 @@ import Photos
         self.activeImageRequests[phAsset.localIdentifier] = requestID
     }
     
-    public func requestAsset(cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset)
+    @objc public func requestAsset(cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset)
     {
         let phAsset = cameraRollAsset.phAsset
 
@@ -159,7 +159,7 @@ import Photos
         self.activeAssetRequests[phAsset.localIdentifier] = requestID
     }
     
-    public func cancelRequests(with cameraRollAsset: VIMPHAsset)
+    @objc public func cancelRequests(with cameraRollAsset: VIMPHAsset)
     {
         self.cancelImageRequest(cameraRollAsset: cameraRollAsset)
         self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)

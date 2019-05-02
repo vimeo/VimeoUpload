@@ -33,15 +33,15 @@ import AVFoundation
     import CoreServices
 #endif
 
-public class ExportOperation: ConcurrentOperation
+@objc public class ExportOperation: ConcurrentOperation
 {
     private static let ProgressKeyPath = "progress"
-    private static let FileType = AVFileTypeMPEG4
+    private static let FileType = AVFileType.mp4
 
     private(set) var exportSession: AVAssetExportSession
     
     // We KVO on this internally in order to call the progressBlock, see note below as to why [AH] 10/22/2015
-    private dynamic var progress: Float = 0
+    @objc private dynamic var progress: Float = 0
     private var exportProgressKVOContext = UInt8()
     var progressBlock: ProgressBlock?
     
@@ -62,7 +62,7 @@ public class ExportOperation: ConcurrentOperation
         // exportSession.timeRange must be valid so that the exportSession's estimatedOutputFileLength is non zero
         // We use estimatedOutputFileLength below to check that there is ample disk space to perform the export [AH] 10/15/2015
         
-        exportSession.timeRange = CMTimeRangeMake(kCMTimeZero, exportSession.asset.duration)
+        exportSession.timeRange = CMTimeRangeMake(start: CMTime.zero, duration: exportSession.asset.duration)
 
         assert(CMTIMERANGE_IS_EMPTY(exportSession.timeRange) == false, "exportSession.timeRange is empty")
         assert(CMTIMERANGE_IS_INDEFINITE(exportSession.timeRange) == false, "exportSession.timeRange is indefinite")
@@ -76,7 +76,7 @@ public class ExportOperation: ConcurrentOperation
         do
         {
             let filename = ProcessInfo.processInfo.globallyUniqueString
-            exportSession.outputURL = try URL.uploadURL(documentsFolderURL: documentsFolderURL, withFileName: filename, fileType: type(of: self).FileType)
+            exportSession.outputURL = try URL.uploadURL(documentsFolderURL: documentsFolderURL, withFileName: filename, fileType: type(of: self).FileType.rawValue)
         }
         catch let error as NSError
         {
@@ -99,7 +99,7 @@ public class ExportOperation: ConcurrentOperation
 
     // MARK: Overrides
 
-    override public func main()
+    @objc override public func main()
     {
         if self.isCancelled
         {
@@ -167,14 +167,14 @@ public class ExportOperation: ConcurrentOperation
         // So I'm using this while loop to update a dynamic property instead, and KVO'ing on that [AH] 10/22/2015
         
         DispatchQueue.global(qos: .utility).async { [weak self] () -> Void in
-            while self?.exportSession.status == AVAssetExportSessionStatus.waiting || self?.exportSession.status == AVAssetExportSessionStatus.exporting
+            while self?.exportSession.status == .waiting || self?.exportSession.status == .exporting
             {
                 self?.progress = self?.exportSession.progress ?? 0
             }
         }
     }
     
-    override public func cancel()
+    @objc override public func cancel()
     {
         super.cancel()
         
@@ -194,7 +194,7 @@ public class ExportOperation: ConcurrentOperation
         self.removeObserver(self, forKeyPath: type(of: self).ProgressKeyPath, context: &self.exportProgressKVOContext)
     }
     
-    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
+    @objc override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
     {
         if let keyPath = keyPath
         {

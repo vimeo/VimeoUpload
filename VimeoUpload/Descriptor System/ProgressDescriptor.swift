@@ -26,7 +26,7 @@
 
 import Foundation
 
-open class ProgressDescriptor: Descriptor
+@objc open class ProgressDescriptor: Descriptor
 {
     // MARK:
     
@@ -36,9 +36,9 @@ open class ProgressDescriptor: Descriptor
     
     private static let ProgressKeyPath = "fractionCompleted"
     private var progressKVOContext = UInt8()
-    dynamic private(set) var progressObservable: Double = 0
+    @objc dynamic private(set) var progressObservable: Double = 0
     
-    open var progress: Progress?
+    @objc open var progress: Progress?
     {
         willSet
         {
@@ -84,7 +84,7 @@ open class ProgressDescriptor: Descriptor
         }
     }
 
-    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
+    @objc override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
     {
         if let keyPath = keyPath
         {

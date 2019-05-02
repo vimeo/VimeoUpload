@@ -27,7 +27,7 @@
 import Foundation
 import AVFoundation
 
-public class DiskSpaceOperation: Operation
+@objc public class DiskSpaceOperation: Operation
 {    
     private let fileSize: Float64
     
@@ -45,7 +45,7 @@ public class DiskSpaceOperation: Operation
 
     // If we can't calculate the available disk space we eval to true beacuse we'll catch any real error later during export
     
-    override public func main()
+    @objc override public func main()
     {
         do
         {
