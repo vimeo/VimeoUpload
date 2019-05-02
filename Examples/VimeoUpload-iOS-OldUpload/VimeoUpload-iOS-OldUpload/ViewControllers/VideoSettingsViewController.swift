@@ -207,11 +207,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func presentOperationErrorAlert(with error: NSError)
     {
         let alert = UIAlertController(title: "Operation Error", message: error.localizedDescription, preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [weak self] (action) -> Void in
             self?.navigationController?.dismiss(animated: true, completion: nil)
         }))
         
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: .default, handler: { [weak self] (action) -> Void in
             self?.setupAndStartOperation()
         }))
         
@@ -221,11 +221,11 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     private func presentDescriptorErrorAlert(with error: NSError)
     {
         let alert = UIAlertController(title: "Descriptor Error", message: error.localizedDescription, preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [weak self] (action) -> Void in
             self?.navigationController?.dismiss(animated: true, completion: nil)
         }))
         
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
+        alert.addAction(UIAlertAction(title: "Try Again", style: .default, handler: { [weak self] (action) -> Void in
             // We start from the beginning (with the operation instead of the descriptor), 
             // Because the exported file was deleted when the upload descriptor failed,
             // We delete it because leaving it up to the API consumer to delete seems a little risky

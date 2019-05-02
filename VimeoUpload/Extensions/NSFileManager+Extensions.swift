@@ -28,7 +28,7 @@ import Foundation
 
 @objc public extension FileManager
 {
-    @nonobjc public func availableDiskSpace() throws -> NSNumber?
+    @nonobjc func availableDiskSpace() throws -> NSNumber?
     {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         let dictionary = try self.attributesOfFileSystem(forPath: documentsPath)
@@ -36,7 +36,7 @@ import Foundation
         return dictionary[FileAttributeKey.systemFreeSize] as? NSNumber
     }
     
-    @objc public func deleteFile(at url: URL)
+    @objc func deleteFile(at url: URL)
     {
         if self.fileExists(atPath: url.path)
         {
