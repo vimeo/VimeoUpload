@@ -28,6 +28,7 @@ import Foundation
 import AVFoundation
 import VimeoNetworking
 import Photos
+import os.signpost
 
 public typealias ExportProgressBlock = (AVAssetExportSession, Double) -> Void
 
@@ -129,9 +130,16 @@ public typealias ExportProgressBlock = (AVAssetExportSession, Double) -> Void
                 }
                 else
                 {
-                    let exportSession = operation.result!
-                    let exportOperation = ExportOperation(exportSession: exportSession, documentsFolderURL: strongSelf.documentsFolderURL)
-                    strongSelf.performExport(exportOperation: exportOperation)
+                    if #available(iOS 12, *) {
+                        if let exportSession = operation.result {
+                            let exportOperation = ExportOperation(exportSession: exportSession, documentsFolderURL: strongSelf.documentsFolderURL)
+                            strongSelf.performExport(exportOperation: exportOperation)
+                        } else if let url = operation.resultURL {
+                            strongSelf.result = url
+                            strongSelf.state = .finished
+                            os_signpost(.end, log: exportLog, name: "FetchAsset-New")
+                        }
+                    }
                 }
             })
         }
@@ -171,9 +179,12 @@ public typealias ExportProgressBlock = (AVAssetExportSession, Double) -> Void
                 }
                 else
                 {
-                    let url = exportOperation.outputURL!
-                    strongSelf.result = url
-                    strongSelf.state = .finished
+                    if #available(iOS 12, *) {
+                        let url = exportOperation.outputURL!
+                        strongSelf.result = url
+                        strongSelf.state = .finished
+                        os_signpost(.end, log: exportLog, name: "FetchAsset-Baseline")
+                    }
                 }
             })
         }

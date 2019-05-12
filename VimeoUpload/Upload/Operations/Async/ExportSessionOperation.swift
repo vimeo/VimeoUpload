@@ -26,6 +26,10 @@
 
 import Foundation
 import Photos
+import os.signpost
+
+@available(iOS 10.0, *)
+let exportLog = OSLog(subsystem: "com.vimeo.upload", category: "ExportMethod")
 
 class ExportSessionOperation: ConcurrentOperation
 {
@@ -36,6 +40,7 @@ class ExportSessionOperation: ConcurrentOperation
     var progressBlock: ProgressBlock?
     
     private(set) var result: AVAssetExportSession?
+    private(set) var resultURL: URL?
     private(set) var error: NSError?
     
     // MARK: - Initialization
@@ -99,6 +104,67 @@ class ExportSessionOperation: ConcurrentOperation
             }
         }
         
+        if #available(iOS 12, *) {
+            let useNew = Bool.random()
+            if useNew {
+                os_signpost(.begin, log: exportLog, name: "FetchAsset-New")
+                self.possibleImprovementExportVersion(with: options)
+            } else {
+                os_signpost(.begin, log: exportLog, name: "FetchAsset-Baseline")
+                self.baselineExport(with: options)
+            }
+        }
+        
+    }
+    
+    func possibleImprovementExportVersion(with options: PHVideoRequestOptions) {
+        self.requestID = PHImageManager.default().requestAVAsset(forVideo: self.phAsset, options: options, resultHandler: { [weak self] (avAsset, avAudioMix, info) in
+            guard let strongSelf = self else
+            {
+                return
+            }
+            
+            strongSelf.requestID = nil
+
+            if strongSelf.isCancelled
+            {
+                return
+            }
+            
+            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool, cancelled == true
+            {
+                return
+            }
+            
+            if let info = info, let error = info[PHImageErrorKey] as? NSError
+            {
+                strongSelf.error = error.error(byAddingDomain: UploadErrorDomain.ExportSessionOperation.rawValue)
+            }
+            else if let avAsset = avAsset as? AVURLAsset
+            {
+                let filename = ProcessInfo.processInfo.globallyUniqueString
+                let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
+                do {
+                    let url = URL(fileURLWithPath: path).appendingPathComponent(filename).appendingPathExtension(avAsset.url.pathExtension)
+                    try FileManager.default.copyItem(at: avAsset.url, to: url)
+                    strongSelf.resultURL = url
+                } catch {
+                    fatalError("Error copying file")
+                }
+                
+            }
+            else
+            {
+                strongSelf.error = NSError.error(withDomain: UploadErrorDomain.ExportSessionOperation.rawValue, code: nil, description: "Request for export session returned no error and no export session")
+            }
+            
+            strongSelf.state = .finished
+
+        })
+        
+    }
+    
+    private func baselineExport(with options: PHVideoRequestOptions) {
         self.requestID = PHImageManager.default().requestExportSession(forVideo: self.phAsset, options: options, exportPreset: self.exportPreset, resultHandler: { [weak self] (exportSession, info) -> Void in
             
             guard let strongSelf = self else
@@ -133,8 +199,8 @@ class ExportSessionOperation: ConcurrentOperation
             
             strongSelf.state = .finished
         })
+
     }
-    
     override internal func cancel()
     {
         super.cancel()
