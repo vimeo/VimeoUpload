@@ -190,6 +190,7 @@
 			children = (
 				AFFA3F171C9CE22500C7B6F3 /* AppDelegate.swift */,
 				AFFA3F491C9CE34700C7B6F3 /* NewVimeoUploader.swift */,
+				AFFA3F4E1C9CE34700C7B6F3 /* VideoSettingsViewController.swift */,
 				AFFA3F461C9CE34700C7B6F3 /* Cells */,
 				AFFA3F4A1C9CE34700C7B6F3 /* ViewControllers */,
 				5073D6E41CAD66C600D08C5F /* VimeoUpload+Demos */,
@@ -232,7 +233,6 @@
 				AFFA3F4B1C9CE34700C7B6F3 /* CameraRollViewController.swift */,
 				AFFA3F4C1C9CE34700C7B6F3 /* MyVideosViewController.swift */,
 				AFFA3F4D1C9CE34700C7B6F3 /* MyVideosViewController.xib */,
-				AFFA3F4E1C9CE34700C7B6F3 /* VideoSettingsViewController.swift */,
 				AFFA3F4F1C9CE34700C7B6F3 /* VideoSettingsViewController.xib */,
 			);
 			path = ViewControllers;
