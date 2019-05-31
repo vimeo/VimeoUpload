@@ -65,7 +65,7 @@ import Foundation
     {
         var parameters: [String: Any] = [:]
         
-        if let title = self.title, title.count > 0
+        if let title = self.title, title.isEmpty == false
         {
             parameters["name"] = title
         }

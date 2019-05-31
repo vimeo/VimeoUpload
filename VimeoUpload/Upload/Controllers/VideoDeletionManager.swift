@@ -217,11 +217,9 @@ import VimeoNetworking
     
     private func addObservers()
     {
-        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(VideoDeletionManager.reachabilityDidChange(_:)), name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: .applicationWillEnterForeground, name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: .applicationDidEnterBackground, name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: .reachabilityDidChange, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
     private func removeObservers()
@@ -247,4 +245,10 @@ import VimeoNetworking
         
         self.operationQueue.isSuspended = !currentlyReachable
     }
+}
+
+private extension Selector {
+    static let applicationWillEnterForeground = #selector(UIApplicationDelegate.applicationWillEnterForeground(_:))
+    static let applicationDidEnterBackground = #selector(UIApplicationDelegate.applicationDidEnterBackground(_:))
+    static let reachabilityDidChange = #selector(VideoDeletionManager.reachabilityDidChange(_:))
 }

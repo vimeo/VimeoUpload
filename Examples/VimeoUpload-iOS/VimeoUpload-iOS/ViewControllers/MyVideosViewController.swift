@@ -276,9 +276,9 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func presentRefreshErrorAlert(with error: NSError)
     {
-        let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: nil))
-        alert.addAction(UIAlertAction(title: "Try Again", style: UIAlertAction.Style.default, handler: { [weak self] (action) -> Void in
+        let alert = UIAlertController(title: "Refresh Error", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Try Again", style: .default, handler: { [weak self] (action) -> Void in
             self?.refresh()
         }))
         
@@ -287,8 +287,8 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private func presentUploadRetryErrorAlert(with error: NSError)
     {
-        let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: nil))
+        let alert = UIAlertController(title: "Retry Error", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         
         self.present(alert, animated: true, completion: nil)
     }

@@ -24,7 +24,8 @@ import VimeoNetworking
     {
         didSet
         {
-            print("\(self.currentRequest.rawValue) \(String(describing: self.identifier))")
+            let identifier = self.identifier ?? ""
+            print("\(self.currentRequest.rawValue) \(identifier)")
         }
     }
  
