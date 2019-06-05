@@ -512,7 +512,7 @@
 					AF40D4E01CCE9CB600753ABA = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = 35R365FS4Q;
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1020;
 					};
 					AF40D4EA1CCE9CB600753ABA = {
 						CreatedOnToolsVersion = 7.3;
@@ -798,7 +798,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -820,7 +820,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.vimeo.VimeoUpload;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
