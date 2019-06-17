@@ -4,12 +4,16 @@ use_frameworks!
 platform :ios, '8.0'
 
 def shared_pods
-    pod 'VimeoNetworking', '4.0.0'
+    pod 'VimeoNetworking', :git => 'https://github.com/vimeo/VimeoNetworking.git', :branch => 'develop'
 end
 
 target 'VimeoUpload' do
     shared_pods    
     project 'Framework/VimeoUpload/VimeoUpload.xcodeproj'
+
+    target "VimeoUploadTests" do
+        inherit! :search_paths
+    end
 end
 
 target 'VimeoUpload-iOS' do
