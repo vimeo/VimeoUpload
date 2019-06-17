@@ -25,6 +25,10 @@ jobs:
           command: bundle install --path vendor/bundle
 
       - run: 
+          name: Install pod dependencies
+          command: bundle exec pod install
+
+      - run: 
           name: Build and run VimeoUpload-iOS tests
           command: bundle exec fastlane scan
           environment:
