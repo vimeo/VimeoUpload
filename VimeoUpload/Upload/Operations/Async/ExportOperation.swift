@@ -117,8 +117,8 @@ import AVFoundation
         // AVAssetExportSession does not do an internal check to see if there's ample disk space available to perform the export [AH] 12/06/2015
         // However this check will not work with presetName "passthrough" since that preset reports estimatedOutputFileLength of zero always.
 
-        let availableDiskSpace = try? FileManager.default.availableDiskSpace() // Double optional
-        if let diskSpace = availableDiskSpace, let space = diskSpace, space.int64Value < self.exportSession.estimatedOutputFileLength
+        let availableDiskSpace = try? FileManager.default.availableDiskSpace()
+        if let space = availableDiskSpace, space.int64Value < self.exportSession.estimatedOutputFileLength
         {
             self.error = NSError.error(withDomain: UploadErrorDomain.ExportOperation.rawValue, code: UploadLocalErrorCode.diskSpaceException.rawValue, description: "Not enough disk space to copy asset")
             self.state = .finished

@@ -126,7 +126,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
             
             if let descriptor = notification.object as? OldUploadDescriptor,
                 let identifier = descriptor.identifier,
-                let index = self.items.index(of: identifier)
+                let index = self.items.firstIndex(of: identifier)
             {
                 self.items.remove(at: index)
 
