@@ -1,0 +1,23 @@
+name: VimeoUpload
+targets:
+  VimeoUpload:
+    type: framework
+    platform: iOS
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.vimeo.upload
+      INFOPLIST_FILE: Examples/VimeoUpload-iOS/VimeoUpload-iOS/Info.plist
+    dependencies:
+      - target: VimeoNetworking
+    sources:
+      - path: VimeoUpload
+    scheme:
+      testTargets:
+        - VimeoUploadTests
+  
+  VimeoUploadTests:
+    dependencies:
+      - target: VimeoUpload
+    type: bundle.unit-test
+    platform: iOS
+    sources: 
+      - path: Examples/VimeoUpload-iOS/VimeoUpload-iOSTests

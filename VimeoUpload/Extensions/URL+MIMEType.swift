@@ -6,6 +6,7 @@
 //
 
 import MobileCoreServices
+import Foundation
 
 public extension URL
 {

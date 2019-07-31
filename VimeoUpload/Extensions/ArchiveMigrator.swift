@@ -24,6 +24,8 @@
 //  THE SOFTWARE.
 //
 
+import Foundation
+
 class ArchiveMigrator: ArchiveMigrating
 {
     private let fileManager: FileManager
