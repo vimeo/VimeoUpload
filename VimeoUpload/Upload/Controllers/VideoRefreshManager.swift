@@ -55,7 +55,7 @@ import AFNetworking
         self.removeObservers()
     }
     
-    public init(sessionManager: VimeoSessionManager, delegate: VideoRefreshManagerDelegate)
+    @objc public init(sessionManager: VimeoSessionManager, delegate: VideoRefreshManagerDelegate)
     {
         self.sessionManager = sessionManager
         self.delegate = delegate
@@ -71,18 +71,18 @@ import AFNetworking
     
     // MARK: Public API
     
-    public func cancelAll()
+    @objc public func cancelAll()
     {
         self.videos.removeAll()
         self.operationQueue.cancelAllOperations()
     }
     
-    public func cancelRefreshForVideo(withURI uri: VideoUri)
+    @objc public func cancelRefreshForVideo(withURI uri: VideoUri)
     {
         self.videos.removeValue(forKey: uri)
     }
 
-    public func refresh(video: VIMVideo)
+    @objc public func refresh(video: VIMVideo)
     {
         guard let uri = video.uri else
         {
@@ -195,31 +195,31 @@ import AFNetworking
     
     private func addObservers()
     {
-        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationWillEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(VideoRefreshManager.reachabilityDidChange(_:)), name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
     private func removeObservers()
     {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    func applicationWillEnterForeground(_ notification: Notification)
+    @objc func applicationWillEnterForeground(_ notification: Notification)
     {
         self.operationQueue.isSuspended = false 
     }
     
-    func applicationDidEnterBackground(_ notification: Notification)
+    @objc func applicationDidEnterBackground(_ notification: Notification)
     {
         self.operationQueue.isSuspended = true
     }
     
-    func reachabilityDidChange(_ notification: Notification?)
+    @objc func reachabilityDidChange(_ notification: Notification?)
     {
         let currentlyReachable = AFNetworkReachabilityManager.shared().isReachable
         

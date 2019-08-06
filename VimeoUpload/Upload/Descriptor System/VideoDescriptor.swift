@@ -34,7 +34,11 @@ import Foundation
 
 @objc public protocol VideoDescriptor
 {
+    
+    @available(swift, obsoleted: 4.2, renamed: "descriptorType")
     var type: VideoDescriptorType { get }
+    
+    var descriptorType: VideoDescriptorType { get }
     
     var videoUri: VideoUri? { get }
     

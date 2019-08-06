@@ -104,7 +104,7 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: DescriptorManagerNotification.DescriptorDidCancel.rawValue), object: nil)
     }
     
-    func descriptorAdded(_ notification: Notification)
+    @objc func descriptorAdded(_ notification: Notification)
     {
         // TODO: should we move this dispatch to within the descriptor manager itself?
         DispatchQueue.main.async { () -> Void in
@@ -119,14 +119,14 @@ class UploadsViewController: UIViewController, UITableViewDataSource, UITableVie
         }
     }
     
-    func descriptorDidCancel(_ notification: Notification)
+    @objc func descriptorDidCancel(_ notification: Notification)
     {
         // TODO: should we move this dispatch to within the descriptor manager itself?
         DispatchQueue.main.async { () -> Void in
             
             if let descriptor = notification.object as? OldUploadDescriptor,
                 let identifier = descriptor.identifier,
-                let index = self.items.index(of: identifier)
+                let index = self.items.firstIndex(of: identifier)
             {
                 self.items.remove(at: index)
 

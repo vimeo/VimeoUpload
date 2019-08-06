@@ -10,21 +10,22 @@ import Foundation
 import AFNetworking
 import VimeoNetworking
 
-public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
+@objc public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
     let videoUrl: URL
     let videoSettings: VideoSettings?
     let thumbnailUrl: URL?
     
-    public private(set) var uploadTicket: VIMUploadTicket?
-    public private(set) var pictureTicket: VIMThumbnailUploadTicket?
-    public private(set) var picture: VIMPicture?
+    @objc public private(set) var uploadTicket: VIMUploadTicket?
+    @objc public private(set) var pictureTicket: VIMThumbnailUploadTicket?
+    @objc public private(set) var picture: VIMPicture?
     
     private var currentRequest = CAMUploadRequest.CreateVideo
     {
         didSet
         {
-            print("\(self.currentRequest.rawValue) \(self.identifier)")
+            let identifier = self.identifier ?? ""
+            print("\(self.currentRequest.rawValue) \(identifier)")
         }
     }
  
@@ -38,26 +39,26 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     //MARK: VideoDescriptor Protocol
     
-    public var type: VideoDescriptorType
+    @objc public var descriptorType: VideoDescriptorType
     {
         return .upload
     }
     
-    public var videoUri: VideoUri?
+    @objc public var videoUri: VideoUri?
     
-    public var progressDescriptor: ProgressDescriptor
+    @objc public var progressDescriptor: ProgressDescriptor
     {
         return self
     }
     
     //MARK: Initializers
     
-    required public init()
+    @objc required public init()
     {
         fatalError("default init() should not be used, use init(videoUrl:videoSettings:thumbnailUrl:) instead")
     }
     
-    public init(videoUrl: URL, videoSettings: VideoSettings? = nil, thumbnailUrl: URL?)
+    @objc public init(videoUrl: URL, videoSettings: VideoSettings? = nil, thumbnailUrl: URL?)
     {
         self.videoUrl = videoUrl
         self.videoSettings = videoSettings
@@ -68,7 +69,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     //MARK: Overrides
     
-    override public func prepare(sessionManager: AFURLSessionManager) throws
+    @objc override public func prepare(sessionManager: AFURLSessionManager) throws
     {
         let sessionManager = sessionManager as! VimeoSessionManager
         
@@ -86,7 +87,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override public func resume(sessionManager: AFURLSessionManager)
+    @objc override public func resume(sessionManager: AFURLSessionManager)
     {
         super.resume(sessionManager: sessionManager)
         
@@ -96,7 +97,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override public func cancel(sessionManager: AFURLSessionManager)
+    @objc override public func cancel(sessionManager: AFURLSessionManager)
     {
         super.cancel(sessionManager: sessionManager)
         
@@ -107,7 +108,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         }
     }
     
-    override public func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    @objc override public func didLoadFromCache(sessionManager: AFURLSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTask(for: identifier), let progress = sessionManager.uploadProgress(for: task) else
         {
@@ -128,7 +129,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         self.progress = progress
     }
     
-    override public func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
+    @objc override public func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
     {
         let sessionManager = sessionManager as! VimeoSessionManager
         let responseSerializer = sessionManager.responseSerializer as! VimeoResponseSerializer
@@ -163,7 +164,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         return nil
     }
     
-    override public func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
+    @objc override public func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
     {
         let setFinishedState = {
             self.currentTaskIdentifier = nil
@@ -302,7 +303,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
     
     //MARK: NSCoding
     
-    required public init(coder aDecoder: NSCoder)
+    @objc required public init(coder aDecoder: NSCoder)
     {
         self.videoUrl = aDecoder.decodeObject(forKey: ArchiverConstants.VideoUrlKey) as! URL
         self.thumbnailUrl = aDecoder.decodeObject(forKey: ArchiverConstants.ThumbnailUrlKey) as? URL
@@ -313,7 +314,7 @@ public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor
         super.init(coder: aDecoder)
     }
     
-    override public func encode(with aCoder: NSCoder)
+    @objc override public func encode(with aCoder: NSCoder)
     {
         aCoder.encode(self.videoUrl, forKey: ArchiverConstants.VideoUrlKey)
         aCoder.encode(self.thumbnailUrl, forKey: ArchiverConstants.ThumbnailUrlKey)

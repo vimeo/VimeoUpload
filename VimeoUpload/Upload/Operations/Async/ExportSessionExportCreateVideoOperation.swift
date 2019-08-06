@@ -29,15 +29,15 @@ import AVFoundation
 import VimeoNetworking
 import Photos
 
-open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
+@objc open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
 {
     let sessionManager: VimeoSessionManager
     let operationQueue: OperationQueue
     
     // MARK:
 
-    open var downloadProgressBlock: ProgressBlock?
-    open var exportProgressBlock: ExportProgressBlock?
+    @objc open var downloadProgressBlock: ProgressBlock?
+    @objc open var exportProgressBlock: ExportProgressBlock?
     
     // MARK:
     
@@ -45,10 +45,10 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     private let documentsFolderURL: URL?
     private let uploadParameters: UploadParameters
 
-    open var url: URL?
-    open var video: VIMVideo?
-    open var videoSettings: VideoSettings?
-    open var error: NSError?
+    @objc open var url: URL?
+    @objc open var video: VIMVideo?
+    @objc open var videoSettings: VideoSettings?
+    @objc open var error: NSError?
     {
         didSet
         {
@@ -75,7 +75,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     ///   filled.
     ///   - uploadParameters: A dictionary of parameters used for the create
     ///   video request.
-    public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil, uploadParameters: UploadParameters = VimeoSessionManager.Constants.DefaultUploadParameters)
+    @objc public init(phAsset: PHAsset, sessionManager: VimeoSessionManager, videoSettings: VideoSettings? = nil, documentsFolderURL: URL? = nil, uploadParameters: UploadParameters = VimeoSessionManager.Constants.DefaultUploadParameters)
     {
         self.phAsset = phAsset
         
@@ -99,7 +99,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
     
     // MARK: Overrides
     
-    override open func main()
+    @objc override open func main()
     {
         if self.isCancelled
         {
@@ -110,7 +110,7 @@ open class ExportSessionExportCreateVideoOperation: ConcurrentOperation
         self.perform(exportSessionExportOperation: operation)
     }
     
-    override open func cancel()
+    @objc override open func cancel()
     {
         super.cancel()
         

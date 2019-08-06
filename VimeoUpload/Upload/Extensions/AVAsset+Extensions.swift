@@ -27,7 +27,7 @@
 import Foundation
 import AVFoundation
 
-public extension AVAsset
+@objc public extension AVAsset
 {    
     func approximateFileSize(completion: @escaping DoubleBlock)
     {

@@ -9,7 +9,7 @@ import MobileCoreServices
 
 public extension URL
 {
-    public struct MIMETypeError
+    struct MIMETypeError
     {
         public static let UserInfo = [NSLocalizedDescriptionKey: "No detectable MIMEType"]
         public static let Domain = "URLExtension.VimeoUpload"
@@ -20,7 +20,7 @@ public extension URL
     ///
     /// - Returns: MIMEType as String
     /// - Throws: throws an error if the MIMEType cannot be determined
-    public func mimeType() throws -> String {
+    func mimeType() throws -> String {
         
         let error = NSError(domain: MIMETypeError.Domain, code: MIMETypeError.Code, userInfo: MIMETypeError.UserInfo)
         

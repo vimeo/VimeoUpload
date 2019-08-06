@@ -24,7 +24,7 @@ public enum CAMUploadRequest: String
     static func nextRequest(_ currentRequest: CAMUploadRequest) -> CAMUploadRequest?
     {
         let orderedRequests = CAMUploadRequest.orderedRequests()
-        if let index = orderedRequests.index(of: currentRequest), index + 1 < orderedRequests.count
+        if let index = orderedRequests.firstIndex(of: currentRequest), index + 1 < orderedRequests.count
         {
             return orderedRequests[index + 1]
         }

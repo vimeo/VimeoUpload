@@ -74,7 +74,7 @@ protocol ConnectivityManagerDelegate: class
         NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
     }
     
-    func reachabilityDidChange(_ notification: Notification)
+    @objc func reachabilityDidChange(_ notification: Notification)
     {
         self.updateState()
     }
