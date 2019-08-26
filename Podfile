@@ -1,7 +1,7 @@
 workspace 'VimeoUpload'
 
 use_frameworks!
-platform :ios, '8.0'
+platform :ios, '10.3'
 
 def shared_pods
     pod 'VimeoNetworking', :git => 'https://github.com/vimeo/VimeoNetworking.git', :branch => 'develop'
@@ -41,9 +41,6 @@ post_install do |installer|
             other_swift_flags = config.build_settings['OTHER_SWIFT_FLAGS'] || ['$(inherited)']
             other_swift_flags << '-Xfrontend'
             other_swift_flags << '-warn-long-function-bodies=500'
-
-            # Build with Swift 4.2.
-            config.build_settings['SWIFT_VERSION'] = '4.2'
         end
 
     end
