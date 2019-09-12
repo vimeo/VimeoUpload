@@ -18,7 +18,7 @@ PODS:
     - AFNetworking (= 3.1.0)
 
 DEPENDENCIES:
-  - VimeoNetworking (from `../VimeoNetworking`)
+  - VimeoNetworking (from `https://github.com/vimeo/vimeonetworking.git`, branch `VIM-XXXX_404NotFoundExtension`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -26,12 +26,18 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   VimeoNetworking:
-    :path: "../VimeoNetworking"
+    :branch: VIM-XXXX_404NotFoundExtension
+    :git: https://github.com/vimeo/vimeonetworking.git
+
+CHECKOUT OPTIONS:
+  VimeoNetworking:
+    :commit: 701d2819772563849835f2ce73e3756131637686
+    :git: https://github.com/vimeo/vimeonetworking.git
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  VimeoNetworking: f184c04552f1fdbfb5a3728b91a9fc0339cb17f5
+  VimeoNetworking: 5f5d104f0d8bd63fe905d2d502df15d83a34f7f6
 
-PODFILE CHECKSUM: d7166ee6411102fc360d3a48bc12a4e2bdd1122d
+PODFILE CHECKSUM: 8ac8f34dcc5b8a193672d9fef7c522136ce58c1c
 
 COCOAPODS: 1.5.2
