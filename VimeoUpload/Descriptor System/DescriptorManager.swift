@@ -25,7 +25,7 @@
 //
 
 import Foundation
-import AFNetworking
+import VimeoNetworking
 
 public enum DescriptorManagerNotification: String
 {
@@ -57,7 +57,7 @@ public typealias VoidClosure = () -> Void
     
     // MARK:
     
-    private var sessionManager: AFURLSessionManager
+    private var sessionManager: VimeoSessionManager
     private let name: String
     private let archivePrefix: String?
     private weak var delegate: DescriptorManagerDelegate?
@@ -83,7 +83,7 @@ public typealias VoidClosure = () -> Void
     // By passing the delegate into the constructor (as opposed to using a public property)
     // We ensure that early events like "load" can be reported [AH] 11/25/2015
     
-    @objc init?(sessionManager: AFURLSessionManager,
+    @objc init?(sessionManager: VimeoSessionManager,
           name: String,
           archivePrefix: String?,
           documentsFolderURL: URL,

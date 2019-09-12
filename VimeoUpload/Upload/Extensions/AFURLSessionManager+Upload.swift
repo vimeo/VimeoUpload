@@ -25,9 +25,9 @@
 //
 
 import Foundation
-import AFNetworking
+import VimeoNetworking
 
-@objc public extension AFURLSessionManager
+@objc public extension VimeoSessionManager
 {
     func uploadTask(for identifier: Int) -> URLSessionUploadTask?
     {

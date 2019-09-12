@@ -25,9 +25,9 @@
 //
 
 import Foundation
-import AFNetworking
+import VimeoNetworking
 
-extension AFURLSessionManager
+extension VimeoSessionManager
 {
     func task(for identifier: Int) -> URLSessionTask?
     {
