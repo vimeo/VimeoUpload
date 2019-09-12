@@ -27,7 +27,7 @@
 import Foundation
 import VimeoNetworking
 
-protocol ConnectivityManagerDelegate: class
+protocol ConnectivityManagerDelegate: AnyObject
 {
     func suspend(connectivityManager: ConnectivityManager)
     func resume(connectivityManager: ConnectivityManager)
