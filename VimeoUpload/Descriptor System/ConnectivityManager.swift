@@ -25,7 +25,7 @@
 //
 
 import Foundation
-import AFNetworking
+import VimeoNetworking
 
 protocol ConnectivityManagerDelegate: class
 {
@@ -36,6 +36,11 @@ protocol ConnectivityManagerDelegate: class
 @objc class ConnectivityManager: NSObject
 {
     weak var delegate: ConnectivityManagerDelegate?
+    
+    private let reachabilityChangedNotificaton: Notification.Name = {
+        let notificationName = NetworkingNotification.reachabilityDidChange
+        return Notification.Name(rawValue: notificationName.rawValue)
+    }()
     
     var allowsCellularUsage = true
     {
@@ -66,12 +71,21 @@ protocol ConnectivityManagerDelegate: class
     
     private func addObservers()
     {
-        NotificationCenter.default.addObserver(self, selector: #selector(ConnectivityManager.reachabilityDidChange(_:)), name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ConnectivityManager.reachabilityDidChange(_:)),
+            name: reachabilityChangedNotificaton, object: nil
+        )
     }
     
     private func removeObservers()
     {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.removeObserver(
+            self,
+            name: reachabilityChangedNotificaton,
+            object: nil
+        )
     }
     
     @objc func reachabilityDidChange(_ notification: Notification)
@@ -81,9 +95,10 @@ protocol ConnectivityManagerDelegate: class
     
     private func updateState()
     {
-        if AFNetworkReachabilityManager.shared().isReachable == true
+        let reachabilityManager = VimeoReachabilityProvider.reachabilityManager
+        if reachabilityManager?.isReachable == true
         {
-            if AFNetworkReachabilityManager.shared().isReachableViaWiFi
+            if reachabilityManager?.isReachableOnEthernetOrWiFi == true
             {
                 self.delegate?.resume(connectivityManager: self)
             }
