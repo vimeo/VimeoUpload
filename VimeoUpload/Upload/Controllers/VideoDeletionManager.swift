@@ -245,7 +245,7 @@ import VimeoNetworking
 
     @objc func reachabilityDidChange(_ notification: Notification?)
     {
-        let currentlyReachable = VimeoReachabilityProvider.reachabilityManager?.isReachable ?? false
+        let currentlyReachable = VimeoReachabilityProvider.reachabilityManager?.isReachable ?? true
         
         self.operationQueue.isSuspended = !currentlyReachable
     }
