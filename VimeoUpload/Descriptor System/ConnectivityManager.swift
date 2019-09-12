@@ -70,8 +70,7 @@ protocol ConnectivityManagerDelegate: AnyObject
     // MARK: Notifications
     
     private func addObservers()
-    {
-        
+    {        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(ConnectivityManager.reachabilityDidChange(_:)),
