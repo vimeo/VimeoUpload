@@ -36,7 +36,7 @@ import VimeoNetworking
     
     private let sessionManager: VimeoSessionManager
     private let retryCount: Int
-    private let reachabilityChangedNotificaton: Notification.Name = {
+    private let reachabilityDidChangeNetworkingNotificationName: Notification.Name = {
         let notificationName = NetworkingNotification.reachabilityDidChange
         return Notification.Name(rawValue: notificationName.rawValue)
     }()
@@ -223,14 +223,14 @@ import VimeoNetworking
     {
         NotificationCenter.default.addObserver(self, selector: .applicationWillEnterForeground, name: UIApplication.willEnterForegroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: .applicationDidEnterBackground, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: .reachabilityDidChange, name: reachabilityChangedNotificaton, object: nil)
+        NotificationCenter.default.addObserver(self, selector: .reachabilityDidChange, name: reachabilityDidChangeNetworkingNotificationName, object: nil)
     }
     
     private func removeObservers()
     {
         NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: reachabilityChangedNotificaton, object: nil)
+        NotificationCenter.default.removeObserver(self, name: reachabilityDidChangeNetworkingNotificationName, object: nil)
     }
     
     @objc func applicationWillEnterForeground(_ notification: Notification)
