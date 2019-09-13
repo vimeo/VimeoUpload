@@ -40,11 +40,10 @@ import VimeoNetworking
     
     private let sessionManager: VimeoSessionManager
     private weak var delegate: VideoRefreshManagerDelegate?
-    private let reachabilityDidChangeNetworkingNotificationName: Notification.Name = {
-        let notificationName = NetworkingNotification.reachabilityDidChange
-        return Notification.Name(rawValue: notificationName.rawValue)
-    }()
-    
+    private let reachabilityChangedNotificaton = Notification.Name(
+        rawValue: NetworkingNotification.reachabilityDidChange.rawValue
+    )
+
     // MARK:
     
     private var videos: [VideoUri: Bool] = [:]
@@ -202,14 +201,14 @@ import VimeoNetworking
         
         NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(VideoRefreshManager.reachabilityDidChange(_:)), name: reachabilityDidChangeNetworkingNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(VideoRefreshManager.reachabilityDidChange(_:)), name: reachabilityChangedNotificaton, object: nil)
     }
     
     private func removeObservers()
     {
         NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: reachabilityDidChangeNetworkingNotificationName, object: nil)
+        NotificationCenter.default.removeObserver(self, name: reachabilityChangedNotificaton, object: nil)
     }
     
     @objc func applicationWillEnterForeground(_ notification: Notification)

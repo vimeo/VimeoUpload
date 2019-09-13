@@ -37,10 +37,9 @@ protocol ConnectivityManagerDelegate: AnyObject
 {
     weak var delegate: ConnectivityManagerDelegate?
     
-    private let reachabilityDidChangeNetworkingNotificationName: Notification.Name = {
-        let notificationName = NetworkingNotification.reachabilityDidChange
-        return Notification.Name(rawValue: notificationName.rawValue)
-    }()
+    private let reachabilityChangedNotificaton = Notification.Name(
+        rawValue: NetworkingNotification.reachabilityDidChange.rawValue
+    )
     
     var allowsCellularUsage = true
     {
@@ -70,12 +69,11 @@ protocol ConnectivityManagerDelegate: AnyObject
     // MARK: Notifications
     
     private func addObservers()
-    {
+    {        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(ConnectivityManager.reachabilityDidChange(_:)),
-            name: reachabilityDidChangeNetworkingNotificationName,
-            object: nil
+            name: reachabilityChangedNotificaton, object: nil
         )
     }
     
@@ -83,7 +81,7 @@ protocol ConnectivityManagerDelegate: AnyObject
     {
         NotificationCenter.default.removeObserver(
             self,
-            name: reachabilityDidChangeNetworkingNotificationName,
+            name: reachabilityChangedNotificaton,
             object: nil
         )
     }
