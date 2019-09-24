@@ -49,9 +49,12 @@ import Photos
 
     @objc public func requestImage(cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset) {
         let phAsset = cameraRollAsset.phAsset
+        let identifier = phAsset.localIdentifier
         let size = cell.bounds.size
         let scale = UIScreen.main.scale
         let scaledSize = CGSize(width: scale * size.width, height: scale * size.height)
+
+        cell.assetIdentifier = identifier
 
         self.cancelImageRequest(cameraRollAsset: cameraRollAsset)
 
@@ -71,6 +74,8 @@ import Photos
 
                 // TODO: Determine if we can use this here and below Phimageresultrequestidkey [AH] Jan 2016
                 self.cancelImageRequest(cameraRollAsset: cameraRollAsset)
+
+                guard cell.assetIdentifier == identifier else { return }
 
                 if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool, cancelled == true {
                     return
@@ -97,8 +102,10 @@ import Photos
 
     @objc public func requestAsset(cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset) {
         let phAsset = cameraRollAsset.phAsset
+        let identifier = phAsset.localIdentifier
 
         cell.setDuration(seconds: phAsset.duration)
+        cell.assetIdentifier = identifier
 
         self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
 
@@ -118,6 +125,8 @@ import Photos
                     guard let self = self else { return }
 
                     self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
+
+                    guard cell.assetIdentifier == identifier else { return }
 
                     // Cache the asset and inCloud values for later use in didSelectItem
                     cameraRollAsset.avAsset = asset
