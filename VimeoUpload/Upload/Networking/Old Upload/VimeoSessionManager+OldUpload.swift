@@ -58,7 +58,7 @@ enum UploadTaskDescription: String
                 
                 do
                 {
-                    let videos = try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(myVideosResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                    let videos = try strongSelf.vimeoResponseSerializer.process(myVideosResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                     completionHandler(videos, nil)
                 }
                 catch let error as NSError
@@ -97,7 +97,7 @@ enum UploadTaskDescription: String
             
             do
             {
-                try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(uploadVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                try strongSelf.vimeoResponseSerializer.process(uploadVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                 completionHandler(nil)
             }
             catch let error as NSError
@@ -151,7 +151,7 @@ enum UploadTaskDescription: String
                 
                 do
                 {
-                    let video = try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(videoSettingsResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                    let video = try strongSelf.vimeoResponseSerializer.process(videoSettingsResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                     completionHandler(video, nil)
                 }
                 catch let error as NSError
@@ -179,7 +179,7 @@ enum UploadTaskDescription: String
             
             do
             {
-                try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(deleteVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                try strongSelf.vimeoResponseSerializer.process(deleteVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                 completionHandler(nil)
             }
             catch let error as NSError
@@ -206,7 +206,7 @@ enum UploadTaskDescription: String
             
             do
             {
-                let video = try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(videoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                let video = try strongSelf.vimeoResponseSerializer.process(videoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                 completionHandler(video, nil)
             }
             catch let error as NSError

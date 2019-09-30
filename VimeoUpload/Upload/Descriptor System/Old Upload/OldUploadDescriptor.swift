@@ -141,7 +141,7 @@ import VimeoNetworking
     
     @objc override public func taskDidFinishDownloading(sessionManager: VimeoSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
     {
-        let responseSerializer = sessionManager.responseSerializer as! VimeoResponseSerializer
+        let responseSerializer = sessionManager.vimeoResponseSerializer
         
         do
         {

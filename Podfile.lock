@@ -18,7 +18,7 @@ PODS:
     - AFNetworking (= 3.1.0)
 
 DEPENDENCIES:
-  - VimeoNetworking (from `https://github.com/vimeo/vimeonetworking.git`, branch `feature/VIM-XXXX_AFNetworkingDeprecation`)
+  - VimeoNetworking (from `https://github.com/vimeo/vimeonetworking.git`, branch `VIM-7293-DecoupleAFSerializers`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -26,18 +26,18 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   VimeoNetworking:
-    :branch: feature/VIM-XXXX_AFNetworkingDeprecation
+    :branch: VIM-7293-DecoupleAFSerializers
     :git: https://github.com/vimeo/vimeonetworking.git
 
 CHECKOUT OPTIONS:
   VimeoNetworking:
-    :commit: 148e3de568bd6d85a0cac372b285190c7863ab8b
+    :commit: 3627bb9780c5da9519ee25341aba8b63b1b7fe0b
     :git: https://github.com/vimeo/vimeonetworking.git
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   VimeoNetworking: 98a8d47b9139f1e983edbdeb6ee77651389955b3
 
-PODFILE CHECKSUM: 8ffb8802a657a8ec73d590dd9002347ef11b2339
+PODFILE CHECKSUM: 5b6699809138693cac6691f3c70ba69a6d5cce57
 
 COCOAPODS: 1.5.2

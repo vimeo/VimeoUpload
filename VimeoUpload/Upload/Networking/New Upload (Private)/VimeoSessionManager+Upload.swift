@@ -53,7 +53,7 @@ public typealias UploadParameters = [String: Any]
                 
                 do
                 {
-                    let video = try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(videoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                    let video = try strongSelf.vimeoResponseSerializer.process(videoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                     completionHandler(video, nil)
                 }
                 catch let error as NSError
@@ -90,7 +90,7 @@ public typealias UploadParameters = [String: Any]
             
             do
             {
-                try (strongSelf.responseSerializer as! VimeoResponseSerializer).process(uploadVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                try strongSelf.vimeoResponseSerializer.process(uploadVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                 completionHandler(nil)
             }
             catch let error as NSError
