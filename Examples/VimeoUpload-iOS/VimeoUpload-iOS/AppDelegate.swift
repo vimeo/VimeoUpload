@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     {
         NSKeyedUnarchiver.setLegacyClassNameMigrations()
         
-        _ = VimeoReachabilityProvider.reachabilityManager // Intialize reachability manager listening
+        _ = VimeoReachabilityProvider.isReachable // Intialize reachability manager listening
         NewVimeoUploader.sharedInstance?.applicationDidFinishLaunching() // Ensure init is called on launch
 
         let settings = UIUserNotificationSettings(types: .alert, categories: nil)

@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
-        _ = VimeoReachabilityProvider.reachabilityManager // Intialize reachability manager listening
+        _ = VimeoReachabilityProvider.isReachable // Intialize reachability manager listening
         OldVimeoUploader.sharedInstance?.applicationDidFinishLaunching() // Ensure init is called on launch
 
         let settings = UIUserNotificationSettings(types: .alert, categories: nil)

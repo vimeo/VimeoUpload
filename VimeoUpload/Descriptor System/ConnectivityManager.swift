@@ -93,28 +93,25 @@ protocol ConnectivityManagerDelegate: AnyObject
     
     private func updateState()
     {
-        let reachabilityManager = VimeoReachabilityProvider.reachabilityManager
-        if reachabilityManager?.isReachable == true
+        guard VimeoReachabilityProvider.isReachable else {
+            self.delegate?.suspend(connectivityManager: self)
+            return
+        }
+
+        if VimeoReachabilityProvider.isReachableOnEthernetOrWiFi == true
         {
-            if reachabilityManager?.isReachableOnEthernetOrWiFi == true
+            self.delegate?.resume(connectivityManager: self)
+        }
+        else
+        {
+            if self.allowsCellularUsage
             {
                 self.delegate?.resume(connectivityManager: self)
             }
             else
             {
-                if self.allowsCellularUsage
-                {
-                    self.delegate?.resume(connectivityManager: self)
-                }
-                else
-                {
-                    self.delegate?.suspend(connectivityManager: self)
-                }
+                self.delegate?.suspend(connectivityManager: self)
             }
-        }
-        else
-        {
-            self.delegate?.suspend(connectivityManager: self)
         }
     }
 }

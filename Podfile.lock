@@ -31,12 +31,12 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   VimeoNetworking:
-    :commit: b8f6544a2c41b6ea2003de67bde3577d0843cd67
+    :commit: 148e3de568bd6d85a0cac372b285190c7863ab8b
     :git: https://github.com/vimeo/vimeonetworking.git
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  VimeoNetworking: 5f5d104f0d8bd63fe905d2d502df15d83a34f7f6
+  VimeoNetworking: 98a8d47b9139f1e983edbdeb6ee77651389955b3
 
 PODFILE CHECKSUM: 8ffb8802a657a8ec73d590dd9002347ef11b2339
 
