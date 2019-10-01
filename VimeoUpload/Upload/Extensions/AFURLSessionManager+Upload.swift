@@ -31,6 +31,10 @@ import VimeoNetworking
 {
     func uploadTask(for identifier: Int) -> URLSessionUploadTask?
     {
-        return self.uploadTasks.filter{ $0.taskIdentifier == identifier }.first
+        return self.httpSessionManager.uploadTasks.filter{ $0.taskIdentifier == identifier }.first
+    }
+
+    func uploadProgress(for task: URLSessionTask) -> Progress? {
+        return self.httpSessionManager.uploadProgress(for: task)
     }
 }

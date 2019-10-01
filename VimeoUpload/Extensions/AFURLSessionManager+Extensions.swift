@@ -31,6 +31,6 @@ extension VimeoSessionManager
 {
     func task(for identifier: Int) -> URLSessionTask?
     {
-        return self.tasks.filter{ $0.taskIdentifier == identifier }.first
+        return self.httpSessionManager.tasks.filter{ $0.taskIdentifier == identifier }.first
     }
 }

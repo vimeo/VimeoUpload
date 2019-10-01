@@ -47,7 +47,7 @@ enum UploadTaskDescription: String
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).myVideosRequest()
         
-        let task = self.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+        let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
             // Do model parsing on a background thread
             DispatchQueue.global(qos: .default).async(execute: { [weak self] () -> Void in
@@ -58,7 +58,7 @@ enum UploadTaskDescription: String
                 
                 do
                 {
-                    let videos = try strongSelf.vimeoResponseSerializer.process(myVideosResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                    let videos = try strongSelf.jsonResponseSerializer.process(myVideosResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                     completionHandler(videos, nil)
                 }
                 catch let error as NSError
@@ -77,7 +77,7 @@ enum UploadTaskDescription: String
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url)
 
-        let task = self.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
+        let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         
         task.taskDescription = UploadTaskDescription.CreateVideo.rawValue
         
@@ -88,7 +88,7 @@ enum UploadTaskDescription: String
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadVideoRequest(with: source, destination: destination)
         
-        let task = self.uploadTask(with: request as URLRequest, fromFile: source as URL, progress: nil, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+        let task = self.httpSessionManager.uploadTask(with: request as URLRequest, fromFile: source as URL, progress: nil, completionHandler: { [weak self] (response, responseObject, error) -> Void in
 
             guard let strongSelf = self, let completionHandler = completionHandler else
             {
@@ -97,7 +97,7 @@ enum UploadTaskDescription: String
             
             do
             {
-                try strongSelf.vimeoResponseSerializer.process(uploadVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                try strongSelf.jsonResponseSerializer.process(uploadVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                 completionHandler(nil)
             }
             catch let error as NSError
@@ -117,7 +117,7 @@ enum UploadTaskDescription: String
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).activateVideoRequest(withURI: activationUri)
         
-        let task = self.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
+        let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         
         task.taskDescription = UploadTaskDescription.ActivateVideo.rawValue
         
@@ -129,7 +129,7 @@ enum UploadTaskDescription: String
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequest(with: videoUri, videoSettings: videoSettings)
         
-        let task = self.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
+        let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         
         task.taskDescription = UploadTaskDescription.VideoSettings.rawValue
         
@@ -140,7 +140,7 @@ enum UploadTaskDescription: String
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).videoSettingsRequest(with: videoUri, videoSettings: videoSettings)
         
-        let task = self.dataTask(with: request as URLRequest, completionHandler: { (response, responseObject, error) -> Void in
+        let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { (response, responseObject, error) -> Void in
             
             // Do model parsing on a background thread
             DispatchQueue.global(qos: .default).async(execute: { [weak self] () -> Void in
@@ -151,7 +151,7 @@ enum UploadTaskDescription: String
                 
                 do
                 {
-                    let video = try strongSelf.vimeoResponseSerializer.process(videoSettingsResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                    let video = try strongSelf.jsonResponseSerializer.process(videoSettingsResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                     completionHandler(video, nil)
                 }
                 catch let error as NSError
@@ -170,7 +170,7 @@ enum UploadTaskDescription: String
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).deleteVideoRequest(with: videoUri)
         
-        let task = self.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+        let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
             guard let strongSelf = self else
             {
@@ -179,7 +179,7 @@ enum UploadTaskDescription: String
             
             do
             {
-                try strongSelf.vimeoResponseSerializer.process(deleteVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                try strongSelf.jsonResponseSerializer.process(deleteVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                 completionHandler(nil)
             }
             catch let error as NSError
@@ -197,7 +197,7 @@ enum UploadTaskDescription: String
     {
         let request = try (self.requestSerializer as! VimeoRequestSerializer).videoRequest(with: videoUri)
         
-        let task = self.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
+        let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
             guard let strongSelf = self else
             {
@@ -206,7 +206,7 @@ enum UploadTaskDescription: String
             
             do
             {
-                let video = try strongSelf.vimeoResponseSerializer.process(videoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                let video = try strongSelf.jsonResponseSerializer.process(videoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
                 completionHandler(video, nil)
             }
             catch let error as NSError

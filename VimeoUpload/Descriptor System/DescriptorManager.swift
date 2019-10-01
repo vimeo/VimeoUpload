@@ -184,7 +184,7 @@ public typealias VoidClosure = () -> Void
         // not only the app will leak memory but the share extension won't be
         // able to upload due to the main app still binding to that session ID.
         // [VN] (07/03/2018)
-        self.sessionManager.setSessionDidBecomeInvalidBlock { [weak self] (session, error) -> Void in
+        self.sessionManager.httpSessionManager.setSessionDidBecomeInvalidBlock { [weak self] (session, error) -> Void in
 
             guard let strongSelf = self else
             {
@@ -235,7 +235,7 @@ public typealias VoidClosure = () -> Void
             })
         }
         
-        self.sessionManager.setDownloadTaskDidFinishDownloadingBlock { [weak self] (session, task, url) -> URL? in
+        self.sessionManager.httpSessionManager.setDownloadTaskDidFinishDownloadingBlock { [weak self] (session, task, url) -> URL? in
 
             guard let strongSelf = self else
             {
@@ -270,7 +270,7 @@ public typealias VoidClosure = () -> Void
             return destination
         }
         
-        self.sessionManager.setTaskDidComplete { [weak self] (session, task, error) -> Void in
+        self.sessionManager.httpSessionManager.setTaskDidComplete { [weak self] (session, task, error) -> Void in
 
             guard let strongSelf = self else
             {
@@ -374,7 +374,7 @@ public typealias VoidClosure = () -> Void
             })
         }
         
-        self.sessionManager.setDidFinishEventsForBackgroundURLSessionBlock { [weak self] (session) -> Void in
+        self.sessionManager.httpSessionManager.setDidFinishEventsForBackgroundURLSessionBlock { [weak self] (session) -> Void in
 
             guard let strongSelf = self else
             {
@@ -414,7 +414,7 @@ public typealias VoidClosure = () -> Void
     /// manager, else you'll risk leaking memory.
     @objc public func invalidateSessionManager()
     {
-        self.sessionManager.invalidateSessionCancelingTasks(false)
+        self.sessionManager.httpSessionManager.invalidateSessionCancelingTasks(false)
     }
     
     /// Determines if the manager can handle events from a background upload
@@ -434,7 +434,7 @@ public typealias VoidClosure = () -> Void
     /// handle the events. `false` otherwise.
     @objc open func canHandleEventsForBackgroundURLSession(withIdentifier identifier: String) -> Bool
     {
-        return identifier == self.sessionManager.session.configuration.identifier
+        return identifier == self.sessionManager.httpSessionManager.session.configuration.identifier
     }
     
     @objc open func handleEventsForBackgroundURLSession(completionHandler: @escaping VoidClosure)
