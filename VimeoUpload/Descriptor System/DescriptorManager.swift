@@ -414,7 +414,7 @@ public typealias VoidClosure = () -> Void
     /// manager, else you'll risk leaking memory.
     @objc public func invalidateSessionManager()
     {
-        self.sessionManager.httpSessionManager.invalidateSessionCancelingTasks(false)
+        self.sessionManager.invalidate(cancelPendingTasks: false)
     }
     
     /// Determines if the manager can handle events from a background upload

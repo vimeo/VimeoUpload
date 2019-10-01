@@ -34,3 +34,15 @@ extension VimeoSessionManager
         return self.httpSessionManager.tasks.filter{ $0.taskIdentifier == identifier }.first
     }
 }
+
+@objc public extension VimeoSessionManager
+{
+    func uploadTask(for identifier: Int) -> URLSessionUploadTask?
+    {
+        return self.httpSessionManager.uploadTasks.filter{ $0.taskIdentifier == identifier }.first
+    }
+
+    func uploadProgress(for task: URLSessionTask) -> Progress? {
+        return self.httpSessionManager.uploadProgress(for: task)
+    }
+}
