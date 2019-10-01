@@ -40,7 +40,7 @@ public typealias UploadParameters = [String: Any]
     
     func createVideoDataTask(url: URL, videoSettings: VideoSettings?, uploadParameters: UploadParameters, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings, uploadParameters: uploadParameters)
+        let request = try self.requestSerializer!.createVideoRequest(with: url, videoSettings: videoSettings, uploadParameters: uploadParameters)
 
         let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
@@ -70,7 +70,7 @@ public typealias UploadParameters = [String: Any]
     
     func createVideoDownloadTask(url: URL, videoSettings: VideoSettings?, uploadParameters: UploadParameters) throws -> URLSessionDownloadTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).createVideoRequest(with: url, videoSettings: videoSettings, uploadParameters: uploadParameters)
+        let request = try self.requestSerializer!.createVideoRequest(with: url, videoSettings: videoSettings, uploadParameters: uploadParameters)
         
         let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         

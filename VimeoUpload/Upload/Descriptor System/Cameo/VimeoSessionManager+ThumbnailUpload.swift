@@ -13,7 +13,7 @@ extension VimeoSessionManager
 {
     func createThumbnailDownloadTask(uri: VideoUri) throws -> URLSessionDownloadTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).createThumbnailRequest(with: uri)
+        let request = try self.requestSerializer!.createThumbnailRequest(with: uri)
         
         let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         task.taskDescription = UploadTaskDescription.CreateThumbnail.rawValue
@@ -23,7 +23,7 @@ extension VimeoSessionManager
     
     func uploadThumbnailTask(source: URL, destination: String, completionHandler: ErrorBlock?) throws -> URLSessionUploadTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).uploadThumbnailRequest(with: source, destination: destination)
+        let request = try self.requestSerializer!.uploadThumbnailRequest(with: source, destination: destination)
         
         let task = self.httpSessionManager.uploadTask(with: request as URLRequest, fromFile: source as URL, progress: nil) { [weak self] (response, responseObject, error) in
             
@@ -47,7 +47,7 @@ extension VimeoSessionManager
     
     func activateThumbnailTask(activationUri: String) throws -> URLSessionDownloadTask
     {
-        let request = try (self.requestSerializer as! VimeoRequestSerializer).activateThumbnailRequest(with: activationUri)
+        let request = try self.requestSerializer!.activateThumbnailRequest(with: activationUri)
         
         let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         task.taskDescription = UploadTaskDescription.ActivateThumbnail.rawValue
