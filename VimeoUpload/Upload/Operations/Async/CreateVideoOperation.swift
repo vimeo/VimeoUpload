@@ -34,7 +34,7 @@ import VimeoNetworking
     private let videoSettings: VideoSettings?
     private let uploadParameters: UploadParameters
     
-    private var task: URLSessionDataTask?
+    private var task: Task?
 
     @objc public var result: VIMVideo?
     @objc public var error: NSError?

@@ -92,10 +92,10 @@ import VimeoNetworking
             
             let uploadLink = try self.uploadStrategy.uploadLink(from: video)
             
-            let uploadRequest = try self.uploadStrategy.uploadRequest(requestSerializer: sessionManager.requestSerializer, fileUrl: self.url, uploadLink: uploadLink)
+            let uploadRequest = try self.uploadStrategy.uploadRequest(requestSerializer: sessionManager.jsonRequestSerializer, fileUrl: self.url, uploadLink: uploadLink)
             let task = sessionManager.uploadVideoTask(source: self.url, request: uploadRequest, completionHandler: nil)
             
-            self.currentTaskIdentifier = task.taskIdentifier
+            self.currentTaskIdentifier = task?.id
         }
         catch let error as NSError
         {

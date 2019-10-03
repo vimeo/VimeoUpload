@@ -11,9 +11,9 @@ import VimeoNetworking
 
 extension VimeoSessionManager
 {
-    func createThumbnailDownloadTask(uri: VideoUri) throws -> URLSessionDownloadTask
+    func createThumbnailDownloadTask(uri: VideoUri) throws -> Task
     {
-        let request = try self.requestSerializer!.createThumbnailRequest(with: uri)
+        let request = try self.jsonRequestSerializer.createThumbnailRequest(with: uri)
         
         let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         task.taskDescription = UploadTaskDescription.CreateThumbnail.rawValue
@@ -21,9 +21,9 @@ extension VimeoSessionManager
         return task
     }
     
-    func uploadThumbnailTask(source: URL, destination: String, completionHandler: ErrorBlock?) throws -> URLSessionUploadTask
+    func uploadThumbnailTask(source: URL, destination: String, completionHandler: ErrorBlock?) throws -> Task
     {
-        let request = try self.requestSerializer!.uploadThumbnailRequest(with: source, destination: destination)
+        let request = try self.jsonRequestSerializer.uploadThumbnailRequest(with: source, destination: destination)
         
         let task = self.httpSessionManager.uploadTask(with: request as URLRequest, fromFile: source as URL, progress: nil) { [weak self] (response, responseObject, error) in
             
@@ -45,9 +45,9 @@ extension VimeoSessionManager
         return task
     }
     
-    func activateThumbnailTask(activationUri: String) throws -> URLSessionDownloadTask
+    func activateThumbnailTask(activationUri: String) throws -> Task
     {
-        let request = try self.requestSerializer!.activateThumbnailRequest(with: activationUri)
+        let request = try self.jsonRequestSerializer.activateThumbnailRequest(with: activationUri)
         
         let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         task.taskDescription = UploadTaskDescription.ActivateThumbnail.rawValue

@@ -45,7 +45,7 @@ enum UploadTaskDescription: String
 {
     @objc public func myVideosDataTask(completionHandler: @escaping VideosCompletionHandler) throws -> URLSessionDataTask
     {
-        let request = try self.requestSerializer!.myVideosRequest()
+        let request = try self.jsonRequestSerializer.myVideosRequest()
         
         let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
@@ -58,7 +58,8 @@ enum UploadTaskDescription: String
                 
                 do
                 {
-                    let videos = try strongSelf.jsonResponseSerializer.process(myVideosResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                    let json = try strongSelf.jsonResponseSerializer.responseObjectFromDownloadTaskResponse(response: response, url: response.url, error: error as NSError?) as AnyObject
+                    let videos = try strongSelf.jsonResponseSerializer.process(myVideosResponse: response, responseObject: json, error: error as NSError?)
                     completionHandler(videos, nil)
                 }
                 catch let error as NSError
@@ -75,7 +76,7 @@ enum UploadTaskDescription: String
 
     @objc public func createVideoDownloadTask(url: URL) throws -> URLSessionDownloadTask
     {
-        let request = try self.requestSerializer!.createVideoRequest(with: url)
+        let request = try self.jsonRequestSerializer.createVideoRequest(with: url)
 
         let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         
@@ -86,7 +87,7 @@ enum UploadTaskDescription: String
     
     func uploadVideoTask(source: URL, destination: String, completionHandler: ErrorBlock?) throws -> URLSessionUploadTask
     {
-        let request = try self.requestSerializer!.uploadVideoRequest(with: source, destination: destination)
+        let request = try self.jsonRequestSerializer.uploadVideoRequest(with: source, destination: destination)
         
         let task = self.httpSessionManager.uploadTask(with: request as URLRequest, fromFile: source as URL, progress: nil, completionHandler: { [weak self] (response, responseObject, error) -> Void in
 
@@ -97,7 +98,8 @@ enum UploadTaskDescription: String
             
             do
             {
-                try strongSelf.jsonResponseSerializer.process(uploadVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                let json = try strongSelf.jsonResponseSerializer.responseObjectFromDownloadTaskResponse(response: response, url: response.url, error: error as NSError?) as AnyObject
+                try strongSelf.jsonResponseSerializer.process(uploadVideoResponse: response, responseObject: json, error: error as NSError?)
                 completionHandler(nil)
             }
             catch let error as NSError
@@ -115,7 +117,7 @@ enum UploadTaskDescription: String
     // For use with background sessions, use session delegate methods for destination and completion
     func activateVideoDownloadTask(uri activationUri: String) throws -> URLSessionDownloadTask
     {
-        let request = try self.requestSerializer!.activateVideoRequest(withURI: activationUri)
+        let request = try self.jsonRequestSerializer.activateVideoRequest(withURI: activationUri)
         
         let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         
@@ -127,7 +129,7 @@ enum UploadTaskDescription: String
     // For use with background sessions, use session delegate methods for destination and completion
     func videoSettingsDownloadTask(videoUri: String, videoSettings: VideoSettings) throws -> URLSessionDownloadTask
     {
-        let request = try self.requestSerializer!.videoSettingsRequest(with: videoUri, videoSettings: videoSettings)
+        let request = try self.jsonRequestSerializer.videoSettingsRequest(with: videoUri, videoSettings: videoSettings)
         
         let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
         
@@ -138,7 +140,7 @@ enum UploadTaskDescription: String
 
     @objc public func videoSettingsDataTask(videoUri: String, videoSettings: VideoSettings, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
     {
-        let request = try self.requestSerializer!.videoSettingsRequest(with: videoUri, videoSettings: videoSettings)
+        let request = try self.jsonRequestSerializer.videoSettingsRequest(with: videoUri, videoSettings: videoSettings)
         
         let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { (response, responseObject, error) -> Void in
             
@@ -151,7 +153,8 @@ enum UploadTaskDescription: String
                 
                 do
                 {
-                    let video = try strongSelf.jsonResponseSerializer.process(videoSettingsResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                    let json = try strongSelf.jsonResponseSerializer.responseObjectFromDownloadTaskResponse(response: response, url: response.url, error: error as NSError?) as AnyObject
+                    let video = try strongSelf.jsonResponseSerializer.process(videoSettingsResponse: response, responseObject: json, error: error as NSError?)
                     completionHandler(video, nil)
                 }
                 catch let error as NSError
@@ -168,7 +171,7 @@ enum UploadTaskDescription: String
     
     func deleteVideoDataTask(videoUri: String, completionHandler: @escaping ErrorBlock) throws -> URLSessionDataTask
     {
-        let request = try self.requestSerializer!.deleteVideoRequest(with: videoUri)
+        let request = try self.jsonRequestSerializer.deleteVideoRequest(with: videoUri)
         
         let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
@@ -179,7 +182,8 @@ enum UploadTaskDescription: String
             
             do
             {
-                try strongSelf.jsonResponseSerializer.process(deleteVideoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                let json = try strongSelf.jsonResponseSerializer.responseObjectFromDownloadTaskResponse(response: response, url: response.url, error: error as NSError?) as AnyObject
+                try strongSelf.jsonResponseSerializer.process(deleteVideoResponse: response, responseObject: json, error: error as NSError?)
                 completionHandler(nil)
             }
             catch let error as NSError
@@ -195,7 +199,7 @@ enum UploadTaskDescription: String
 
     func videoDataTask(videoUri: String, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
     {
-        let request = try self.requestSerializer!.videoRequest(with: videoUri)
+        let request = try self.jsonRequestSerializer.videoRequest(with: videoUri)
         
         let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
             
@@ -206,7 +210,8 @@ enum UploadTaskDescription: String
             
             do
             {
-                let video = try strongSelf.jsonResponseSerializer.process(videoResponse: response, responseObject: responseObject as AnyObject?, error: error as NSError?)
+                let json = try strongSelf.jsonResponseSerializer.responseObjectFromDownloadTaskResponse(response: response, url: response.url, error: error as NSError?) as AnyObject
+                let video = try strongSelf.jsonResponseSerializer.process(videoResponse: response, responseObject: json, error: error as NSError?)
                 completionHandler(video, nil)
             }
             catch let error as NSError
