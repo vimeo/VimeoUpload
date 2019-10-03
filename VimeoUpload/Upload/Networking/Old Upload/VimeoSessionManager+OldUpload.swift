@@ -27,201 +27,152 @@
 import Foundation
 import VimeoNetworking
 
-enum UploadTaskDescription: String
+extension VimeoSessionManager
 {
-    case MyVideos = "MyVideos"
-    case CreateVideo = "CreateVideo"
-    case UploadVideo = "UploadVideo"
-    case ActivateVideo = "ActivateVideo"
-    case VideoSettings = "VideoSettings"
-    case DeleteVideo = "DeleteVideo"
-    case Video = "Video"
-    case CreateThumbnail = "CreateThumbnail"
-    case UploadThumbnail = "UploadThumbnail"
-    case ActivateThumbnail = "ActivateThumbnail"
-}
-
-@objc extension VimeoSessionManager
-{
-    @objc public func myVideosDataTask(completionHandler: @escaping VideosCompletionHandler) throws -> URLSessionDataTask
+    public func myVideosDataTask(completionHandler: @escaping VideosCompletionHandler) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.myVideosRequest()
-        
-        let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
-            
+        let request = try self.jsonRequestSerializer.myVideosRequest() as URLRequest
+        return self.request(request) { [jsonResponseSerializer] sessionManagingResult in
             // Do model parsing on a background thread
-            DispatchQueue.global(qos: .default).async(execute: { [weak self] () -> Void in
-                guard let strongSelf = self else
-                {
-                    return
-                }
-                
-                do
-                {
-                    let json = try strongSelf.jsonResponseSerializer.responseObjectFromDownloadTaskResponse(response: response, url: response.url, error: error as NSError?) as AnyObject
-                    let videos = try strongSelf.jsonResponseSerializer.process(myVideosResponse: response, responseObject: json, error: error as NSError?)
-                    completionHandler(videos, nil)
-                }
-                catch let error as NSError
-                {
+            DispatchQueue.global(qos: .default).async {
+                switch sessionManagingResult.result {
+                case .failure(let error as NSError):
                     completionHandler(nil, error)
+                case .success:
+                    do {
+                        let response = sessionManagingResult.response
+                        let json = try jsonResponseSerializer.responseObjectFromDownloadTaskResponse(
+                            response: response,
+                            url: response?.url,
+                            error: nil
+                        ) as AnyObject
+                        let videos = try jsonResponseSerializer.process(
+                            myVideosResponse: response,
+                            responseObject: json,
+                            error: nil
+                        )
+                        completionHandler(videos, nil)
+                    } catch let error as NSError {
+                        completionHandler(nil, error)
+                    }
                 }
-            })
-        })
-        
-        task.taskDescription = UploadTaskDescription.MyVideos.rawValue
-        
-        return task
+            }
+        }
     }
 
-    @objc public func createVideoDownloadTask(url: URL) throws -> URLSessionDownloadTask
+    public func createVideoDownloadTask(url: URL) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.createVideoRequest(with: url)
-
-        let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
-        
-        task.taskDescription = UploadTaskDescription.CreateVideo.rawValue
-        
-        return task
+        let request = try self.jsonRequestSerializer.createVideoRequest(with: url) as URLRequest
+        return self.download(request) { _ in }
     }
     
-    func uploadVideoTask(source: URL, destination: String, completionHandler: ErrorBlock?) throws -> URLSessionUploadTask
+    func uploadVideoTask(source: URL, destination: String, completionHandler: ErrorBlock?) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.uploadVideoRequest(with: source, destination: destination)
-        
-        let task = self.httpSessionManager.uploadTask(with: request as URLRequest, fromFile: source as URL, progress: nil, completionHandler: { [weak self] (response, responseObject, error) -> Void in
-
-            guard let strongSelf = self, let completionHandler = completionHandler else
-            {
-                return
+        let request = try self.jsonRequestSerializer.uploadVideoRequest(with: source, destination: destination) as URLRequest
+        return self.upload(request, sourceFile: source) { [jsonResponseSerializer] sessionManagingResult in
+            switch sessionManagingResult.result {
+            case .failure(let error):
+                completionHandler?(error as NSError)
+            case .success:
+                do
+                {
+                    let response = sessionManagingResult.response
+                    let json = try jsonResponseSerializer.responseObjectFromDownloadTaskResponse(response: response, url: response?.url, error: nil) as AnyObject
+                    try jsonResponseSerializer.process(uploadVideoResponse: response, responseObject: json, error: nil)
+                    completionHandler?(nil)
+                } catch let error as NSError {
+                    completionHandler?(error)
+                }
             }
-            
-            do
-            {
-                let json = try strongSelf.jsonResponseSerializer.responseObjectFromDownloadTaskResponse(response: response, url: response.url, error: error as NSError?) as AnyObject
-                try strongSelf.jsonResponseSerializer.process(uploadVideoResponse: response, responseObject: json, error: error as NSError?)
-                completionHandler(nil)
-            }
-            catch let error as NSError
-            {
-                completionHandler(error)
-            }
-
-        })
-        
-        task.taskDescription = UploadTaskDescription.UploadVideo.rawValue
-        
-        return task
+        }
     }
     
     // For use with background sessions, use session delegate methods for destination and completion
-    func activateVideoDownloadTask(uri activationUri: String) throws -> URLSessionDownloadTask
+    func activateVideoDownloadTask(uri activationUri: String) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.activateVideoRequest(withURI: activationUri)
-        
-        let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
-        
-        task.taskDescription = UploadTaskDescription.ActivateVideo.rawValue
-        
-        return task
-    }    
+        let request = try self.jsonRequestSerializer.activateVideoRequest(withURI: activationUri) as URLRequest
+        return self.download(request) { _ in }
+    }
 
     // For use with background sessions, use session delegate methods for destination and completion
-    func videoSettingsDownloadTask(videoUri: String, videoSettings: VideoSettings) throws -> URLSessionDownloadTask
+    func videoSettingsDownloadTask(videoUri: String, videoSettings: VideoSettings) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.videoSettingsRequest(with: videoUri, videoSettings: videoSettings)
-        
-        let task = self.httpSessionManager.downloadTask(with: request as URLRequest, progress: nil, destination: nil, completionHandler: nil)
-        
-        task.taskDescription = UploadTaskDescription.VideoSettings.rawValue
-        
-        return task
+        let request = try self.jsonRequestSerializer.videoSettingsRequest(with: videoUri, videoSettings: videoSettings) as URLRequest
+        return self.download(request) { _ in }
     }
 
-    @objc public func videoSettingsDataTask(videoUri: String, videoSettings: VideoSettings, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
+    public func videoSettingsDataTask(videoUri: String, videoSettings: VideoSettings, completionHandler: @escaping VideoCompletionHandler) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.videoSettingsRequest(with: videoUri, videoSettings: videoSettings)
-        
-        let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { (response, responseObject, error) -> Void in
-            
+        let request = try self.jsonRequestSerializer.videoSettingsRequest(with: videoUri, videoSettings: videoSettings) as URLRequest
+        return self.request(request) { [jsonResponseSerializer] sessionManagingResult in
             // Do model parsing on a background thread
-            DispatchQueue.global(qos: .default).async(execute: { [weak self] () -> Void in
-                guard let strongSelf = self else
-                {
-                    return
+            DispatchQueue.global(qos: .default).async {
+                switch sessionManagingResult.result {
+                case .failure(let error):
+                    completionHandler(nil, error as NSError)
+                case .success:
+                    do {
+                        let response = sessionManagingResult.response
+                        let json = try jsonResponseSerializer.responseObjectFromDownloadTaskResponse(
+                            response: response,
+                            url: response?.url,
+                            error: nil
+                        ) as AnyObject
+                        let video = try jsonResponseSerializer.process(videoSettingsResponse: response, responseObject: json, error: nil)
+                        completionHandler(video, nil)
+                    } catch let error as NSError {
+                        completionHandler(nil, error)
+                    }
                 }
-                
-                do
-                {
-                    let json = try strongSelf.jsonResponseSerializer.responseObjectFromDownloadTaskResponse(response: response, url: response.url, error: error as NSError?) as AnyObject
-                    let video = try strongSelf.jsonResponseSerializer.process(videoSettingsResponse: response, responseObject: json, error: error as NSError?)
-                    completionHandler(video, nil)
-                }
-                catch let error as NSError
-                {
-                    completionHandler(nil, error)
-                }
-            })
-        })
-        
-        task.taskDescription = UploadTaskDescription.VideoSettings.rawValue
-        
-        return task
+            }
+        }
     }
     
-    func deleteVideoDataTask(videoUri: String, completionHandler: @escaping ErrorBlock) throws -> URLSessionDataTask
+    func deleteVideoDataTask(videoUri: String, completionHandler: @escaping ErrorBlock) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.deleteVideoRequest(with: videoUri)
-        
-        let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
-            
-            guard let strongSelf = self else
-            {
-                return
+        let request = try self.jsonRequestSerializer.deleteVideoRequest(with: videoUri) as URLRequest
+        return self.request(request) { [jsonResponseSerializer] sessionManagingResult in
+            switch sessionManagingResult.result {
+            case .failure(let error):
+                completionHandler(error as NSError)
+            case .success:
+                do {
+                    let response = sessionManagingResult.response
+                    let json = try jsonResponseSerializer.responseObjectFromDownloadTaskResponse(
+                        response: response,
+                        url: response?.url,
+                        error: nil
+                    ) as AnyObject
+                    try jsonResponseSerializer.process(deleteVideoResponse: response, responseObject: json, error: nil)
+                    completionHandler(nil)
+                } catch let error as NSError {
+                    completionHandler(error)
+                }
             }
-            
-            do
-            {
-                let json = try strongSelf.jsonResponseSerializer.responseObjectFromDownloadTaskResponse(response: response, url: response.url, error: error as NSError?) as AnyObject
-                try strongSelf.jsonResponseSerializer.process(deleteVideoResponse: response, responseObject: json, error: error as NSError?)
-                completionHandler(nil)
-            }
-            catch let error as NSError
-            {
-                completionHandler(error)
-            }
-        })
-        
-        task.taskDescription = UploadTaskDescription.DeleteVideo.rawValue
-        
-        return task
+        }
     }
 
-    func videoDataTask(videoUri: String, completionHandler: @escaping VideoCompletionHandler) throws -> URLSessionDataTask
+    func videoDataTask(videoUri: String, completionHandler: @escaping VideoCompletionHandler) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.videoRequest(with: videoUri)
-        
-        let task = self.httpSessionManager.dataTask(with: request as URLRequest, completionHandler: { [weak self] (response, responseObject, error) -> Void in
-            
-            guard let strongSelf = self else
-            {
-                return
-            }
-            
-            do
-            {
-                let json = try strongSelf.jsonResponseSerializer.responseObjectFromDownloadTaskResponse(response: response, url: response.url, error: error as NSError?) as AnyObject
-                let video = try strongSelf.jsonResponseSerializer.process(videoResponse: response, responseObject: json, error: error as NSError?)
-                completionHandler(video, nil)
-            }
-            catch let error as NSError
-            {
+        let request = try self.jsonRequestSerializer.videoRequest(with: videoUri) as URLRequest
+        return self.request(request) { [jsonResponseSerializer] sessionManagingResult in
+            switch sessionManagingResult.result {
+            case .failure(let error as NSError):
                 completionHandler(nil, error)
+            case .success:
+                do {
+                    let response = sessionManagingResult.response
+                    let json = try jsonResponseSerializer.responseObjectFromDownloadTaskResponse(
+                        response: response,
+                        url: response?.url,
+                        error: nil
+                    ) as AnyObject
+                    let video = try jsonResponseSerializer.process(videoResponse: response, responseObject: json, error: nil)
+                    completionHandler(video, nil)
+                } catch let error as NSError {
+                    completionHandler(nil, error)
+                }
             }
-        })
-        
-        task.taskDescription = UploadTaskDescription.Video.rawValue
-        
-        return task
+        }
     }
 }

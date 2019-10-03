@@ -219,10 +219,10 @@ import VimeoNetworking
     {
         self.currentRequest = request
         let task = try self.task(forRequest: request, sessionManager: sessionManager)
-        self.currentTaskIdentifier = task.taskIdentifier
+        self.currentTaskIdentifier = task?.id
     }
     
-    private func task(forRequest request: OldUploadRequest, sessionManager: VimeoSessionManager) throws -> URLSessionTask
+    private func task(forRequest request: OldUploadRequest, sessionManager: VimeoSessionManager) throws -> Task?
     {
         switch request
         {
