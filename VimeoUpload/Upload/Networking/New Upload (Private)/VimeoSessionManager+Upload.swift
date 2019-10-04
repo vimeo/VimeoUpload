@@ -42,7 +42,7 @@ extension VimeoSessionManager
     {
         let request = try self.jsonRequestSerializer.createVideoRequest(with: url, videoSettings: videoSettings, uploadParameters: uploadParameters) as URLRequest
 
-        return self.request(request) { [jsonResponseSerializer] sessionManagingResult in
+        return self.request(request) { [jsonResponseSerializer] (sessionManagingResult: SessionManagingResult<JSON>) in
             // Do model parsing on a background thread
             DispatchQueue.global(qos: .default).async(execute: {
                 switch sessionManagingResult.result {
