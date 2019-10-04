@@ -88,7 +88,7 @@ import VimeoNetworking
     {
         super.resume(sessionManager: sessionManager)
         
-        if let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTask(for: identifier), let progress = sessionManager.uploadProgress(for: task)
+        if let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTask(forIdentifier: identifier), let progress = sessionManager.uploadProgress(for: task)
         {
             self.progress = progress
         }
@@ -107,7 +107,7 @@ import VimeoNetworking
     
     @objc override public func didLoadFromCache(sessionManager: VimeoSessionManager) throws
     {
-        guard let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTask(for: identifier), let progress = sessionManager.uploadProgress(for: task) else
+        guard let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTask(forIdentifier: identifier), let progress = sessionManager.uploadProgress(for: task) else
         {
             FileManager.default.deleteFile(at: self.videoUrl)
             

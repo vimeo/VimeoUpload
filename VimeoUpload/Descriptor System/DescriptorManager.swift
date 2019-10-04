@@ -184,7 +184,7 @@ public typealias VoidClosure = () -> Void
         // not only the app will leak memory but the share extension won't be
         // able to upload due to the main app still binding to that session ID.
         // [VN] (07/03/2018)
-        self.sessionManager.httpSessionManager.setSessionDidBecomeInvalidBlock { [weak self] (session, error) -> Void in
+        self.sessionManager.configureDidBecomeInvalidClosure { [weak self] (session, error) -> Void in
 
             guard let strongSelf = self else
             {
@@ -235,7 +235,7 @@ public typealias VoidClosure = () -> Void
             })
         }
         
-        self.sessionManager.httpSessionManager.setDownloadTaskDidFinishDownloadingBlock { [weak self] (session, task, url) -> URL? in
+        self.sessionManager.configureDownloadTaskDidFinishDownloadingClosure { [weak self] (session, task, url) -> URL? in
 
             guard let strongSelf = self else
             {
@@ -270,7 +270,7 @@ public typealias VoidClosure = () -> Void
             return destination
         }
         
-        self.sessionManager.httpSessionManager.setTaskDidComplete { [weak self] (session, task, error) -> Void in
+        self.sessionManager.configureTaskDidCompleteClosure { [weak self] (session, task, error) -> Void in
 
             guard let strongSelf = self else
             {
@@ -374,7 +374,7 @@ public typealias VoidClosure = () -> Void
             })
         }
         
-        self.sessionManager.httpSessionManager.setDidFinishEventsForBackgroundURLSessionBlock { [weak self] (session) -> Void in
+        self.sessionManager.configureDidFinishEventsForBackgroundURLSessionClosure { [weak self] (session) -> Void in
 
             guard let strongSelf = self else
             {
@@ -434,7 +434,7 @@ public typealias VoidClosure = () -> Void
     /// handle the events. `false` otherwise.
     @objc open func canHandleEventsForBackgroundURLSession(withIdentifier identifier: String) -> Bool
     {
-        return identifier == self.sessionManager.httpSessionManager.session.configuration.identifier
+        return identifier == self.sessionManager.sessionIdentifier
     }
     
     @objc open func handleEventsForBackgroundURLSession(completionHandler: @escaping VoidClosure)

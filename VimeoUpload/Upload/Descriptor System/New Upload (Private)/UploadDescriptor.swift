@@ -112,8 +112,8 @@ import VimeoNetworking
         super.resume(sessionManager: sessionManager)
         
          if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.uploadTask(for: identifier),
-            let progress = sessionManager.httpSessionManager.uploadProgress(for: task)
+            let task = sessionManager.uploadTask(forIdentifier: identifier),
+            let progress = sessionManager.uploadProgress(for: task)
         {
             self.progress = progress
         }
@@ -129,8 +129,8 @@ import VimeoNetworking
     @objc override open func didLoadFromCache(sessionManager: VimeoSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.uploadTask(for: identifier),
-            let progress = sessionManager.httpSessionManager.uploadProgress(for: task) else
+            let task = sessionManager.uploadTask(forIdentifier: identifier),
+            let progress = sessionManager.uploadProgress(for: task) else
         {
             // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload
             // Upon reopening the app, the descriptor is loaded but no longer has a task 
