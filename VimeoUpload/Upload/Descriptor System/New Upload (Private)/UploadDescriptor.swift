@@ -26,7 +26,6 @@
 
 import Foundation
 import VimeoNetworking
-import AFNetworking
 
 @objc open class UploadDescriptor: ProgressDescriptor, VideoDescriptor
 {
