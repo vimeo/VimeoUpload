@@ -26,7 +26,6 @@
 
 import UIKit
 import Photos
-import AFNetworking
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate

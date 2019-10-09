@@ -28,7 +28,6 @@ import UIKit
 import AVFoundation
 import Photos
 import VimeoNetworking
-import AFNetworking
 import VimeoUpload
 
 class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
