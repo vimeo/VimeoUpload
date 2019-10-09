@@ -2,21 +2,21 @@ PODS:
   - VimeoNetworking (5.0.0)
 
 DEPENDENCIES:
-  - VimeoNetworking (from `https://github.com/vimeo/VimeoNetworking.git`, branch `tech/VIM-XXXX_MovesAFNetworkingFilesToRepo`)
+  - VimeoNetworking (from `https://github.com/vimeo/VimeoNetworking.git`, branch `develop`)
 
 EXTERNAL SOURCES:
   VimeoNetworking:
-    :branch: tech/VIM-XXXX_MovesAFNetworkingFilesToRepo
+    :branch: develop
     :git: https://github.com/vimeo/VimeoNetworking.git
 
 CHECKOUT OPTIONS:
   VimeoNetworking:
-    :commit: 62024727135c9ae1a5324b2b041501df63812c11
+    :commit: 9d2cb2daee60270b0095c763c63b3db3cba140c9
     :git: https://github.com/vimeo/VimeoNetworking.git
 
 SPEC CHECKSUMS:
   VimeoNetworking: 2cfd95cd0da3e3bb4faa12e6a5f04a2860ade5ab
 
-PODFILE CHECKSUM: d3407a0da025e297d792c056fca95542e8e8cfdd
+PODFILE CHECKSUM: 766ad1a4bbad744e575a1544e976bcbc4d8ba30d
 
 COCOAPODS: 1.5.2
