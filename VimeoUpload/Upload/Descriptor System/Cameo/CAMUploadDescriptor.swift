@@ -88,7 +88,7 @@ import VimeoNetworking
     {
         super.resume(sessionManager: sessionManager)
         
-        if let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTask(for: identifier), let progress = sessionManager.uploadProgress(for: task)
+        if let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTask(forIdentifier: identifier), let progress = sessionManager.uploadProgress(for: task)
         {
             self.progress = progress
         }
@@ -107,7 +107,7 @@ import VimeoNetworking
     
     @objc override public func didLoadFromCache(sessionManager: VimeoSessionManager) throws
     {
-        guard let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTask(for: identifier), let progress = sessionManager.uploadProgress(for: task) else
+        guard let identifier = self.currentTaskIdentifier, let task = sessionManager.uploadTask(forIdentifier: identifier), let progress = sessionManager.uploadProgress(for: task) else
         {
             FileManager.default.deleteFile(at: self.videoUrl)
             
@@ -128,7 +128,7 @@ import VimeoNetworking
     
     @objc override public func taskDidFinishDownloading(sessionManager: VimeoSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
     {
-        let responseSerializer = sessionManager.responseSerializer as! VimeoResponseSerializer
+        let responseSerializer = sessionManager.jsonResponseSerializer
         
         do
         {
@@ -236,10 +236,10 @@ import VimeoNetworking
     {
         self.currentRequest = request
         let task = try self.taskForRequest(request: request, sessionManager: sessionManager)
-        self.currentTaskIdentifier = task.taskIdentifier
+        self.currentTaskIdentifier = task?.id
     }
     
-    private func taskForRequest(request: CAMUploadRequest, sessionManager: VimeoSessionManager) throws -> URLSessionTask
+    private func taskForRequest(request: CAMUploadRequest, sessionManager: VimeoSessionManager) throws -> Task?
     {
         switch request
         {

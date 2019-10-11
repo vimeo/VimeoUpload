@@ -92,10 +92,10 @@ import VimeoNetworking
             
             let uploadLink = try self.uploadStrategy.uploadLink(from: video)
             
-            let uploadRequest = try self.uploadStrategy.uploadRequest(requestSerializer: sessionManager.requestSerializer as? VimeoRequestSerializer, fileUrl: self.url, uploadLink: uploadLink)
+            let uploadRequest = try self.uploadStrategy.uploadRequest(requestSerializer: sessionManager.jsonRequestSerializer, fileUrl: self.url, uploadLink: uploadLink)
             let task = sessionManager.uploadVideoTask(source: self.url, request: uploadRequest, completionHandler: nil)
             
-            self.currentTaskIdentifier = task.taskIdentifier
+            self.currentTaskIdentifier = task?.id
         }
         catch let error as NSError
         {
@@ -112,7 +112,7 @@ import VimeoNetworking
         super.resume(sessionManager: sessionManager)
         
          if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.uploadTask(for: identifier),
+            let task = sessionManager.uploadTask(forIdentifier: identifier),
             let progress = sessionManager.uploadProgress(for: task)
         {
             self.progress = progress
@@ -129,7 +129,7 @@ import VimeoNetworking
     @objc override open func didLoadFromCache(sessionManager: VimeoSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.uploadTask(for: identifier),
+            let task = sessionManager.uploadTask(forIdentifier: identifier),
             let progress = sessionManager.uploadProgress(for: task) else
         {
             // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload

@@ -83,7 +83,7 @@ public enum DescriptorState: String
         self.state = .executing
         
         if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.task(for: identifier)
+            let task = sessionManager.task(forIdentifier: identifier)
         {
             task.resume()
         }
@@ -146,7 +146,7 @@ public enum DescriptorState: String
     private func doCancel(sessionManager: VimeoSessionManager)
     {
         if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.task(for: identifier)
+            let task = sessionManager.task(forIdentifier: identifier)
         {
             task.cancel()
         }
