@@ -3,6 +3,7 @@ This library is under active development. All comments, questions, pull requests
 
 ## Contents
 * [Getting Started](#getting-started)
+     * [Installation] (#installation)
      * [Prerequisites](#prerequisites)
      * [Which example project should I use?](#which-example-project-should-i-use)
      * [Setup your Submodules](#setup-your-submodules)
@@ -31,6 +32,26 @@ This library is under active development. All comments, questions, pull requests
 
 
 ## Getting Started
+
+### Installation
+
+VimeoUpload is available through [Carthage](https://github.com/carthage/Carthage) and coming soon [CocoaPods](http://cocoapods.org) 
+
+### Cocoapods
+
+To install it, simply add the following line to your Podfile:
+
+```ruby
+pod "VimeoUpload"
+```
+
+### Carthage
+
+Add the following to your Cartfile:
+
+```
+github "vimeo/VimeoUpload"
+```
 
 ### Prerequisites
 
