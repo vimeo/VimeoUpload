@@ -2,21 +2,21 @@ PODS:
   - VimeoNetworking (5.0.0)
 
 DEPENDENCIES:
-  - VimeoNetworking (from `https://github.com/vimeo/vimeonetworking.git`, branch `VIM-XXXX_RequestSerializerRefactor`)
+  - VimeoNetworking (from `https://github.com/vimeo/vimeonetworking.git`, branch `feature/VIM-XXXX_AFNetworkingDeprecation`)
 
 EXTERNAL SOURCES:
   VimeoNetworking:
-    :branch: VIM-XXXX_RequestSerializerRefactor
+    :branch: feature/VIM-XXXX_AFNetworkingDeprecation
     :git: https://github.com/vimeo/vimeonetworking.git
 
 CHECKOUT OPTIONS:
   VimeoNetworking:
-    :commit: be2ad19c02c00b0d0c7d9a205a6820a60e28f064
+    :commit: 529ea8359d73e02183df94d74453a69a079e9fbb
     :git: https://github.com/vimeo/vimeonetworking.git
 
 SPEC CHECKSUMS:
   VimeoNetworking: 2cfd95cd0da3e3bb4faa12e6a5f04a2860ade5ab
 
-PODFILE CHECKSUM: f061a740dc26cf4c03f8022c46bb27d49ab36d66
+PODFILE CHECKSUM: 8ffb8802a657a8ec73d590dd9002347ef11b2339
 
 COCOAPODS: 1.5.2
