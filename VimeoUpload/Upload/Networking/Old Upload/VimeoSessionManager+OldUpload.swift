@@ -32,8 +32,8 @@ extension VimeoSessionManager
 {
     public func myVideosDataTask(completionHandler: @escaping VideosCompletionHandler) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.myVideosRequest() as URLRequest
-        return self.request(request) { [jsonResponseSerializer] (sessionManagingResult: SessionManagingResult<JSON>) in
+        let request = try self.vimeoRequestSerializer.myVideosRequest() as URLRequest
+        return self.request(request) { [vimeoResponseSerializer] (sessionManagingResult: SessionManagingResult<JSON>) in
             // Do model parsing on a background thread
             DispatchQueue.global(qos: .default).async {
                 switch sessionManagingResult.result {
@@ -41,7 +41,7 @@ extension VimeoSessionManager
                     completionHandler(nil, error)
                 case .success(let json):
                     do {
-                        let videos = try jsonResponseSerializer.process(
+                        let videos = try vimeoResponseSerializer.process(
                             myVideosResponse: sessionManagingResult.response,
                             responseObject: json as AnyObject,
                             error: nil
@@ -57,20 +57,20 @@ extension VimeoSessionManager
 
     public func createVideoDownloadTask(url: URL) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.createVideoRequest(with: url) as URLRequest
+        let request = try self.vimeoRequestSerializer.createVideoRequest(with: url) as URLRequest
         return self.download(request) { _ in }
     }
     
     func uploadVideoTask(source: URL, destination: String, completionHandler: ErrorBlock?) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.uploadVideoRequest(with: source, destination: destination) as URLRequest
-        return self.upload(request, sourceFile: source) { [jsonResponseSerializer] sessionManagingResult in
+        let request = try self.vimeoRequestSerializer.uploadVideoRequest(with: source, destination: destination) as URLRequest
+        return self.upload(request, sourceFile: source) { [vimeoResponseSerializer] sessionManagingResult in
             switch sessionManagingResult.result {
             case .failure(let error):
                 completionHandler?(error as NSError)
             case .success(let json):
                 do {
-                    try jsonResponseSerializer.process(
+                    try vimeoResponseSerializer.process(
                         uploadVideoResponse: sessionManagingResult.response,
                         responseObject: json as AnyObject,
                         error: nil
@@ -86,21 +86,21 @@ extension VimeoSessionManager
     // For use with background sessions, use session delegate methods for destination and completion
     func activateVideoDownloadTask(uri activationUri: String) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.activateVideoRequest(withURI: activationUri) as URLRequest
+        let request = try self.vimeoRequestSerializer.activateVideoRequest(withURI: activationUri) as URLRequest
         return self.download(request) { _ in }
     }
 
     // For use with background sessions, use session delegate methods for destination and completion
     func videoSettingsDownloadTask(videoUri: String, videoSettings: VideoSettings) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.videoSettingsRequest(with: videoUri, videoSettings: videoSettings) as URLRequest
+        let request = try self.vimeoRequestSerializer.videoSettingsRequest(with: videoUri, videoSettings: videoSettings) as URLRequest
         return self.download(request) { _ in }
     }
 
     public func videoSettingsDataTask(videoUri: String, videoSettings: VideoSettings, completionHandler: @escaping VideoCompletionHandler) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.videoSettingsRequest(with: videoUri, videoSettings: videoSettings) as URLRequest
-        return self.request(request) { [jsonResponseSerializer] (sessionManagingResult: SessionManagingResult<JSON>) in
+        let request = try self.vimeoRequestSerializer.videoSettingsRequest(with: videoUri, videoSettings: videoSettings) as URLRequest
+        return self.request(request) { [vimeoResponseSerializer] (sessionManagingResult: SessionManagingResult<JSON>) in
             // Do model parsing on a background thread
             DispatchQueue.global(qos: .default).async {
                 switch sessionManagingResult.result {
@@ -108,7 +108,7 @@ extension VimeoSessionManager
                     completionHandler(nil, error as NSError)
                 case .success(let json):
                     do {
-                        let video = try jsonResponseSerializer.process(
+                        let video = try vimeoResponseSerializer.process(
                             videoSettingsResponse: sessionManagingResult.response,
                             responseObject: json as AnyObject,
                             error: nil
@@ -124,14 +124,14 @@ extension VimeoSessionManager
     
     func deleteVideoDataTask(videoUri: String, completionHandler: @escaping ErrorBlock) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.deleteVideoRequest(with: videoUri) as URLRequest
-        return self.request(request) { [jsonResponseSerializer] (sessionManagingResult: SessionManagingResult<JSON>) in
+        let request = try self.vimeoRequestSerializer.deleteVideoRequest(with: videoUri) as URLRequest
+        return self.request(request) { [vimeoResponseSerializer] (sessionManagingResult: SessionManagingResult<JSON>) in
             switch sessionManagingResult.result {
             case .failure(let error):
                 completionHandler(error as NSError)
             case .success(let json):
                 do {
-                    try jsonResponseSerializer.process(
+                    try vimeoResponseSerializer.process(
                         deleteVideoResponse: sessionManagingResult.response,
                         responseObject: json as AnyObject,
                         error: nil
@@ -146,14 +146,14 @@ extension VimeoSessionManager
 
     func videoDataTask(videoUri: String, completionHandler: @escaping VideoCompletionHandler) throws -> Task?
     {
-        let request = try self.jsonRequestSerializer.videoRequest(with: videoUri) as URLRequest
-        return self.request(request) { [jsonResponseSerializer] (sessionManagingResult: SessionManagingResult<JSON>) in
+        let request = try self.vimeoRequestSerializer.videoRequest(with: videoUri) as URLRequest
+        return self.request(request) { [vimeoResponseSerializer] (sessionManagingResult: SessionManagingResult<JSON>) in
             switch sessionManagingResult.result {
             case .failure(let error as NSError):
                 completionHandler(nil, error)
             case .success(let json):
                 do {
-                    let video = try jsonResponseSerializer.process(
+                    let video = try vimeoResponseSerializer.process(
                         videoResponse: sessionManagingResult.response,
                         responseObject: json as AnyObject,
                         error: nil

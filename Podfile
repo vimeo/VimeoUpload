@@ -4,7 +4,7 @@ use_frameworks!
 platform :ios, '10.3'
 
 def shared_pods
-    pod 'VimeoNetworking', :git => 'https://github.com/vimeo/vimeonetworking.git', :branch => 'feature/VIM-XXXX_AFNetworkingDeprecation'
+    pod 'VimeoNetworking', :git => 'https://github.com/vimeo/vimeonetworking.git', :branch => 'fix/re-structure-netwoking-base-classes'
 end
 
 target 'VimeoUpload' do
