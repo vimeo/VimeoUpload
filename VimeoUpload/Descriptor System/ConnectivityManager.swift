@@ -98,20 +98,12 @@ protocol ConnectivityManagerDelegate: AnyObject
             return
         }
 
-        if VimeoReachabilityProvider.isReachableOnEthernetOrWiFi == true
-        {
+        if VimeoReachabilityProvider.isReachableOnEthernetOrWiFi == true {
             self.delegate?.resume(connectivityManager: self)
-        }
-        else
-        {
-            if self.allowsCellularUsage
-            {
-                self.delegate?.resume(connectivityManager: self)
-            }
-            else
-            {
-                self.delegate?.suspend(connectivityManager: self)
-            }
+        } else {
+            self.allowsCellularUsage
+                ? self.delegate?.resume(connectivityManager: self)
+                : self.delegate?.suspend(connectivityManager: self)
         }
     }
 }
