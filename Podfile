@@ -1,14 +1,14 @@
 workspace 'VimeoUpload'
 
 use_frameworks!
-platform :ios, '10.3'
+platform :ios, '11.4'
 
 def shared_pods
-    pod 'VimeoNetworking', :git => 'https://github.com/vimeo/vimeonetworking.git', :branch => 'feature/VIM-XXXX_AFNetworkingDeprecation'
+    pod 'VimeoNetworking', :git => 'https://github.com/Vimeo/VimeoNetworking.git', :branch => 'develop'
 end
 
 target 'VimeoUpload' do
-    shared_pods    
+    shared_pods
     project 'Framework/VimeoUpload/VimeoUpload.xcodeproj'
 
     target "VimeoUploadTests" do
