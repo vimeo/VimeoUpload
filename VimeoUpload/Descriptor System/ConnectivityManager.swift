@@ -27,7 +27,7 @@
 import Foundation
 import VimeoNetworking
 
-protocol ConnectivityManagerDelegate: class
+protocol ConnectivityManagerDelegate: AnyObject
 {
     func suspend(connectivityManager: ConnectivityManager)
     func resume(connectivityManager: ConnectivityManager)
@@ -36,6 +36,10 @@ protocol ConnectivityManagerDelegate: class
 @objc class ConnectivityManager: NSObject
 {
     weak var delegate: ConnectivityManagerDelegate?
+    
+    private let reachabilityChangedNotificaton = Notification.Name(
+        rawValue: NetworkingNotification.reachabilityDidChange.rawValue
+    )
     
     var allowsCellularUsage = true
     {
@@ -65,13 +69,21 @@ protocol ConnectivityManagerDelegate: class
     // MARK: Notifications
     
     private func addObservers()
-    {
-        NotificationCenter.default.addObserver(self, selector: #selector(ConnectivityManager.reachabilityDidChange(_:)), name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
+    {        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ConnectivityManager.reachabilityDidChange(_:)),
+            name: reachabilityChangedNotificaton, object: nil
+        )
     }
     
     private func removeObservers()
     {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.removeObserver(
+            self,
+            name: reachabilityChangedNotificaton,
+            object: nil
+        )
     }
     
     @objc func reachabilityDidChange(_ notification: Notification)
@@ -81,27 +93,17 @@ protocol ConnectivityManagerDelegate: class
     
     private func updateState()
     {
-        if AFNetworkReachabilityManager.shared().isReachable == true
-        {
-            if AFNetworkReachabilityManager.shared().isReachableViaWiFi
-            {
-                self.delegate?.resume(connectivityManager: self)
-            }
-            else
-            {
-                if self.allowsCellularUsage
-                {
-                    self.delegate?.resume(connectivityManager: self)
-                }
-                else
-                {
-                    self.delegate?.suspend(connectivityManager: self)
-                }
-            }
-        }
-        else
-        {
+        guard VimeoReachabilityProvider.isReachable else {
             self.delegate?.suspend(connectivityManager: self)
+            return
+        }
+
+        if VimeoReachabilityProvider.isReachableOnEthernetOrWiFi == true {
+            self.delegate?.resume(connectivityManager: self)
+        } else {
+            self.allowsCellularUsage
+                ? self.delegate?.resume(connectivityManager: self)
+                : self.delegate?.suspend(connectivityManager: self)
         }
     }
 }

@@ -148,8 +148,8 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
             
             return
         }
-        
-        if AFNetworkReachabilityManager.shared().isReachable == false
+
+        if VimeoReachabilityProvider.isReachable == false
         {
             let error = NSError(domain: NSURLErrorDomain, code: NSURLErrorNotConnectedToInternet, userInfo: [NSLocalizedDescriptionKey: "The internet connection appears to be offline."])
             self.presentErrorAlert(at: indexPath, error: error)

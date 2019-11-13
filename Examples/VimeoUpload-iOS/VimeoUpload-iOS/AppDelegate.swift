@@ -25,6 +25,7 @@
 //
 
 import UIKit
+import VimeoNetworking
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate
@@ -35,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     {
         NSKeyedUnarchiver.setLegacyClassNameMigrations()
         
-        AFNetworkReachabilityManager.shared().startMonitoring()
+        _ = VimeoReachabilityProvider.isReachable // Intialize reachability manager listening
         NewVimeoUploader.sharedInstance?.applicationDidFinishLaunching() // Ensure init is called on launch
 
         let settings = UIUserNotificationSettings(types: .alert, categories: nil)

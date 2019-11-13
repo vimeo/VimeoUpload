@@ -79,7 +79,7 @@ import VimeoNetworking
 
     // MARK: Overrides
     
-    @objc override open func prepare(sessionManager: AFURLSessionManager) throws
+    @objc override open func prepare(sessionManager: VimeoSessionManager) throws
     {
         // TODO: Do we need to set self.state == .Ready here? [AH] 2/22/2016
         
@@ -91,12 +91,11 @@ import VimeoNetworking
             }
             
             let uploadLink = try self.uploadStrategy.uploadLink(from: video)
-            let sessionManager = sessionManager as! VimeoSessionManager
             
-            let uploadRequest = try self.uploadStrategy.uploadRequest(requestSerializer: sessionManager.requestSerializer as? VimeoRequestSerializer, fileUrl: self.url, uploadLink: uploadLink)
+            let uploadRequest = try self.uploadStrategy.uploadRequest(requestSerializer: sessionManager.jsonRequestSerializer, fileUrl: self.url, uploadLink: uploadLink)
             let task = sessionManager.uploadVideoTask(source: self.url, request: uploadRequest, completionHandler: nil)
             
-            self.currentTaskIdentifier = task.taskIdentifier
+            self.currentTaskIdentifier = task?.id
         }
         catch let error as NSError
         {
@@ -108,29 +107,29 @@ import VimeoNetworking
         }
     }
     
-    @objc override open func resume(sessionManager: AFURLSessionManager)
+    @objc override open func resume(sessionManager: VimeoSessionManager)
     {
         super.resume(sessionManager: sessionManager)
         
          if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.uploadTask(for: identifier),
+            let task = sessionManager.uploadTask(forIdentifier: identifier),
             let progress = sessionManager.uploadProgress(for: task)
         {
             self.progress = progress
         }
     }
     
-    @objc override open func cancel(sessionManager: AFURLSessionManager)
+    @objc override open func cancel(sessionManager: VimeoSessionManager)
     {
         super.cancel(sessionManager: sessionManager)
         
         FileManager.default.deleteFile(at: self.url)
     }
 
-    @objc override open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    @objc override open func didLoadFromCache(sessionManager: VimeoSessionManager) throws
     {
         guard let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.uploadTask(for: identifier),
+            let task = sessionManager.uploadTask(forIdentifier: identifier),
             let progress = sessionManager.uploadProgress(for: task) else
         {
             // This error is thrown if you initiate an upload and then kill the app from the multitasking view in mid-upload
@@ -148,7 +147,7 @@ import VimeoNetworking
         self.progress = progress
     }
     
-    @objc override open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
+    @objc override open func taskDidComplete(sessionManager: VimeoSessionManager, task: URLSessionTask, error: NSError?)
     {
         self.currentTaskIdentifier = nil
 

@@ -32,7 +32,7 @@ import VimeoNetworking
     private let sessionManager: VimeoSessionManager
     private let videoUri: String
     
-    private var task: URLSessionDataTask?
+    private var task: Task?
     
     private(set) var video: VIMVideo?
     private(set) var error: NSError?
