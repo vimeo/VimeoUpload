@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import AFNetworking
 import VimeoNetworking
 
 @objc public class CAMUploadDescriptor: ProgressDescriptor, VideoDescriptor

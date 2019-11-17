@@ -25,7 +25,7 @@
 //
 
 import Foundation
-import AFNetworking
+import VimeoNetworking
 
 @objc public extension AFURLSessionManager
 {

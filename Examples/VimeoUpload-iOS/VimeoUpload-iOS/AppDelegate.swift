@@ -25,7 +25,7 @@
 //
 
 import UIKit
-import AFNetworking
+import VimeoNetworking
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import AFNetworking
 
 public class VimeoReachability {
     private static var LastKnownReachabilityStatus = AFNetworkReachabilityStatus.unknown

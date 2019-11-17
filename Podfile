@@ -4,11 +4,11 @@ use_frameworks!
 platform :ios, '8.0'
 
 def shared_pods
-    pod 'VimeoNetworking', '4.0.0'
+    pod 'VimeoNetworking', '4.1.0'
 end
 
 target 'VimeoUpload' do
-    shared_pods    
+    shared_pods
     project 'Framework/VimeoUpload/VimeoUpload.xcodeproj'
 end
 

@@ -25,7 +25,6 @@
 //
 
 import Foundation
-import AFNetworking
 import VimeoNetworking
 
 @objc public class OldUploadDescriptor: ProgressDescriptor, VideoDescriptor

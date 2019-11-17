@@ -34,6 +34,7 @@ FOUNDATION_EXPORT const unsigned char VimeoNetworkingVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <VimeoNetworking/PublicHeader.h>
 
+#import <VimeoNetworking/Objc_ExceptionCatcher.h>
 #import <VimeoNetworking/VIMAccount.h>
 #import <VimeoNetworking/VIMActivity.h>
 #import <VimeoNetworking/VIMAppeal.h>
@@ -43,26 +44,35 @@ FOUNDATION_EXPORT const unsigned char VimeoNetworkingVersionString[];
 #import <VimeoNetworking/VIMConnection.h>
 #import <VimeoNetworking/VIMGroup.h>
 #import <VimeoNetworking/VIMInteraction.h>
+#import <VimeoNetworking/VIMMappable.h>
+#import <VimeoNetworking/VIMModelObject.h>
+#import <VimeoNetworking/VIMNotification.h>
+#import <VimeoNetworking/VIMObjectMapper.h>
 #import <VimeoNetworking/VIMPicture.h>
 #import <VimeoNetworking/VIMPictureCollection.h>
+#import <VimeoNetworking/VIMPolicyDocument.h>
 #import <VimeoNetworking/VIMPreference.h>
 #import <VimeoNetworking/VIMPrivacy.h>
 #import <VimeoNetworking/VIMQuantityQuota.h>
+#import <VimeoNetworking/VIMRecommendation.h>
+#import <VimeoNetworking/VIMSoundtrack.h>
 #import <VimeoNetworking/VIMTag.h>
 #import <VimeoNetworking/VIMTrigger.h>
 #import <VimeoNetworking/VIMUploadTicket.h>
 #import <VimeoNetworking/VIMUser.h>
+#import <VimeoNetworking/VIMUserBadge.h>
 #import <VimeoNetworking/VIMVideo.h>
 #import <VimeoNetworking/VIMVideoFile.h>
+#import <VimeoNetworking/VIMVideoHLSFile.h>
+#import <VimeoNetworking/VIMVideoPlayFile.h>
+#import <VimeoNetworking/VIMVideoPlayRepresentation.h>
 #import <VimeoNetworking/VIMVideoPreference.h>
 #import <VimeoNetworking/VIMVideoUtils.h>
-#import <VimeoNetworking/VIMSoundtrack.h>
 #import <VimeoNetworking/VIMVODItem.h>
-#import <VimeoNetworking/VIMRecommendation.h>
-#import <VimeoNetworking/VIMPolicyDocument.h>
 
-#import <VimeoNetworking/Objc_ExceptionCatcher.h>
-
-#import <VimeoNetworking/VIMMappable.h>
-#import <VimeoNetworking/VIMModelObject.h>
-#import <VimeoNetworking/VIMObjectMapper.h>
+#import <VimeoNetworking/AFHTTPSessionManager.h>
+#import <VimeoNetworking/AFURLSessionManager.h>
+#import <VimeoNetworking/AFURLResponseSerialization.h>
+#import <VimeoNetworking/AFURLRequestSerialization.h>
+#import <VimeoNetworking/AFSecurityPolicy.h>
+#import <VimeoNetworking/UIImageView+AFNetworking.h>
