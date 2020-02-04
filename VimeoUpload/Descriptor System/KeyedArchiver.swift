@@ -48,15 +48,39 @@ public class KeyedArchiver: ArchiverProtocol
     public func loadObject(for key: String) -> Any?
     {
         let path = self.archivePath(key: self.key(withPrefix: self.prefix, key: key))
-        
-        return NSKeyedUnarchiver.unarchiveObject(withFile: path)
+
+        if #available(iOS 12.0, *) {
+            do {
+                guard let url = URL(string: path) else {
+                    return nil
+                }
+
+                let data = try Data(contentsOf: url)
+                return try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data)
+            } catch {
+                return nil
+            }
+        } else {
+            return NSKeyedUnarchiver.unarchiveObject(withFile: path)
+        }
     }
     
     public func save(object: Any, key: String)
     {
         let path = self.archivePath(key: self.key(withPrefix: self.prefix, key: key))
-        
-        NSKeyedArchiver.archiveRootObject(object, toFile: path)
+
+        if #available(iOS 12.0, *) {
+            guard let url = URL(string: path) else { return }
+
+            do {
+                let data = try NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: false)
+                try data.write(to: url)
+            } catch let error {
+                assertionFailure("Error: \(error.localizedDescription)")
+            }
+        } else {
+            NSKeyedArchiver.archiveRootObject(object, toFile: path)
+        }
     }
     
     // MARK: Utilities

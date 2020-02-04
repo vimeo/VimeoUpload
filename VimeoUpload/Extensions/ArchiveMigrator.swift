@@ -50,8 +50,17 @@ class ArchiveMigrator: ArchiveMigrating
     func loadArchiveFile(relativeFileURL: URL) -> Any?
     {
         let fileURL = self.fileURL(withRelativeFilePath: relativeFileURL.path)
-        
-        return NSKeyedUnarchiver.unarchiveObject(withFile: fileURL.path)
+
+        if #available(iOS 12.0, *) {
+            do {
+                let data = try Data(contentsOf: fileURL)
+                return try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data)
+            } catch {
+                return nil
+            }
+        } else {
+            return NSKeyedUnarchiver.unarchiveObject(withFile: fileURL.path)
+        }
     }
     
     func deleteArchiveFile(relativeFileURL: URL)
