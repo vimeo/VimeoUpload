@@ -51,10 +51,7 @@ public class KeyedArchiver: ArchiverProtocol
 
         if #available(iOS 12.0, *) {
             do {
-                guard let url = URL(string: path) else {
-                    return nil
-                }
-
+                let url = URL(fileURLWithPath: path)
                 let data = try Data(contentsOf: url)
                 return try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data)
             } catch {
@@ -70,9 +67,8 @@ public class KeyedArchiver: ArchiverProtocol
         let path = self.archivePath(key: self.key(withPrefix: self.prefix, key: key))
 
         if #available(iOS 12.0, *) {
-            guard let url = URL(string: path) else { return }
-
             do {
+                let url = URL(fileURLWithPath: path)
                 let data = try NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: false)
                 try data.write(to: url)
             } catch let error {
