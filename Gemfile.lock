@@ -186,7 +186,7 @@ GEM
     naturally (2.2.0)
     netrc (0.11.0)
     no_proxy_fix (0.1.2)
-    nokogiri (1.10.5)
+    nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
     octokit (4.13.0)
       sawyer (~> 0.8.0, >= 0.5.3)
@@ -259,4 +259,4 @@ DEPENDENCIES
   xcpretty-json-formatter (= 0.1.0)
 
 BUNDLED WITH
-   2.1.2
+   2.1.4
