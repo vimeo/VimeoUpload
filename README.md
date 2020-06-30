@@ -1,29 +1,13 @@
 # VimeoUpload [![](https://circleci.com/gh/vimeo/VimeoUpload.png?style=shield&circle-token=2e7f762969ca311fc851e32d6ef2038f797f7e23)](https://circleci.com/gh/vimeo/VimeoUpload)
-This library is under active development. All comments, questions, pull requests, and issues are welcome. See below for details.
 
 ## Contents
 * [Getting Started](#getting-started)
-     * [Installation] (#installation)
+     * [Installation](#installation)
      * [Prerequisites](#prerequisites)
-     * [Which example project should I use?](#which-example-project-should-i-use)
      * [Setup your Submodules](#setup-your-submodules)
-     * [Initialization](#initialization)
 * [Uploading Videos](#uploading-videos)
-     * [Starting an Upload](#starting-an-upload)
-          * [Obtaining a File URL For a PHAsset](#obtaining-a-file-url-for-a-phasset)
-          * [Obtaining a File URL For an Asset That You Manage](#obtaining-a-file-url-for-an-asset-that-you-manage)
-          * [Start Your Upload](#start-your-upload)
-     * [Inspecting Upload State and Progress](#inspecting-upload-state-and-progress)
-     * [Canceling an Upload](#canceling-an-upload)
-     * [Locating your uploaded video on Vimeo](#locating-your-uploaded-video-on-vimeo)
-* [Design Considerations](#design-considerations)
-     * [Constraints](#constraints)
-     * [Goals](#goals)
-     * [Anatomy](#anatomy)
-          * [NSURLSession](#nsurlsession)
-          * [AFNetworking](#afnetworking)
-          * [VimeoUpload](#vimeoupload)
-* [Custom Workflows 🍪🎉](#custom-workflows)
+* [Locating your uploaded video on Vimeo](#locating-your-uploaded-video-on-vimeo)
+* [Notable Constraints](#notable-constraints)
 * [Want to Contribute?](#want-to-contribute)
 * [Found an Issue?](#found-an-issue)
 * [Troubleshooting](#troubleshooting)
@@ -58,315 +42,22 @@ github "vimeo/VimeoUpload"
 1. Ensure that you've verified your Vimeo account. When you create an account, you'll receive an email asking that you verify your account. **Until you verify your account you will not be able to upload videos using the API**. 
 2. Ensure you have been granted permission to use the "upload" scope. This permission must explicitly be granted by Vimeo API admins. You can request this permission on your "My Apps" page under "Request upload access". Visit [developer.vimeo.com](https://developer.vimeo.com/).
 3. Ensure that the OAuth token that you're using to make your requests has the "upload" scope included.
-
-### Which example project should I use?
-
-The publicly available server-side Vimeo upload API is comprised of 4 separate requests that must be made in sequence. The 4 requests are: 
-
-1. Create a video object 
-2. Upload the video file
-3. Activate the video object 
-4. Optionally set the video object's metadata (e.g. title, description, privacy, etc.)
-
-A simplified server-side flow that eliminates steps 3 and 4 is being used in the current [Vimeo iOS](https://itunes.apple.com/app/id425194759) and [Vimeo Android](https://play.google.com/store/apps/details?id=com.vimeo.android.videoapp) mobile apps. While it's currently for internal use only, we're actively working on making it available to the public before the end of 2017.
-
-While VimeoUpload contains support for both of these flows, the public only has access to the 4-step upload process. That means the following: 
-
-1. If you would like to get started using an example project, **you must set your build target to be `VimeoUpload-iOS-OldUpload`**. This is the example that uses the publicly accessible 4-step flow.
-
-2. In order to run this project, **you will have to insert a valid OAuth token into the `init` method of the class called `OldVimeoUploader`** where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token. Without a valid OAuth token, you will be presented with a "Request failed: unauthorized (401)" error alert when you try to upload a video.
+4. In order to run this project, **you will have to insert a valid OAuth token where it says `"YOUR_OAUTH_TOKEN"`. You can obtain an OAuth token by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token. Without a valid OAuth token, you will be presented with a "Request failed: unauthorized (401)" error alert when you try to upload a video.
 
 
 ### Setup your Submodules
 
 If you are adding this library to your own project, follow the steps outlined in [Getting Started with Submodules as Development Pods](https://paper.dropbox.com/doc/Getting-Started-with-Submodules-as-Development-Pods-yRpNbPxIOjzGlcEbecuOC). 
 
-### Initialization
-
-Create an instance of `VimeoUpload`, or modify `VimeoUpload` to act as a singleton: 
-
-```Swift
-    let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
-    let authToken = "YOUR_OAUTH_TOKEN"
-    
-    let vimeoUpload = VimeoUpload<OldUploadDescriptor>(backgroundSessionIdentifier: backgroundSessionIdentifier, authToken: authToken)
-```
-
-If your OAuth token can change during the course of a session, use the constructor whose second argument is an `authTokenBlock`:
-
-```Swift
-    let backgroundSessionIdentifier = "YOUR_BACKGROUND_SESSION_ID"
-    var authToken = "YOUR_OAUTH_TOKEN"
-
-    let vimeoUpload = VimeoUpload<OldUploadDescriptor>(backgroundSessionIdentifier: backgroundSessionIdentifier, authTokenBlock: { () -> String? in
-        return authToken 
-    })
-```
-
-You can obtain an OAuth token by using the authentication methods provided by [VIMNetworking](https://github.com/vimeo/VIMNetworking) or by visiting [developer.vimeo.com](https://developer.vimeo.com/apps) and creating a new "app" and associated OAuth token.
-
 ## Uploading Videos
 
-### Starting an Upload
+Please refer to the example projects for a demonstration of how VimeoUpload can be used to upload videos to Vimeo.
 
-In order to start an upload, you need a file URL pointing to the video file on disk that you would like to upload.
-
-The steps required to obtain the file URL will vary depending on whether you are uploading a [PHAsset](#obtaining-a-file-url-for-a-phasset) or an [asset that you manage](#obtaining-a-file-url-for-an-asset-that-you-manage) outside of the device Photos environment. Once you have a valid file URL, you will use it to [start your upload](#start-your-upload).
-
-Unfortunately, because of how Apple's [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) APIs are designed, uploading directly from a [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) resource URL is not possible. In order to upload [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html)s you will need to first create a copy of the asset itself and upload from that copy. See below for instructions on how to do this. 
-
-#### Obtaining a File URL For a PHAsset
-
-Use VimeoUpload's `PHAssetExportSessionOperation` to request an instance of [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) configured for the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) that you intend to upload. If the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) is in iCloud (i.e. not resident on the device) this will download the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) from iCloud. 
-
-```Swift 
-    let phAsset = ... // The PHAsset you intend to upload
-    let operation = PHAssetExportSessionOperation(phAsset: phAsset)
-    
-    // Optionally set a progress block
-    operation.progressBlock = { (progress: Double) -> Void in
-        // Do something with progress
-    }
-    
-    operation.completionBlock = {
-        guard operation.cancelled == false else
-        {
-            return
-        }
-
-        if let error = operation.error
-        {
-            // Do something with the error
-        }
-        else if let exportSession = operation.result
-        {
-            // Use the export session to export a copy of the asset (see below)
-        }
-        else
-        {
-            assertionFailure("error and exportSession are mutually exclusive. This should never happen.")
-        }
-    }
-
-    operation.start()
-```
-
-Next, use VimeoUpload's `ExportOperation` to export a copy of the [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html). You can then use the resulting `url` to [start your upload](#start-your-upload).
-
-```Swift
-    let exportSession = ... // The export session you just generated (see above)
-    let operation = ExportOperation(exportSession: exportSession)
-    
-    // Optionally set a progress block
-    operation.progressBlock = { (progress: Double) -> Void in
-        // Do something with progress
-    }
-    
-    operation.completionBlock = {
-        guard operation.cancelled == false else
-        {
-            return
-        }
-
-        if let error = operation.error
-        {
-            // Do something with the error
-        }
-        else if let url = operation.outputURL
-        {
-            // Use the url to start your upload (see below)
-        }
-        else
-        {
-            assertionFailure("error and outputURL are mutually exclusive, this should never happen.")
-        }
-    }
-    
-    operation.start()
-```
-
-#### Obtaining a File URL For an Asset That You Manage
-
-This is quite a bit simpler: 
-
-```Swift
-    let path = "PATH_TO_VIDEO_FILE_ON_DISK"
-    let url = NSURL.fileURLWithPath(path)
-```
-
-#### Start Your Upload
-
-Use the `url` to start your upload: 
-
-```Swift
-    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
-    let url = ... // Your url (see above)
-
-    let descriptor = OldUploadDescriptor(url: url)
-    vimeoUpload.uploadVideo(descriptor: descriptor)
-```
-
-You can also pass in a VideoSettings object if you'd like. This will set your video's metadata after the upload completes: 
-
-```Swift
-    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
-    let url = ... // Your url (see above)
-    
-    let title = "Untitled"
-    let description = "A really cool video"
-    let privacy = "nobody"
-    let videoSettings = VideoSettings(title: title, description: description, privacy: privacy, users: nil, password: nil)
-    
-    let descriptor = OldUploadDescriptor(url: url, videoSettings: videoSettings)
-    vimeoUpload.uploadVideo(descriptor: descriptor)
-```
-
-You can use the descriptor you create to [inspect state and progress](#inspecting-upload-state-and-progress), or to [cancel the upload](#canceling-an-upload).
-
-### Inspecting Upload State and Progress
-
-You can examine upload state and progress by inspecting the `stateObservable` and `progressObservable` properties of an `OldUploadDescriptor`. 
-
-You can obtain a reference to a specific `OldUploadDescriptor` by holding onto the `OldUploadDescriptor` that you used to initiate the upload, or by asking `VimeoUpload` for a specific `OldUploadDescriptor` like so:
-
-```Swift
-    let identifier = ... // The identifier you set on the descriptor when you created it (see above)
-    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
-    let descriptor = vimeoUpload.descriptorForIdentifier(identifier: identifier)
-```
-
-You can also ask `VimeoUpload` for an `OldUploadDescriptor` that passes a test that you construct. You can construct any test you'd like. In the case where we want a descriptor with a certain identifier, the convenience method `descriptorForIdentifier` leverages `descriptorPassingTest` under the hood:
-
-```Swift
-    let phAsset = ... // The PHAsset whose upload you'd like to inspect
-    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
-    
-    let descriptor = vimeoUpload.descriptorManager.descriptorPassingTest({ (descriptor) -> Bool in
-        return descriptor.identifier == phAsset.localIdentifier   
-    })
-```
-
-Once you have a reference to the `OldUploadDescriptor` you're interested in you can inspect its state directly:
-
-```Swift
-    print(descriptor.state)
-    print(descriptor.error?.localizedDescription)
-```
-
-Or use KVO to observe changes to its state and progress: 
-
-```Swift
-    private static let ProgressKeyPath = "progressObservable"
-    private static let StateKeyPath = "stateObservable"
-    private var progressKVOContext = UInt8()
-    private var stateKVOContext = UInt8()
-
-    ...
-    
-    descriptor.addObserver(self, forKeyPath: self.dynamicType.StateKeyPath, options: .New, context: &self.stateKVOContext)
-    descriptor.addObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, options: .New, context: &self.progressKVOContext)
-    
-    ...
-    
-    descriptor.removeObserver(self, forKeyPath: self.dynamicType.StateKeyPath, context: &self.stateKVOContext)
-    descriptor.removeObserver(self, forKeyPath: self.dynamicType.ProgressKeyPath, context: &self.progressKVOContext)
-
-    ...
-    
-    // MARK: KVO
-    
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
-    {
-        if let keyPath = keyPath
-        {
-            switch (keyPath, context)
-            {
-            case(self.dynamicType.ProgressKeyPath, &self.progressKVOContext):
-                
-                let progress = change?[NSKeyValueChangeNewKey]?.doubleValue ?? 0
-                
-                // Do something with progress                
-
-            case(self.dynamicType.StateKeyPath, &self.stateKVOContext):
-                
-                let stateRaw = (change?[NSKeyValueChangeNewKey] as? String) ?? DescriptorState.Ready.rawValue;
-                let state = DescriptorState(rawValue: stateRaw)!
-                
-                // Do something with state
-                
-            default:
-                super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-            }
-        }
-        else
-        {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-        }
-    }
-```
-
-Check out the `DescriptorKVObserver` class. It's a small utility that makes KVO'ing a Descriptor's `state` and `progress` properties easier.
-
-### Canceling an Upload
-
-Canceling an upload will cancel the file upload itself as well as delete the video object from Vimeo servers. You can cancel an upload using the `OldUploadDescriptor` instance in question:
-
-```Swift
-    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
-    let descriptor = ... // The descriptor you'd like to cancel
-    
-    vimeoUpload.cancelUpload(descriptor: descriptor)
-```
-
-Or by using the `identifier` of the `OldUploadDescriptor` in question: 
-
-```Swift
-    let vimeoUpload = ... // Your instance of VimeoUpload (see above)
-    let identifier = phAsset.localIdentifier
-    vimeoUpload.cancelUpload(identifier: identifier)
-```
-
-### Locating your uploaded video on Vimeo
+## Locating your uploaded video on Vimeo
 
 One can access a video's URL by inspecting the link property on the video that's associated with the upload descriptor: `descriptor.video.link`. 
- 
-For example, one could use the results of either the `Activation` or `Settings` stage to access the video object. See the following method implementation inside of `OldUploadDescriptor`:
 
-```swift
-override public func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
-{
-    ...
-    do
-    {
-        switch self.currentRequest
-        {
-        case .Create:
-        	...            
-        case .Upload:
-        	...  
-        case .Activate:
-        	// Use the `self.videoURI` to request a video object and inspect its `link`.
-        	self.videoUri = try responseSerializer.process(activateVideoResponse: task.response, url: url, error: error)
-        case .Settings:
-        	// Or, wait for the Settings step to complete and access `self.video.link`.
-            self.video = try responseSerializer.process(videoSettingsResponse: task.response, url: url, error: error) 
-        }
-    }    
-    ...
-}
-```
-
-Note: ellipses indicate code excluded for brevity. 
-
-## Design Considerations
-
-The following sections provide more insight into the motivation behind VimeoUpload's design, given some identified constraints and goals.
-
-### Constraints
-
-* **No Direct Access to PHAsset Source Files** 
-
- Because of how the Apple APIs are designed, we cannot upload directly from [PHAsset](https://developer.apple.com/library/prerelease/ios/documentation/Photos/Reference/PHAsset_Class/index.html) source files. So we must export a copy of the asset using an [AVAssetExportSession](https://developer.apple.com/library/prerelease/ios/documentation/AVFoundation/Reference/AVAssetExportSession_Class/index.html) before starting the upload process. Asset export must happen when the app is in the foreground.
+## Notable Constraints
 
 * **iCloud Photos** 
 
@@ -379,64 +70,6 @@ The following sections provide more insight into the motivation behind VimeoUplo
 * **Resumable Uploads**
 
  The [NSURLSession](https://developer.apple.com/library/ios/documentation/Foundation/Reference/NSURLSession_class/) API does not support resuming an interrupted background upload from an offset. The initial release of this library will use these APIs exclusively and therefore will also not support resuming an upload from an offset. 
-
-* **Fault Tolerance** 
-
- The app process could be backgrounded, terminated, or crash at any time. This means that we need to persist the state of the upload system to disk so that it can be reconstructed as needed. Crashes should not adversely impact uploads or the upload system.
-
-* **Concurrent File Uploads** 
-
- We want to be able to conduct concurrent uploads.
-
-* **State Introspection**
-
- We want to be able to communicate upload progress and state to the user in a variety of locations.  Including communicating state for uploads initiated on other devices and other platforms.
-
-* **Reachability Awareness** 
-
- The app could lose connectivity at any time. We want to be able to pause and resume the upload system when we lose connectivity. And we want to be able to allow the user to restrict uploads to wifi.
-
-* **Upload Quotas** 
-
- We need to be able to communicate information to users about their [upload quota](https://vimeo.com/help/faq/uploading-to-vimeo/uploading-basics). 
-
-* **iOS SDK Quirks** 
-
- NSURLSessionTask's `suspend` method doesn't quite do what we want it to `TODO: Provide details`
- 
- NSURLRequest's and NSURLSessionConfiguration's `allowsCellularAccess` properties don't quite do what we want them to `TODO: provide details`
- 
- AFURLSessionManager's `tasks` property behaves differently on iOS7 vs. iOS8+ `TODO: provide details`
- 
- And more...
-
-### Goals
-
-1. A simplified server-side upload API
-
-1. An upload system that addresses each [constraint](#constraints) listed above
-
-1. Clear and concise upload system initialization, management, and introspection
-
-1. An upload system that accommodates as many UX futures as possible
-
-### Anatomy
-
-#### NSURLSession
-
-TODO
-
-#### AFNetworking
-
-TODO
-
-#### VimeoUpload
-
-TODO
-
-## Custom Workflows
-
-TODO
 
 ## Found an Issue?
 
