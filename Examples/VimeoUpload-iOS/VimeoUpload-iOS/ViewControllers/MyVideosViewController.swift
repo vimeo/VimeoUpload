@@ -39,7 +39,7 @@ class MyVideosViewController: UIViewController, UITableViewDataSource, UITableVi
     private var refreshControl: UIRefreshControl?
     
     private var items: [VIMVideo] = []
-    private var task: URLSessionDataTask?
+    private var task: Task?
     private var videoRefreshManager: VideoRefreshManager?
     
     deinit

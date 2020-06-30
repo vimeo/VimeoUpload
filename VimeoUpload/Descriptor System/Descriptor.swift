@@ -25,7 +25,7 @@
 //
 
 import Foundation
-import AFNetworking
+import VimeoNetworking
 
 public enum DescriptorState: String
 {
@@ -73,23 +73,23 @@ public enum DescriptorState: String
     
     // MARK: Subclass Overrides
 
-    @objc open func prepare(sessionManager: AFURLSessionManager) throws
+    @objc open func prepare(sessionManager: VimeoSessionManager) throws
     {
         fatalError("prepare(sessionManager:) has not been implemented")
     }
 
-    @objc open func resume(sessionManager: AFURLSessionManager)
+    @objc open func resume(sessionManager: VimeoSessionManager)
     {
         self.state = .executing
         
         if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.task(for: identifier)
+            let task = sessionManager.task(forIdentifier: identifier)
         {
             task.resume()
         }
     }
     
-    @objc open func suspend(sessionManager: AFURLSessionManager)
+    @objc open func suspend(sessionManager: VimeoSessionManager)
     {
         let originalState = self.state
         
@@ -110,7 +110,7 @@ public enum DescriptorState: String
         self.doCancel(sessionManager: sessionManager)
     }
 
-    @objc open func cancel(sessionManager: AFURLSessionManager)
+    @objc open func cancel(sessionManager: VimeoSessionManager)
     {
         self.isCancelled = true
         self.state = .finished
@@ -118,23 +118,23 @@ public enum DescriptorState: String
         self.doCancel(sessionManager: sessionManager)
     }
 
-    @objc open func retry(sessionManager: AFURLSessionManager) throws {
+    @objc open func retry(sessionManager: VimeoSessionManager) throws {
         self.retryAttemptCount += 1
         try self.prepare(sessionManager: sessionManager)
         self.resume(sessionManager: sessionManager)
     }
     
-    @objc open func didLoadFromCache(sessionManager: AFURLSessionManager) throws
+    @objc open func didLoadFromCache(sessionManager: VimeoSessionManager) throws
     {
         fatalError("didLoadFromCache(sessionManager:) has not been implemented")
     }
     
-    @objc open func taskDidFinishDownloading(sessionManager: AFURLSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
+    @objc open func taskDidFinishDownloading(sessionManager: VimeoSessionManager, task: URLSessionDownloadTask, url: URL) -> URL?
     {
         return nil
     }
 
-    @objc open func taskDidComplete(sessionManager: AFURLSessionManager, task: URLSessionTask, error: NSError?)
+    @objc open func taskDidComplete(sessionManager: VimeoSessionManager, task: URLSessionTask, error: NSError?)
     {
         fatalError("taskDidComplete(sessionManager:task:error:) has not been implemented")
     }
@@ -143,10 +143,10 @@ public enum DescriptorState: String
     
     // We need this method because we need to differentiate between suspend-initiated cancellations and user-initiated cancellations [AH] 2/17/2016
 
-    private func doCancel(sessionManager: AFURLSessionManager)
+    private func doCancel(sessionManager: VimeoSessionManager)
     {
         if let identifier = self.currentTaskIdentifier,
-            let task = sessionManager.task(for: identifier)
+            let task = sessionManager.task(forIdentifier: identifier)
         {
             task.cancel()
         }

@@ -26,7 +26,7 @@
 
 import UIKit
 import Photos
-import AFNetworking
+import VimeoNetworking
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate
@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
-        AFNetworkReachabilityManager.shared().startMonitoring()
+        _ = VimeoReachabilityProvider.isReachable // Intialize reachability manager listening
         OldVimeoUploader.sharedInstance?.applicationDidFinishLaunching() // Ensure init is called on launch
 
         let settings = UIUserNotificationSettings(types: .alert, categories: nil)

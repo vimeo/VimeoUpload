@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-gem 'fastlane', '2.108.0'
+gem 'fastlane', '2.135.2'
 gem 'cocoapods', '1.5.2'
 gem 'xcode-install', '2.1.0'
 gem 'xcpretty-json-formatter', '0.1.0'

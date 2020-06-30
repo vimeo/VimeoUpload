@@ -26,7 +26,6 @@
 
 import Foundation
 import VimeoNetworking
-import AFNetworking
 
 @objc public protocol VideoRefreshManagerDelegate
 {
@@ -41,7 +40,10 @@ import AFNetworking
     
     private let sessionManager: VimeoSessionManager
     private weak var delegate: VideoRefreshManagerDelegate?
-    
+    private let reachabilityChangedNotificaton = Notification.Name(
+        rawValue: NetworkingNotification.reachabilityDidChange.rawValue
+    )
+
     // MARK:
     
     private var videos: [VideoUri: Bool] = [:]
@@ -133,7 +135,7 @@ import AFNetworking
                 
                 if let error = operation.error
                 {
-                    if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse, response.statusCode == 404
+                    if error.is404NotFoundError
                     {
                         strongSelf.videos.removeValue(forKey: uri) // The video was deleted, remove it from consideration
                     }
@@ -199,14 +201,14 @@ import AFNetworking
         
         NotificationCenter.default.addObserver(self, selector: #selector(UIApplicationDelegate.applicationDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(VideoRefreshManager.reachabilityDidChange(_:)), name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(VideoRefreshManager.reachabilityDidChange(_:)), name: reachabilityChangedNotificaton, object: nil)
     }
     
     private func removeObservers()
     {
         NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: reachabilityChangedNotificaton, object: nil)
     }
     
     @objc func applicationWillEnterForeground(_ notification: Notification)
@@ -220,9 +222,7 @@ import AFNetworking
     }
     
     @objc func reachabilityDidChange(_ notification: Notification?)
-    {
-        let currentlyReachable = AFNetworkReachabilityManager.shared().isReachable
-        
-        self.operationQueue.isSuspended = !currentlyReachable
+    {        
+        self.operationQueue.isSuspended = !VimeoReachabilityProvider.isReachable
     }
 }

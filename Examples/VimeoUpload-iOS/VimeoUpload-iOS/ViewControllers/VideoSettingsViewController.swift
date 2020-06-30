@@ -69,7 +69,7 @@ class VideoSettingsViewController: UIViewController, UITextFieldDelegate
     // MARK:
     
     private var operation: ExportSessionExportCreateVideoOperation?
-    private var task: URLSessionDataTask?
+    private var task: Task?
     
     // MARK:
     

@@ -28,7 +28,6 @@ import UIKit
 import AVFoundation
 import Photos
 import VimeoNetworking
-import AFNetworking
 import VimeoUpload
 
 class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout
@@ -149,8 +148,8 @@ class BaseCameraRollViewController: UIViewController, UICollectionViewDataSource
             
             return
         }
-        
-        if AFNetworkReachabilityManager.shared().isReachable == false
+
+        if VimeoReachabilityProvider.isReachable == false
         {
             let error = NSError(domain: NSURLErrorDomain, code: NSURLErrorNotConnectedToInternet, userInfo: [NSLocalizedDescriptionKey: "The internet connection appears to be offline."])
             self.presentErrorAlert(at: indexPath, error: error)

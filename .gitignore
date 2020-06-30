@@ -25,6 +25,9 @@ DerivedData
 
 Carthage/Build
 
+# Cocoapods
+Pods/*
+
 # https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Gitignore.md
 fastlane/report.xml
 fastlane/Preview.html

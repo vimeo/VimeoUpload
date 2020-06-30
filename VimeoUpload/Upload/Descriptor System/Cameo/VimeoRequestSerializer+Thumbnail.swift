@@ -17,7 +17,7 @@ extension VimeoRequestSerializer
         let url = URL(string: "\(uri)/pictures", relativeTo: VimeoBaseURL)!
         
         var error: NSError?
-        let request = self.request(withMethod: "POST", urlString: url.absoluteString, parameters: nil, error: &error)
+        let request = self.request(withMethod: .post, urlString: url.absoluteString, parameters: nil, error: &error)
         
         if let error = error
         {
@@ -33,7 +33,7 @@ extension VimeoRequestSerializer
         
         var error: NSError?
         let activationParams = ["active" : "true"]
-        let request = self.request(withMethod: "PATCH", urlString: url.absoluteString, parameters: activationParams, error: &error)
+        let request = self.request(withMethod: .patch, urlString: url.absoluteString, parameters: activationParams, error: &error)
         
         if let error = error
         {
@@ -50,7 +50,7 @@ extension VimeoRequestSerializer
         }
         
         var error: NSError?
-        let request = self.request(withMethod: "PUT", urlString: destination, parameters: nil, error: &error)
+        let request = self.request(withMethod: .put, urlString: destination, parameters: nil, error: &error)
         if let error = error {
             throw error.error(byAddingDomain: UploadErrorDomain.UploadThumbnail.rawValue)
         }

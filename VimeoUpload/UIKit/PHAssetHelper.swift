@@ -27,37 +27,32 @@
 import Foundation
 import Photos
 
-@objc public class PHAssetHelper: NSObject
-{
+@objc public class PHAssetHelper: NSObject {
     static let ErrorDomain = "PHAssetHelperErrorDomain"
-    
+
     private var activeImageRequests: [String: PHImageRequestID] = [:]
     private var activeAssetRequests: [String: PHImageRequestID] = [:]
 
-    deinit
-    {
+    deinit {
         // Cancel any remaining active PHImageManager requests
-        
-        for requestID in self.activeImageRequests.values
-        {
+
+        for requestID in self.activeImageRequests.values {
             PHImageManager.default().cancelImageRequest(requestID)
         }
         self.activeImageRequests.removeAll()
-        
-        for requestID in self.activeAssetRequests.values
-        {
+
+        for requestID in self.activeAssetRequests.values {
             PHImageManager.default().cancelImageRequest(requestID)
         }
         self.activeAssetRequests.removeAll()
     }
-    
-    @objc public func requestImage(cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset)
-    {
+
+    @objc public func requestImage(cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset) {
         let phAsset = cameraRollAsset.phAsset
         let size = cell.bounds.size
         let scale = UIScreen.main.scale
         let scaledSize = CGSize(width: scale * size.width, height: scale * size.height)
-     
+
         self.cancelImageRequest(cameraRollAsset: cameraRollAsset)
 
         let options = PHImageRequestOptions()
@@ -65,125 +60,105 @@ import Photos
         options.deliveryMode = .opportunistic
         options.version = .current
         options.resizeMode = .fast
-        
-        let requestID = PHImageManager.default().requestImage(for: phAsset, targetSize: scaledSize, contentMode: .aspectFill, options: options, resultHandler: { [weak self] (image, info) -> Void in
-            
-            guard let strongSelf = self else
-            {
-                return
+
+        let requestID = PHImageManager.default().requestImage(
+            for: phAsset,
+            targetSize: scaledSize,
+            contentMode: .aspectFill,
+            options: options,
+            resultHandler: { [weak self] image, info in
+                guard let self = self else { return }
+
+                // TODO: Determine if we can use this here and below Phimageresultrequestidkey [AH] Jan 2016
+                self.cancelImageRequest(cameraRollAsset: cameraRollAsset)
+
+                if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool, cancelled == true {
+                    return
+                }
+
+                // Cache values for later use in didSelectItem
+                cameraRollAsset.inCloud = info?[PHImageResultIsInCloudKey] as? Bool ?? false
+                cameraRollAsset.error = info?[PHImageErrorKey] as? NSError
+
+                if cameraRollAsset.inCloud == true {
+                    cell.setInCloud()
+                }
+
+                if let image = image {
+                    cell.set(image: image)
+                } else if let _ = cameraRollAsset.error {
+                    // Do nothing, placeholder image that's embedded in the cell's nib will remain visible
+                }
             }
-            
-            // TODO: Determine if we can use this here and below Phimageresultrequestidkey [AH] Jan 2016
-            strongSelf.cancelImageRequest(cameraRollAsset: cameraRollAsset)
-            
-            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool, cancelled == true
-            {
-                return
-            }
-            
-            // Cache values for later use in didSelectItem
-            cameraRollAsset.inCloud = info?[PHImageResultIsInCloudKey] as? Bool ?? false
-            cameraRollAsset.error = info?[PHImageErrorKey] as? NSError
-            
-            if cameraRollAsset.inCloud == true
-            {
-                cell.setInCloud()
-            }
-            
-            if let image = image
-            {
-                cell.set(image: image)
-            }
-            else if let _ = cameraRollAsset.error
-            {
-                // Do nothing, placeholder image that's embedded in the cell's nib will remain visible
-            }
-        })
-        
+        )
+
         self.activeImageRequests[phAsset.localIdentifier] = requestID
     }
-    
-    @objc public func requestAsset(cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset)
-    {
+
+    @objc public func requestAsset(cell: CameraRollAssetCell, cameraRollAsset: VIMPHAsset) {
         let phAsset = cameraRollAsset.phAsset
 
         cell.setDuration(seconds: phAsset.duration)
 
         self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
-        
+
         let options = PHVideoRequestOptions()
         options.isNetworkAccessAllowed = false
         options.deliveryMode = .highQualityFormat
-        
-        let requestID = PHImageManager.default().requestAVAsset(forVideo: phAsset, options: options) { [weak self] (asset, audioMix, info) -> Void in
-            
-            if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool, cancelled == true
-            {
-                return
-            }
-            
-            DispatchQueue.main.async(execute: { [weak self] () -> Void in
-                
-                guard let strongSelf = self else
-                {
+
+        let requestID = PHImageManager.default().requestAVAsset(
+            forVideo: phAsset,
+            options: options,
+            resultHandler:  { [weak self] asset, audioMix, info in
+                if let info = info, let cancelled = info[PHImageCancelledKey] as? Bool, cancelled == true {
                     return
                 }
 
-                strongSelf.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
 
-                // Cache the asset and inCloud values for later use in didSelectItem
-                cameraRollAsset.avAsset = asset
-                cameraRollAsset.inCloud = info?[PHImageResultIsInCloudKey] as? Bool ?? false
-                cameraRollAsset.error = info?[PHImageErrorKey] as? NSError
+                    self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
 
-                if cameraRollAsset.inCloud == true
-                {
-                    cell.setInCloud()
-                }
+                    // Cache the asset and inCloud values for later use in didSelectItem
+                    cameraRollAsset.avAsset = asset
+                    cameraRollAsset.inCloud = info?[PHImageResultIsInCloudKey] as? Bool ?? false
+                    cameraRollAsset.error = info?[PHImageErrorKey] as? NSError
 
-                if let asset = asset
-                {
-                    asset.approximateFileSize(completion: { (value) -> Void in
-                        cell.setFileSize(bytes: value)
-                    })
+                    if let asset = asset {
+                        asset.approximateFileSize { (value) -> Void in
+                            cell.setFileSize(bytes: value)
+                        }
+                    } else {
+                        // If we don't have the asset locally, it must be in the cloud.
+                        cell.setInCloud()
+                    }
                 }
-                else if let _ = cameraRollAsset.error
-                {
-                     // Set empty strings when asset is not available
-                    cell.setFileSize(bytes: 0)
-                    cell.setDuration(seconds: 0)
-                }
-            })
-        }
-        
+            }
+        )
+
         self.activeAssetRequests[phAsset.localIdentifier] = requestID
     }
-    
-    @objc public func cancelRequests(with cameraRollAsset: VIMPHAsset)
-    {
+
+    @objc public func cancelRequests(with cameraRollAsset: VIMPHAsset) {
         self.cancelImageRequest(cameraRollAsset: cameraRollAsset)
         self.cancelAssetRequest(cameraRollAsset: cameraRollAsset)
     }
 
     // MARK: Private API
 
-    private func cancelImageRequest(cameraRollAsset: VIMPHAsset)
-    {
+    private func cancelImageRequest(cameraRollAsset: VIMPHAsset) {
         let phAsset = cameraRollAsset.phAsset
-        
-        if let requestID = self.activeImageRequests[phAsset.localIdentifier]
-        {
+
+        if let requestID = self.activeImageRequests[phAsset.localIdentifier] {
             PHImageManager.default().cancelImageRequest(requestID)
             self.activeImageRequests.removeValue(forKey: phAsset.localIdentifier)
         }
     }
-    
-    private func cancelAssetRequest(cameraRollAsset: VIMPHAsset)
-    {
+
+    private func cancelAssetRequest(cameraRollAsset: VIMPHAsset) {
         let phAsset = cameraRollAsset.phAsset
-        
-        if let requestID = self.activeAssetRequests[phAsset.localIdentifier]
-        {
+
+        if let requestID = self.activeAssetRequests[phAsset.localIdentifier] {
             PHImageManager.default().cancelImageRequest(requestID)
             self.activeAssetRequests.removeValue(forKey: phAsset.localIdentifier)
         }
